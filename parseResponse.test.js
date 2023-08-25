@@ -61,4 +61,24 @@ describe("parseReponse", () => {
       },
     })
   })
+
+  it("handles same book in several lists", () => {
+    const response = {
+      results: {
+        lists: [
+          { ...list, books: [book] },
+          { ...list2, books: [book] },
+        ],
+      },
+    }
+
+    const result = parseResponse(response)
+
+    expect(result).toStrictEqual({
+      [book.primary_isbn13]: {
+        ...book,
+        lists: [list, list2],
+      },
+    })
+  })
 })
