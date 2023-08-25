@@ -1,4 +1,4 @@
 {
-    "name": "tangledrip",
-    "version": "0.0.1"
+  "name": "tangledrip",
+  "packageManager": "yarn@3.6.3"
 }
