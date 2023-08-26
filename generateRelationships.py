@@ -2,7 +2,7 @@ import json
 from sentence_transformers import SentenceTransformer, util
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
-dbFile = open('./db.json')
+dbFile = open('./books.json')
 
 books = [*json.load(dbFile).values()]
 descriptions = [book['description'] for book in books]

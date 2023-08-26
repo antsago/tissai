@@ -10,5 +10,6 @@
 !.yarn/cache
 #.pnp.*
 
-db.json
+books.json
+relationships.json
 .env
