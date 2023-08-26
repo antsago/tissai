@@ -2,11 +2,15 @@
   "name": "tangledrip",
   "packageManager": "yarn@3.6.3",
   "scripts": {
+    "start": "node generateDb",
     "test": "jest",
     "format": "prettier . --write"
   },
   "devDependencies": {
     "jest": "^29.6.4",
     "prettier": "3.0.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
   }
 }

@@ -28,6 +28,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         [null, {\
           "packageLocation": "./",\
           "packageDependencies": [\
+            ["dotenv", "npm:16.3.1"],\
             ["jest", "virtual:3eb8e6f55fd7e8ae5c638eadc9c6e11e1aad7e50642f08965ac82c8db9172e9fe3fa6a2ceea0aae706dd8cafd0ddd8bc6c2d340a771e43dcd085a4447cb49fb5#npm:29.6.4"],\
             ["prettier", "npm:3.0.2"]\
           ],\
@@ -2013,6 +2014,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/diff-sequences-npm-29.6.3-18ab2c9949-f4914158e1.zip/node_modules/diff-sequences/",\
           "packageDependencies": [\
             ["diff-sequences", "npm:29.6.3"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["dotenv", [\
+        ["npm:16.3.1", {\
+          "packageLocation": "./.yarn/cache/dotenv-npm-16.3.1-e6d380a398-15d75e7279.zip/node_modules/dotenv/",\
+          "packageDependencies": [\
+            ["dotenv", "npm:16.3.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -4253,6 +4263,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",\
           "packageDependencies": [\
             ["tangledrip", "workspace:."],\
+            ["dotenv", "npm:16.3.1"],\
             ["jest", "virtual:3eb8e6f55fd7e8ae5c638eadc9c6e11e1aad7e50642f08965ac82c8db9172e9fe3fa6a2ceea0aae706dd8cafd0ddd8bc6c2d340a771e43dcd085a4447cb49fb5#npm:29.6.4"],\
             ["prettier", "npm:3.0.2"]\
           ],\
