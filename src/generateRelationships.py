@@ -2,7 +2,7 @@ import json
 from sentence_transformers import SentenceTransformer, util
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
-dbFile = open('./books.json')
+dbFile = open('./data/books.json')
 
 books = [*json.load(dbFile).values()]
 descriptions = [book['description'] for book in books]
@@ -16,7 +16,7 @@ def convert_to_book(hit):
 def convert_hits(hits):
     return [convert_to_book(hit) for hit in hits][1:]
 
-hits = util.semantic_search(embeddings, embeddings, top_k=3)
+hits = util.semantic_search(embeddings, embeddings, top_k=10)
 relationships = { books[idx]['primary_isbn13']: convert_hits(hit) for idx, hit in enumerate(hits)}
 
 print(json.dumps(relationships))

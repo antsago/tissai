@@ -2,3 +2,4 @@
 *.pnp.*
 .yarn
 node_modules
+data
