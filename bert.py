@@ -1,10 +1,10 @@
+import json
 from sentence_transformers import SentenceTransformer, util
-from json import load
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
 dbFile = open('./db.json')
 
-books = [*load(dbFile).values()][0:5]
+books = [*json.load(dbFile).values()]
 descriptions = [book['description'] for book in books]
 embeddings = model.encode(descriptions, convert_to_tensor=True)
 
@@ -14,9 +14,9 @@ def convert_to_book(hit):
         'score': hit['score']
     }
 def convert_hits(hits):
-    return [convert_to_book(hit) for hit in hits]
+    return [convert_to_book(hit) for hit in hits][1:]
 
 hits = util.semantic_search(embeddings, embeddings, top_k=3)
-augmented = [convert_hits(hit) for hit in hits]
+relationships = { books[idx]['primary_isbn13']: convert_hits(hit) for idx, hit in enumerate(hits)}
 
-print(augmented)
+print(json.dumps(relationships))
