@@ -5,7 +5,6 @@
 	"packageManager": "yarn@3.6.3",
 	"private": true,
 	"scripts": {
-		"relationships": "python src/generateRelationships.py > data/relationships.json",
 		"format": "prettier . --write",
 		"dev": "vite dev",
 		"build": "vite build",

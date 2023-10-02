@@ -1,5 +1,5 @@
-require('dotenv').config()
-const parseResponse = require('./parseResponse')
+require("dotenv").config()
+const parseResponse = require("./parseResponse")
 
 const API_KEY = process.env.API_KEY
 
