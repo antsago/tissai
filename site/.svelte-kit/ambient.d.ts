@@ -140,6 +140,7 @@ declare module '$env/static/private' {
 	export const NM: string;
 	export const OBJDUMP: string;
 	export const INIT_CWD: string;
+	export const NODE_ENV: string;
 }
 
 /**
@@ -283,6 +284,7 @@ declare module '$env/dynamic/private' {
 		NM: string;
 		OBJDUMP: string;
 		INIT_CWD: string;
+		NODE_ENV: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	}
