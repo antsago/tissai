@@ -1,0 +1,6 @@
+{
+	"/": [],
+	"/[isbn]": [
+		"src/routes/[isbn]/+page.server.js"
+	]
+}
