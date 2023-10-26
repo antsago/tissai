@@ -8,6 +8,6 @@ export const load: PageServerLoad = ({ params }) => {
 
 	return {
 		book,
-		recommended: recommended.sort((a: any, b: any) => b.score - a.score).map((r: any) => r.isbn)
+		recommended: [...recommended].sort((a: any, b: any) => b.score - a.score).map((r: any) => r.isbn)
 	};
 };
