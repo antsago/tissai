@@ -20,5 +20,5 @@ vite.config.ts.timestamp-*
 !.yarn/cache
 #.pnp.*
 
-data
-
+/data
+coverage
