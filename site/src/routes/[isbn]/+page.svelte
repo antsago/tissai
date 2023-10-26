@@ -3,8 +3,8 @@
 </script>
 
 <h1>{data.book.title} by {data.book.author}</h1>
-<p>{data.book.description}</p>
-<p>ISBN {data.book.primary_isbn13}</p>
+<p role='main'>{data.book.description}</p>
+<p role='note'>ISBN {data.book.primary_isbn13}</p>
 
 <ul>
 	{#each data.recommended as isbn}
