@@ -1,7 +1,7 @@
 .DS_Store
 node_modules
 /build
-/.svelte-kit
+/site/.svelte-kit
 /package
 .env
 .env.*
@@ -14,11 +14,12 @@ vite.config.ts.timestamp-*
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+/data
+coverage
+.vercel
 
 # Swap the comments on the following lines if you don't wish to use zero-installs
 # Documentation here: https://yarnpkg.com/features/zero-installs
 !.yarn/cache
 #.pnp.*
 
-/data
-coverage
