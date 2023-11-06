@@ -1,0 +1,4 @@
+sitemap:https://www.wibnix.com/sitemap.xml
+
+User-agent: *
+Disallow:
