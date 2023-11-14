@@ -2,10 +2,11 @@ const robotsParser = require('robots-parser')
 const { parseStringPromise: parseXml } = require('xml2js')
 
 const AGENT_TOKEN = 'Wibnix/1.0'
+const headers = { UserAgent: AGENT_TOKEN }
 
 const robotsTxt = async (domain) => {
   const robotsUrl = `https://${domain}/robots.txt`
-  const response = await fetch(robotsUrl)
+  const response = await fetch(robotsUrl, { headers })
   const robotsText = await response.text()
 
   return robotsParser(robotsUrl, robotsText)
@@ -13,7 +14,7 @@ const robotsTxt = async (domain) => {
 
 const sitemap = async (sitemapUrl) => {
   try {
-    const response = await fetch(sitemapUrl)
+    const response = await fetch(sitemapUrl, { headers })
     const text = await response.text()
     return parseXml(text)  
   } catch {
