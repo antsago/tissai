@@ -30,7 +30,9 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["dotenv", "npm:16.3.1"],\
             ["jest", "virtual:3eb8e6f55fd7e8ae5c638eadc9c6e11e1aad7e50642f08965ac82c8db9172e9fe3fa6a2ceea0aae706dd8cafd0ddd8bc6c2d340a771e43dcd085a4447cb49fb5#npm:29.6.4"],\
-            ["prettier", "npm:3.0.2"]\
+            ["prettier", "npm:3.0.2"],\
+            ["robots-parser", "npm:3.0.1"],\
+            ["xml2js", "npm:0.6.2"]\
           ],\
           "linkType": "SOFT"\
         }]\
@@ -3957,6 +3959,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["robots-parser", [\
+        ["npm:3.0.1", {\
+          "packageLocation": "./.yarn/cache/robots-parser-npm-3.0.1-8f7f57fde7-fa85e44937.zip/node_modules/robots-parser/",\
+          "packageDependencies": [\
+            ["robots-parser", "npm:3.0.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["safe-buffer", [\
         ["npm:5.2.1", {\
           "packageLocation": "./.yarn/cache/safe-buffer-npm-5.2.1-3481c8aa9b-b99c4b41fd.zip/node_modules/safe-buffer/",\
@@ -3971,6 +3982,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/safer-buffer-npm-2.1.2-8d5c0b705e-cab8f25ae6.zip/node_modules/safer-buffer/",\
           "packageDependencies": [\
             ["safer-buffer", "npm:2.1.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["sax", [\
+        ["npm:1.3.0", {\
+          "packageLocation": "./.yarn/cache/sax-npm-1.3.0-e6c479267f-238ab3a9ba.zip/node_modules/sax/",\
+          "packageDependencies": [\
+            ["sax", "npm:1.3.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -4265,7 +4285,9 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["tangledrip", "workspace:."],\
             ["dotenv", "npm:16.3.1"],\
             ["jest", "virtual:3eb8e6f55fd7e8ae5c638eadc9c6e11e1aad7e50642f08965ac82c8db9172e9fe3fa6a2ceea0aae706dd8cafd0ddd8bc6c2d340a771e43dcd085a4447cb49fb5#npm:29.6.4"],\
-            ["prettier", "npm:3.0.2"]\
+            ["prettier", "npm:3.0.2"],\
+            ["robots-parser", "npm:3.0.1"],\
+            ["xml2js", "npm:0.6.2"]\
           ],\
           "linkType": "SOFT"\
         }]\
@@ -4476,6 +4498,26 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["write-file-atomic", "npm:4.0.2"],\
             ["imurmurhash", "npm:0.1.4"],\
             ["signal-exit", "npm:3.0.7"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["xml2js", [\
+        ["npm:0.6.2", {\
+          "packageLocation": "./.yarn/cache/xml2js-npm-0.6.2-64cd781d74-458a838061.zip/node_modules/xml2js/",\
+          "packageDependencies": [\
+            ["xml2js", "npm:0.6.2"],\
+            ["sax", "npm:1.3.0"],\
+            ["xmlbuilder", "npm:11.0.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["xmlbuilder", [\
+        ["npm:11.0.1", {\
+          "packageLocation": "./.yarn/cache/xmlbuilder-npm-11.0.1-b8b04dc929-7152695e16.zip/node_modules/xmlbuilder/",\
+          "packageDependencies": [\
+            ["xmlbuilder", "npm:11.0.1"]\
           ],\
           "linkType": "HARD"\
         }]\
