@@ -1,6 +1,8 @@
 const robotsParser = require('robots-parser')
 const { parseStringPromise: parseXml } = require('xml2js')
 
+const AGENT_TOKEN = 'Wibnix/1.0'
+
 const robotsTxt = async (domain) => {
   const robotsUrl = `https://${domain}/robots.txt`
   const response = await fetch(robotsUrl)
@@ -21,7 +23,7 @@ const getUrls = async (domain) => {
 
     const sitemaps = await Promise.all(robots.getSitemaps().map(sitemap))
 
-    return sitemaps.map(sitemap => sitemap.urlset.url.map(url => url.loc[0])).flat()
+    return sitemaps.map(sitemap => sitemap.urlset.url.map(url => url.loc[0])).flat().filter(url => robots.isAllowed(url, AGENT_TOKEN))
   } catch {
     return []
   }
