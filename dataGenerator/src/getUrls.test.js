@@ -86,4 +86,15 @@ describe("getUrls", () => {
 
     expect(result).toEqual([url1])
   })
+
+  it("ignores sitemaps and siteindex with retrieval errors", async () => {
+    const url1 = `https://${DOMAIN}/url1`
+    const robots = `Sitemap: https://${DOMAIN}/sitemap.xml\nSitemap: https://${DOMAIN}/sitemap2.xml\nSitemap: https://${DOMAIN}/siteindex.xml`
+    const sitemap2 = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url1}</loc></url></urlset>`
+    response.mockResolvedValueOnce(robots).mockRejectedValueOnce(new Error('Booh!')).mockResolvedValueOnce(sitemap2).mockRejectedValueOnce(new Error('Booh!'))
+
+    const result = await getUrls(DOMAIN)
+
+    expect(result).toEqual([url1])
+  })
 })

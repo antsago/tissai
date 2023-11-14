@@ -12,9 +12,13 @@ const robotsTxt = async (domain) => {
 }
 
 const sitemap = async (sitemapUrl) => {
-  const response = await fetch(sitemapUrl)
-  const text = await response.text()
-  return parseXml(text)  
+  try {
+    const response = await fetch(sitemapUrl)
+    const text = await response.text()
+    return parseXml(text)  
+  } catch {
+    return {}
+  }
 }
 
 const getUrls = async (domain) => {
@@ -25,7 +29,7 @@ const getUrls = async (domain) => {
 
     const sitemaps = await Promise.all(sitexmls.map(xml => !xml.sitemapindex ? xml : xml.sitemapindex.sitemap.map(site => sitemap(site.loc[0]))).flat())
 
-    return sitemaps.map(sitemap => sitemap.urlset.url.map(url => url.loc[0])).flat().filter(url => robots.isAllowed(url, AGENT_TOKEN))
+    return sitemaps.map(site => site?.urlset?.url.map(url => url?.loc?.[0])).flat().filter(url => url && robots.isAllowed(url, AGENT_TOKEN))
   } catch {
     return []
   }
