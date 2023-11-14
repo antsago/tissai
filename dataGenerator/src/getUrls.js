@@ -9,15 +9,17 @@ const robotsTxt = async (domain) => {
   return robotsParser(robotsUrl, robotsText)
 }
 
+const sitemap = async (sitemapUrl) => {
+  const response = await fetch(sitemapUrl)
+  const text = await response.text()
+  return parseXml(text)
+}
+
 const getUrls = async (domain) => {
   try {
     const robots = await robotsTxt(domain)
 
-    const sitemaps = await Promise.all(robots.getSitemaps().map(async sitemap => {
-      const response = await fetch(sitemap)
-      const text = await response.text()
-      return parseXml(text)
-    }))
+    const sitemaps = await Promise.all(robots.getSitemaps().map(sitemap))
 
     return sitemaps.map(sitemap => sitemap.urlset.url.map(url => url.loc[0])).flat()
   } catch {
