@@ -21,7 +21,7 @@ const getUrls = async (domain) => {
   try {
     const robots = await robotsTxt(domain)
 
-    const sitexmls = await Promise.all(robots.getSitemaps().map(sitemap))
+    const sitexmls = await Promise.all(robots.getSitemaps().filter(url => robots.isAllowed(url, AGENT_TOKEN)).map(sitemap))
 
     const sitemaps = await Promise.all(sitexmls.map(xml => !xml.sitemapindex ? xml : xml.sitemapindex.sitemap.map(site => sitemap(site.loc[0]))).flat())
 

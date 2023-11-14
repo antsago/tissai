@@ -57,4 +57,33 @@ describe("getUrls", () => {
 
     expect(result).toEqual([url1, url2])
   })
+
+  it("ignores disallowed sitemaps", async () => {
+    const url1 = `https://${DOMAIN}/url1`
+    const url2 = `https://${DOMAIN}/url2/`
+    const robots = `Sitemap: https://${DOMAIN}/sitemap.xml\nSitemap: https://${DOMAIN}/sitemap2.xml\nUser-Agent: *\nDisallow:/sitemap2`
+    const sitemap1 = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url1}</loc></url></urlset>`
+    const sitemap2 = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url2}</loc></url></urlset>`
+    response.mockResolvedValueOnce(robots).mockResolvedValueOnce(sitemap1).mockResolvedValueOnce(sitemap2)
+
+    const result = await getUrls(DOMAIN)
+
+    expect(result).toEqual([url1])
+  })
+
+  it("ignores disallowed siteindex", async () => {
+    const url1 = `https://${DOMAIN}/url1`
+    const url2 = `https://${DOMAIN}/url2/`
+    const robots = `Sitemap: https://${DOMAIN}/sitemap.xml\nSitemap: https://${DOMAIN}/siteindex.xml\nUser-Agent: *\nDisallow:/siteindex`
+    const siteindex = `<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+      <sitemap><loc>https://${DOMAIN}/sitemap2.xml</loc></sitemap>
+    </sitemapindex>`
+    const sitemap1 = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url1}</loc></url></urlset>`
+    const sitemap2 = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url2}</loc></url></urlset>`
+    response.mockResolvedValueOnce(robots).mockResolvedValueOnce(sitemap1).mockResolvedValueOnce(siteindex).mockResolvedValueOnce(sitemap2)
+
+    const result = await getUrls(DOMAIN)
+
+    expect(result).toEqual([url1])
+  })
 })
