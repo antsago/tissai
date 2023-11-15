@@ -1,12 +1,9 @@
 const Parser = require('./Parser')
 
 const Crawler = function (domain, productToken) {
-  const headers = { UserAgent: productToken }
-  
-  let robots
   const parse = new Parser(productToken)
   const get = async (url) => {
-    return fetch(url, { headers })
+    return fetch(url, { headers: { UserAgent: productToken } })
   }
   
   const getRobots = async () => {
@@ -28,7 +25,7 @@ const Crawler = function (domain, productToken) {
   return {
     getAllowedUrls: async () => {
       try {
-        robots = await getRobots(domain)
+        const robots = await getRobots(domain)
     
         const sitexmls = await Promise.all(robots.sitemaps.filter(url => robots.isAllowed(url)).map(getSitemap))
     
