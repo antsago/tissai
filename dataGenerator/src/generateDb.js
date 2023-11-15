@@ -1,4 +1,4 @@
-const getUrls = require("./getUrls")
+const getUrls = require("./Crawler")
 
 // const DOMAINS = ['www.decathlon.es', "es.shein.com"]
 const DOMAINS = ['es.shein.com']

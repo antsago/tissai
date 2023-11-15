@@ -1,4 +1,4 @@
-const Crawler = require("./getUrls")
+const Crawler = require("./Crawler")
 
 describe("Crawler", () => {
   const DOMAIN = "example.com"
