@@ -1,41 +1,7 @@
-const robotsParser = require('robots-parser')
-const { Parser: XmlParser } = require('xml2js')
+const Parser = require('./Parser')
 
 const AGENT_TOKEN = 'Wibnix/1.0'
 const headers = { UserAgent: AGENT_TOKEN }
-const xmlParser = new XmlParser()
-
-const Parser = function (productToken) {
-  return {
-    robots: (url, text) => {
-      const robots = robotsParser(url, text)
-
-      return {
-        get sitemaps() {
-          return robots.getSitemaps()
-        },
-        isAllowed: (url) => robots.isAllowed(url, productToken)
-      }
-    },
-    sitexml: async (text) => {
-      const parsedXml = await xmlParser.parseStringPromise(text)
-
-      return {
-        /* For siteindexes */
-        get isSiteindex () {
-          return !!parsedXml.sitemapindex
-        },
-        get sitemaps () {
-          return parsedXml.sitemapindex?.sitemap?.map(sitemap => sitemap?.loc?.[0])
-        },
-        /* For sitemaps */
-        get urls () {
-          return parsedXml.urlset?.url?.map(url => url?.loc?.[0])
-        }
-      }
-    }
-  }
-}
 
 const parse = new Parser(AGENT_TOKEN)
 
