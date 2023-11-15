@@ -28,7 +28,7 @@ describe("Crawler", () => {
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url1}</loc></url><url><loc>${url2}</loc></url></urlset>`
     response.mockResolvedValueOnce(robots).mockResolvedValueOnce(sitemap)
 
-    const result = await crawler.getAllowedUrls(DOMAIN)
+    const result = await crawler.getAllowedUrls()
 
     expect(result).toEqual([url1, url2])
   })
@@ -40,7 +40,7 @@ describe("Crawler", () => {
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url1}</loc></url><url><loc>${url2}</loc></url></urlset>`
     response.mockResolvedValueOnce(robots).mockResolvedValueOnce(sitemap)
 
-    const result = await crawler.getAllowedUrls(DOMAIN)
+    const result = await crawler.getAllowedUrls()
 
     expect(result).toEqual([url1])
   })
@@ -57,7 +57,7 @@ describe("Crawler", () => {
     const sitemap2 = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url2}</loc></url></urlset>`
     response.mockResolvedValueOnce(robots).mockResolvedValueOnce(siteindex).mockResolvedValueOnce(sitemap1).mockResolvedValueOnce(sitemap2)
 
-    const result = await crawler.getAllowedUrls(DOMAIN)
+    const result = await crawler.getAllowedUrls()
 
     expect(result).toEqual([url1, url2])
   })
@@ -70,7 +70,7 @@ describe("Crawler", () => {
     const sitemap2 = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url2}</loc></url></urlset>`
     response.mockResolvedValueOnce(robots).mockResolvedValueOnce(sitemap1).mockResolvedValueOnce(sitemap2)
 
-    const result = await crawler.getAllowedUrls(DOMAIN)
+    const result = await crawler.getAllowedUrls()
 
     expect(result).toEqual([url1])
   })
@@ -86,7 +86,7 @@ describe("Crawler", () => {
     const sitemap2 = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url2}</loc></url></urlset>`
     response.mockResolvedValueOnce(robots).mockResolvedValueOnce(sitemap1).mockResolvedValueOnce(siteindex).mockResolvedValueOnce(sitemap2)
 
-    const result = await crawler.getAllowedUrls(DOMAIN)
+    const result = await crawler.getAllowedUrls()
 
     expect(result).toEqual([url1])
   })
@@ -97,7 +97,7 @@ describe("Crawler", () => {
     const sitemap2 = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url1}</loc></url></urlset>`
     response.mockResolvedValueOnce(robots).mockRejectedValueOnce(new Error('Booh!')).mockResolvedValueOnce(sitemap2).mockRejectedValueOnce(new Error('Booh!'))
 
-    const result = await crawler.getAllowedUrls(DOMAIN)
+    const result = await crawler.getAllowedUrls()
 
     expect(result).toEqual([url1])
   })
@@ -111,7 +111,7 @@ describe("Crawler", () => {
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://${DOMAIN}/url1</loc></url></urlset>`
     response.mockResolvedValueOnce(robots).mockResolvedValueOnce(siteindex).mockResolvedValueOnce(sitemap)
 
-    await crawler.getAllowedUrls(DOMAIN)
+    await crawler.getAllowedUrls()
 
     expect(fetch).toHaveBeenNthCalledWith(1, `https://${DOMAIN}/robots.txt`, userAgentHeaders)
     expect(fetch).toHaveBeenNthCalledWith(2, siteindexUrl, userAgentHeaders)
