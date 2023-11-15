@@ -1,6 +1,6 @@
 const Crawler = require("./getUrls")
 
-describe("getUrls", () => {
+describe("Crawler", () => {
   const DOMAIN = "example.com"
   const PRODUCT_TOKEN = 'FooBar/1.0'
   

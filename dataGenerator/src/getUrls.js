@@ -3,18 +3,22 @@ const Parser = require('./Parser')
 const Crawler = function (domain, productToken) {
   const headers = { UserAgent: productToken }
   
+  let robots
   const parse = new Parser(productToken)
+  const get = async (url) => {
+    return fetch(url, { headers })
+  }
   
-  const robotsTxt = async () => {
+  const getRobots = async () => {
     const robotsUrl = `https://${domain}/robots.txt`
-    const response = await fetch(robotsUrl, { headers })
+    const response = await get(robotsUrl)
   
     return parse.robots(response)
   }
   
-  const sitemap = async (sitemapUrl) => {
+  const getSitemap = async (sitemapUrl) => {
     try {
-      const response = await fetch(sitemapUrl, { headers })
+      const response = await get(sitemapUrl)
       return await parse.sitexml(response)
     } catch {
       return {}
@@ -24,11 +28,11 @@ const Crawler = function (domain, productToken) {
   return {
     getAllowedUrls: async () => {
       try {
-        const robots = await robotsTxt(domain)
+        robots = await getRobots(domain)
     
-        const sitexmls = await Promise.all(robots.sitemaps.filter(url => robots.isAllowed(url)).map(sitemap))
+        const sitexmls = await Promise.all(robots.sitemaps.filter(url => robots.isAllowed(url)).map(getSitemap))
     
-        const sitemaps = await Promise.all(sitexmls.map(xml => !xml.isSiteindex ? xml : xml.sitemaps.map(url => sitemap(url))).flat())
+        const sitemaps = await Promise.all(sitexmls.map(xml => !xml.isSiteindex ? xml : xml.sitemaps.map(url => getSitemap(url))).flat())
     
         return sitemaps.map(site => site.urls).flat().filter(url => url && robots.isAllowed(url))
       } catch {
