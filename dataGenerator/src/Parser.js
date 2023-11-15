@@ -32,8 +32,14 @@ const Sitexml = async function (text) {
 
 const Parser = function (productToken) {
   return {
-    robots: (url, text) => Robots(url, text, productToken),
-    sitexml: async (text) => await Sitexml(text)
+    robots: async (response) => {
+      const text = await response.text()
+      return Robots(response.url, text, productToken)
+    },
+    sitexml: async (response) => {
+      const text = await response.text()
+      return Sitexml(text)
+    }
   }
 }
 

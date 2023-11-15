@@ -8,16 +8,14 @@ const parse = new Parser(AGENT_TOKEN)
 const robotsTxt = async (domain) => {
   const robotsUrl = `https://${domain}/robots.txt`
   const response = await fetch(robotsUrl, { headers })
-  const robotsText = await response.text()
 
-  return parse.robots(robotsUrl, robotsText)
+  return parse.robots(response, robotsUrl)
 }
 
 const sitemap = async (sitemapUrl) => {
   try {
     const response = await fetch(sitemapUrl, { headers })
-    const text = await response.text()
-    return parse.sitexml(text)
+    return await parse.sitexml(response)
   } catch {
     return {}
   }

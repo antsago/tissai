@@ -6,7 +6,7 @@ describe("getUrls", () => {
   let response
   beforeEach(() => {
     response = jest.fn()
-    fetch = jest.fn().mockResolvedValue({ text: response })
+    fetch = jest.fn(url => Promise.resolve({ text: response, url }))
   })
 
   it("handles missing robots.txt", async () => {
