@@ -19,13 +19,24 @@ const Crawler = function (domain, productToken) {
       throw new Error(`Url ${url} not allowed`)
     }
     const response = await get(url)
-    return await parse.sitexml(response)
+    const site = await parse.sitexml(response)
+
+    if (site.isSitemap) {
+      return [site]
+    }
+
+    if (site.isSiteindex) {
+      return getSitemaps(site.sitemaps)
+    }
+
+    throw new Error(`Result is neither a sitemap nor a siteindex:\n${site}`)
   }
 
   const getSitemaps = async (urls) => {
     return (await Promise.allSettled(urls.map(getSitemap)))
       .filter((result) => result.status === 'fulfilled')
       .map(result => result.value)
+      .flat()
   }
 
   return {
@@ -33,17 +44,7 @@ const Crawler = function (domain, productToken) {
       try {
         robots = await getRobots(domain)
 
-        const sitexmls = await getSitemaps(robots.sitemaps)
-
-        const sitemaps = await Promise.all(
-          sitexmls
-            .map((xml) =>
-              !xml.isSiteindex
-                ? xml
-                : xml.sitemaps.map((url) => getSitemap(url)),
-            )
-            .flat(),
-        )
+        const sitemaps = await getSitemaps(robots.sitemaps)
 
         return sitemaps
           .map((site) => site.urls)

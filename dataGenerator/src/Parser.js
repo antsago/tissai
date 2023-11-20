@@ -26,6 +26,9 @@ const Sitexml = async function (text) {
       )
     },
     /* For sitemaps */
+    get isSitemap() {
+      return !!parsedXml.urlset
+    },
     get urls() {
       return parsedXml.urlset?.url?.map((url) => url?.loc?.[0])
     },
