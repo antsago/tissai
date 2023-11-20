@@ -5,7 +5,6 @@ const Sitexml = require("./Sitexml")
 const Semaphore = function (timeoutMs = 100) {
   const queue = []
   const runNext = () => {
-    console.log('runNext')
     queue[0]()
   }
 
@@ -72,7 +71,7 @@ const Crawler = function (domain, productToken) {
       .flat()
   }
 
-  const getAllowedUrls = async () => {
+  const getAllowedUrls = async function () {
     try {
       robots = await getRobots(domain)
 
