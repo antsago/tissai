@@ -139,4 +139,21 @@ describe("Crawler", () => {
     expect(fetch).toHaveBeenNthCalledWith(2, siteindexUrl, userAgentHeaders)
     expect(fetch).toHaveBeenNthCalledWith(3, sitemapUrl, userAgentHeaders)
   })
+
+  it("waits 10ms between calls", async () => {
+    jest.useFakeTimers()
+    response.mockResolvedValueOnce('foo').mockResolvedValueOnce('bar')
+    const call1 = crawler.get("/foo")
+    const call2 = crawler.get("/bar")
+
+    await call1
+    expect(fetch).toHaveBeenCalledTimes(1)
+    
+    await jest.advanceTimersByTimeAsync(11)
+    
+    await call2
+    expect(fetch).toHaveBeenCalledTimes(2)
+
+    jest.useRealTimers()
+  })
 })

@@ -1,13 +1,53 @@
+const { setImmediate, setTimeout } = require('timers/promises')
 const Robots = require("./Robots")
 const Sitexml = require("./Sitexml")
 
+const Semaphore = function () {
+  const queue = []
+  const runNext = () => {
+    console.log('runNext')
+    queue[0]()
+  }
+
+  return {
+    acquire: async () => {
+      console.log('acquire')
+      const lock = new Promise(res => queue.push(res))
+      
+      if (queue.length === 1) {
+        console.log('jumpstart')
+        runNext()
+      }
+      
+      console.log('returning')
+      return lock
+    },
+    release: () => {
+      console.log('release')
+      queue.splice(0, 1)
+      if (queue.length) {
+        setTimeout(0.1).then(runNext)
+      }
+    }
+  }
+}
+
 const Crawler = function (domain, productToken) {
   let robots
+  const semaphore = Semaphore()
   const get = async (url) => {
     if (robots && !robots.isAllowed(url)) {
       throw new Error(`Url ${url} not allowed`)
     }
-    return fetch(url, { headers: { UserAgent: productToken } })
+
+    console.log(url, 'acquire')
+    await semaphore.acquire()
+    console.log(url, 'fetch')
+    const response = fetch(url, { headers: { UserAgent: productToken } })
+    console.log(url, 'release')
+    semaphore.release()
+    
+    return response
   }
 
   const getRobots = async () => {
@@ -39,21 +79,24 @@ const Crawler = function (domain, productToken) {
       .flat()
   }
 
+  const getAllowedUrls = async () => {
+    try {
+      robots = await getRobots(domain)
+
+      const sitemaps = await getSitemaps(robots.sitemaps)
+
+      return sitemaps
+        .map((site) => site.urls)
+        .flat()
+        .filter((url) => url && robots.isAllowed(url))
+    } catch {
+      return []
+    }
+  }
+
   return {
-    getAllowedUrls: async () => {
-      try {
-        robots = await getRobots(domain)
-
-        const sitemaps = await getSitemaps(robots.sitemaps)
-
-        return sitemaps
-          .map((site) => site.urls)
-          .flat()
-          .filter((url) => url && robots.isAllowed(url))
-      } catch {
-        return []
-      }
-    },
+    getAllowedUrls,
+    get,
   }
 }
 
