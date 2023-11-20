@@ -1,57 +1,25 @@
-const { setTimeout } = require('timers/promises')
+const Fetcher = require("./Fetcher")
 const Robots = require("./Robots")
 const Sitexml = require("./Sitexml")
 
-const Semaphore = function (timeoutMs = 100) {
-  const queue = []
-  const runNext = () => {
-    queue[0]()
-  }
-
-  return {
-    acquire: async () => {
-      const lock = new Promise(res => queue.push(res))
-      
-      if (queue.length === 1) {
-        runNext()
-      }
-      
-      return lock
-    },
-    release: () => {
-      queue.splice(0, 1)
-      if (queue.length > 0) {
-        setTimeout(timeoutMs).then(runNext)
-      }
-    }
-  }
-}
-
-const Crawler = function (domain, productToken) {
-  let robots
-  const semaphore = Semaphore()
-  const get = async (url) => {
-    if (robots && !robots.isAllowed(url)) {
-      throw new Error(`Url ${url} not allowed`)
-    }
-
-    await semaphore.acquire()
-    const response = fetch(url, { headers: { UserAgent: productToken } })
-    semaphore.release()
-    
-    return response
-  }
+const Crawler = function (domain, productToken, timeoutMs = 100) {
+  const get = Fetcher(productToken, timeoutMs)
 
   const getRobots = async () => {
     const robotsUrl = `https://${domain}/robots.txt`
     const response = await get(robotsUrl)
 
-    return Robots(response.url, await response.text(), productToken)
+    return Robots(response.url, response.body, productToken)
   }
 
+  let robots
   const getSitemap = async (url) => {
+    if (robots && !robots.isAllowed(url)) {
+      throw new Error(`Url ${url} not allowed`)
+    }
+
     const response = await get(url)
-    const site = await Sitexml(await response.text())
+    const site = await Sitexml(response.body)
 
     if (site.isSitemap) {
       return [site]
@@ -64,7 +32,7 @@ const Crawler = function (domain, productToken) {
     throw new Error(`Result is neither a sitemap nor a siteindex:\n${site}`)
   }
 
-  const getSitemaps = async (urls) => {
+  const getSitemaps = async function (urls) {
     return (await Promise.allSettled(urls.map(getSitemap)))
       .filter((result) => result.status === 'fulfilled')
       .map(result => result.value)

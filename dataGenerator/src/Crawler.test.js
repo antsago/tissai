@@ -116,32 +116,4 @@ describe("Crawler", () => {
 
     expect(result).toEqual([url1])
   })
-
-  it("sets user-agent", async () => {
-    response.mockResolvedValueOnce('foo')
-    
-    await crawler.get('foo')
-    
-    expect(fetch).toHaveBeenCalledWith(
-      'foo',
-      { headers: { UserAgent: PRODUCT_TOKEN } },
-    )
-  })
-
-  it("waits 10ms between calls", async () => {
-    jest.useFakeTimers()
-    response.mockResolvedValueOnce('foo').mockResolvedValueOnce('bar')
-    const call1 = crawler.get("/foo")
-    const call2 = crawler.get("/bar")
-
-    await call1
-    expect(fetch).toHaveBeenCalledTimes(1)
-    
-    await jest.advanceTimersByTimeAsync(11)
-    
-    await call2
-    expect(fetch).toHaveBeenCalledTimes(2)
-
-    jest.useRealTimers()
-  })
 })
