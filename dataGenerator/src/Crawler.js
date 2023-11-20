@@ -2,7 +2,11 @@ const Parser = require("./Parser")
 
 const Crawler = function (domain, productToken) {
   const parse = new Parser(productToken)
+  let robots
   const get = async (url) => {
+    if (robots && !robots.isAllowed(url)) {
+      throw new Error(`Url ${url} not allowed`)
+    }
     return fetch(url, { headers: { UserAgent: productToken } })
   }
 
@@ -13,11 +17,7 @@ const Crawler = function (domain, productToken) {
     return parse.robots(response)
   }
 
-  let robots
   const getSitemap = async (url) => {
-    if (!robots.isAllowed(url)) {
-      throw new Error(`Url ${url} not allowed`)
-    }
     const response = await get(url)
     const site = await parse.sitexml(response)
 
