@@ -11,19 +11,15 @@ const Semaphore = function () {
 
   return {
     acquire: async () => {
-      console.log('acquire')
       const lock = new Promise(res => queue.push(res))
       
       if (queue.length === 1) {
-        console.log('jumpstart')
         runNext()
       }
       
-      console.log('returning')
       return lock
     },
     release: () => {
-      console.log('release')
       queue.splice(0, 1)
       if (queue.length) {
         setTimeout(0.1).then(runNext)
@@ -40,11 +36,8 @@ const Crawler = function (domain, productToken) {
       throw new Error(`Url ${url} not allowed`)
     }
 
-    console.log(url, 'acquire')
     await semaphore.acquire()
-    console.log(url, 'fetch')
     const response = fetch(url, { headers: { UserAgent: productToken } })
-    console.log(url, 'release')
     semaphore.release()
     
     return response
