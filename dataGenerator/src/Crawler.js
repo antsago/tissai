@@ -1,3 +1,4 @@
+const Robots = require("./Robots")
 const Parser = require("./Parser")
 
 const Crawler = function (domain, productToken) {
@@ -14,7 +15,7 @@ const Crawler = function (domain, productToken) {
     const robotsUrl = `https://${domain}/robots.txt`
     const response = await get(robotsUrl)
 
-    return parse.robots(response)
+    return Robots(response.url, await response.text(), productToken)
   }
 
   const getSitemap = async (url) => {
