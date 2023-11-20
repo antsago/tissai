@@ -8,55 +8,48 @@ const Crawler = function (domain, productToken, timeoutMs = 100) {
   const getRobots = async () => {
     const robotsUrl = `https://${domain}/robots.txt`
     const response = await get(robotsUrl)
-
     return Robots(response.url, response.body, productToken)
   }
 
   let robots
-  const getSitemap = async (url) => {
-    if (robots && !robots.isAllowed(url)) {
-      throw new Error(`Url ${url} not allowed`)
-    }
-
-    const response = await get(url)
-    const site = await Sitexml(response.body)
-
-    if (site.isSitemap) {
-      return [site]
-    }
-
-    if (site.isSiteindex) {
-      return getSitemaps(site.sitemaps)
-    }
-
-    throw new Error(`Result is neither a sitemap nor a siteindex:\n${site}`)
-  }
-
-  const getSitemaps = async function (urls) {
-    return (await Promise.allSettled(urls.map(getSitemap)))
-      .filter((result) => result.status === "fulfilled")
-      .map((result) => result.value)
-      .flat()
-  }
-
-  const getAllowedUrls = async function () {
+  const getSitemap = async function* (url) {
     try {
-      robots = await getRobots(domain)
+      if (robots && !robots.isAllowed(url)) {
+        throw new Error(`Url ${url} not allowed`)
+      }
+  
+      const response = await get(url)
+      const site = await Sitexml(response.body)
+  
+      if (site.isSitemap) {
+        return yield site
+      }
+      if (site.isSiteindex) {
+        return yield* getSitemaps(site.sitemaps)
+      }
+      
+      throw new Error(`Result is neither a sitemap nor a siteindex:\n${site}`)
+    } catch (e) {
+      return
+    }
+  }
 
-      const sitemaps = await getSitemaps(robots.sitemaps)
+  const getSitemaps = async function* (urls) {
+    for (const url of urls) {
+      yield* getSitemap(url)
+    }
+  }
 
-      return sitemaps
-        .map((site) => site.urls)
-        .flat()
-        .filter((url) => url && robots.isAllowed(url))
-    } catch {
-      return []
+  const getAllowedUrls = async function* () {
+    robots = await getRobots(domain)
+
+    for await (const sitemap of getSitemaps(robots.sitemaps)) {
+      yield* sitemap.urls.filter((url) => robots.isAllowed(url))
     }
   }
 
   return {
     getAllowedUrls,
-    get,
   }
 }
 

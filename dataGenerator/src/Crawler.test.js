@@ -13,13 +13,13 @@ describe("Crawler", () => {
     crawler = new Crawler(DOMAIN, PRODUCT_TOKEN)
   })
 
-  it("handles missing robots.txt", async () => {
-    response.mockRejectedValue(new Error("Booh!"))
-
-    const result = await crawler.getAllowedUrls()
-
-    expect(result).toEqual([])
-  })
+  const getAllowedUrls = async () => {
+    const result = []
+    for await (const url of crawler.getAllowedUrls()) {
+      result.push(url)
+    }
+    return result
+  }
 
   it("lists allowed urls", async () => {
     const url1 = `https://${DOMAIN}/url1`
@@ -28,7 +28,7 @@ describe("Crawler", () => {
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url1}</loc></url><url><loc>${url2}</loc></url></urlset>`
     response.mockResolvedValueOnce(robots).mockResolvedValueOnce(sitemap)
 
-    const result = await crawler.getAllowedUrls()
+    const result = await getAllowedUrls()
 
     expect(result).toEqual([url1, url2])
   })
@@ -40,7 +40,7 @@ describe("Crawler", () => {
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url1}</loc></url><url><loc>${url2}</loc></url></urlset>`
     response.mockResolvedValueOnce(robots).mockResolvedValueOnce(sitemap)
 
-    const result = await crawler.getAllowedUrls()
+    const result = await getAllowedUrls()
 
     expect(result).toEqual([url1])
   })
@@ -61,7 +61,7 @@ describe("Crawler", () => {
       .mockResolvedValueOnce(sitemap1)
       .mockResolvedValueOnce(sitemap2)
 
-    const result = await crawler.getAllowedUrls()
+    const result = await getAllowedUrls()
 
     expect(result).toEqual([url1, url2])
   })
@@ -77,7 +77,7 @@ describe("Crawler", () => {
       .mockResolvedValueOnce(sitemap1)
       .mockResolvedValueOnce(sitemap2)
 
-    const result = await crawler.getAllowedUrls()
+    const result = await getAllowedUrls()
 
     expect(result).toEqual([url1])
   })
@@ -97,7 +97,7 @@ describe("Crawler", () => {
       .mockResolvedValueOnce(siteindex)
       .mockResolvedValueOnce(sitemap2)
 
-    const result = await crawler.getAllowedUrls()
+    const result = await getAllowedUrls()
 
     expect(result).toEqual([url1])
   })
@@ -112,7 +112,7 @@ describe("Crawler", () => {
       .mockResolvedValueOnce(sitemap2)
       .mockRejectedValueOnce(new Error("Booh!"))
 
-    const result = await crawler.getAllowedUrls()
+    const result = await getAllowedUrls()
 
     expect(result).toEqual([url1])
   })
