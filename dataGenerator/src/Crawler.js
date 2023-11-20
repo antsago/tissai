@@ -1,8 +1,8 @@
-const { setImmediate, setTimeout } = require('timers/promises')
+const { setTimeout } = require('timers/promises')
 const Robots = require("./Robots")
 const Sitexml = require("./Sitexml")
 
-const Semaphore = function () {
+const Semaphore = function (timeoutMs = 100) {
   const queue = []
   const runNext = () => {
     console.log('runNext')
@@ -21,8 +21,8 @@ const Semaphore = function () {
     },
     release: () => {
       queue.splice(0, 1)
-      if (queue.length) {
-        setTimeout(0.1).then(runNext)
+      if (queue.length > 0) {
+        setTimeout(timeoutMs).then(runNext)
       }
     }
   }
