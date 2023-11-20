@@ -2,7 +2,7 @@
   "name": "tangledrip",
   "packageManager": "yarn@3.6.3",
   "scripts": {
-    "db": "node src/generateDb",
+    "db": "node src/generateDb | tee ../data/shein.json",
     "relationships": "python src/generateRelationships.py > ../data/relationships.json",
     "test": "jest",
     "format": "prettier . --write"

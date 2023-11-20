@@ -1,11 +1,13 @@
-const getUrls = require("./Crawler")
+const Crawler = require("./Crawler")
 
-// const DOMAINS = ['www.decathlon.es', "es.shein.com"]
-const DOMAINS = ["es.shein.com"]
+// const DOMAIN = "es.shein.com"
+const DOMAIN = "www.decathlon.es"
+const PRODUCT_TOKEN = "Wibnix/0.1"
 
 const main = async () => {
-  const urls = await Promise.all(DOMAINS.map((domain) => getUrls(domain)))
-  console.log(JSON.stringify(urls))
+  for await (const url of Crawler(DOMAIN, PRODUCT_TOKEN).getAllowedUrls()) {
+    console.log(url)
+  }
 }
 
 main()
