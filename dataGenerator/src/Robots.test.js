@@ -17,7 +17,7 @@ describe("Robots", () => {
 
   it("identifies allowed urls", async () => {
     const text = `User-Agent: ${PRODUCT_TOKEN}\nDisallow: /notallowed`
-    
+
     const robots = Robots(URL, text, PRODUCT_TOKEN)
 
     expect(robots.isAllowed(`https://${DOMAIN}/allowed`)).toBe(true)

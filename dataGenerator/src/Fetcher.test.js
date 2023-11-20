@@ -14,28 +14,27 @@ describe("Fetcher", () => {
   })
 
   it("sets user-agent", async () => {
-    response.mockResolvedValueOnce('foo')
-    
-    await get('foo')
-    
-    expect(fetch).toHaveBeenCalledWith(
-      'foo',
-      { headers: { UserAgent: PRODUCT_TOKEN } },
-    )
+    response.mockResolvedValueOnce("foo")
+
+    await get("foo")
+
+    expect(fetch).toHaveBeenCalledWith("foo", {
+      headers: { UserAgent: PRODUCT_TOKEN },
+    })
   })
 
   it("waits delay between calls", async () => {
     jest.useFakeTimers()
-    response.mockResolvedValueOnce('foo').mockResolvedValueOnce('bar')
+    response.mockResolvedValueOnce("foo").mockResolvedValueOnce("bar")
     const call1 = get("/foo")
     const call2 = get("/bar")
 
     await jest.advanceTimersByTimeAsync(CRAWL_DELAY - 1)
     await call1
     expect(fetch).toHaveBeenCalledTimes(1)
-    
+
     await jest.advanceTimersByTimeAsync(1)
-    
+
     await call2
     expect(fetch).toHaveBeenCalledTimes(2)
 

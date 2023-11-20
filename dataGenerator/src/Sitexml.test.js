@@ -13,10 +13,13 @@ describe("Sitexml", () => {
     `
 
     const site = await Sitexml(text)
-    
+
     expect(site.isSiteindex).toBe(true)
     expect(site.isSitemap).toBe(false)
-    expect(site.sitemaps).toEqual([`https://${DOMAIN}/sitemap1.xml`, `https://${DOMAIN}/sitemap2.xml`])
+    expect(site.sitemaps).toEqual([
+      `https://${DOMAIN}/sitemap1.xml`,
+      `https://${DOMAIN}/sitemap2.xml`,
+    ])
   })
 
   it("parses sitemaps", async () => {
@@ -29,9 +32,12 @@ describe("Sitexml", () => {
     `
 
     const site = await Sitexml(text)
-    
+
     expect(site.isSitemap).toBe(true)
     expect(site.isSiteindex).toBe(false)
-    expect(site.urls).toEqual([`https://${DOMAIN}/url1`, `https://${DOMAIN}/url2/`])
+    expect(site.urls).toEqual([
+      `https://${DOMAIN}/url1`,
+      `https://${DOMAIN}/url2/`,
+    ])
   })
 })

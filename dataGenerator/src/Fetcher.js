@@ -1,4 +1,4 @@
-const { setTimeout } = require('timers/promises')
+const { setTimeout } = require("timers/promises")
 
 const Semaphore = function (timeoutMs = 100) {
   const queue = []
@@ -8,12 +8,12 @@ const Semaphore = function (timeoutMs = 100) {
 
   return {
     acquire: async () => {
-      const lock = new Promise(res => queue.push(res))
-      
+      const lock = new Promise((res) => queue.push(res))
+
       if (queue.length === 1) {
         runNext()
       }
-      
+
       return lock
     },
     release: () => {
@@ -21,7 +21,7 @@ const Semaphore = function (timeoutMs = 100) {
       if (queue.length > 0) {
         setTimeout(timeoutMs).then(runNext)
       }
-    }
+    },
   }
 }
 
@@ -32,7 +32,7 @@ const Fetcher = function (productToken, crawlDelay) {
     await semaphore.acquire()
     const response = await fetch(url, { headers: { UserAgent: productToken } })
     semaphore.release()
-    
+
     return {
       url: response.url,
       body: await response.text(),

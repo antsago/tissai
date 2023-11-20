@@ -34,8 +34,8 @@ const Crawler = function (domain, productToken, timeoutMs = 100) {
 
   const getSitemaps = async function (urls) {
     return (await Promise.allSettled(urls.map(getSitemap)))
-      .filter((result) => result.status === 'fulfilled')
-      .map(result => result.value)
+      .filter((result) => result.status === "fulfilled")
+      .map((result) => result.value)
       .flat()
   }
 
