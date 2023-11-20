@@ -14,12 +14,18 @@ const Crawler = function (domain, productToken) {
   }
 
   let robots
-  const getSitemap = async (sitemapUrl) => {
-    if (!robots.isAllowed(sitemapUrl)) {
-      throw new Error(`Url ${sitemapUrl} not allowed`)
+  const getSitemap = async (url) => {
+    if (!robots.isAllowed(url)) {
+      throw new Error(`Url ${url} not allowed`)
     }
-    const response = await get(sitemapUrl)
+    const response = await get(url)
     return await parse.sitexml(response)
+  }
+
+  const getSitemaps = async (urls) => {
+    return (await Promise.allSettled(urls.map(getSitemap)))
+      .filter((result) => result.status === 'fulfilled')
+      .map(result => result.value)
   }
 
   return {
@@ -27,9 +33,7 @@ const Crawler = function (domain, productToken) {
       try {
         robots = await getRobots(domain)
 
-        const sitexmls = (await Promise.allSettled(robots.sitemaps.map(getSitemap)))
-          .filter((result) => result.status === 'fulfilled')
-          .map(result => result.value)
+        const sitexmls = await getSitemaps(robots.sitemaps)
 
         const sitemaps = await Promise.all(
           sitexmls
