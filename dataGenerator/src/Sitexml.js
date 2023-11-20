@@ -1,16 +1,4 @@
-const robotsParser = require("robots-parser")
 const { parseStringPromise: xmlParser } = require("xml2js")
-
-const Robots = function (url, text, productToken) {
-  const robots = robotsParser(url, text)
-
-  return {
-    get sitemaps() {
-      return robots.getSitemaps()
-    },
-    isAllowed: (url) => robots.isAllowed(url, productToken),
-  }
-}
 
 const Sitexml = async function (text) {
   const parsedXml = await xmlParser(text, { strict: true })
@@ -35,13 +23,4 @@ const Sitexml = async function (text) {
   }
 }
 
-const Parser = function (productToken) {
-  return {
-    sitexml: async (response) => {
-      const text = await response.text()
-      return Sitexml(text)
-    },
-  }
-}
-
-module.exports = Parser
+module.exports = Sitexml

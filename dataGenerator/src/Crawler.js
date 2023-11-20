@@ -1,8 +1,7 @@
 const Robots = require("./Robots")
-const Parser = require("./Parser")
+const Sitexml = require("./Sitexml")
 
 const Crawler = function (domain, productToken) {
-  const parse = new Parser(productToken)
   let robots
   const get = async (url) => {
     if (robots && !robots.isAllowed(url)) {
@@ -20,7 +19,7 @@ const Crawler = function (domain, productToken) {
 
   const getSitemap = async (url) => {
     const response = await get(url)
-    const site = await parse.sitexml(response)
+    const site = await Sitexml(await response.text())
 
     if (site.isSitemap) {
       return [site]
