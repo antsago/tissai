@@ -26,8 +26,22 @@ const Semaphore = function (crawlDelay) {
   }
 }
 
+
 const Fetcher = function (productToken, loggingPath, crawlDelay) {
   const semaphore = Semaphore(crawlDelay)
+
+  const retrieveFromSrc = async (url, semaphore) => {
+    await semaphore.acquire()
+    const response = await fetch(url, { headers: { UserAgent: productToken } })
+    semaphore.release()
+  
+    return {
+      url: response.url,
+      status: response.status,
+      body: await response.text(),
+      headers: Object.fromEntries(response.headers.entries()),
+    }
+  }
 
   return async (url) => {
     try {
@@ -35,20 +49,11 @@ const Fetcher = function (productToken, loggingPath, crawlDelay) {
       const encodedUrl = encodeURIComponent(url)
       const cached = cachedResponses.filter(res => res.includes(encodedUrl))
       if (cached.length) {
-        const result = await readFile(cached[0])
+        const result = await readFile(`${loggingPath}/${cached[0]}`)
         return JSON.parse(result)
       }
 
-      await semaphore.acquire()
-      const response = await fetch(url, { headers: { UserAgent: productToken } })
-      semaphore.release()
-
-      const result = {
-        url: response.url,
-        status: response.status,
-        body: await response.text(),
-        headers: Object.fromEntries(response.headers.entries()),
-      }
+      const result = await retrieveFromSrc(url)
 
       await writeFile(`${loggingPath}/${Date.now()}@${encodedUrl}`, JSON.stringify(result))
       

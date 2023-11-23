@@ -5,7 +5,7 @@ const PRODUCT_TOKEN = "Wibnix/0.1"
 
 const main = async (domain, dataFolder) => {
   const loggingPath = `${dataFolder}/${domain}`
-  await mkdir(loggingPath)
+  await mkdir(loggingPath, { recursive: true })
 
   const crawler = Crawler(domain, { productToken: PRODUCT_TOKEN, loggingPath, crawlDelay: 100 })
 
