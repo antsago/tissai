@@ -1,5 +1,5 @@
 const { setTimeout } = require("timers/promises")
-const { writeFile } = require("fs/promises")
+const { writeFile, appendFile } = require("fs/promises")
 
 const Semaphore = function (crawlDelay) {
   const queue = []
@@ -30,20 +30,25 @@ const Fetcher = function (productToken, loggingPath, crawlDelay) {
   const semaphore = Semaphore(crawlDelay)
 
   return async (url) => {
-    await semaphore.acquire()
-    const response = await fetch(url, { headers: { UserAgent: productToken } })
-    semaphore.release()
+    try {
+      await semaphore.acquire()
+      const response = await fetch(url, { headers: { UserAgent: productToken } })
+      semaphore.release()
 
-    const result = {
-      url: response.url,
-      status: response.status,
-      body: await response.text(),
-      headers: Object.fromEntries(response.headers.entries()),
+      const result = {
+        url: response.url,
+        status: response.status,
+        body: await response.text(),
+        headers: Object.fromEntries(response.headers.entries()),
+      }
+
+      await writeFile(`${loggingPath}/${Date.now()}@${encodeURIComponent(url)}`, JSON.stringify(result))
+      
+      return result
+    } catch (err) {
+      await appendFile(`${loggingPath}/errors.log`, `${JSON.stringify({ timestamp: Date.now(), url, message: err.message })}\n`)
+      throw err
     }
-
-    writeFile(`${loggingPath}/${Date.now()}@${encodeURIComponent(url)}`, JSON.stringify(result))
-    
-    return result
   }
 }
 

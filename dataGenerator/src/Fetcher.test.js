@@ -1,5 +1,5 @@
 const Fetcher = require("./Fetcher")
-const { writeFile } = require("fs/promises")
+const { writeFile, appendFile } = require("fs/promises")
 
 jest.mock("fs/promises")
 
@@ -66,6 +66,20 @@ describe("Fetcher", () => {
 
     expect(result).toEqual(expected)
     expect(writeFile).toHaveBeenCalledWith(`${LOGGING_PATH}/${Date.now()}@https%3A%2F%2Fwww.example.com%2Fb-%40r`, JSON.stringify(expected))
+
+    jest.useRealTimers()
+  })
+
+  it("logs errors", async () => {
+    jest.useFakeTimers()
+    const error = new Error('Booh!')
+    fetch.mockRejectedValueOnce(error)
+    const url = "https://www.example.com/b-@r"
+
+    const act = get(url)
+
+    await expect(act).rejects.toThrow(error)
+    expect(appendFile).toHaveBeenCalledWith(`${LOGGING_PATH}/errors.log`, `${JSON.stringify({ timestamp: Date.now(), url, message: error.message })}\n`)
 
     jest.useRealTimers()
   })
