@@ -30,7 +30,7 @@ const Semaphore = function (crawlDelay) {
 const Fetcher = function (productToken, loggingPath, crawlDelay) {
   const semaphore = Semaphore(crawlDelay)
 
-  const retrieveFromSrc = async (url, semaphore) => {
+  const retrieveFromSrc = async (url) => {
     await semaphore.acquire()
     const response = await fetch(url, { headers: { UserAgent: productToken } })
     semaphore.release()
