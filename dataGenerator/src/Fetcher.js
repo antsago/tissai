@@ -1,6 +1,7 @@
 const { setTimeout } = require("timers/promises")
+const { writeFile } = require("fs/promises")
 
-const Semaphore = function (timeoutMs = 100) {
+const Semaphore = function (crawlDelay) {
   const queue = []
   const runNext = () => {
     queue[0]()
@@ -19,13 +20,13 @@ const Semaphore = function (timeoutMs = 100) {
     release: () => {
       queue.splice(0, 1)
       if (queue.length > 0) {
-        setTimeout(timeoutMs).then(runNext)
+        setTimeout(crawlDelay).then(runNext)
       }
     },
   }
 }
 
-const Fetcher = function (productToken, crawlDelay) {
+const Fetcher = function (productToken, loggingPath, crawlDelay) {
   const semaphore = Semaphore(crawlDelay)
 
   return async (url) => {
@@ -33,11 +34,16 @@ const Fetcher = function (productToken, crawlDelay) {
     const response = await fetch(url, { headers: { UserAgent: productToken } })
     semaphore.release()
 
-    return {
+    const result = {
       url: response.url,
-      body: await response.text(),
       status: response.status,
+      body: await response.text(),
+      headers: Object.fromEntries(response.headers.entries()),
     }
+
+    writeFile(`${loggingPath}/${Date.now()}@${encodeURIComponent(url)}`, JSON.stringify(result))
+    
+    return result
   }
 }
 

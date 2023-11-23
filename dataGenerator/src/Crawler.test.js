@@ -1,5 +1,7 @@
 const Crawler = require("./Crawler")
 
+jest.mock("fs/promises")
+
 describe("Crawler", () => {
   const DOMAIN = "example.com"
   const PRODUCT_TOKEN = "FooBar/1.0"
@@ -8,9 +10,9 @@ describe("Crawler", () => {
   let crawler
   beforeEach(() => {
     response = jest.fn()
-    fetch = jest.fn((url) => Promise.resolve({ text: response, url }))
+    fetch = jest.fn((url) => Promise.resolve({ text: response, url, status: 200, headers: new Headers() }))
 
-    crawler = new Crawler(DOMAIN, PRODUCT_TOKEN)
+    crawler = new Crawler(DOMAIN, { productToken: PRODUCT_TOKEN, loggingPath: './foo', crawlDelay: 1 })
   })
 
   const getAllowedUrls = async () => {

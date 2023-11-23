@@ -2,8 +2,8 @@ const Fetcher = require("./Fetcher")
 const Robots = require("./Robots")
 const Sitexml = require("./Sitexml")
 
-const Crawler = function (domain, productToken, timeoutMs = 100) {
-  const get = Fetcher(productToken, timeoutMs)
+const Crawler = function (domain, { productToken, crawlDelay = 100, loggingPath }) {
+  const get = Fetcher(productToken, loggingPath, crawlDelay)
 
   const getRobots = async () => {
     const robotsUrl = `https://${domain}/robots.txt`
