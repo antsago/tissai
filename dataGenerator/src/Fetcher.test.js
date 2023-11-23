@@ -1,6 +1,7 @@
 const Fetcher = require("./Fetcher")
-const { writeFile, appendFile } = require("fs/promises")
+const { writeFile, appendFile, readdir, readFile } = require("fs/promises")
 
+jest.useFakeTimers()
 jest.mock("fs/promises")
 
 describe("Fetcher", () => {
@@ -15,6 +16,7 @@ describe("Fetcher", () => {
 
     response = jest.fn()
     fetch = jest.fn((url) => Promise.resolve({ text: response, url, status: 200, headers: new Headers() }))
+    readdir.mockResolvedValue([])
 
     get = new Fetcher(PRODUCT_TOKEN, LOGGING_PATH, CRAWL_DELAY)
   })
@@ -30,7 +32,6 @@ describe("Fetcher", () => {
   })
 
   it("waits delay between calls", async () => {
-    jest.useFakeTimers()
     response.mockResolvedValueOnce("foo").mockResolvedValueOnce("bar")
     const call1 = get("/foo")
     const call2 = get("/bar")
@@ -43,12 +44,9 @@ describe("Fetcher", () => {
 
     await call2
     expect(fetch).toHaveBeenCalledTimes(2)
-
-    jest.useRealTimers()
   })
 
   it("logs responses", async () => {
-    jest.useFakeTimers()
     const expected = {
       url: "/redirected",
       status: 200,
@@ -66,12 +64,40 @@ describe("Fetcher", () => {
 
     expect(result).toEqual(expected)
     expect(writeFile).toHaveBeenCalledWith(`${LOGGING_PATH}/${Date.now()}@https%3A%2F%2Fwww.example.com%2Fb-%40r`, JSON.stringify(expected))
+  })
 
-    jest.useRealTimers()
+  it("reuses logged responses", async () => {
+    const expected = {
+      url: "/redirected",
+      status: 200,
+      body: "foobar",
+      headers: { "content-type": "text/xml" }
+    }
+    readdir.mockResolvedValue(['1700753057613@https%3A%2F%2Fwww.example.com%2Fb-%40r'])
+    readFile.mockResolvedValue(JSON.stringify(expected))
+
+    const result = await get("https://www.example.com/b-@r")
+
+    expect(result).toEqual(expected)
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it("favours latest responses", async () => {
+    const expected = {
+      url: "/redirected",
+      status: 200,
+      body: "foobar",
+      headers: { "content-type": "text/xml" }
+    }
+    readdir.mockResolvedValue(['1700753057613@https%3A%2F%2Fwww.example.com%2Fb-%40r', '1700753057614@https%3A%2F%2Fwww.example.com%2Fb-%40r'])
+    readFile.mockResolvedValue(JSON.stringify(expected))
+
+    await get("https://www.example.com/b-@r")
+
+    expect(readFile).toHaveBeenCalledWith('1700753057614@https%3A%2F%2Fwww.example.com%2Fb-%40r')
   })
 
   it("logs errors", async () => {
-    jest.useFakeTimers()
     const error = new Error('Booh!')
     fetch.mockRejectedValueOnce(error)
     const url = "https://www.example.com/b-@r"
@@ -80,7 +106,5 @@ describe("Fetcher", () => {
 
     await expect(act).rejects.toThrow(error)
     expect(appendFile).toHaveBeenCalledWith(`${LOGGING_PATH}/errors.log`, `${JSON.stringify({ timestamp: Date.now(), url, message: error.message })}\n`)
-
-    jest.useRealTimers()
   })
 })

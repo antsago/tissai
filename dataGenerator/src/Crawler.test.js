@@ -1,3 +1,4 @@
+const { readdir } = require("fs/promises")
 const Crawler = require("./Crawler")
 
 jest.mock("fs/promises")
@@ -10,7 +11,9 @@ describe("Crawler", () => {
   let crawler
   beforeEach(() => {
     response = jest.fn()
+
     fetch = jest.fn((url) => Promise.resolve({ text: response, url, status: 200, headers: new Headers() }))
+    readdir.mockResolvedValue([])
 
     crawler = new Crawler(DOMAIN, { productToken: PRODUCT_TOKEN, loggingPath: './foo', crawlDelay: 1 })
   })

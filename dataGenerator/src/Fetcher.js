@@ -1,5 +1,5 @@
 const { setTimeout } = require("timers/promises")
-const { writeFile, appendFile } = require("fs/promises")
+const { writeFile, appendFile, readdir, readFile } = require("fs/promises")
 
 const Semaphore = function (crawlDelay) {
   const queue = []
@@ -31,6 +31,14 @@ const Fetcher = function (productToken, loggingPath, crawlDelay) {
 
   return async (url) => {
     try {
+      const cachedResponses = (await readdir(loggingPath)).sort().reverse()
+      const encodedUrl = encodeURIComponent(url)
+      const cached = cachedResponses.filter(res => res.includes(encodedUrl))
+      if (cached.length) {
+        const result = await readFile(cached[0])
+        return JSON.parse(result)
+      }
+
       await semaphore.acquire()
       const response = await fetch(url, { headers: { UserAgent: productToken } })
       semaphore.release()
@@ -42,7 +50,7 @@ const Fetcher = function (productToken, loggingPath, crawlDelay) {
         headers: Object.fromEntries(response.headers.entries()),
       }
 
-      await writeFile(`${loggingPath}/${Date.now()}@${encodeURIComponent(url)}`, JSON.stringify(result))
+      await writeFile(`${loggingPath}/${Date.now()}@${encodedUrl}`, JSON.stringify(result))
       
       return result
     } catch (err) {
