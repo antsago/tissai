@@ -15,7 +15,14 @@ describe("Fetcher", () => {
     jest.resetAllMocks()
 
     response = jest.fn()
-    fetch = jest.fn((url) => Promise.resolve({ text: response, url, status: 200, headers: new Headers() }))
+    fetch = jest.fn((url) =>
+      Promise.resolve({
+        text: response,
+        url,
+        status: 200,
+        headers: new Headers(),
+      }),
+    )
     readdir.mockResolvedValue([])
 
     get = new Fetcher(PRODUCT_TOKEN, LOGGING_PATH, CRAWL_DELAY)
@@ -51,28 +58,35 @@ describe("Fetcher", () => {
       url: "/redirected",
       status: 200,
       body: "foobar",
-      headers: { "content-type": "text/xml" }
+      headers: { "content-type": "text/xml" },
     }
     fetch.mockResolvedValueOnce({
       text: jest.fn().mockResolvedValue(expected.body),
       status: expected.status,
       url: expected.url,
-      headers: new Headers(expected.headers)
+      headers: new Headers(expected.headers),
     })
 
     const result = await get("https://www.example.com/b-@r")
 
     expect(result).toEqual(expected)
-    expect(writeFile).toHaveBeenCalledWith(`${LOGGING_PATH}/${Date.now()}@https%3A%2F%2Fwww.example.com%2Fb-%40r`, JSON.stringify(expected))
+    expect(writeFile).toHaveBeenCalledWith(
+      `${LOGGING_PATH}/${Date.now()}@https%3A%2F%2Fwww.example.com%2Fb-%40r`,
+      JSON.stringify(expected),
+    )
   })
 
   it("trims filenames over 150 characters long", async () => {
-    const longUrl = "https://es.shein.com/A-multi-purpose-large-capacity-clothes-hanger-and-trousers-rack-that-does-not-take-up-space.-One-clothes-hanger-and-trousers-rack-can-hang-4-layers-of-trousers,-6-layers-of-trousers,-and-8-layers-of-trousers.-Super-space-saving-p-26369719-cat-7166.html"
+    const longUrl =
+      "https://es.shein.com/A-multi-purpose-large-capacity-clothes-hanger-and-trousers-rack-that-does-not-take-up-space.-One-clothes-hanger-and-trousers-rack-can-hang-4-layers-of-trousers,-6-layers-of-trousers,-and-8-layers-of-trousers.-Super-space-saving-p-26369719-cat-7166.html"
     response.mockResolvedValueOnce("foo")
 
     await get(longUrl)
 
-    expect(writeFile).toHaveBeenCalledWith(`${LOGGING_PATH}/${Date.now()}@https%3A%2F%2Fes.shein.com%2FA-multi-purpose-large-capacity-clothes-hanger-and-trousers-rack-that-does-not-take-up-space.-One-clothes-hanger-and-trous2bac94693b9320267853652cd171d112`, expect.any(String))
+    expect(writeFile).toHaveBeenCalledWith(
+      `${LOGGING_PATH}/${Date.now()}@https%3A%2F%2Fes.shein.com%2FA-multi-purpose-large-capacity-clothes-hanger-and-trousers-rack-that-does-not-take-up-space.-One-clothes-hanger-and-trous2bac94693b9320267853652cd171d112`,
+      expect.any(String),
+    )
   })
 
   it("reuses logged responses", async () => {
@@ -80,9 +94,11 @@ describe("Fetcher", () => {
       url: "/redirected",
       status: 200,
       body: "foobar",
-      headers: { "content-type": "text/xml" }
+      headers: { "content-type": "text/xml" },
     }
-    readdir.mockResolvedValue(['1700753057613@https%3A%2F%2Fwww.example.com%2Fb-%40r'])
+    readdir.mockResolvedValue([
+      "1700753057613@https%3A%2F%2Fwww.example.com%2Fb-%40r",
+    ])
     readFile.mockResolvedValue(JSON.stringify(expected))
 
     const result = await get("https://www.example.com/b-@r")
@@ -96,24 +112,36 @@ describe("Fetcher", () => {
       url: "/redirected",
       status: 200,
       body: "foobar",
-      headers: { "content-type": "text/xml" }
+      headers: { "content-type": "text/xml" },
     }
-    readdir.mockResolvedValue(['1700753057613@https%3A%2F%2Fwww.example.com%2Fb-%40r', '1700753057614@https%3A%2F%2Fwww.example.com%2Fb-%40r'])
+    readdir.mockResolvedValue([
+      "1700753057613@https%3A%2F%2Fwww.example.com%2Fb-%40r",
+      "1700753057614@https%3A%2F%2Fwww.example.com%2Fb-%40r",
+    ])
     readFile.mockResolvedValue(JSON.stringify(expected))
 
     await get("https://www.example.com/b-@r")
 
-    expect(readFile).toHaveBeenCalledWith(`${LOGGING_PATH}/1700753057614@https%3A%2F%2Fwww.example.com%2Fb-%40r`)
+    expect(readFile).toHaveBeenCalledWith(
+      `${LOGGING_PATH}/1700753057614@https%3A%2F%2Fwww.example.com%2Fb-%40r`,
+    )
   })
 
   it("logs errors", async () => {
-    const error = new Error('Booh!')
+    const error = new Error("Booh!")
     fetch.mockRejectedValueOnce(error)
     const url = "https://www.example.com/b-@r"
 
     const act = get(url)
 
     await expect(act).rejects.toThrow(error)
-    expect(appendFile).toHaveBeenCalledWith(`${LOGGING_PATH}/errors.log`, `${JSON.stringify({ timestamp: Date.now(), url, message: error.message })}\n`)
+    expect(appendFile).toHaveBeenCalledWith(
+      `${LOGGING_PATH}/errors.log`,
+      `${JSON.stringify({
+        timestamp: Date.now(),
+        url,
+        message: error.message,
+      })}\n`,
+    )
   })
 })

@@ -12,10 +12,21 @@ describe("Crawler", () => {
   beforeEach(() => {
     response = jest.fn()
 
-    fetch = jest.fn((url) => Promise.resolve({ text: response, url, status: 200, headers: new Headers() }))
+    fetch = jest.fn((url) =>
+      Promise.resolve({
+        text: response,
+        url,
+        status: 200,
+        headers: new Headers(),
+      }),
+    )
     readdir.mockResolvedValue([])
 
-    crawler = new Crawler(DOMAIN, { productToken: PRODUCT_TOKEN, loggingPath: './foo', crawlDelay: 1 })
+    crawler = new Crawler(DOMAIN, {
+      productToken: PRODUCT_TOKEN,
+      loggingPath: "./foo",
+      crawlDelay: 1,
+    })
   })
 
   describe("getAllowedUrl", () => {
@@ -125,7 +136,7 @@ describe("Crawler", () => {
   })
 
   describe("getContent", () => {
-    it('returns url content', async () => {
+    it("returns url content", async () => {
       const url = `https://${DOMAIN}/url1`
       const content = `foo`
       response.mockResolvedValueOnce(content)

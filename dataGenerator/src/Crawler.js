@@ -2,7 +2,10 @@ const Fetcher = require("./Fetcher")
 const Robots = require("./Robots")
 const Sitexml = require("./Sitexml")
 
-const Crawler = function (domain, { productToken, crawlDelay = 100, loggingPath }) {
+const Crawler = function (
+  domain,
+  { productToken, crawlDelay = 100, loggingPath },
+) {
   const get = Fetcher(productToken, loggingPath, crawlDelay)
 
   const getRobots = async () => {
@@ -17,17 +20,17 @@ const Crawler = function (domain, { productToken, crawlDelay = 100, loggingPath 
       if (robots && !robots.isAllowed(url)) {
         throw new Error(`Url ${url} not allowed`)
       }
-  
+
       const response = await get(url)
       const site = await Sitexml(response.body)
-  
+
       if (site.isSitemap) {
         return yield site
       }
       if (site.isSiteindex) {
         return yield* getSitemaps(site.sitemaps)
       }
-      
+
       throw new Error(`Result is neither a sitemap nor a siteindex:\n${site}`)
     } catch (e) {
       return

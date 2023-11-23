@@ -1,6 +1,6 @@
 const { setTimeout } = require("timers/promises")
 const { writeFile, appendFile, readdir, readFile } = require("fs/promises")
-const { createHash } = require('node:crypto')
+const { createHash } = require("node:crypto")
 
 const Semaphore = function (crawlDelay) {
   const queue = []
@@ -37,7 +37,7 @@ const encodePath = (url) => {
 
   const pruned = encoded.slice(0, MAX_PATH_LENGTH)
   const trim = encoded.slice(MAX_PATH_LENGTH)
-  const checksum = createHash('md5').update(trim).digest('hex')
+  const checksum = createHash("md5").update(trim).digest("hex")
   return `${pruned}${checksum}`
 }
 
@@ -48,7 +48,7 @@ const Fetcher = function (productToken, loggingPath, crawlDelay) {
     await semaphore.acquire()
     const response = await fetch(url, { headers: { UserAgent: productToken } })
     semaphore.release()
-  
+
     return {
       url: response.url,
       status: response.status,
@@ -61,7 +61,7 @@ const Fetcher = function (productToken, loggingPath, crawlDelay) {
     try {
       const cachedResponses = (await readdir(loggingPath)).sort().reverse()
       const encodedUrl = encodePath(url)
-      const cached = cachedResponses.filter(res => res.includes(encodedUrl))
+      const cached = cachedResponses.filter((res) => res.includes(encodedUrl))
       if (cached.length) {
         const result = await readFile(`${loggingPath}/${cached[0]}`)
         return JSON.parse(result)
@@ -69,11 +69,21 @@ const Fetcher = function (productToken, loggingPath, crawlDelay) {
 
       const result = await retrieveFromSrc(url)
 
-      await writeFile(`${loggingPath}/${Date.now()}@${encodedUrl}`, JSON.stringify(result))
-      
+      await writeFile(
+        `${loggingPath}/${Date.now()}@${encodedUrl}`,
+        JSON.stringify(result),
+      )
+
       return result
     } catch (err) {
-      await appendFile(`${loggingPath}/errors.log`, `${JSON.stringify({ timestamp: Date.now(), url, message: err.message })}\n`)
+      await appendFile(
+        `${loggingPath}/errors.log`,
+        `${JSON.stringify({
+          timestamp: Date.now(),
+          url,
+          message: err.message,
+        })}\n`,
+      )
       throw err
     }
   }
