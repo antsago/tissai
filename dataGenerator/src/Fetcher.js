@@ -1,5 +1,6 @@
 const { setTimeout } = require("timers/promises")
 const { writeFile, appendFile, readdir, readFile } = require("fs/promises")
+const { createHash } = require('node:crypto')
 
 const Semaphore = function (crawlDelay) {
   const queue = []
@@ -26,6 +27,19 @@ const Semaphore = function (crawlDelay) {
   }
 }
 
+const MAX_PATH_LENGTH = 150
+const encodePath = (url) => {
+  const encoded = encodeURIComponent(url)
+
+  if (encoded.length <= MAX_PATH_LENGTH) {
+    return encoded
+  }
+
+  const pruned = encoded.slice(0, MAX_PATH_LENGTH)
+  const trim = encoded.slice(MAX_PATH_LENGTH)
+  const checksum = createHash('md5').update(trim).digest('hex')
+  return `${pruned}${checksum}`
+}
 
 const Fetcher = function (productToken, loggingPath, crawlDelay) {
   const semaphore = Semaphore(crawlDelay)
@@ -46,7 +60,7 @@ const Fetcher = function (productToken, loggingPath, crawlDelay) {
   return async (url) => {
     try {
       const cachedResponses = (await readdir(loggingPath)).sort().reverse()
-      const encodedUrl = encodeURIComponent(url)
+      const encodedUrl = encodePath(url)
       const cached = cachedResponses.filter(res => res.includes(encodedUrl))
       if (cached.length) {
         const result = await readFile(`${loggingPath}/${cached[0]}`)

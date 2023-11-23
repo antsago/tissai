@@ -66,6 +66,15 @@ describe("Fetcher", () => {
     expect(writeFile).toHaveBeenCalledWith(`${LOGGING_PATH}/${Date.now()}@https%3A%2F%2Fwww.example.com%2Fb-%40r`, JSON.stringify(expected))
   })
 
+  it("trims filenames over 150 characters long", async () => {
+    const longUrl = "https://es.shein.com/A-multi-purpose-large-capacity-clothes-hanger-and-trousers-rack-that-does-not-take-up-space.-One-clothes-hanger-and-trousers-rack-can-hang-4-layers-of-trousers,-6-layers-of-trousers,-and-8-layers-of-trousers.-Super-space-saving-p-26369719-cat-7166.html"
+    response.mockResolvedValueOnce("foo")
+
+    await get(longUrl)
+
+    expect(writeFile).toHaveBeenCalledWith(`${LOGGING_PATH}/${Date.now()}@https%3A%2F%2Fes.shein.com%2FA-multi-purpose-large-capacity-clothes-hanger-and-trousers-rack-that-does-not-take-up-space.-One-clothes-hanger-and-trous2bac94693b9320267853652cd171d112`, expect.any(String))
+  })
+
   it("reuses logged responses", async () => {
     const expected = {
       url: "/redirected",
