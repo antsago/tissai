@@ -48,8 +48,14 @@ const Crawler = function (domain, { productToken, crawlDelay = 100, loggingPath 
     }
   }
 
+  const getContent = async function (url) {
+    const response = await get(url)
+    return response.body
+  }
+
   return {
     getAllowedUrls,
+    getContent,
   }
 }
 
