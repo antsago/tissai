@@ -21,4 +21,18 @@ const main = async (domain, dataFolder) => {
   }
 }
 
-main(process.argv[2], process.argv[3])
+// main(process.argv[2], process.argv[3])
+
+const { JSDOM } = require("jsdom")
+const Fetcher = require('./Fetcher')
+const test = async function () {
+  const get = Fetcher(PRODUCT_TOKEN, '../data/es.shein.com', 1)
+
+  const response = await get('https://es.shein.com/BLACK-regular-trousers-p-24412344-cat-1740.html')
+
+  const site = new JSDOM(response.body)
+  const ld = [...site.window.document.querySelectorAll('script[type="application/ld+json"]')].map(tag => tag.text).map(JSON.parse)
+  console.log(ld)
+}
+
+test()
