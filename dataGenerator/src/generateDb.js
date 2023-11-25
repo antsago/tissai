@@ -7,10 +7,17 @@ const main = async (domain, dataFolder) => {
   const loggingPath = `${dataFolder}/${domain}`
   await mkdir(loggingPath, { recursive: true })
 
-  const crawler = Crawler(domain, { productToken: PRODUCT_TOKEN, loggingPath, crawlDelay: 100 })
+  const crawler = Crawler(domain, {
+    productToken: PRODUCT_TOKEN,
+    loggingPath,
+    crawlDelay: 100,
+  })
 
   for await (const url of crawler.getAllowedUrls()) {
-    console.log(url)
+    if (url.includes("trousers")) {
+      const content = await crawler.getContent(url)
+      console.log(content)
+    }
   }
 }
 
