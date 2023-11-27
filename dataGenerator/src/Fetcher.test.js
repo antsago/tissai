@@ -38,17 +38,32 @@ describe("Fetcher", () => {
     })
   })
 
-  it("waits delay between calls", async () => {
-    response.mockResolvedValueOnce("foo").mockResolvedValueOnce("bar")
+  it("waits when calls are done in parallel", async () => {
+    response.mockResolvedValueOnce("foo").mockResolvedValueOnce("bar").mockResolvedValueOnce("fii")
     const call1 = get("/foo")
     const call2 = get("/bar")
+    const call3 = get("/fii")
 
     await jest.advanceTimersByTimeAsync(CRAWL_DELAY - 1)
     await call1
     expect(fetch).toHaveBeenCalledTimes(1)
-
+    await jest.advanceTimersByTimeAsync(CRAWL_DELAY)
+    await call2
+    expect(fetch).toHaveBeenCalledTimes(2)
     await jest.advanceTimersByTimeAsync(1)
+    await call3
+    expect(fetch).toHaveBeenCalledTimes(3)
+  })
 
+  it("waits when calls are done sequentially", async () => {
+    response.mockResolvedValueOnce("foo").mockResolvedValueOnce("bar")
+    call1 = await get("/foo")
+    await jest.advanceTimersByTimeAsync(CRAWL_DELAY - 1)
+
+    const call2 = get("/bar")
+    
+    expect(fetch).toHaveBeenCalledTimes(1)
+    await jest.advanceTimersByTimeAsync(1)
     await call2
     expect(fetch).toHaveBeenCalledTimes(2)
   })

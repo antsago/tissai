@@ -4,26 +4,30 @@ const { createHash } = require("node:crypto")
 
 const Semaphore = function (crawlDelay) {
   const queue = []
-  const runNext = () => {
-    queue[0]()
+
+  let timeout
+  const start = () => {
+    if (!queue.length) {
+      return
+    }
+
+    const [next] = queue.splice(0, 1)
+    timeout = setTimeout(crawlDelay).then(() => {
+      timeout = undefined
+      start()
+    })
+
+    next()
   }
 
-  return {
-    acquire: async () => {
-      const lock = new Promise((res) => queue.push(res))
+  return async function waitForGreen () {
+    const lock = new Promise((res) => queue.push(res))
 
-      if (queue.length === 1) {
-        runNext()
-      }
+    if (!timeout) {
+      start()
+    }
 
-      return lock
-    },
-    release: () => {
-      queue.splice(0, 1)
-      if (queue.length > 0) {
-        setTimeout(crawlDelay).then(runNext)
-      }
-    },
+    return lock
   }
 }
 
@@ -42,12 +46,11 @@ const encodePath = (url) => {
 }
 
 const Fetcher = function (productToken, loggingPath, crawlDelay) {
-  const semaphore = Semaphore(crawlDelay)
+  const waitForGreen = Semaphore(crawlDelay)
 
   const retrieveFromSrc = async (url) => {
-    await semaphore.acquire()
+    await waitForGreen()
     const response = await fetch(url, { headers: { UserAgent: productToken } })
-    semaphore.release()
 
     return {
       url: response.url,
