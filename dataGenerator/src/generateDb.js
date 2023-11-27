@@ -3,9 +3,9 @@ const Crawler = require("./Crawler")
 
 const PRODUCT_TOKEN = "Wibnix/0.1"
 const KEYWORDS = ["trousers", "pantalon"]
-const CRAWL_DELAY = 2000
+const CRAWL_DELAY = 5000
 
-const main = async (domain, dataFolder) => {
+const main = async (domain, dataFolder, limit) => {
   const loggingPath = `${dataFolder}/${domain}`
   await mkdir(loggingPath, { recursive: true })
 
@@ -17,13 +17,22 @@ const main = async (domain, dataFolder) => {
 
   console.log("[")
 
+  let productsLogged = 0
   for await (const url of crawler.getAllowedUrls()) {
-    if (KEYWORDS.some(key => url.includes(key))) {
-      const content = await crawler.getContent(url)
-      console.log(`${JSON.stringify(content)},`)
+    if (!KEYWORDS.some(key => url.includes(key))) {
+      continue
+    }
+
+    const content = await crawler.getContent(url)
+    console.log(`${JSON.stringify(content)},`)
+    productsLogged += 1
+
+    if (limit && productsLogged >= limit) {
+      break
     }
   }
+
   console.log("]")
 }
 
-main(process.argv[2], process.argv[3])
+main(process.argv[2], process.argv[3], process.argv[4])
