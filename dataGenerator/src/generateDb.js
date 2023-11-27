@@ -2,7 +2,7 @@ const { mkdir } = require("fs/promises")
 const Crawler = require("./Crawler")
 
 const PRODUCT_TOKEN = "Wibnix/0.1"
-const KEYWORDS = ["trousers", "pantalon"]
+const KEYWORDS = ["pants", "trousers", "pantalon"]
 const CRAWL_DELAY = 5000
 
 const main = async (domain, dataFolder, limit) => {
