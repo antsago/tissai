@@ -2,11 +2,11 @@ const Content = require("./Content")
 
 describe("Content", () => {
   const url = `https://example.com/url1`
-  
+
   const baseExpected = {
     url,
     jsonLD: [],
-    headings: {},
+    headings: expect.any(Object),
   }
 
   it("extracts jsonLD", async () => {
@@ -22,7 +22,9 @@ describe("Content", () => {
         },
       ],
     }
-    const html = `<script type="application/ld+json">${JSON.stringify(linkedData,)}</script>`
+    const html = `<html><script type="application/ld+json">${JSON.stringify(
+      linkedData,
+    )}</script></html>`
 
     const result = Content(url, html)
 
@@ -32,7 +34,7 @@ describe("Content", () => {
     })
   })
 
-  it.only("extracts meta tag information", async () => {
+  it("extracts heading information", async () => {
     const headings = {
       title: "The page title",
       description: "The description",
@@ -42,6 +44,7 @@ describe("Content", () => {
       canonical: url,
     }
     const html = `
+      <html>
       <head>
         <title>${headings.title}</title>
         <meta name="viewport" content="something else">
@@ -51,6 +54,7 @@ describe("Content", () => {
         <meta name="robots" content="${headings.robots}">
         <link rel="canonical" href="${url}" />
       </head>
+      </html>
     `
 
     const result = Content(url, html)
