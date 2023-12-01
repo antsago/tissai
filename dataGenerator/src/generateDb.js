@@ -35,4 +35,37 @@ const main = async (domain, dataFolder, limit) => {
   console.log("]")
 }
 
-main(process.argv[2], process.argv[3], process.argv[4])
+// main(process.argv[2], process.argv[3], process.argv[4])
+
+const path = require("node:path")
+const test = async function (dbPaths) {
+  const products = dbPaths.map((dbPath) =>
+    require(path.resolve(dbPath))
+      .filter((product) =>
+        product.linkedData.some(
+          (data) =>
+            data["@type"] === "Product" &&
+            data["@context"] === "https://schema.org/",
+        ),
+      )
+      .map((product) => {
+        const linkedData = product.linkedData.find(
+          (data) => data["@type"] === "Product",
+        )
+
+        return {
+          name: linkedData.name,
+          description: linkedData.description,
+          image: Array.isArray(linkedData.image)
+            ? linkedData.image[0]
+            : linkedData.image,
+          brand: linkedData.brand?.name,
+          url: product.url,
+        }
+      }),
+  ).flat()
+
+  console.log(JSON.stringify(products))
+}
+
+test(process.argv.slice(2))
