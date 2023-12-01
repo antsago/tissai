@@ -7,6 +7,7 @@ describe("Content", () => {
     url,
     jsonLD: [],
     headings: expect.any(Object),
+    openGraph: expect.any(Object),
   }
 
   it("extracts jsonLD", async () => {
@@ -62,6 +63,50 @@ describe("Content", () => {
     expect(result).toStrictEqual({
       ...baseExpected,
       headings,
+    })
+  })
+
+  it("extracts opengraph information", async () => {
+    const openGraph = {
+      type: "og:product",
+      title: "Friend Smash Coin",
+      image: "http://www.friendsmash.com/images/coin_600.png",
+      description: "Friend Smash Coins to purchase upgrades and items!",
+      url: "http://www.friendsmash.com/og/coins.html",
+      pluralTitle: "Friend Smash Coins",
+      price: [
+        {
+          amount: 0.3,
+          currency: "USD",
+        },
+        {
+          amount: 0.2,
+          currency: "GBP",
+        },
+      ],
+    }
+    const html = `
+      <html>
+      <head>
+        <meta property="og:type"                   content="${openGraph.type}" />
+        <meta property="og:title"                  content="${openGraph.title}" />
+        <meta property="og:image"                  content="${openGraph.image}" />
+        <meta property="og:description"            content="${openGraph.description}" />
+        <meta property="og:url"                    content="${openGraph.url}" />
+        <meta property="product:plural_title"      content="${openGraph.pluralTitle}" />
+        <meta property="product:price:amount"      content="${openGraph.price[0].amount}"/>
+        <meta property="product:price:currency"    content="${openGraph.price[0].currency}"/>
+        <meta property="product:price:amount"      content="${openGraph.price[1].amount}"/>
+        <meta property="product:price:currency"    content="${openGraph.price[1].currency}"/>
+      </head>
+      </html>
+    `
+
+    const result = Content(url, html)
+
+    expect(result).toStrictEqual({
+      ...baseExpected,
+      openGraph,
     })
   })
 })

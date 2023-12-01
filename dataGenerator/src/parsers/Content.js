@@ -2,31 +2,57 @@ const { JSDOM } = require("jsdom")
 
 const Content = function (url, htlmText) {
   const site = new JSDOM(htlmText)
+  const document = site.window.document
+  const head = document?.head
   const tags = [
-    ...site.window.document.querySelectorAll(
-      'script[type="application/ld+json"]',
-    ),
+    ...document?.querySelectorAll('script[type="application/ld+json"]'),
   ]
   const jsonLD = tags.map((tag) => tag.text).map(JSON.parse)
   const headings = {
-    title: site.window.document?.head.querySelector("title")?.text,
-    description: site.window.document?.head.querySelector(
-      'meta[name="description"]',
-    )?.content,
-    keywords: site.window.document?.head.querySelector('meta[name="keywords"]')
+    title: head?.querySelector("title")?.text,
+    description: head?.querySelector('meta[name="description"]')?.content,
+    keywords: head?.querySelector('meta[name="keywords"]')?.content,
+    author: head?.querySelector('meta[name="author"]')?.content,
+    robots: head?.querySelector('meta[name="robots"]')?.content,
+    canonical: head?.querySelector('link[rel="canonical"]')?.href,
+  }
+
+  const getPriceInfo = (tag) => {
+    const property = tag.attributes.property.value
+    if (property === "product:price:amount") {
+      return { amount: parseFloat(tag.content) }
+    }
+    if (property === "product:price:currency") {
+      return { currency: tag.content }
+    }
+    return {}
+  }
+
+  const openGraph = {
+    type: head?.querySelector('meta[property="og:type"]')?.content,
+    title: head?.querySelector('meta[property="og:title"]')?.content,
+    image: head?.querySelector('meta[property="og:image"]')?.content,
+    description: head?.querySelector('meta[property="og:description"]')
       ?.content,
-    author: site.window.document?.head.querySelector('meta[name="author"]')
+    url: head?.querySelector('meta[property="og:url"]')?.content,
+    pluralTitle: head?.querySelector('meta[property="product:plural_title"]')
       ?.content,
-    robots: site.window.document?.head.querySelector('meta[name="robots"]')
-      ?.content,
-    canonical: site.window.document?.head.querySelector('link[rel="canonical"]')
-      ?.href,
+    price: [
+      ...head?.querySelectorAll('meta[property^="product:price:"]'),
+    ].reduce((priceArray, tag, index) => {
+      const info = getPriceInfo(tag)
+      if (index % 2 === 0) {
+        return [...priceArray, info]
+      }
+      return [...priceArray.slice(0, -1), { ...priceArray.at(-1), ...info }]
+    }, []),
   }
 
   return {
     url,
     jsonLD,
     headings,
+    openGraph,
   }
 }
 
