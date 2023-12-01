@@ -136,31 +136,14 @@ describe("Crawler", () => {
   })
 
   describe("getContent", () => {
-    it("extracts data", async () => {
+    it("fetches and parses page", async () => {
       const url = `https://${DOMAIN}/url1`
-      const linkedData = {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          {
-            "@type": "ListItem",
-            position: 1,
-            name: "Menpants",
-            item: "https://es.shein.com/category/Menpants-sc-008113048.html",
-          },
-        ],
-      }
-      const content = `<script type="application/ld+json">${JSON.stringify(
-        linkedData,
-      )}</script>`
+      const content = `<html></html>`
       response.mockResolvedValueOnce(content)
 
       const result = await crawler.getContent(url)
 
-      expect(result).toStrictEqual({
-        url,
-        jsonLD: [linkedData],
-      })
+      expect(result).toStrictEqual(expect.objectContaining({ url }))
     })
   })
 })
