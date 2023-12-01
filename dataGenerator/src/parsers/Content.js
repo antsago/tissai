@@ -7,11 +7,11 @@ const Content = function (url, htlmText) {
       'script[type="application/ld+json"]',
     ),
   ]
-  const linkedData = tags.map((tag) => tag.text).map(JSON.parse)
+  const jsonLD = tags.map((tag) => tag.text).map(JSON.parse)
 
   return {
     url,
-    linkedData,
+    jsonLD,
   }
 }
 

@@ -1,7 +1,7 @@
 const Content = require("./Content")
 
 describe("Content", () => {
-  it("extracts data", async () => {
+  it("extracts jsonLD", async () => {
     const url = `https://example.com/url1`
     const linkedData = {
       "@context": "https://schema.org",
@@ -23,7 +23,7 @@ describe("Content", () => {
 
     expect(result).toStrictEqual({
       url,
-      linkedData: [linkedData],
+      jsonLD: [linkedData],
     })
   })
 })

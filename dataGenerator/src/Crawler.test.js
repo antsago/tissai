@@ -159,7 +159,7 @@ describe("Crawler", () => {
 
       expect(result).toStrictEqual({
         url,
-        linkedData: [linkedData],
+        jsonLD: [linkedData],
       })
     })
   })
