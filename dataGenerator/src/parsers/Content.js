@@ -58,8 +58,8 @@ const parseOpenGraph = (document) => {
   }
 }
 
-const Content = function (url, htlmText) {
-  const document = new JSDOM(htlmText).window.document
+const Content = function (url, raw) {
+  const document = new JSDOM(raw).window.document
 
   const jsonLD = parseJsonLD(document)
   const headings = parseHeadings(document)
@@ -70,6 +70,7 @@ const Content = function (url, htlmText) {
     jsonLD,
     headings,
     openGraph,
+    raw,
   }
 }
 
