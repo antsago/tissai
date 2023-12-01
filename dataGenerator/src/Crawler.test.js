@@ -136,7 +136,7 @@ describe("Crawler", () => {
   })
 
   describe("getContent", () => {
-    it("returns linked data", async () => {
+    it("extracts data", async () => {
       const url = `https://${DOMAIN}/url1`
       const linkedData = {
         "@context": "https://schema.org",

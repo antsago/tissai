@@ -1,7 +1,7 @@
-const { JSDOM } = require("jsdom")
 const Fetcher = require("./Fetcher")
 const Robots = require("./Robots")
 const Sitexml = require("./Sitexml")
+const Content = require("./Content")
 
 const Crawler = function (
   domain,
@@ -54,18 +54,7 @@ const Crawler = function (
 
   const getContent = async function (url) {
     const response = await get(url)
-    const site = new JSDOM(response.body)
-    const tags = [
-      ...site.window.document.querySelectorAll(
-        'script[type="application/ld+json"]',
-      ),
-    ]
-    const linkedData = tags.map((tag) => tag.text).map(JSON.parse)
-
-    return {
-      url,
-      linkedData,
-    }
+    return Content(response.url, response.body)
   }
 
   return {
