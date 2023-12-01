@@ -1,14 +1,17 @@
 const { JSDOM } = require("jsdom")
 
-const Content = function (url, htlmText) {
-  const site = new JSDOM(htlmText)
-  const document = site.window.document
-  const head = document?.head
+const parseJsonLD = (document) => {
   const tags = [
     ...document?.querySelectorAll('script[type="application/ld+json"]'),
   ]
-  const jsonLD = tags.map((tag) => tag.text).map(JSON.parse)
-  const headings = {
+
+  return tags.map((tag) => tag.text).map(JSON.parse)
+}
+
+const parseHeadings = (document) => {
+  const head = document?.head
+
+  return {
     title: head?.querySelector("title")?.text,
     description: head?.querySelector('meta[name="description"]')?.content,
     keywords: head?.querySelector('meta[name="keywords"]')?.content,
@@ -16,19 +19,25 @@ const Content = function (url, htlmText) {
     robots: head?.querySelector('meta[name="robots"]')?.content,
     canonical: head?.querySelector('link[rel="canonical"]')?.href,
   }
+}
 
-  const getPriceInfo = (tag) => {
-    const property = tag.attributes.property.value
-    if (property === "product:price:amount") {
-      return { amount: parseFloat(tag.content) }
-    }
-    if (property === "product:price:currency") {
-      return { currency: tag.content }
-    }
-    return {}
+const getPriceInfo = (tag) => {
+  const property = tag.attributes.property.value
+
+  if (property === "product:price:amount") {
+    return { amount: parseFloat(tag.content) }
+  }
+  if (property === "product:price:currency") {
+    return { currency: tag.content }
   }
 
-  const openGraph = {
+  return {}
+}
+
+const parseOpenGraph = (document) => {
+  const head = document?.head
+
+  return {
     type: head?.querySelector('meta[property="og:type"]')?.content,
     title: head?.querySelector('meta[property="og:title"]')?.content,
     image: head?.querySelector('meta[property="og:image"]')?.content,
@@ -47,6 +56,14 @@ const Content = function (url, htlmText) {
       return [...priceArray.slice(0, -1), { ...priceArray.at(-1), ...info }]
     }, []),
   }
+}
+
+const Content = function (url, htlmText) {
+  const document = new JSDOM(htlmText).window.document
+
+  const jsonLD = parseJsonLD(document)
+  const headings = parseHeadings(document)
+  const openGraph = parseOpenGraph(document)
 
   return {
     url,
