@@ -1,7 +1,5 @@
 const Fetcher = require("./Fetcher")
-const Robots = require("./Robots")
-const Sitexml = require("./Sitexml")
-const Content = require("./Content")
+const parse = require("./parsers")
 
 const Crawler = function (
   domain,
@@ -12,7 +10,7 @@ const Crawler = function (
   const getRobots = async () => {
     const robotsUrl = `https://${domain}/robots.txt`
     const response = await get(robotsUrl)
-    return Robots(response.url, response.body, productToken)
+    return parse.Robots(response.url, response.body, productToken)
   }
 
   let robots
@@ -23,7 +21,7 @@ const Crawler = function (
       }
 
       const response = await get(url)
-      const site = await Sitexml(response.body)
+      const site = await parse.Sitexml(response.body)
 
       if (site.isSitemap) {
         return yield site
@@ -54,7 +52,7 @@ const Crawler = function (
 
   const getContent = async function (url) {
     const response = await get(url)
-    return Content(response.url, response.body)
+    return parse.Content(response.url, response.body)
   }
 
   return {
