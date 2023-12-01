@@ -9,12 +9,18 @@ const Content = function (url, htlmText) {
   ]
   const jsonLD = tags.map((tag) => tag.text).map(JSON.parse)
   const headings = {
-    title: site.window.document?.head.querySelector('title')?.text,
-    description: site.window.document?.head.querySelector('meta[name="description"]')?.content,
-    keywords: site.window.document?.head.querySelector('meta[name="keywords"]')?.content,
-    author: site.window.document?.head.querySelector('meta[name="author"]')?.content,
-    robots: site.window.document?.head.querySelector('meta[name="robots"]')?.content,
-    canonical: site.window.document?.head.querySelector('link[rel="canonical"]')?.href,
+    title: site.window.document?.head.querySelector("title")?.text,
+    description: site.window.document?.head.querySelector(
+      'meta[name="description"]',
+    )?.content,
+    keywords: site.window.document?.head.querySelector('meta[name="keywords"]')
+      ?.content,
+    author: site.window.document?.head.querySelector('meta[name="author"]')
+      ?.content,
+    robots: site.window.document?.head.querySelector('meta[name="robots"]')
+      ?.content,
+    canonical: site.window.document?.head.querySelector('link[rel="canonical"]')
+      ?.href,
   }
 
   return {

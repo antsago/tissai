@@ -39,31 +39,33 @@ const main = async (domain, dataFolder, limit) => {
 
 const path = require("node:path")
 const test = async function (dbPaths) {
-  const products = dbPaths.map((dbPath) =>
-    require(path.resolve(dbPath))
-      .filter((product) =>
-        product.linkedData.some(
-          (data) =>
-            data["@type"] === "Product" &&
-            data["@context"] === "https://schema.org/",
-        ),
-      )
-      .map((product) => {
-        const linkedData = product.linkedData.find(
-          (data) => data["@type"] === "Product",
+  const products = dbPaths
+    .map((dbPath) =>
+      require(path.resolve(dbPath))
+        .filter((product) =>
+          product.linkedData.some(
+            (data) =>
+              data["@type"] === "Product" &&
+              data["@context"] === "https://schema.org/",
+          ),
         )
+        .map((product) => {
+          const linkedData = product.linkedData.find(
+            (data) => data["@type"] === "Product",
+          )
 
-        return {
-          name: linkedData.name,
-          description: linkedData.description,
-          image: Array.isArray(linkedData.image)
-            ? linkedData.image[0]
-            : linkedData.image,
-          brand: linkedData.brand?.name,
-          url: product.url,
-        }
-      }),
-  ).flat()
+          return {
+            name: linkedData.name,
+            description: linkedData.description,
+            image: Array.isArray(linkedData.image)
+              ? linkedData.image[0]
+              : linkedData.image,
+            brand: linkedData.brand?.name,
+            url: product.url,
+          }
+        }),
+    )
+    .flat()
 
   console.log(JSON.stringify(products))
 }
