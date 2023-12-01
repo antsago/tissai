@@ -19,7 +19,7 @@ const main = async (domain, dataFolder, limit) => {
 
   let productsLogged = 0
   for await (const url of crawler.getAllowedUrls()) {
-    if (!KEYWORDS.some(key => url.includes(key))) {
+    if (!KEYWORDS.some((key) => url.includes(key))) {
       continue
     }
 

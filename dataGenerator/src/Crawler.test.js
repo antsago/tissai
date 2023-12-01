@@ -141,14 +141,18 @@ describe("Crawler", () => {
       const linkedData = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
-        "itemListElement": [{
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Menpants",
-          "item": "https://es.shein.com/category/Menpants-sc-008113048.html"
-        }]
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Menpants",
+            item: "https://es.shein.com/category/Menpants-sc-008113048.html",
+          },
+        ],
       }
-      const content = `<script type="application/ld+json">${JSON.stringify(linkedData)}</script>`
+      const content = `<script type="application/ld+json">${JSON.stringify(
+        linkedData,
+      )}</script>`
       response.mockResolvedValueOnce(content)
 
       const result = await crawler.getContent(url)

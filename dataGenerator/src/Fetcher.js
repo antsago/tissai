@@ -20,7 +20,7 @@ const Semaphore = function (crawlDelay) {
     next()
   }
 
-  return async function waitForGreen () {
+  return async function waitForGreen() {
     const lock = new Promise((res) => queue.push(res))
 
     if (!timeout) {

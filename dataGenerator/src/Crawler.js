@@ -55,8 +55,12 @@ const Crawler = function (
   const getContent = async function (url) {
     const response = await get(url)
     const site = new JSDOM(response.body)
-    const tags = [...site.window.document.querySelectorAll('script[type="application/ld+json"]')]
-    const linkedData = tags.map(tag => tag.text).map(JSON.parse)
+    const tags = [
+      ...site.window.document.querySelectorAll(
+        'script[type="application/ld+json"]',
+      ),
+    ]
+    const linkedData = tags.map((tag) => tag.text).map(JSON.parse)
 
     return {
       url,

@@ -39,7 +39,10 @@ describe("Fetcher", () => {
   })
 
   it("waits when calls are done in parallel", async () => {
-    response.mockResolvedValueOnce("foo").mockResolvedValueOnce("bar").mockResolvedValueOnce("fii")
+    response
+      .mockResolvedValueOnce("foo")
+      .mockResolvedValueOnce("bar")
+      .mockResolvedValueOnce("fii")
     const call1 = get("/foo")
     const call2 = get("/bar")
     const call3 = get("/fii")
@@ -61,7 +64,7 @@ describe("Fetcher", () => {
     await jest.advanceTimersByTimeAsync(CRAWL_DELAY - 1)
 
     const call2 = get("/bar")
-    
+
     expect(fetch).toHaveBeenCalledTimes(1)
     await jest.advanceTimersByTimeAsync(1)
     await call2
