@@ -137,5 +137,20 @@ describe("Content", () => {
         }
       })
     })
+
+    it("identifies image nodes", async () => {
+      const src = "image/src"
+      const html = `<img class="some clases" src="${src}" alt>`
+
+      const result = Content(url, html)
+  
+      expect(result).toStrictEqual({
+        ...baseExpected,
+        html: {
+          type: 'image',
+          src, 
+        }
+      })
+    })
   })
 })
