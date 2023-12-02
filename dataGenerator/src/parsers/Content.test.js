@@ -9,6 +9,7 @@ describe("Content", () => {
     headings: expect.any(Object),
     openGraph: expect.any(Object),
     raw: expect.any(String),
+    html: expect.any(Object),
   }
 
   it("return raw content", async () => {
@@ -119,6 +120,22 @@ describe("Content", () => {
     expect(result).toStrictEqual({
       ...baseExpected,
       openGraph,
+    })
+  })
+  
+  describe('html parsing', () => {
+    it("identifies text nodes", async () => {
+      const html = "some text"  
+
+      const result = Content(url, html)
+  
+      expect(result).toStrictEqual({
+        ...baseExpected,
+        html: {
+          type: 'text',
+          content: html, 
+        }
+      })
     })
   })
 })

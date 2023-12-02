@@ -58,12 +58,20 @@ const parseOpenGraph = (document) => {
   }
 }
 
+const parseHtml = (document) => {
+  return {
+    type: 'text',
+    content: document.body.textContent,
+  }
+}
+
 const Content = function (url, raw) {
   const document = new JSDOM(raw).window.document
 
   const jsonLD = parseJsonLD(document)
   const headings = parseHeadings(document)
   const openGraph = parseOpenGraph(document)
+  const html = parseHtml(document)
 
   return {
     url,
@@ -71,6 +79,7 @@ const Content = function (url, raw) {
     headings,
     openGraph,
     raw,
+    html,
   }
 }
 
