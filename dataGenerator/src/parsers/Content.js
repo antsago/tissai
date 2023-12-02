@@ -63,6 +63,7 @@ const parseHtml = (document) => {
     return {
       type: 'image',
       src: document.body.children[0].src,
+      alt: document.body.children[0].alt,
     }
   }
 

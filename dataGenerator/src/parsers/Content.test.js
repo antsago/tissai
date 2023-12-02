@@ -140,7 +140,8 @@ describe("Content", () => {
 
     it("identifies image nodes", async () => {
       const src = "image/src"
-      const html = `<img class="some clases" src="${src}" alt>`
+      const alt = "the alt"
+      const html = `<img class="some clases" src="${src}" alt="${alt}">`
 
       const result = Content(url, html)
   
@@ -149,6 +150,23 @@ describe("Content", () => {
         html: {
           type: 'image',
           src, 
+          alt,
+        }
+      })
+    })
+
+    it("supports missing alt attribute", async () => {
+      const src = "image/src"
+      const html = `<img class="some clases" src="${src}">`
+
+      const result = Content(url, html)
+  
+      expect(result).toStrictEqual({
+        ...baseExpected,
+        html: {
+          type: 'image',
+          src, 
+          alt: "",
         }
       })
     })
