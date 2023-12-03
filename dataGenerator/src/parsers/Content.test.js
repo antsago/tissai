@@ -9,7 +9,7 @@ describe("Content", () => {
     headings: expect.any(Object),
     openGraph: expect.any(Object),
     raw: expect.any(String),
-    html: expect.any(Object),
+    html: expect.any(Array),
   }
 
   it("return raw content", async () => {
@@ -179,6 +179,17 @@ describe("Content", () => {
           src, 
           alt: "",
         }]
+      })
+    })
+
+    it("ignores images without src", async () => {
+      const html = `<img class="some clases">`
+
+      const result = Content(url, html)
+  
+      expect(result).toStrictEqual({
+        ...baseExpected,
+        html: []
       })
     })
   })
