@@ -60,23 +60,43 @@ const parseOpenGraph = (document) => {
 
 const parseHtml = (document) => {
   const body = document.body
-  if (body.children[0]?.tagName === 'IMG' && (body.children[0].src || body.children[0].srcset)) {
-    return [{
-      type: 'image',
-      src: body.children[0].src,
-      alt: body.children[0].alt,
-      srcset: body.children[0].srcset,
-    }]
+
+  const parseNode = (node) => {
+    if (
+      node.tagName === "IMG" &&
+      (node.src || node.srcset)
+    ) {
+      return {
+          type: "image",
+          src: node.src,
+          alt: node.alt,
+          srcset: node.srcset,
+        }
+    }
+  
+    if (node.textContent) {
+      return {
+          type: "text",
+          content: node.textContent,
+        }
+    }
+
+    return undefined
   }
+
+  const children = [...body.children].map(parseNode).filter(n => !!n)
 
   if (body.textContent) {
-    return [{
-      type: 'text',
-      content: body.textContent,
-    }]
+    return [
+      ...children,
+      {
+        type: "text",
+        content: body.textContent,
+      },
+    ]
   }
 
-  return []
+  return [...children]
 }
 
 const Content = function (url, raw) {

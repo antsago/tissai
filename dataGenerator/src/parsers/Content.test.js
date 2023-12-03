@@ -231,5 +231,28 @@ describe("Content", () => {
         }]
       })
     })
+
+    it("supports sibling nodes", async () => {
+      const text = "some text"
+      const src = "image/src"
+      const html = `<img class="some clases" src="${src}">${text}`
+
+      const result = Content(url, html)
+  
+      expect(result).toStrictEqual({
+        ...baseExpected,
+        html: [
+          {
+          type: 'image',
+          srcset: "",
+          src, 
+          alt: "",
+        },
+        {
+          type: 'text',
+          content: text, 
+        }]
+      })
+    })
   })
 })
