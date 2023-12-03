@@ -160,6 +160,7 @@ describe("Content", () => {
         ...baseExpected,
         html: [{
           type: 'image',
+          srcset: "",
           src, 
           alt,
         }]
@@ -176,6 +177,7 @@ describe("Content", () => {
         ...baseExpected,
         html: [{
           type: 'image',
+          srcset: "",
           src, 
           alt: "",
         }]
@@ -190,6 +192,43 @@ describe("Content", () => {
       expect(result).toStrictEqual({
         ...baseExpected,
         html: []
+      })
+    })
+
+    it("supports srcsets", async () => {
+      const src = "image/src"
+      const alt = "the alt"
+      const srcset = "src 11w, set"
+      const html = `<img src="${src}" srcset="${srcset}" sizes="(min-width: 600px) 56px, 1px" alt="${alt}">`
+
+      const result = Content(url, html)
+  
+      expect(result).toStrictEqual({
+        ...baseExpected,
+        html: [{
+          type: 'image',
+          srcset,
+          src, 
+          alt,
+        }]
+      })
+    })
+
+    it("supports srcset only", async () => {
+      const alt = "the alt"
+      const srcset = "src 11w, set"
+      const html = `<img srcset="${srcset}" sizes="(min-width: 600px) 56px, 1px" alt="${alt}">`
+
+      const result = Content(url, html)
+  
+      expect(result).toStrictEqual({
+        ...baseExpected,
+        html: [{
+          type: 'image',
+          srcset,
+          src: "", 
+          alt,
+        }]
       })
     })
   })
