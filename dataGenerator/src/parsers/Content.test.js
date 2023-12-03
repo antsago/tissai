@@ -303,5 +303,23 @@ describe("Content", () => {
         ],
       })
     })
+
+    it("ignores comment and script content", async () => {
+      const text = "some text"
+      const html = `<script>script text</script>${text}<!-- A comment -->`
+
+      const result = Content(url, html)
+
+      expect(result).toStrictEqual({
+        ...baseExpected,
+        html: [
+          {
+            type: "text",
+            content: text,
+          },
+          [],
+        ],
+      })
+    })
   })
 })
