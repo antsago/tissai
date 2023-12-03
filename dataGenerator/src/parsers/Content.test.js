@@ -146,6 +146,7 @@ describe("Content", () => {
           {
             type: "text",
             content: html,
+            headerLevel: 0,
           },
         ],
       })
@@ -261,6 +262,7 @@ describe("Content", () => {
           {
             type: "text",
             content: text,
+            headerLevel: 0,
           },
         ],
       })
@@ -279,6 +281,7 @@ describe("Content", () => {
             {
               type: "text",
               content: text,
+              headerLevel: 0,
             },
           ],
         ],
@@ -298,6 +301,7 @@ describe("Content", () => {
             {
               type: "text",
               content: text,
+              headerLevel: 0,
             },
           ],
         ],
@@ -316,8 +320,29 @@ describe("Content", () => {
           {
             type: "text",
             content: text,
+            headerLevel: 0,
           },
           [],
+        ],
+      })
+    })
+
+    it.each([1,2,3,4,5,6])("identifies headers level %s", async (level) => {
+      const text = "some text"
+      const html = `<h${level}>${text}</h${level}>`
+
+      const result = Content(url, html)
+
+      expect(result).toStrictEqual({
+        ...baseExpected,
+        html: [
+          [
+          {
+            type: "text",
+            content: text,
+            headerLevel: level,
+          },
+          ]
         ],
       })
     })

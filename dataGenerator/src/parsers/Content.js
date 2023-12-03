@@ -59,7 +59,7 @@ const parseOpenGraph = (document) => {
 }
 
 const parseHtml = (document) => {
-  const parseNode = (node) => {
+  const parseNode = (node, headerLevel = 0) => {
     if (node.nodeName === "IMG" && (node.src || node.srcset)) {
       return {
         type: "image",
@@ -73,10 +73,13 @@ const parseHtml = (document) => {
       return {
         type: "text",
         content: node.textContent,
+        headerLevel,
       }
     }
 
-    return [...node.childNodes].map(parseNode).filter((n) => !!n)
+    const isHeader = node.nodeName.length === 2 && node.nodeName.startsWith("H")
+    const childHeaderLevel =  isHeader ? parseInt(node.nodeName[1], 10) : headerLevel
+    return [...node.childNodes].map(child => parseNode(child, childHeaderLevel)).filter((n) => !!n)
   }
 
   return parseNode(document.body)
