@@ -62,29 +62,26 @@ const parseHtml = (document) => {
   const body = document.body
 
   const parseNode = (node) => {
-    if (
-      node.tagName === "IMG" &&
-      (node.src || node.srcset)
-    ) {
+    if (node.tagName === "IMG" && (node.src || node.srcset)) {
       return {
-          type: "image",
-          src: node.src,
-          alt: node.alt,
-          srcset: node.srcset,
-        }
+        type: "image",
+        src: node.src,
+        alt: node.alt,
+        srcset: node.srcset,
+      }
     }
-  
+
     if (node.textContent) {
       return {
-          type: "text",
-          content: node.textContent,
-        }
+        type: "text",
+        content: node.textContent,
+      }
     }
 
     return undefined
   }
 
-  const children = [...body.children].map(parseNode).filter(n => !!n)
+  const children = [...body.children].map(parseNode).filter((n) => !!n)
 
   if (body.textContent) {
     return [

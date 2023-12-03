@@ -122,30 +122,32 @@ describe("Content", () => {
       openGraph,
     })
   })
-  
-  describe('html parsing', () => {
+
+  describe("html parsing", () => {
     it("supports empty pages", async () => {
-      const html = ""  
+      const html = ""
 
       const result = Content(url, html)
-  
+
       expect(result).toStrictEqual({
         ...baseExpected,
-        html: []
+        html: [],
       })
     })
 
     it("identifies text nodes", async () => {
-      const html = "some text"  
+      const html = "some text"
 
       const result = Content(url, html)
-  
+
       expect(result).toStrictEqual({
         ...baseExpected,
-        html: [{
-          type: 'text',
-          content: html, 
-        }]
+        html: [
+          {
+            type: "text",
+            content: html,
+          },
+        ],
       })
     })
 
@@ -155,15 +157,17 @@ describe("Content", () => {
       const html = `<img class="some clases" src="${src}" alt="${alt}">`
 
       const result = Content(url, html)
-  
+
       expect(result).toStrictEqual({
         ...baseExpected,
-        html: [{
-          type: 'image',
-          srcset: "",
-          src, 
-          alt,
-        }]
+        html: [
+          {
+            type: "image",
+            srcset: "",
+            src,
+            alt,
+          },
+        ],
       })
     })
 
@@ -172,15 +176,17 @@ describe("Content", () => {
       const html = `<img class="some clases" src="${src}">`
 
       const result = Content(url, html)
-  
+
       expect(result).toStrictEqual({
         ...baseExpected,
-        html: [{
-          type: 'image',
-          srcset: "",
-          src, 
-          alt: "",
-        }]
+        html: [
+          {
+            type: "image",
+            srcset: "",
+            src,
+            alt: "",
+          },
+        ],
       })
     })
 
@@ -188,10 +194,10 @@ describe("Content", () => {
       const html = `<img class="some clases">`
 
       const result = Content(url, html)
-  
+
       expect(result).toStrictEqual({
         ...baseExpected,
-        html: []
+        html: [],
       })
     })
 
@@ -202,15 +208,17 @@ describe("Content", () => {
       const html = `<img src="${src}" srcset="${srcset}" sizes="(min-width: 600px) 56px, 1px" alt="${alt}">`
 
       const result = Content(url, html)
-  
+
       expect(result).toStrictEqual({
         ...baseExpected,
-        html: [{
-          type: 'image',
-          srcset,
-          src, 
-          alt,
-        }]
+        html: [
+          {
+            type: "image",
+            srcset,
+            src,
+            alt,
+          },
+        ],
       })
     })
 
@@ -220,15 +228,17 @@ describe("Content", () => {
       const html = `<img srcset="${srcset}" sizes="(min-width: 600px) 56px, 1px" alt="${alt}">`
 
       const result = Content(url, html)
-  
+
       expect(result).toStrictEqual({
         ...baseExpected,
-        html: [{
-          type: 'image',
-          srcset,
-          src: "", 
-          alt,
-        }]
+        html: [
+          {
+            type: "image",
+            srcset,
+            src: "",
+            alt,
+          },
+        ],
       })
     })
 
@@ -238,20 +248,21 @@ describe("Content", () => {
       const html = `<img class="some clases" src="${src}">${text}`
 
       const result = Content(url, html)
-  
+
       expect(result).toStrictEqual({
         ...baseExpected,
         html: [
           {
-          type: 'image',
-          srcset: "",
-          src, 
-          alt: "",
-        },
-        {
-          type: 'text',
-          content: text, 
-        }]
+            type: "image",
+            srcset: "",
+            src,
+            alt: "",
+          },
+          {
+            type: "text",
+            content: text,
+          },
+        ],
       })
     })
   })
