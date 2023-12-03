@@ -349,5 +349,30 @@ describe("Content", () => {
         })
       },
     )
+
+    it("identifies links", async () => {
+      const text = "some text"
+      const href = "https://some.link/"
+      const html = `<a href="${href}">${text}</a>`
+
+      const result = Content(url, html)
+
+      expect(result).toStrictEqual({
+        ...baseExpected,
+        html: [
+          {
+            type: "link",
+            href,
+            children: [
+              {
+                type: "text",
+                content: text,
+                headerLevel: 0,
+              },
+            ]
+          }
+        ],
+      })
+    })
   })
 })

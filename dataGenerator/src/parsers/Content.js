@@ -80,9 +80,19 @@ const parseHtml = (document) => {
 
     const isHeader = name.length === 2 && name.startsWith("H")
     const childHeaderLevel = isHeader ? parseInt(name[1], 10) : headerLevel
-    return [...node.childNodes]
+    const children = [...node.childNodes]
       .map((child) => parseNode(child, childHeaderLevel))
       .filter((n) => !!n)
+
+    if (name === "A") {
+      return {
+        type: "link",
+        href: node.href,
+        children,
+      }
+    }
+
+    return children
   }
 
   return parseNode(document.body, 0)
