@@ -62,7 +62,7 @@ const parseHtml = (document) => {
   const body = document.body
 
   const parseNode = (node) => {
-    if (node.tagName === "IMG" && (node.src || node.srcset)) {
+    if (node.nodeName === "IMG" && (node.src || node.srcset)) {
       return {
         type: "image",
         src: node.src,
@@ -71,29 +71,17 @@ const parseHtml = (document) => {
       }
     }
 
-    if (node.textContent) {
+    if (node.nodeName === "#text") {
       return {
         type: "text",
         content: node.textContent,
       }
     }
 
-    return undefined
+    return [...node.childNodes].map(parseNode).filter((n) => !!n)
   }
 
-  const children = [...body.children].map(parseNode).filter((n) => !!n)
-
-  if (body.textContent) {
-    return [
-      ...children,
-      {
-        type: "text",
-        content: body.textContent,
-      },
-    ]
-  }
-
-  return [...children]
+  return parseNode(body)
 }
 
 const Content = function (url, raw) {

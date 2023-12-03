@@ -197,7 +197,7 @@ describe("Content", () => {
 
       expect(result).toStrictEqual({
         ...baseExpected,
-        html: [],
+        html: [[]],
       })
     })
 
@@ -262,6 +262,25 @@ describe("Content", () => {
             type: "text",
             content: text,
           },
+        ],
+      })
+    })
+
+    it("parses nodes recursively", async () => {
+      const text = "some text"
+      const html = `<div>${text}</div>`
+
+      const result = Content(url, html)
+
+      expect(result).toStrictEqual({
+        ...baseExpected,
+        html: [
+          [
+            {
+              type: "text",
+              content: text,
+            },
+          ],
         ],
       })
     })
