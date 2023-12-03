@@ -327,24 +327,27 @@ describe("Content", () => {
       })
     })
 
-    it.each([1,2,3,4,5,6])("identifies headers level %s", async (level) => {
-      const text = "some text"
-      const html = `<h${level}>${text}</h${level}>`
+    it.each([1, 2, 3, 4, 5, 6])(
+      "identifies headers level %s",
+      async (level) => {
+        const text = "some text"
+        const html = `<h${level}>${text}</h${level}>`
 
-      const result = Content(url, html)
+        const result = Content(url, html)
 
-      expect(result).toStrictEqual({
-        ...baseExpected,
-        html: [
-          [
-          {
-            type: "text",
-            content: text,
-            headerLevel: level,
-          },
-          ]
-        ],
-      })
-    })
+        expect(result).toStrictEqual({
+          ...baseExpected,
+          html: [
+            [
+              {
+                type: "text",
+                content: text,
+                headerLevel: level,
+              },
+            ],
+          ],
+        })
+      },
+    )
   })
 })

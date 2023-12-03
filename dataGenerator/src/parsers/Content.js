@@ -79,8 +79,10 @@ const parseHtml = (document) => {
     }
 
     const isHeader = name.length === 2 && name.startsWith("H")
-    const childHeaderLevel =  isHeader ? parseInt(name[1], 10) : headerLevel
-    return [...node.childNodes].map(child => parseNode(child, childHeaderLevel)).filter((n) => !!n)
+    const childHeaderLevel = isHeader ? parseInt(name[1], 10) : headerLevel
+    return [...node.childNodes]
+      .map((child) => parseNode(child, childHeaderLevel))
+      .filter((n) => !!n)
   }
 
   return parseNode(document.body, 0)
