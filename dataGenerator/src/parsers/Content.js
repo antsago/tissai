@@ -59,8 +59,6 @@ const parseOpenGraph = (document) => {
 }
 
 const parseHtml = (document) => {
-  const body = document.body
-
   const parseNode = (node) => {
     if (node.nodeName === "IMG" && (node.src || node.srcset)) {
       return {
@@ -81,7 +79,7 @@ const parseHtml = (document) => {
     return [...node.childNodes].map(parseNode).filter((n) => !!n)
   }
 
-  return parseNode(body)
+  return parseNode(document.body)
 }
 
 const Content = function (url, raw) {
