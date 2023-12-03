@@ -284,5 +284,24 @@ describe("Content", () => {
         ],
       })
     })
+
+    it("ignores head", async () => {
+      const text = "some text"
+      const html = `<html><head></head><body><div>${text}</div></body>`
+
+      const result = Content(url, html)
+
+      expect(result).toStrictEqual({
+        ...baseExpected,
+        html: [
+          [
+            {
+              type: "text",
+              content: text,
+            },
+          ],
+        ],
+      })
+    })
   })
 })
