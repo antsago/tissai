@@ -88,7 +88,7 @@ const parseHtml = (document) => {
       .map((child) => parseNode(child, childHLevel(node, hLevel)))
       .filter((n) => !!n)
 
-    if (name === "A") {
+    if (name === "A" && node.href) {
       return {
         type: "link",
         href: node.href,

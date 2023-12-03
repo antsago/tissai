@@ -369,8 +369,28 @@ describe("Content", () => {
                 content: text,
                 headerLevel: 0,
               },
-            ]
-          }
+            ],
+          },
+        ],
+      })
+    })
+
+    it("ignores links without href", async () => {
+      const text = "some text"
+      const html = `<a href="">${text}</a>`
+
+      const result = Content(url, html)
+
+      expect(result).toStrictEqual({
+        ...baseExpected,
+        html: [
+          [
+            {
+              type: "text",
+              content: text,
+              headerLevel: 0,
+            },
+          ],
         ],
       })
     })
