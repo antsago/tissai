@@ -59,18 +59,23 @@ const parseOpenGraph = (document) => {
 }
 
 const parseHtml = (document) => {
-  if (document.body.children[0]?.tagName === 'IMG') {
-    return {
+  const body = document.body
+  if (body.children[0]?.tagName === 'IMG') {
+    return [{
       type: 'image',
-      src: document.body.children[0].src,
-      alt: document.body.children[0].alt,
-    }
+      src: body.children[0].src,
+      alt: body.children[0].alt,
+    }]
   }
 
-  return {
-    type: 'text',
-    content: document.body.textContent,
+  if (body.textContent) {
+    return [{
+      type: 'text',
+      content: body.textContent,
+    }]
   }
+
+  return []
 }
 
 const Content = function (url, raw) {

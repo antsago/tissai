@@ -124,6 +124,17 @@ describe("Content", () => {
   })
   
   describe('html parsing', () => {
+    it("supports empty pages", async () => {
+      const html = ""  
+
+      const result = Content(url, html)
+  
+      expect(result).toStrictEqual({
+        ...baseExpected,
+        html: []
+      })
+    })
+
     it("identifies text nodes", async () => {
       const html = "some text"  
 
@@ -131,10 +142,10 @@ describe("Content", () => {
   
       expect(result).toStrictEqual({
         ...baseExpected,
-        html: {
+        html: [{
           type: 'text',
           content: html, 
-        }
+        }]
       })
     })
 
@@ -147,11 +158,11 @@ describe("Content", () => {
   
       expect(result).toStrictEqual({
         ...baseExpected,
-        html: {
+        html: [{
           type: 'image',
           src, 
           alt,
-        }
+        }]
       })
     })
 
@@ -163,11 +174,11 @@ describe("Content", () => {
   
       expect(result).toStrictEqual({
         ...baseExpected,
-        html: {
+        html: [{
           type: 'image',
           src, 
           alt: "",
-        }
+        }]
       })
     })
   })
