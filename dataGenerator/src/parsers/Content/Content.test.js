@@ -13,23 +13,23 @@ describe("Content", () => {
 
   it("extracts jsonLD", async () => {
     const product = {
-      "@context":"https://schema.org/",
-      "@type":"Product",
-      "name":"The name of the product",
-      "productID":"121230",
-      "brand":{
-         "@type":"Brand",
-         "name":"WEDZE",
-         "image":["https://brand.com/image.jpg"]
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      name: "The name of the product",
+      productID: "121230",
+      brand: {
+        "@type": "Brand",
+        name: "WEDZE",
+        image: ["https://brand.com/image.jpg"],
       },
-      "description":"The description",
-      "image":"https://example.com/image.jpg",
-   }
+      description: "The description",
+      image: "https://example.com/image.jpg",
+    }
     const product2 = {
-      "@context":"https://schema.org/",
-      "@type":"Product",
-      "name":"Another product",
-   }
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      name: "Another product",
+    }
     const breadcrumb = {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
@@ -45,19 +45,23 @@ describe("Content", () => {
     const html = `
       <html>
         <script type="application/ld+json">${JSON.stringify(product)}</script>
-        <script type="application/ld+json">${JSON.stringify(breadcrumb)}</script>
         <script type="application/ld+json">${JSON.stringify(product2)}</script>
+        <script type="application/ld+json">
+          ${JSON.stringify(breadcrumb)}
+        </script>
       </html>`
 
     const result = Content(url, html)
 
-    expect(result).toStrictEqual(expect.objectContaining({
-      jsonLD: {
-        product,
-        breadcrumb,
-        other: [product2],
-      }
-    }))
+    expect(result).toStrictEqual(
+      expect.objectContaining({
+        jsonLD: {
+          product,
+          breadcrumb,
+          other: [product2],
+        },
+      }),
+    )
   })
 
   it("extracts heading information", async () => {

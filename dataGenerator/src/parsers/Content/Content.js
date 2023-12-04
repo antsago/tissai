@@ -6,26 +6,32 @@ const parseJsonLD = (document) => {
     ...document?.querySelectorAll('script[type="application/ld+json"]'),
   ]
 
-  return tags.map((tag) => tag.text).map(JSON.parse).reduce((sorted, data) => {
-    if (data["@type"] === "Product" && !sorted.product) {
-      return {
-        ...sorted,
-        product: data,
-      }
-    }
-    
-    if (data["@type"] === "BreadcrumbList" && !sorted.breadcrumb) {
-      return {
-        ...sorted,
-        breadcrumb: data,
-      }
-    }
+  return tags
+    .map((tag) => tag.text)
+    .map(JSON.parse)
+    .reduce(
+      (sorted, data) => {
+        if (data["@type"] === "Product" && !sorted.product) {
+          return {
+            ...sorted,
+            product: data,
+          }
+        }
 
-    return {
-      ...sorted,
-      other: [...sorted.other, data]
-    }
-  }, { other: [] })
+        if (data["@type"] === "BreadcrumbList" && !sorted.breadcrumb) {
+          return {
+            ...sorted,
+            breadcrumb: data,
+          }
+        }
+
+        return {
+          ...sorted,
+          other: [...sorted.other, data],
+        }
+      },
+      { other: [] },
+    )
 }
 
 const parseHeadings = (document) => {
