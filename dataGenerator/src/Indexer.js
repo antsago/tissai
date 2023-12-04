@@ -16,6 +16,7 @@ const Indexer = function () {
         pageContent.openGraph.description ??
         pageContent.headings.description,
       image: ldProduct.image,
+      brand: ldProduct.brand?.name,
     }
   }
 

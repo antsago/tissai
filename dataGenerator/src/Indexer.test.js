@@ -11,6 +11,7 @@ describe("Indexer", () => {
           name: "The product name",
           description: "The description in ld",
           image: "https//image.com/png",
+          brand: { name: "BRAND" },
         },
       },
       openGraph: {
@@ -100,6 +101,28 @@ describe("Indexer", () => {
       expect(result).toStrictEqual(
         expect.objectContaining({
           image: content.jsonLD.product.image,
+        }),
+      )
+    })
+
+    it("takes the brand from jsonLD", () => {
+      const result = indexer.createProduct(content)
+
+      expect(result).toStrictEqual(
+        expect.objectContaining({
+          brand: content.jsonLD.product.brand.name,
+        }),
+      )
+    })
+
+    it("supports products without brand", () => {
+      delete content.jsonLD.product.brand
+
+      const result = indexer.createProduct(content)
+
+      expect(result).toStrictEqual(
+        expect.objectContaining({
+          brand: undefined,
         }),
       )
     })
