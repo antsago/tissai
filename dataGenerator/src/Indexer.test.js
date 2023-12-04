@@ -8,11 +8,19 @@ describe("Indexer", () => {
 
   describe("shouldIndex", () => {
     it("filters pages without product jsonLD", () => {
-      const content = { jsonLD: { other: [] } }
+      const content = { jsonLD: {} }
   
       const result = indexer.isProductPage(content)
   
       expect(result).toBe(false)
+    })
+
+    it("accepts pages with product jsonLD", () => {
+      const content = { jsonLD: { product: {} } }
+  
+      const result = indexer.isProductPage(content)
+  
+      expect(result).toBe(true)
     })
   })
 
