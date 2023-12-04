@@ -1,6 +1,19 @@
 const { mkdir } = require("fs/promises")
 const Crawler = require("./Crawler")
 
+const SHOPS = {
+  DECATHLON: {
+    name: "Decathlon",
+    image: "https://www.decathlon.es/render/android-icon-192x192.47c610ae67c1b1bdc694.png",
+    domain: "www.decathlon.es",
+  },
+  SHEIN: {
+    name: "Shein",
+    image: "https://sheinsz.ltwebstatic.com/she_dist/images/touch-icon-ipad-144-47ceee2d97.png",
+    domain: "es.shein.com",
+  },
+}
+
 const PRODUCT_TOKEN = "Wibnix/0.1"
 const KEYWORDS = ["pants", "trousers", "pantalon"]
 const CRAWL_DELAY = 5000
