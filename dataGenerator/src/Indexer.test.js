@@ -9,9 +9,15 @@ describe("Indexer", () => {
       jsonLD: {
         product: {
           name: "The product name",
-          description: "The product description",
+          description: "The description in ld",
         },
       },
+      openGraph: {
+        description: "The description in og",
+      },
+      headings: {
+        description: "The description in headings",
+      }
     }
   })
 
@@ -53,6 +59,27 @@ describe("Indexer", () => {
 
       expect(result).toStrictEqual(expect.objectContaining({
         description: content.jsonLD.product.description,
+      }))
+    })
+
+    it("fallbacks to openGraph for description", () => {
+      delete content.jsonLD.product.description
+
+      const result = indexer.createProduct(content)
+
+      expect(result).toStrictEqual(expect.objectContaining({
+        description: content.openGraph.description,
+      }))
+    })
+
+    it("secondary fallback to headings for description", () => {
+      delete content.jsonLD.product.description
+      delete content.openGraph.description
+
+      const result = indexer.createProduct(content)
+
+      expect(result).toStrictEqual(expect.objectContaining({
+        description: content.headings.description,
       }))
     })
   })

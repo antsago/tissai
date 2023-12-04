@@ -11,7 +11,7 @@ const Indexer = function () {
     return {
       id: randomUUID(),
       name: ldProduct.name,
-      description: ldProduct.description,
+      description: ldProduct.description ?? pageContent.openGraph.description ?? pageContent.headings.description,
     }
   }
 
