@@ -5,7 +5,14 @@ describe("Indexer", () => {
   let content
   beforeEach(() => {
     indexer = new Indexer()
-    content = { jsonLD: { product: { name: "The product name" } } }
+    content = {
+      jsonLD: {
+        product: {
+          name: "The product name",
+          description: "The product description",
+        },
+      },
+    }
   })
 
   describe("shouldIndex", () => {
@@ -33,11 +40,19 @@ describe("Indexer", () => {
       }))
     })
 
-    it("returns the name from jsonLD", () => {
+    it("sets the name from jsonLD", () => {
       const result = indexer.createProduct(content)
 
       expect(result).toStrictEqual(expect.objectContaining({
         name: content.jsonLD.product.name,
+      }))
+    })
+
+    it("sets the description from jsonLD", () => {
+      const result = indexer.createProduct(content)
+
+      expect(result).toStrictEqual(expect.objectContaining({
+        description: content.jsonLD.product.description,
       }))
     })
   })
