@@ -6,8 +6,11 @@ const Indexer = function () {
   }
 
   const createProduct = function (pageContent) {
+    const ldProduct = pageContent.jsonLD.product
+
     return {
       id: randomUUID(),
+      name: ldProduct.name,
     }
   }
 
