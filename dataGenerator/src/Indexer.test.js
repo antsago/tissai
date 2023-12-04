@@ -10,6 +10,7 @@ describe("Indexer", () => {
         product: {
           name: "The product name",
           description: "The description in ld",
+          image: "https//image.com/png",
         },
       },
       openGraph: {
@@ -80,6 +81,14 @@ describe("Indexer", () => {
 
       expect(result).toStrictEqual(expect.objectContaining({
         description: content.headings.description,
+      }))
+    })
+
+    it("takes the image from jsonLD", () => {
+      const result = indexer.createProduct(content)
+
+      expect(result).toStrictEqual(expect.objectContaining({
+        image: content.jsonLD.product.image,
       }))
     })
   })
