@@ -5,14 +5,32 @@ describe("Content", () => {
 
   const baseExpected = {
     url,
-    jsonLD: [],
+    jsonLD: expect.any(Object),
     headings: expect.any(Object),
     openGraph: expect.any(Object),
     html: expect.any(Array),
   }
 
   it("extracts jsonLD", async () => {
-    const linkedData = {
+    const product = {
+      "@context":"https://schema.org/",
+      "@type":"Product",
+      "name":"The name of the product",
+      "productID":"121230",
+      "brand":{
+         "@type":"Brand",
+         "name":"WEDZE",
+         "image":["https://brand.com/image.jpg"]
+      },
+      "description":"The description",
+      "image":"https://example.com/image.jpg",
+   }
+    const product2 = {
+      "@context":"https://schema.org/",
+      "@type":"Product",
+      "name":"Another product",
+   }
+    const breadcrumb = {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       itemListElement: [
@@ -24,16 +42,22 @@ describe("Content", () => {
         },
       ],
     }
-    const html = `<html><script type="application/ld+json">${JSON.stringify(
-      linkedData,
-    )}</script></html>`
+    const html = `
+      <html>
+        <script type="application/ld+json">${JSON.stringify(product)}</script>
+        <script type="application/ld+json">${JSON.stringify(breadcrumb)}</script>
+        <script type="application/ld+json">${JSON.stringify(product2)}</script>
+      </html>`
 
     const result = Content(url, html)
 
-    expect(result).toStrictEqual({
-      ...baseExpected,
-      jsonLD: [linkedData],
-    })
+    expect(result).toStrictEqual(expect.objectContaining({
+      jsonLD: {
+        product,
+        breadcrumb,
+        other: [product2],
+      }
+    }))
   })
 
   it("extracts heading information", async () => {
