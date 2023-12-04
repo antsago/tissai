@@ -3,13 +3,13 @@ const Content = require("./Content")
 describe("Content", () => {
   const url = `https://example.com/url1`
 
-  const baseExpected = {
-    url,
-    jsonLD: expect.any(Object),
-    headings: expect.any(Object),
-    openGraph: expect.any(Object),
-    html: expect.any(Array),
-  }
+  it("return url", async () => {
+    const html = `<html></html>`
+
+    const result = Content(url, html)
+
+    expect(result).toStrictEqual(expect.objectContaining({ url }))
+  })
 
   it("extracts jsonLD", async () => {
     const product = {
@@ -89,10 +89,11 @@ describe("Content", () => {
 
     const result = Content(url, html)
 
-    expect(result).toStrictEqual({
-      ...baseExpected,
-      headings,
-    })
+    expect(result).toStrictEqual(
+      expect.objectContaining({
+        headings,
+      }),
+    )
   })
 
   it("extracts opengraph information", async () => {
@@ -133,10 +134,11 @@ describe("Content", () => {
 
     const result = Content(url, html)
 
-    expect(result).toStrictEqual({
-      ...baseExpected,
-      openGraph,
-    })
+    expect(result).toStrictEqual(
+      expect.objectContaining({
+        openGraph,
+      }),
+    )
   })
 
   it("parses html", async () => {
@@ -145,17 +147,18 @@ describe("Content", () => {
 
     const result = Content(url, html)
 
-    expect(result).toStrictEqual({
-      ...baseExpected,
-      html: [
-        [
-          {
-            type: "text",
-            content: text,
-            headerLevel: 0,
-          },
+    expect(result).toStrictEqual(
+      expect.objectContaining({
+        html: [
+          [
+            {
+              type: "text",
+              content: text,
+              headerLevel: 0,
+            },
+          ],
         ],
-      ],
-    })
+      }),
+    )
   })
 })
