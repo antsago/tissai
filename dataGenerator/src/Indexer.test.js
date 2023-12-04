@@ -19,6 +19,7 @@ describe("Indexer", () => {
       },
       headings: {
         description: "The description in headings",
+        canonical: "https://example.com/product",
       },
     }
   })
@@ -123,6 +124,16 @@ describe("Indexer", () => {
       expect(result).toStrictEqual(
         expect.objectContaining({
           brand: undefined,
+        }),
+      )
+    })
+
+    it("creates a seller with the cannonical url", () => {
+      const result = indexer.createProduct(content)
+
+      expect(result).toStrictEqual(
+        expect.objectContaining({
+          sellers: [{ productUrl: content.headings.canonical }],
         }),
       )
     })

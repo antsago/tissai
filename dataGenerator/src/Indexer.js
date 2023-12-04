@@ -17,6 +17,9 @@ const Indexer = function () {
         pageContent.headings.description,
       image: ldProduct.image,
       brand: ldProduct.brand?.name,
+      sellers: [{
+        productUrl: pageContent.headings.canonical,
+      }]
     }
   }
 
