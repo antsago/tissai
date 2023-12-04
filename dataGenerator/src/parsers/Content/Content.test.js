@@ -8,20 +8,8 @@ describe("Content", () => {
     jsonLD: [],
     headings: expect.any(Object),
     openGraph: expect.any(Object),
-    raw: expect.any(String),
     html: expect.any(Array),
   }
-
-  it("return raw content", async () => {
-    const html = `<html><head></head><body></body></html>`
-
-    const result = Content(url, html)
-
-    expect(result).toStrictEqual({
-      ...baseExpected,
-      raw: html,
-    })
-  })
 
   it("extracts jsonLD", async () => {
     const linkedData = {

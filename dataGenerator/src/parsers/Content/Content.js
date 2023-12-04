@@ -72,7 +72,6 @@ const Content = function (url, raw) {
     jsonLD,
     headings,
     openGraph,
-    raw,
     html,
   }
 }
