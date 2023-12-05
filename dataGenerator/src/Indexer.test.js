@@ -4,7 +4,7 @@ describe("Indexer", () => {
   const SHOP = {
     name: "Example",
     domain: "example.com",
-    icon: "https://example.com/icon"
+    icon: "https://example.com/icon",
   }
 
   let indexer
@@ -140,7 +140,9 @@ describe("Indexer", () => {
 
       expect(result).toStrictEqual(
         expect.objectContaining({
-          sellers: [expect.objectContaining({ productUrl: content.headings.canonical })],
+          sellers: [
+            expect.objectContaining({ productUrl: content.headings.canonical }),
+          ],
         }),
       )
     })
@@ -150,12 +152,14 @@ describe("Indexer", () => {
 
       expect(result).toStrictEqual(
         expect.objectContaining({
-          sellers: [expect.objectContaining({
-            shop: {
-              name: SHOP.name,
-              image: SHOP.icon,
-            },
-          })],
+          sellers: [
+            expect.objectContaining({
+              shop: {
+                name: SHOP.name,
+                image: SHOP.icon,
+              },
+            }),
+          ],
         }),
       )
     })

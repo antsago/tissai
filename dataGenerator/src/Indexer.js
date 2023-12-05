@@ -7,12 +7,12 @@ const Indexer = function (shops) {
 
   const findShop = (url) => {
     const urlDomain = new URL(url).hostname
-    const shop = shops.find(s => s.domain === urlDomain)
+    const shop = shops.find((s) => s.domain === urlDomain)
 
     return {
-        name: shop.name,
-        image: shop.icon,
-      }
+      name: shop.name,
+      image: shop.icon,
+    }
   }
 
   const createProduct = function ({ jsonLD, openGraph, headings }) {
@@ -26,10 +26,11 @@ const Indexer = function (shops) {
         ldProduct.description ?? openGraph.description ?? headings.description,
       image: ldProduct.image,
       brand: ldProduct.brand?.name,
-      sellers: [{
-        productUrl,
-        shop: findShop(productUrl),
-      }
+      sellers: [
+        {
+          productUrl,
+          shop: findShop(productUrl),
+        },
       ],
     }
   }

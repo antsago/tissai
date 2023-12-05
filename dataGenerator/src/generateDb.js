@@ -4,14 +4,12 @@ const Crawler = require("./Crawler")
 const SHOPS = {
   DECATHLON: {
     name: "Decathlon",
-    icon:
-      "https://www.decathlon.es/render/android-icon-192x192.47c610ae67c1b1bdc694.png",
+    icon: "https://www.decathlon.es/render/android-icon-192x192.47c610ae67c1b1bdc694.png",
     domain: "www.decathlon.es",
   },
   SHEIN: {
     name: "Shein",
-    icon:
-      "https://sheinsz.ltwebstatic.com/she_dist/images/touch-icon-ipad-144-47ceee2d97.png",
+    icon: "https://sheinsz.ltwebstatic.com/she_dist/images/touch-icon-ipad-144-47ceee2d97.png",
     domain: "es.shein.com",
   },
 }
