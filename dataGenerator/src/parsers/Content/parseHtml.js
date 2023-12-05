@@ -1,4 +1,5 @@
 const IS_WHITESPACE = /^\s*$/
+const TAGS_TO_IGNORE = ["SCRIPT", "#comment"]
 
 const childHLevel = (node, parentHLevel) => {
   const name = node.nodeName
@@ -8,6 +9,11 @@ const childHLevel = (node, parentHLevel) => {
 
 const parseNode = (node, hLevel) => {
   const name = node.nodeName
+
+  if (TAGS_TO_IGNORE.includes(name)) {
+    return []
+  }
+
   if (name === "IMG" && (node.src || node.srcset)) {
     return {
       type: "image",

@@ -195,17 +195,16 @@ describe("Content", () => {
 
   it("ignores comment and script content", async () => {
     const text = "some text"
-    const html = `<script>script text</script>${text}<!-- A comment -->`
+    const html = `
+      <body>
+        <script>script text</script><!-- A comment -->
+      </body>
+      <script>script text</script><!-- A comment -->
+    `
 
     const result = parseHtml(html)
 
-    expect(result).toStrictEqual([
-      {
-        type: "text",
-        content: text,
-        headerLevel: 0,
-      },
-    ])
+    expect(result).toStrictEqual([])
   })
 
   it.each([1, 2, 3, 4, 5, 6])("identifies headers level %s", async (level) => {
