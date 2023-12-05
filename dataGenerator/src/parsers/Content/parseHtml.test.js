@@ -64,7 +64,7 @@ describe("Content", () => {
 
     const result = parseHtml(html)
 
-    expect(result).toStrictEqual([[]])
+    expect(result).toStrictEqual([])
   })
 
   it("supports srcsets", async () => {
@@ -141,13 +141,21 @@ describe("Content", () => {
     ])
   })
 
+  it("removes empty branches", async () => {
+    const html = `<div></div>`
+
+    const result = parseHtml(html)
+
+    expect(result).toStrictEqual([])
+  })
+
   it("ignores whitespace text", async () => {
     const text = "\n    \n   "
     const html = `<div>${text}</div>`
 
     const result = parseHtml(html)
 
-    expect(result).toStrictEqual([[[]]])
+    expect(result).toStrictEqual([])
   })
 
   it("ignores head", async () => {
@@ -179,7 +187,6 @@ describe("Content", () => {
         content: text,
         headerLevel: 0,
       },
-      [],
     ])
   })
 
