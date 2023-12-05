@@ -150,13 +150,11 @@ describe("Content", () => {
     expect(result).toStrictEqual(
       expect.objectContaining({
         html: [
-          [
-            {
-              type: "text",
-              content: text,
-              headerLevel: 0,
-            },
-          ],
+          {
+            type: "text",
+            content: text,
+            headerLevel: 0,
+          },
         ],
       }),
     )
