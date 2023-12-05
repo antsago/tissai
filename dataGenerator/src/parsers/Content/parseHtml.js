@@ -27,7 +27,10 @@ const parseNode = (node, hLevel) => {
 
   const children = [...node.childNodes]
     .map((child) => parseNode(child, childHLevel(node, hLevel)))
-    .filter((n) => !Array.isArray(n) || n.length > 0)
+    .filter((child) => !Array.isArray(child) || child.length > 0)
+    .map((child) =>
+      Array.isArray(child) && child.length === 1 ? child[0] : child,
+    )
 
   if (name === "A" && node.href) {
     return {

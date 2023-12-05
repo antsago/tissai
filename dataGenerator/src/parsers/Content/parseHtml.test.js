@@ -131,7 +131,27 @@ describe("Content", () => {
     const result = parseHtml(html)
 
     expect(result).toStrictEqual([
+      {
+        type: "text",
+        content: text,
+        headerLevel: 0,
+      },
+    ])
+  })
+
+  it("preserves nodes with multiple children", async () => {
+    const text = "some text"
+    const html = `<div><span>${text}</span><span>${text}</span></div>`
+
+    const result = parseHtml(html)
+
+    expect(result).toStrictEqual([
       [
+        {
+          type: "text",
+          content: text,
+          headerLevel: 0,
+        },
         {
           type: "text",
           content: text,
@@ -165,13 +185,11 @@ describe("Content", () => {
     const result = parseHtml(html)
 
     expect(result).toStrictEqual([
-      [
-        {
-          type: "text",
-          content: text,
-          headerLevel: 0,
-        },
-      ],
+      {
+        type: "text",
+        content: text,
+        headerLevel: 0,
+      },
     ])
   })
 
@@ -197,13 +215,11 @@ describe("Content", () => {
     const result = parseHtml(html)
 
     expect(result).toStrictEqual([
-      [
-        {
-          type: "text",
-          content: text,
-          headerLevel: level,
-        },
-      ],
+      {
+        type: "text",
+        content: text,
+        headerLevel: level,
+      },
     ])
   })
 
@@ -236,13 +252,11 @@ describe("Content", () => {
     const result = parseHtml(html)
 
     expect(result).toStrictEqual([
-      [
-        {
-          type: "text",
-          content: text,
-          headerLevel: 0,
-        },
-      ],
+      {
+        type: "text",
+        content: text,
+        headerLevel: 0,
+      },
     ])
   })
 })
