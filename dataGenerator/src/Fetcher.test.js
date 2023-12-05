@@ -114,15 +114,17 @@ describe("Fetcher", () => {
       body: "foobar",
       headers: { "content-type": "text/xml" },
     }
-    readdir.mockResolvedValue([
-      "1700753057613@https%3A%2F%2Fwww.example.com%2Fb-%40r",
-    ])
+    const path = "1700753057613@https%3A%2F%2Fwww.example.com%2Fb-%40r"
+    readdir.mockResolvedValue([path])
     readFile.mockResolvedValue(JSON.stringify(expected))
 
     const result = await get("https://www.example.com/b-@r")
 
     expect(result).toEqual(expected)
     expect(fetch).not.toHaveBeenCalled()
+    expect(readFile).toHaveBeenCalledWith(`${LOGGING_PATH}/${path}`, {
+      encoding: "utf8",
+    })
   })
 
   it("favours latest responses", async () => {
@@ -142,6 +144,7 @@ describe("Fetcher", () => {
 
     expect(readFile).toHaveBeenCalledWith(
       `${LOGGING_PATH}/1700753057614@https%3A%2F%2Fwww.example.com%2Fb-%40r`,
+      expect.anything(),
     )
   })
 

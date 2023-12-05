@@ -59,7 +59,9 @@ const test = async function (dataFolder) {
     crawlDelay: CRAWL_DELAY,
   })
 
-  const content = await crawler.getContent("https://www.decathlon.es/es/p/mp/regatta/pantalones-repelentes-al-agua-new-action-para-mujer-negro/_/R-p-28a99149-5812-44f5-a6b9-6d36aec296aa")
+  const content = await crawler.getContent(
+    "https://www.decathlon.es/es/p/mp/regatta/pantalones-repelentes-al-agua-new-action-para-mujer-negro/_/R-p-28a99149-5812-44f5-a6b9-6d36aec296aa",
+  )
 
   console.log(`${JSON.stringify(content.html)}`)
   return content

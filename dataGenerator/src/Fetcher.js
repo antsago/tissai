@@ -66,7 +66,9 @@ const Fetcher = function (productToken, loggingPath, crawlDelay) {
       const encodedUrl = encodePath(url)
       const cached = cachedResponses.filter((res) => res.includes(encodedUrl))
       if (cached.length) {
-        const result = await readFile(`${loggingPath}/${cached[0]}`)
+        const result = await readFile(`${loggingPath}/${cached[0]}`, {
+          encoding: "utf8",
+        })
         return JSON.parse(result)
       }
 
