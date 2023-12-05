@@ -5,13 +5,20 @@ const Indexer = function (shops) {
     return !!pageContent.jsonLD.product
   }
 
+  const findShop = (url) => {
+    const urlDomain = new URL(url).hostname
+    const shop = shops.find(s => s.domain === urlDomain)
+
+    return {
+        name: shop.name,
+        image: shop.icon,
+      }
+  }
+
   const createProduct = function ({ jsonLD, openGraph, headings }) {
     const ldProduct = jsonLD.product
 
     const productUrl = headings.canonical
-    const urlDomain = new URL(productUrl).hostname
-    const shop = shops.find(s => s.domain === urlDomain)
-
     return {
       id: randomUUID(),
       name: ldProduct.name,
@@ -19,14 +26,10 @@ const Indexer = function (shops) {
         ldProduct.description ?? openGraph.description ?? headings.description,
       image: ldProduct.image,
       brand: ldProduct.brand?.name,
-      sellers: [
-        {
-          productUrl,
-          shop: {
-            name: shop.name,
-            image: shop.icon,
-          }
-        },
+      sellers: [{
+        productUrl,
+        shop: findShop(productUrl),
+      }
       ],
     }
   }
