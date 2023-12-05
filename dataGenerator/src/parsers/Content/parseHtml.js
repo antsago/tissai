@@ -23,11 +23,15 @@ const parseNode = (node, hLevel) => {
     }
   }
 
-  if (name === "#text" && !IS_WHITESPACE.test(node.textContent)) {
-    return {
-      type: "text",
-      content: node.textContent,
-      headerLevel: hLevel,
+  if (name === "#text") {
+    const content = node.textContent.trim()
+
+    if (content) {
+      return {
+        type: "text",
+        content,
+        headerLevel: hLevel,
+      }
     }
   }
 

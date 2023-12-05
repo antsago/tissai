@@ -178,6 +178,21 @@ describe("Content", () => {
     expect(result).toStrictEqual([])
   })
 
+  it("trims whitespace", async () => {
+    const text = "\n    a\nb   \n"
+    const html = `<div>${text}</div>`
+
+    const result = parseHtml(html)
+
+    expect(result).toStrictEqual([
+      {
+        type: "text",
+        content: "a\nb",
+        headerLevel: 0,
+      },
+    ])
+  })
+
   it("ignores head", async () => {
     const text = "some text"
     const html = `<html><head></head><body><div>${text}</div></body>`
