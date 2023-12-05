@@ -1,3 +1,5 @@
+const IS_WHITESPACE = /^\s*$/
+
 const childHLevel = (node, parentHLevel) => {
   const name = node.nodeName
   const isHeader = name.length === 2 && name.startsWith("H")
@@ -15,7 +17,7 @@ const parseNode = (node, hLevel) => {
     }
   }
 
-  if (name === "#text") {
+  if (name === "#text" && !IS_WHITESPACE.test(node.textContent)) {
     return {
       type: "text",
       content: node.textContent,

@@ -141,6 +141,15 @@ describe("Content", () => {
     ])
   })
 
+  it("ignores whitespace text", async () => {
+    const text = "\n    \n   "
+    const html = `<div>${text}</div>`
+
+    const result = parseHtml(html)
+
+    expect(result).toStrictEqual([[[]]])
+  })
+
   it("ignores head", async () => {
     const text = "some text"
     const html = `<html><head></head><body><div>${text}</div></body>`
