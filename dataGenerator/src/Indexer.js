@@ -1,12 +1,16 @@
 const { randomUUID } = require("node:crypto")
 
-const Indexer = function () {
+const Indexer = function (shops) {
   const isProductPage = function (pageContent) {
     return !!pageContent.jsonLD.product
   }
 
   const createProduct = function ({ jsonLD, openGraph, headings }) {
     const ldProduct = jsonLD.product
+
+    const productUrl = headings.canonical
+    const urlDomain = new URL(productUrl).hostname
+    const shop = shops.find(s => s.domain === urlDomain)
 
     return {
       id: randomUUID(),
@@ -17,7 +21,11 @@ const Indexer = function () {
       brand: ldProduct.brand?.name,
       sellers: [
         {
-          productUrl: headings.canonical,
+          productUrl,
+          shop: {
+            name: shop.name,
+            image: shop.icon,
+          }
         },
       ],
     }

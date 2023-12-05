@@ -1,11 +1,18 @@
 const Indexer = require("./Indexer")
 
 describe("Indexer", () => {
+  const SHOP = {
+    name: "Example",
+    domain: "example.com",
+    icon: "https://example.com/icon"
+  }
+
   let indexer
   let content
   beforeEach(() => {
-    indexer = new Indexer()
+    indexer = new Indexer([SHOP])
     content = {
+      url: `https://${SHOP.domain}/product`,
       jsonLD: {
         product: {
           name: "The product name",
@@ -133,7 +140,22 @@ describe("Indexer", () => {
 
       expect(result).toStrictEqual(
         expect.objectContaining({
-          sellers: [{ productUrl: content.headings.canonical }],
+          sellers: [expect.objectContaining({ productUrl: content.headings.canonical })],
+        }),
+      )
+    })
+
+    it("adds the shop for that url", () => {
+      const result = indexer.createProduct(content)
+
+      expect(result).toStrictEqual(
+        expect.objectContaining({
+          sellers: [expect.objectContaining({
+            shop: {
+              name: SHOP.name,
+              image: SHOP.icon,
+            },
+          })],
         }),
       )
     })
