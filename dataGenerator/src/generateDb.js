@@ -50,37 +50,19 @@ const main = async (domain, dataFolder, limit) => {
 
 // main(process.argv[2], process.argv[3], process.argv[4])
 
-const path = require("node:path")
-const test = async function (dbPaths) {
-  const products = dbPaths
-    .map((dbPath) =>
-      require(path.resolve(dbPath))
-        .filter((product) =>
-          product.linkedData.some(
-            (data) =>
-              data["@type"] === "Product" &&
-              data["@context"] === "https://schema.org/",
-          ),
-        )
-        .map((product) => {
-          const linkedData = product.linkedData.find(
-            (data) => data["@type"] === "Product",
-          )
+const test = async function (dataFolder) {
+  const domain = SHOPS.DECATHLON.domain
+  const loggingPath = `${dataFolder}/${domain}`
+  const crawler = Crawler(domain, {
+    productToken: PRODUCT_TOKEN,
+    loggingPath,
+    crawlDelay: CRAWL_DELAY,
+  })
 
-          return {
-            name: linkedData.name,
-            description: linkedData.description,
-            image: Array.isArray(linkedData.image)
-              ? linkedData.image[0]
-              : linkedData.image,
-            brand: linkedData.brand?.name,
-            url: product.url,
-          }
-        }),
-    )
-    .flat()
+  const content = await crawler.getContent("https://www.decathlon.es/es/p/mp/regatta/pantalones-repelentes-al-agua-new-action-para-mujer-negro/_/R-p-28a99149-5812-44f5-a6b9-6d36aec296aa")
 
-  console.log(JSON.stringify(products))
+  console.log(`${JSON.stringify(content.html)}`)
+  return content
 }
 
-test(process.argv.slice(2))
+test(process.argv[2])
