@@ -113,6 +113,18 @@ describe("Indexer", () => {
       )
     })
 
+    it("supports an image array", () => {
+      content.jsonLD.product.image = ["https://img.com/image1", "https://img.com/image2"]
+
+      const result = indexer.createProduct(content)
+
+      expect(result).not.toStrictEqual(
+        expect.objectContaining({
+          image: content.jsonLD.product.image,
+        }),
+      )
+    })
+
     it("takes the brand from jsonLD", () => {
       const result = indexer.createProduct(content)
 
