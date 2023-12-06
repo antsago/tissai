@@ -34,7 +34,7 @@ describe("Fetcher", () => {
     await get("foo")
 
     expect(fetch).toHaveBeenCalledWith("foo", {
-      headers: { UserAgent: PRODUCT_TOKEN },
+      headers: { UserAgent: expect.stringContaining(PRODUCT_TOKEN) },
     })
   })
 

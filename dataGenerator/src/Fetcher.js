@@ -50,7 +50,9 @@ const Fetcher = function (productToken, loggingPath, crawlDelay) {
 
   const retrieveFromSrc = async (url) => {
     await waitForGreen()
-    const response = await fetch(url, { headers: { UserAgent: productToken } })
+    const response = await fetch(url, { headers: {
+      UserAgent: `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 ${productToken}`
+    } })
 
     return {
       url: response.url,

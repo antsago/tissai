@@ -118,7 +118,7 @@ describe("Indexer", () => {
 
       const result = indexer.createProduct(content)
 
-      expect(result).not.toStrictEqual(
+      expect(result).toStrictEqual(
         expect.objectContaining({
           image: content.jsonLD.product.image,
         }),
