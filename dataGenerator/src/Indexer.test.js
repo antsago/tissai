@@ -163,5 +163,13 @@ describe("Indexer", () => {
         }),
       )
     })
+
+    it("throws if shop's domain is not found", () => {
+      content.headings.canonical = 'https://another.domain/product'
+
+      const act = () => indexer.createProduct(content)
+
+      expect(act).toThrow()
+    })
   })
 })

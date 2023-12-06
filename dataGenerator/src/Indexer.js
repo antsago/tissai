@@ -9,6 +9,10 @@ const Indexer = function (shops) {
     const urlDomain = new URL(url).hostname
     const shop = shops.find((s) => s.domain === urlDomain)
 
+    if (!shop) {
+      throw new Error(`Shop for ${url} not found`)
+    }
+
     return {
       name: shop.name,
       image: shop.icon,
