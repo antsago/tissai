@@ -2,9 +2,10 @@ const Fetcher = require("./Fetcher")
 const parse = require("./parsers")
 
 const Crawler = function (
-  domain,
+  shop,
   { productToken, crawlDelay = 100, loggingPath },
 ) {
+  const domain = shop.domain
   const get = Fetcher(productToken, loggingPath, crawlDelay)
 
   const getRobots = async () => {

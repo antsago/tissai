@@ -6,6 +6,11 @@ jest.mock("fs/promises")
 describe("Crawler", () => {
   const DOMAIN = "example.com"
   const PRODUCT_TOKEN = "FooBar/1.0"
+  const SHOP = {
+    name: "Example",
+    domain: DOMAIN,
+    icon: "https://example.com/icon",
+  }
 
   let response
   let crawler
@@ -22,7 +27,7 @@ describe("Crawler", () => {
     )
     readdir.mockResolvedValue([])
 
-    crawler = new Crawler(DOMAIN, {
+    crawler = new Crawler(SHOP, {
       productToken: PRODUCT_TOKEN,
       loggingPath: "./foo",
       crawlDelay: 1,
