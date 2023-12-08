@@ -6,14 +6,9 @@ jest.mock("fs/promises")
 describe("Crawler", () => {
   const DOMAIN = "example.com"
   const PRODUCT_TOKEN = "FooBar/1.0"
-  const SHOP = {
-    name: "Example",
-    domain: DOMAIN,
-    icon: "https://example.com/icon",
-  }
 
+  let shop
   let response
-  let crawler
   beforeEach(() => {
     response = jest.fn()
 
@@ -27,15 +22,21 @@ describe("Crawler", () => {
     )
     readdir.mockResolvedValue([])
 
-    crawler = new Crawler(SHOP, {
-      productToken: PRODUCT_TOKEN,
-      loggingPath: "./foo",
-      crawlDelay: 1,
-    })
+    shop = {
+      name: "Example",
+      domain: DOMAIN,
+      icon: "https://example.com/icon",
+    }
   })
-
+  
   describe("getAllowedUrl", () => {
     const getAllowedUrls = async () => {
+      const crawler = new Crawler(shop, {
+        productToken: PRODUCT_TOKEN,
+        loggingPath: "./foo",
+        crawlDelay: 1,
+      })
+
       const result = []
       for await (const url of crawler.getAllowedUrls()) {
         result.push(url)
@@ -138,10 +139,29 @@ describe("Crawler", () => {
 
       expect(result).toStrictEqual([url1])
     })
+
+    it("uses shop-defined sitemaps if present", async () => {
+      shop.sitemaps = [`https://${DOMAIN}/sitemap.xml`]
+      const url1 = `https://${DOMAIN}/url1`
+      const robots = ""
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url1}</loc></url></urlset>`
+      response
+        .mockResolvedValueOnce(robots)
+        .mockResolvedValueOnce(sitemap)
+
+      const result = await getAllowedUrls()
+
+      expect(result).toStrictEqual([url1])
+    })
   })
 
   describe("getContent", () => {
     it("fetches and parses page", async () => {
+      const crawler = new Crawler(shop, {
+        productToken: PRODUCT_TOKEN,
+        loggingPath: "./foo",
+        crawlDelay: 1,
+      })
       const url = `https://${DOMAIN}/url1`
       const content = `<html></html>`
       response.mockResolvedValueOnce(content)

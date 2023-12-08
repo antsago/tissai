@@ -45,8 +45,9 @@ const Crawler = function (
 
   const getAllowedUrls = async function* () {
     robots = await getRobots(domain)
+    const sitemaps = shop.sitemaps ?? robots.sitemaps
 
-    for await (const sitemap of getSitemaps(robots.sitemaps)) {
+    for await (const sitemap of getSitemaps(sitemaps)) {
       yield* sitemap.urls.filter((url) => robots.isAllowed(url))
     }
   }
