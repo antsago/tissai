@@ -98,7 +98,7 @@ describe("Content", () => {
 
   it("extracts opengraph information", async () => {
     const openGraph = {
-      type: "og:product",
+      type: "product",
       title: "Friend Smash Coin",
       image: "http://www.friendsmash.com/images/coin_600.png",
       description: "Friend Smash Coins to purchase upgrades and items!",

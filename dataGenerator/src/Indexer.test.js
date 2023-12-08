@@ -22,7 +22,11 @@ describe("Indexer", () => {
         },
       },
       openGraph: {
+        type: "product",
+        title: "The name in og",
         description: "The description in og",
+        url: `https://${SHOP.domain}/product`,
+        image: `https//image.com/og-image`,
       },
       headings: {
         description: "The description in headings",
@@ -33,13 +37,24 @@ describe("Indexer", () => {
 
   describe("shouldIndex", () => {
     it("accepts pages with product jsonLD", () => {
+      delete content.openGraph
+
       const result = indexer.isProductPage(content)
 
       expect(result).toBe(true)
     })
 
-    it("filters pages without product jsonLD", () => {
+    it("accepts pages with product openGraph", () => {
       delete content.jsonLD.product
+
+      const result = indexer.isProductPage(content)
+
+      expect(result).toBe(true)
+    })
+
+    it("filters pages without any product type", () => {
+      delete content.jsonLD.product
+      delete content.openGraph
 
       const result = indexer.isProductPage(content)
 
