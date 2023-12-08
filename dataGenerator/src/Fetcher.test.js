@@ -28,13 +28,13 @@ describe("Fetcher", () => {
     get = new Fetcher(PRODUCT_TOKEN, LOGGING_PATH, CRAWL_DELAY)
   })
 
-  it.skip("sets user-agent", async () => {
+  it("sets user-agent", async () => {
     response.mockResolvedValueOnce("foo")
 
     await get("foo")
 
     expect(fetch).toHaveBeenCalledWith("foo", {
-      headers: { UserAgent: expect.stringContaining(PRODUCT_TOKEN) },
+      headers: { ["User-Agent"]: PRODUCT_TOKEN },
     })
   })
 
