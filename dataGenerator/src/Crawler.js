@@ -3,9 +3,9 @@ const { Content } = require("./parsers")
 
 const Crawler = async function (
   shop,
-  options,
+  crawlOptions,
 ) {
-  const domain = await Domain(shop, options)
+  const domain = await Domain(shop, crawlOptions)
 
   const getAllowedUrls = async function* () {
     for await (const sitemap of domain.getSitemaps()) {
