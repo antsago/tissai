@@ -31,7 +31,7 @@ describe("Crawler", () => {
   
   describe("getAllowedUrl", () => {
     const getAllowedUrls = async () => {
-      const crawler = new Crawler(shop, {
+      const crawler = await Crawler(shop, {
         productToken: PRODUCT_TOKEN,
         loggingPath: "./foo",
         crawlDelay: 1,
@@ -157,7 +157,7 @@ describe("Crawler", () => {
 
   describe("getContent", () => {
     it("fetches and parses page", async () => {
-      const crawler = new Crawler(shop, {
+      const crawler = await Crawler(shop, {
         productToken: PRODUCT_TOKEN,
         loggingPath: "./foo",
         crawlDelay: 1,
