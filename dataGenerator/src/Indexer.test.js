@@ -83,6 +83,18 @@ describe("Indexer", () => {
       )
     })
 
+    it("fallbacks to opengraph for the name", () => {
+      delete content.jsonLD.product
+
+      const result = indexer.createProduct(content)
+
+      expect(result).toStrictEqual(
+        expect.objectContaining({
+          name: content.openGraph.title,
+        }),
+      )
+    })
+
     it("sets the description from jsonLD", () => {
       const result = indexer.createProduct(content)
 
@@ -94,7 +106,7 @@ describe("Indexer", () => {
     })
 
     it("fallbacks to openGraph for description", () => {
-      delete content.jsonLD.product.description
+      delete content.jsonLD.product
 
       const result = indexer.createProduct(content)
 
@@ -106,8 +118,8 @@ describe("Indexer", () => {
     })
 
     it("secondary fallback to headings for description", () => {
-      delete content.jsonLD.product.description
-      delete content.openGraph.description
+      delete content.jsonLD.product
+      delete content.openGraph
 
       const result = indexer.createProduct(content)
 
@@ -128,7 +140,19 @@ describe("Indexer", () => {
       )
     })
 
-    it("supports an image array", () => {
+    it("fallbacks to opengraph for the image", () => {
+      delete content.jsonLD.product
+
+      const result = indexer.createProduct(content)
+
+      expect(result).toStrictEqual(
+        expect.objectContaining({
+          image: content.openGraph.image,
+        }),
+      )
+    })
+
+    it("supports an image array from jsonLD", () => {
       content.jsonLD.product.image = ["https://img.com/image1", "https://img.com/image2"]
 
       const result = indexer.createProduct(content)
@@ -169,6 +193,20 @@ describe("Indexer", () => {
         expect.objectContaining({
           sellers: [
             expect.objectContaining({ productUrl: content.headings.canonical }),
+          ],
+        }),
+      )
+    })
+
+    it("fallbacks to url if no cannonical", () => {
+      delete content.headings.canonical
+
+      const result = indexer.createProduct(content)
+
+      expect(result).toStrictEqual(
+        expect.objectContaining({
+          sellers: [
+            expect.objectContaining({ productUrl: content.url }),
           ],
         }),
       )

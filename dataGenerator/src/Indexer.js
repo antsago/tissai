@@ -19,17 +19,17 @@ const Indexer = function (shops) {
     }
   }
 
-  const createProduct = function ({ jsonLD, openGraph, headings }) {
+  const createProduct = function ({ jsonLD, openGraph, headings, url }) {
     const ldProduct = jsonLD.product
 
-    const productUrl = headings.canonical
+    const productUrl = headings.canonical ?? url
     return {
       id: randomUUID(),
-      name: ldProduct.name,
+      name: ldProduct?.name ?? openGraph?.title,
       description:
-        ldProduct.description ?? openGraph.description ?? headings.description,
-      image: ldProduct.image,
-      brand: ldProduct.brand?.name,
+        ldProduct?.description ?? openGraph?.description ?? headings.description,
+      image: ldProduct?.image ?? openGraph?.image,
+      brand: ldProduct?.brand?.name,
       sellers: [
         {
           productUrl,
