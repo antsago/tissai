@@ -26,9 +26,7 @@ const SHOPS = [
     name: "Primark",
     icon: "https://www.primark.com/favicon.ico",
     domain: "www.primark.com",
-    sitemaps: [
-      "https://www.primark.com/es-es/sitemap/sitemap-products.xml",
-    ],
+    sitemaps: ["https://www.primark.com/es-es/sitemap/sitemap-products.xml"],
   },
   {
     name: "Springfield",
@@ -44,9 +42,7 @@ const SHOPS = [
     name: "Nike",
     icon: "https://www.nike.com/android-icon-192x192.png",
     domain: "www.nike.com",
-    sitemaps: [
-      "https://www.nike.com/sitemap-v2-pdp-es-es.xml",
-    ],
+    sitemaps: ["https://www.nike.com/sitemap-v2-pdp-es-es.xml"],
   },
   {
     name: "Levi's",
@@ -58,17 +54,13 @@ const SHOPS = [
     name: "JD Sports",
     icon: "https://www.jdsports.es/skins/jdsports-desktop/public/img/icons/app/favicon.ico",
     domain: "www.jdsports.es",
-    sitemaps: [
-      "https://www.jdsports.es/sitemaps/es-es_desktop_product_0.xml",
-    ],
+    sitemaps: ["https://www.jdsports.es/sitemaps/es-es_desktop_product_0.xml"],
   },
   {
     name: "Decimas",
     icon: "https://www.decimas.com/static/favicon.ico",
     domain: "www.decimas.com",
-    sitemaps: [
-      "https://www.decimas.com/sitemap.xml",
-    ],
+    sitemaps: ["https://www.decimas.com/sitemap.xml"],
   },
   {
     name: "Cortefiel",
@@ -87,7 +79,7 @@ const SHOPS = [
       "https://algo-bonito.com/sitemap_products_1.xml?from=6818502410406&to=8632545083726",
     ],
   },
-  
+
   // og only
   // deportesmoya.es
   // www.barrabes.com
@@ -95,7 +87,7 @@ const SHOPS = [
   // pepco.es
   // www.thenorthface.es
   // www.valecuatro.com
-  
+
   // Sitemap is compressed
   // {
   //   name: "Bershka",

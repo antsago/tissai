@@ -50,9 +50,11 @@ const Fetcher = function (productToken, loggingPath, crawlDelay) {
 
   const retrieveFromSrc = async (url) => {
     await waitForGreen()
-    const response = await fetch(url, { headers: {
-      ["User-Agent"]: productToken,
-    } })
+    const response = await fetch(url, {
+      headers: {
+        ["User-Agent"]: productToken,
+      },
+    })
 
     return {
       url: response.url,

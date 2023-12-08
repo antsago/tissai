@@ -2,7 +2,10 @@ const { randomUUID } = require("node:crypto")
 
 const Indexer = function (shops) {
   const isProductPage = function (pageContent) {
-    return (!!pageContent?.jsonLD?.product) || pageContent?.openGraph?.type === "product"
+    return (
+      !!pageContent?.jsonLD?.product ||
+      pageContent?.openGraph?.type === "product"
+    )
   }
 
   const findShop = (url) => {
@@ -27,7 +30,9 @@ const Indexer = function (shops) {
       id: randomUUID(),
       name: ldProduct?.name ?? openGraph?.title,
       description:
-        ldProduct?.description ?? openGraph?.description ?? headings.description,
+        ldProduct?.description ??
+        openGraph?.description ??
+        headings.description,
       image: ldProduct?.image ?? openGraph?.image,
       brand: ldProduct?.brand?.name,
       sellers: [

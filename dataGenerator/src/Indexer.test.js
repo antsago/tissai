@@ -153,7 +153,10 @@ describe("Indexer", () => {
     })
 
     it("supports an image array from jsonLD", () => {
-      content.jsonLD.product.image = ["https://img.com/image1", "https://img.com/image2"]
+      content.jsonLD.product.image = [
+        "https://img.com/image1",
+        "https://img.com/image2",
+      ]
 
       const result = indexer.createProduct(content)
 
@@ -205,9 +208,7 @@ describe("Indexer", () => {
 
       expect(result).toStrictEqual(
         expect.objectContaining({
-          sellers: [
-            expect.objectContaining({ productUrl: content.url }),
-          ],
+          sellers: [expect.objectContaining({ productUrl: content.url })],
         }),
       )
     })
@@ -230,7 +231,7 @@ describe("Indexer", () => {
     })
 
     it("throws if shop's domain is not found", () => {
-      content.headings.canonical = 'https://another.domain/product'
+      content.headings.canonical = "https://another.domain/product"
 
       const act = () => indexer.createProduct(content)
 

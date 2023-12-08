@@ -4,7 +4,14 @@ const Indexer = require("./Indexer")
 const SHOPS = require("./shops")
 
 const PRODUCT_TOKEN = "Wibnix/0.2"
-const WHITE_KEYWORDS = ["pants", "trousers", "pantalon", "jean", "vaqueros", "joggers",]
+const WHITE_KEYWORDS = [
+  "pants",
+  "trousers",
+  "pantalon",
+  "jean",
+  "vaqueros",
+  "joggers",
+]
 const BLACK_KEYWORDS = []
 const CRAWL_DELAY = 10000
 
@@ -23,12 +30,15 @@ const main = async (domain, dataFolder, limit) => {
 
   let productsLogged = 0
   for await (const url of crawler.getAllowedUrls()) {
-    if (!WHITE_KEYWORDS.some((key) => url.includes(key)) || BLACK_KEYWORDS.some(key => url.includes(key))) {
+    if (
+      !WHITE_KEYWORDS.some((key) => url.includes(key)) ||
+      BLACK_KEYWORDS.some((key) => url.includes(key))
+    ) {
       continue
     }
 
     const content = await crawler.getContent(url)
-    if(indexer.isProductPage(content)) {
+    if (indexer.isProductPage(content)) {
       const product = indexer.createProduct(content)
       console.log(`${JSON.stringify(product)},`)
 
