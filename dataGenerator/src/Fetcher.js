@@ -1,5 +1,4 @@
 const { setTimeout } = require("timers/promises")
-const { appendFile } = require("fs/promises")
 const Cache = require("./Cache")
 
 const Semaphore = function (crawlDelay) {
@@ -52,26 +51,14 @@ const Fetcher = function (productToken, loggingPath, crawlDelay) {
   }
 
   return async (url) => {
-    try {
-      const cached = await cache.get(url)
-      if (cached) {
-        return cached
-      }
-
-      const result = await retrieveFromSrc(url)
-      await cache.set(url, result)
-      return result
-    } catch (err) {
-      await appendFile(
-        `${loggingPath}/errors.log`,
-        `${JSON.stringify({
-          timestamp: Date.now(),
-          url,
-          message: err.message,
-        })}\n`,
-      )
-      throw err
+    const cached = await cache.get(url)
+    if (cached) {
+      return cached
     }
+
+    const result = await retrieveFromSrc(url)
+    await cache.set(url, result)
+    return result
   }
 }
 

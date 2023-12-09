@@ -1,11 +1,13 @@
-const { readdir } = require("fs/promises")
+const { readdir, appendFile } = require("fs/promises")
 const Domain = require("./Domain")
 
+jest.useFakeTimers()
 jest.mock("fs/promises")
 
 describe("Domain", () => {
   const DOMAIN = "example.com"
   const PRODUCT_TOKEN = "FooBar/1.0"
+  const LOGGING_PATH = "./foo"
 
   let shop
   let response
@@ -28,14 +30,14 @@ describe("Domain", () => {
       icon: "https://example.com/icon",
     }
   })
-  
+
   it("fetches and caches robots.txt", async () => {
     const robotsTxt = `User-Agent: ${PRODUCT_TOKEN}\nDisallow:/url1`
     response.mockResolvedValueOnce(robotsTxt)
 
     const domain = await Domain(shop, {
       productToken: PRODUCT_TOKEN,
-      loggingPath: "./foo",
+      loggingPath: LOGGING_PATH,
       crawlDelay: 1,
     })
 
@@ -51,16 +53,18 @@ describe("Domain", () => {
       response.mockResolvedValueOnce(robots).mockResolvedValueOnce(urlContent)
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: "./foo",
+        loggingPath: LOGGING_PATH,
         crawlDelay: 1,
       })
 
       const result = await domain.fetch(url1)
 
-      expect(result).toStrictEqual(expect.objectContaining({
-        url: url1,
-        body: urlContent,
-      }))
+      expect(result).toStrictEqual(
+        expect.objectContaining({
+          url: url1,
+          body: urlContent,
+        }),
+      )
     })
 
     it("rejects urls blocks by robots", async () => {
@@ -69,7 +73,7 @@ describe("Domain", () => {
       response.mockResolvedValueOnce(robots)
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: "./foo",
+        loggingPath: LOGGING_PATH,
         crawlDelay: 1,
       })
 
@@ -77,23 +81,41 @@ describe("Domain", () => {
 
       await expect(act).rejects.toThrow()
     })
-  })
 
-  describe("getSitemaps", () => {
-    const getAllowedUrls = async () => {
-      const crawler = await Domain(shop, {
+    it("logs errors", async () => {
+      const error = new Error("Booh!")
+      const robots = ""
+      response.mockResolvedValueOnce(robots)
+      const url = "https://www.example.com/b-@r"
+      fetch
+        .mockResolvedValueOnce({
+          text: response,
+          url,
+          status: 200,
+          headers: new Headers(),
+        })
+        .mockRejectedValueOnce(error)
+      const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: "./foo",
+        loggingPath: LOGGING_PATH,
         crawlDelay: 1,
       })
 
-      const result = []
-      for await (const url of crawler.getAllowedUrls()) {
-        result.push(url)
-      }
-      return result
-    }
+      const act = domain.fetch(url)
 
+      await expect(act).rejects.toThrow(error)
+      expect(appendFile).toHaveBeenCalledWith(
+        `${LOGGING_PATH}/errors.log`,
+        `${JSON.stringify({
+          timestamp: Date.now(),
+          url,
+          message: error.message,
+        })}\n`,
+      )
+    })
+  })
+
+  describe("getSitemaps", () => {
     const TEST_URL = `https://${DOMAIN}/url1`
     const SITEMAP = `
       <?xml version="1.0" encoding="UTF-8"?>
@@ -110,12 +132,10 @@ describe("Domain", () => {
 
     it("fetches sitemaps in robots", async () => {
       const robots = `Sitemap: https://${DOMAIN}/sitemap.xml`
-      response
-        .mockResolvedValueOnce(robots)
-        .mockResolvedValueOnce(SITEMAP)
+      response.mockResolvedValueOnce(robots).mockResolvedValueOnce(SITEMAP)
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: "./foo",
+        loggingPath: LOGGING_PATH,
         crawlDelay: 1,
       })
 
@@ -132,7 +152,7 @@ describe("Domain", () => {
         .mockResolvedValueOnce(SITEMAP)
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: "./foo",
+        loggingPath: LOGGING_PATH,
         crawlDelay: 1,
       })
 
@@ -143,12 +163,10 @@ describe("Domain", () => {
 
     it("ignores disallowed sitemaps", async () => {
       const robots = `Sitemap: https://${DOMAIN}/sitemap.xml\nUser-Agent: ${PRODUCT_TOKEN}\nDisallow:/sitemap`
-      response
-        .mockResolvedValueOnce(robots)
-        .mockResolvedValueOnce(SITEMAP)
+      response.mockResolvedValueOnce(robots).mockResolvedValueOnce(SITEMAP)
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: "./foo",
+        loggingPath: LOGGING_PATH,
         crawlDelay: 1,
       })
 
@@ -166,7 +184,7 @@ describe("Domain", () => {
         .mockResolvedValueOnce(SITEMAP)
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: "./foo",
+        loggingPath: LOGGING_PATH,
         crawlDelay: 1,
       })
 
@@ -183,7 +201,7 @@ describe("Domain", () => {
         .mockRejectedValueOnce(new Error("Booh!"))
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: "./foo",
+        loggingPath: LOGGING_PATH,
         crawlDelay: 1,
       })
 
@@ -196,18 +214,20 @@ describe("Domain", () => {
     it("uses shop-defined sitemaps if present", async () => {
       shop.sitemaps = [`https://${DOMAIN}/sitemap.xml`]
       const robots = `Sitemap: https://${DOMAIN}/siteindex.xml`
-      response
-        .mockResolvedValueOnce(robots)
-        .mockResolvedValueOnce(SITEMAP)
+      response.mockResolvedValueOnce(robots).mockResolvedValueOnce(SITEMAP)
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: "./foo",
+        loggingPath: LOGGING_PATH,
         crawlDelay: 1,
       })
 
       await domain.getSitemaps().next()
 
-      expect(fetch).toHaveBeenNthCalledWith(2, shop.sitemaps[0], expect.anything())
+      expect(fetch).toHaveBeenNthCalledWith(
+        2,
+        shop.sitemaps[0],
+        expect.anything(),
+      )
     })
   })
 })

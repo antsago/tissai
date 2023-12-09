@@ -28,7 +28,7 @@ describe("Crawler", () => {
       icon: "https://example.com/icon",
     }
   })
-  
+
   describe("getAllowedUrl", () => {
     const getAllowedUrls = async () => {
       const crawler = await Crawler(shop, {

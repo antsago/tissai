@@ -7,7 +7,8 @@ jest.mock("fs/promises")
 describe("Fetcher", () => {
   const PRODUCT_TOKEN = "FooBar/1.0"
   const CRAWL_DELAY = 100
-  const LOGGING_PATH = "./foo"
+  const LOGGING_FOLDER = "./foo"
+  const LOGGING_PATH = `${LOGGING_FOLDER}/bar`
 
   let response
   let get
@@ -145,24 +146,6 @@ describe("Fetcher", () => {
     expect(readFile).toHaveBeenCalledWith(
       `${LOGGING_PATH}/1700753057614@https%3A%2F%2Fwww.example.com%2Fb-%40r`,
       expect.anything(),
-    )
-  })
-
-  it("logs errors", async () => {
-    const error = new Error("Booh!")
-    fetch.mockRejectedValueOnce(error)
-    const url = "https://www.example.com/b-@r"
-
-    const act = get(url)
-
-    await expect(act).rejects.toThrow(error)
-    expect(appendFile).toHaveBeenCalledWith(
-      `${LOGGING_PATH}/errors.log`,
-      `${JSON.stringify({
-        timestamp: Date.now(),
-        url,
-        message: error.message,
-      })}\n`,
     )
   })
 })

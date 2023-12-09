@@ -1,14 +1,18 @@
+const { appendFile } = require("fs/promises")
 const Fetcher = require("./Fetcher")
 const { Robots, Sitexml } = require("./parsers")
 
-const Domain = async function (shop, { productToken, crawlDelay = 100, loggingPath }) {
+const Domain = async function (
+  shop,
+  { productToken, crawlDelay = 100, loggingPath },
+) {
   const get = Fetcher(productToken, loggingPath, crawlDelay)
   const fetchRobots = async () => {
     const robotsUrl = `https://${shop.domain}/robots.txt`
     const response = await get(robotsUrl)
     return Robots(response.url, response.body, productToken)
   }
-  
+
   const robots = await fetchRobots()
 
   const fetchUrl = async (url) => {
@@ -16,7 +20,19 @@ const Domain = async function (shop, { productToken, crawlDelay = 100, loggingPa
       throw new Error(`Url ${url} not allowed`)
     }
 
-    return get(url)
+    try {
+      return await get(url)
+    } catch (err) {
+      await appendFile(
+        `${loggingPath}/errors.log`,
+        `${JSON.stringify({
+          timestamp: Date.now(),
+          url,
+          message: err.message,
+        })}\n`,
+      )
+      throw err
+    }
   }
 
   const fetchSitemap = async function* (url) {

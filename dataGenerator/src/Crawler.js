@@ -1,10 +1,7 @@
 const Domain = require("./Domain")
 const { Content } = require("./parsers")
 
-const Crawler = async function (
-  shop,
-  crawlOptions,
-) {
+const Crawler = async function (shop, crawlOptions) {
   const domain = await Domain(shop, crawlOptions)
 
   const getAllowedUrls = async function* () {
