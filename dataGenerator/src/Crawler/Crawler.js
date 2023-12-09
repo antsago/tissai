@@ -21,7 +21,7 @@ const Crawler = async function (shop, crawlOptions) {
 
     let productsCreated = 0
     for await (const url of getAllowedUrls()) {
-      if (keywords && !keywords.some(key => url.includes(key))) {
+      if (keywords && !keywords.some((key) => url.includes(key))) {
         continue
       }
 
@@ -32,7 +32,7 @@ const Crawler = async function (shop, crawlOptions) {
       }
 
       yield indexer.createProduct(content)
-      
+
       productsCreated += 1
       if (limit && productsCreated >= limit) {
         return

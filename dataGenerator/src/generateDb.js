@@ -20,7 +20,10 @@ const main = async (dataFolder, limit) => {
   })
 
   console.log("[")
-  for await (const product of crawler.getProducts({ keywords: PRODUCT_KEYWORDS, limit })) {
+  for await (const product of crawler.getProducts({
+    keywords: PRODUCT_KEYWORDS,
+    limit,
+  })) {
     console.log(`${JSON.stringify(product)},`)
   }
   console.log("]")
