@@ -96,7 +96,7 @@ describe("Crawler", () => {
       </urlset>
     `
 
-    const getProducts = async () => {
+    const getProducts = async (...args) => {
       const crawler = await Crawler(shop, {
         productToken: PRODUCT_TOKEN,
         loggingPath: "./foo",
@@ -104,7 +104,7 @@ describe("Crawler", () => {
       })
 
       const result = []
-      for await (const url of crawler.getProducts()) {
+      for await (const url of crawler.getProducts(...args)) {
         result.push(url)
       }
       return result
@@ -154,6 +154,38 @@ describe("Crawler", () => {
       const result = await getProducts()
 
       expect(result).toStrictEqual([])
+    })
+
+    it("ignores pages without keywords", async () => {
+      const keyword = "good"
+      const PRODUCT = {
+        name: "The name in og",
+        description: "The description in og",
+        image: `https//image.com/og-image`,
+        sellers: [
+          {
+            productUrl: PRODUCT_URL,
+            shop: {
+              name: shop.name,
+              image: shop.icon,
+            },
+          },
+        ],
+      }
+      const PAGE_CONTENT = `<html>
+        <script type="application/ld+json">
+          ${JSON.stringify({ ...PRODUCT, ["@type"]: "Product" })}
+        </script>
+      </html>`
+      response
+        .mockResolvedValueOnce(ROBOTS)
+        .mockResolvedValueOnce(SITEMAP)
+        .mockResolvedValueOnce(PAGE_CONTENT)
+
+      const result = await getProducts([keyword])
+
+      expect(result).toStrictEqual([])
+      expect(fetch).not.toHaveBeenCalledWith(PRODUCT_URL, expect.anything())
     })
   })
 })

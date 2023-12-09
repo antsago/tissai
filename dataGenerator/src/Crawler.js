@@ -16,15 +16,21 @@ const Crawler = async function (shop, crawlOptions) {
     return Content(response.url, response.body)
   }
 
-  const getProducts = async function* () {
+  const getProducts = async function* (keywords) {
     const indexer = Indexer([shop])
 
     for await (const url of getAllowedUrls()) {
+      if (keywords && !keywords.some(key => url.includes(key))) {
+        continue
+      }
+
       const content = await getContent(url)
 
-      if (indexer.isProductPage(content)) {
-        yield indexer.createProduct(content)
+      if (!indexer.isProductPage(content)) {
+        continue
       }
+
+      yield indexer.createProduct(content)
     }
   }
 
