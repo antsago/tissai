@@ -1,5 +1,4 @@
-const { writeFile, readdir, readFile } = require("fs/promises")
-const Fetcher = require("./Fetcher")
+const { writeFile, readdir, readFile, mkdir } = require("fs/promises")
 const Cache = require("./Cache")
 
 jest.useFakeTimers()
@@ -10,12 +9,16 @@ describe("Cache", () => {
   const LOGGING_PATH = `${LOGGING_FOLDER}/bar`
 
   let cache
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.resetAllMocks()
 
     readdir.mockResolvedValue([])
 
-    cache = Cache(LOGGING_PATH)
+    cache = await Cache(LOGGING_PATH)
+  })
+
+  it("ensures cache directory exists", () => {
+    expect(mkdir).toHaveBeenCalledWith(LOGGING_PATH, { recursive: true })
   })
 
   it("caches responses", async () => {

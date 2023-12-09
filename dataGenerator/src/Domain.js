@@ -7,7 +7,8 @@ const Domain = async function (
   shop,
   { productToken, crawlDelay = 100, loggingPath },
 ) {
-  const get = Fetcher(productToken, Cache(loggingPath), crawlDelay)
+  const cache = await Cache(loggingPath)
+  const get = Fetcher(productToken, cache, crawlDelay)
   const fetchRobots = async () => {
     const robotsUrl = `https://${shop.domain}/robots.txt`
     const response = await get(robotsUrl)

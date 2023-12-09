@@ -1,4 +1,4 @@
-const { writeFile, readdir, readFile } = require("fs/promises")
+const { writeFile, readdir, readFile, mkdir } = require("fs/promises")
 const { createHash } = require("node:crypto")
 
 const MAX_PATH_LENGTH = 150
@@ -15,7 +15,9 @@ const encodePath = (url) => {
   return `${pruned}${checksum}`
 }
 
-const Cache = function (loggingPath) {
+const Cache = async function (loggingPath) {
+  await mkdir(loggingPath, { recursive: true })
+
   const get = async (url) => {
     const cachedResponses = (await readdir(loggingPath)).sort().reverse()
     const encodedUrl = encodePath(url)
