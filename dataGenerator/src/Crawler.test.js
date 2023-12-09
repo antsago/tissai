@@ -139,5 +139,21 @@ describe("Crawler", () => {
 
       expect(result).toStrictEqual([expect.objectContaining(PRODUCT)])
     })
+
+    it("ignores non-product pages", async () => {
+      const PAGE_CONTENT = `<html>
+        <script type="application/ld+json">
+          ${JSON.stringify({ ["@type"]: "Breadcrumb" })}
+        </script>
+      </html>`
+      response
+        .mockResolvedValueOnce(ROBOTS)
+        .mockResolvedValueOnce(SITEMAP)
+        .mockResolvedValueOnce(PAGE_CONTENT)
+
+      const result = await getProducts()
+
+      expect(result).toStrictEqual([])
+    })
   })
 })

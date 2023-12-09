@@ -18,9 +18,13 @@ const Crawler = async function (shop, crawlOptions) {
 
   const getProducts = async function* () {
     const indexer = Indexer([shop])
+
     for await (const url of getAllowedUrls()) {
       const content = await getContent(url)
-      yield indexer.createProduct(content)
+
+      if (indexer.isProductPage(content)) {
+        yield indexer.createProduct(content)
+      }
     }
   }
 
