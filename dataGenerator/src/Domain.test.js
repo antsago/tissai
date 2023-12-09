@@ -194,6 +194,41 @@ describe("Domain", () => {
       expect(firstIteration.value).toBe(undefined)
     })
 
+    it("ignores non-whitelisted sitemaps", async () => {
+      shop.sitemapWhitelist = ["siteindex", "good"]
+      const robots = `Sitemap: https://${DOMAIN}/sitemap.xml\nSitemap: https://${DOMAIN}/siteindex.xml`
+      const goodUrl = `https://${DOMAIN}/good.sitemap.xml`
+      const siteindex = `
+        <?xml version="1.0" encoding="UTF-8"?>
+        <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+          <sitemap><loc>https://${DOMAIN}/sitemap.xml</loc></sitemap>
+          <sitemap><loc>${goodUrl}</loc></sitemap>
+        </sitemapindex>
+      `
+      response
+        .mockResolvedValueOnce(robots)
+        .mockResolvedValueOnce(siteindex)
+        .mockResolvedValueOnce(SITEMAP)
+      const domain = await Domain(shop, {
+        productToken: PRODUCT_TOKEN,
+        loggingPath: LOGGING_PATH,
+        crawlDelay: 1,
+      })
+
+      await domain.getSitemaps().next()
+
+      expect(fetch).toHaveBeenNthCalledWith(
+        2,
+        expect.stringContaining(shop.sitemapWhitelist[0]),
+        expect.anything(),
+      )
+      expect(fetch).not.toHaveBeenCalledWith(
+        3,
+        expect.stringContaining(shop.sitemapWhitelist[1]),
+        expect.anything(),
+      )
+    })
+
     it("ignores sitemaps and siteindex with retrieval errors", async () => {
       const robots = `Sitemap: https://${DOMAIN}/sitemap.xml`
       response

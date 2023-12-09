@@ -57,7 +57,12 @@ const Domain = async function (
 
   const fetchSitemaps = async function* (urls) {
     for (const url of urls) {
-      yield* fetchSitemap(url)
+      if (
+        !shop.sitemapWhitelist ||
+        shop.sitemapWhitelist.some((key) => url.includes(key))
+      ) {
+        yield* fetchSitemap(url)
+      }
     }
   }
 
