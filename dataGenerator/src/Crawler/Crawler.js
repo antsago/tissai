@@ -41,8 +41,6 @@ const Crawler = async function (shop, crawlOptions) {
   }
 
   return {
-    getAllowedUrls,
-    getContent,
     getProducts,
   }
 }

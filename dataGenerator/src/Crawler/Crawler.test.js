@@ -29,63 +29,6 @@ describe("Crawler", () => {
     }
   })
 
-  describe("getAllowedUrl", () => {
-    const getAllowedUrls = async () => {
-      const crawler = await Crawler(shop, {
-        productToken: PRODUCT_TOKEN,
-        dataFolder: "./foo",
-        crawlDelay: 1,
-      })
-
-      const result = []
-      for await (const url of crawler.getAllowedUrls()) {
-        result.push(url)
-      }
-      return result
-    }
-
-    it("lists allowed urls", async () => {
-      const url1 = `https://${DOMAIN}/url1`
-      const url2 = `https://${DOMAIN}/url2/`
-      const robots = `Sitemap: https://${DOMAIN}/sitemap.xml`
-      const sitemap = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url1}</loc></url><url><loc>${url2}</loc></url></urlset>`
-      response.mockResolvedValueOnce(robots).mockResolvedValueOnce(sitemap)
-
-      const result = await getAllowedUrls()
-
-      expect(result).toStrictEqual([url1, url2])
-    })
-
-    it("filters disallowed urls", async () => {
-      const url1 = `https://${DOMAIN}/url1`
-      const url2 = `https://${DOMAIN}/url2/`
-      const robots = `Sitemap: https://${DOMAIN}/sitemap.xml\nUser-Agent: ${PRODUCT_TOKEN}\nDisallow: /url2`
-      const sitemap = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${url1}</loc></url><url><loc>${url2}</loc></url></urlset>`
-      response.mockResolvedValueOnce(robots).mockResolvedValueOnce(sitemap)
-
-      const result = await getAllowedUrls()
-
-      expect(result).toStrictEqual([url1])
-    })
-  })
-
-  describe("getContent", () => {
-    it("fetches and parses page", async () => {
-      const crawler = await Crawler(shop, {
-        productToken: PRODUCT_TOKEN,
-        dataFolder: "./foo",
-        crawlDelay: 1,
-      })
-      const url = `https://${DOMAIN}/url1`
-      const content = `<html></html>`
-      response.mockResolvedValueOnce(content)
-
-      const result = await crawler.getContent(url)
-
-      expect(result).toStrictEqual(expect.objectContaining({ url }))
-    })
-  })
-
   describe("getProducts", () => {
     const PRODUCT_URL = `https://${DOMAIN}/product`
     const ROBOTS = `Sitemap: https://${DOMAIN}/sitemap.xm`
@@ -138,6 +81,21 @@ describe("Crawler", () => {
       const result = await getProducts()
 
       expect(result).toStrictEqual([expect.objectContaining(PRODUCT)])
+    })
+  
+    it("ignores disallowed urls", async () => {
+      const robots = `
+        Sitemap: https://${DOMAIN}/sitemap.xml
+        User-Agent: ${PRODUCT_TOKEN}
+        Disallow: /product
+      `
+      response
+        .mockResolvedValueOnce(robots)
+        .mockResolvedValueOnce(SITEMAP)
+
+      const result = await getProducts()
+
+      expect(result).toStrictEqual([])
     })
 
     it("ignores non-product pages", async () => {
