@@ -1,4 +1,5 @@
 const Domain = require("./Domain")
+const Indexer = require("./Indexer")
 const { Content } = require("./parsers")
 
 const Crawler = async function (shop, crawlOptions) {
@@ -15,9 +16,18 @@ const Crawler = async function (shop, crawlOptions) {
     return Content(response.url, response.body)
   }
 
+  const getProducts = async function* () {
+    const indexer = Indexer([shop])
+    for await (const url of getAllowedUrls()) {
+      const content = await getContent(url)
+      yield indexer.createProduct(content)
+    }
+  }
+
   return {
     getAllowedUrls,
     getContent,
+    getProducts,
   }
 }
 

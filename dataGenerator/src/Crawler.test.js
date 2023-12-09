@@ -85,4 +85,59 @@ describe("Crawler", () => {
       expect(result).toStrictEqual(expect.objectContaining({ url }))
     })
   })
+
+  describe("getProducts", () => {
+    const PRODUCT_URL = `https://${DOMAIN}/product`
+    const ROBOTS = `Sitemap: https://${DOMAIN}/sitemap.xm`
+    const SITEMAP = `
+      <?xml version="1.0" encoding="UTF-8"?>
+      <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+        <url><loc>${PRODUCT_URL}</loc></url>
+      </urlset>
+    `
+
+    const getProducts = async () => {
+      const crawler = await Crawler(shop, {
+        productToken: PRODUCT_TOKEN,
+        loggingPath: "./foo",
+        crawlDelay: 1,
+      })
+
+      const result = []
+      for await (const url of crawler.getProducts()) {
+        result.push(url)
+      }
+      return result
+    }
+
+    it("returns products from the shop", async () => {
+      const PRODUCT = {
+        name: "The name in og",
+        description: "The description in og",
+        image: `https//image.com/og-image`,
+        sellers: [
+          {
+            productUrl: PRODUCT_URL,
+            shop: {
+              name: shop.name,
+              image: shop.icon,
+            },
+          },
+        ],
+      }
+      const PAGE_CONTENT = `<html>
+        <script type="application/ld+json">
+          ${JSON.stringify({ ...PRODUCT, ["@type"]: "Product" })}
+        </script>
+      </html>`
+      response
+        .mockResolvedValueOnce(ROBOTS)
+        .mockResolvedValueOnce(SITEMAP)
+        .mockResolvedValueOnce(PAGE_CONTENT)
+
+      const result = await getProducts()
+
+      expect(result).toStrictEqual([expect.objectContaining(PRODUCT)])
+    })
+  })
 })
