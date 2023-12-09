@@ -13,9 +13,7 @@ const PRODUCT_KEYWORDS = [
 const CRAWL_DELAY = 10000
 
 const main = async (dataFolder, limit) => {
-  const shop = SHOPS[0]
-
-  const crawler = await Crawler(shop, {
+  const crawler = await Crawler(SHOPS[0], {
     productToken: PRODUCT_TOKEN,
     dataFolder,
     crawlDelay: CRAWL_DELAY,
