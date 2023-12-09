@@ -1,10 +1,8 @@
-const { mkdir } = require("fs/promises")
 const Crawler = require("./Crawler")
-const Indexer = require("./Indexer")
 const SHOPS = require("./shops")
 
 const PRODUCT_TOKEN = "Wibnix/0.2"
-const WHITE_KEYWORDS = [
+const PRODUCT_KEYWORDS = [
   "pants",
   "trousers",
   "pantalon",
@@ -12,44 +10,22 @@ const WHITE_KEYWORDS = [
   "vaqueros",
   "joggers",
 ]
-const BLACK_KEYWORDS = []
 const CRAWL_DELAY = 10000
 
-const main = async (domain, dataFolder, limit) => {
-  const loggingPath = `${dataFolder}/${domain}`
-  await mkdir(loggingPath, { recursive: true })
+const main = async (dataFolder, limit) => {
+  const shop = SHOPS[0]
 
-  const crawler = Crawler(domain, {
+  const crawler = await Crawler(shop, {
     productToken: PRODUCT_TOKEN,
-    loggingPath,
+    loggingPath: `${dataFolder}/${shop.domain}`,
     crawlDelay: CRAWL_DELAY,
   })
-  const indexer = Indexer(SHOPS)
 
   console.log("[")
-
-  let productsLogged = 0
-  for await (const url of crawler.getAllowedUrls()) {
-    if (
-      !WHITE_KEYWORDS.some((key) => url.includes(key)) ||
-      BLACK_KEYWORDS.some((key) => url.includes(key))
-    ) {
-      continue
-    }
-
-    const content = await crawler.getContent(url)
-    if (indexer.isProductPage(content)) {
-      const product = indexer.createProduct(content)
-      console.log(`${JSON.stringify(product)},`)
-
-      productsLogged += 1
-      if (limit && productsLogged >= limit) {
-        break
-      }
-    }
+  for await (const product of crawler.getProducts({ keywords: PRODUCT_KEYWORDS, limit })) {
+    console.log(`${JSON.stringify(product)},`)
   }
-
   console.log("]")
 }
 
-main(process.argv[2], process.argv[3], process.argv[4])
+main(process.argv[2], process.argv[3])
