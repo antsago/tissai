@@ -40,7 +40,7 @@ describe("Crawler", () => {
     `
 
     const getProducts = async (...args) => {
-      const crawler = await Crawler(shop, {
+      const crawler = await Crawler([shop], {
         productToken: PRODUCT_TOKEN,
         dataFolder: "./foo",
         crawlDelay: 1,

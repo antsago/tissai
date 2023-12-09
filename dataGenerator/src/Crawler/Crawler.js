@@ -2,30 +2,30 @@ const Domain = require("./Domain")
 const Indexer = require("./Indexer")
 const { Content } = require("./parsers")
 
-const Crawler = async function (shop, crawlOptions) {
-  const domain = await Domain(shop, crawlOptions)
+const Crawler = async function (shops, crawlOptions) {
+  const indexer = Indexer(shops)
 
-  const getAllowedUrls = async function* () {
+  const getAllowedUrls = async function* (domain) {
     for await (const sitemap of domain.getSitemaps()) {
       yield* sitemap.urls.filter((url) => domain.robots.isAllowed(url))
     }
   }
 
-  const getContent = async function (url) {
+  const getContent = async function (domain, url) {
     const response = await domain.fetch(url)
     return Content(response.url, response.body)
   }
 
   const getProducts = async function* ({ keywords, limit } = {}) {
-    const indexer = Indexer([shop])
+    const domain = await Domain(shops[0], crawlOptions)
 
     let productsCreated = 0
-    for await (const url of getAllowedUrls()) {
+    for await (const url of getAllowedUrls(domain)) {
       if (keywords && !keywords.some((key) => url.includes(key))) {
         continue
       }
 
-      const content = await getContent(url)
+      const content = await getContent(domain, url)
 
       if (!indexer.isProductPage(content)) {
         continue
