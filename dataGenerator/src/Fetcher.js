@@ -1,5 +1,4 @@
 const { setTimeout } = require("timers/promises")
-const Cache = require("./Cache")
 
 const Semaphore = function (crawlDelay) {
   const queue = []
@@ -30,9 +29,8 @@ const Semaphore = function (crawlDelay) {
   }
 }
 
-const Fetcher = function (productToken, loggingPath, crawlDelay) {
+const Fetcher = function (productToken, cache, crawlDelay) {
   const waitForGreen = Semaphore(crawlDelay)
-  const cache = Cache(loggingPath)
 
   const retrieveFromSrc = async (url) => {
     await waitForGreen()

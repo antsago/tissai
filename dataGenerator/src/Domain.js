@@ -1,4 +1,5 @@
 const { appendFile } = require("fs/promises")
+const Cache = require("./Cache")
 const Fetcher = require("./Fetcher")
 const { Robots, Sitexml } = require("./parsers")
 
@@ -6,7 +7,7 @@ const Domain = async function (
   shop,
   { productToken, crawlDelay = 100, loggingPath },
 ) {
-  const get = Fetcher(productToken, loggingPath, crawlDelay)
+  const get = Fetcher(productToken, Cache(loggingPath), crawlDelay)
   const fetchRobots = async () => {
     const robotsUrl = `https://${shop.domain}/robots.txt`
     const response = await get(robotsUrl)

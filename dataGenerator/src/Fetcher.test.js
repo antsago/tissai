@@ -1,5 +1,6 @@
+const { writeFile, readdir, readFile } = require("fs/promises")
 const Fetcher = require("./Fetcher")
-const { writeFile, appendFile, readdir, readFile } = require("fs/promises")
+const Cache = require("./Cache")
 
 jest.useFakeTimers()
 jest.mock("fs/promises")
@@ -26,7 +27,7 @@ describe("Fetcher", () => {
     )
     readdir.mockResolvedValue([])
 
-    get = new Fetcher(PRODUCT_TOKEN, LOGGING_PATH, CRAWL_DELAY)
+    get = new Fetcher(PRODUCT_TOKEN, Cache(LOGGING_PATH), CRAWL_DELAY)
   })
 
   it("sets user-agent", async () => {
