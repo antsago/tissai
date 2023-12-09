@@ -5,8 +5,9 @@ const { Robots, Sitexml } = require("./parsers")
 
 const Domain = async function (
   shop,
-  { productToken, crawlDelay = 100, loggingPath },
+  { productToken, crawlDelay = 100, dataFolder },
 ) {
+  const loggingPath = `${dataFolder}/${shop.domain}`
   const cache = await Cache(loggingPath)
   const get = Fetcher(productToken, cache, crawlDelay)
 
@@ -26,7 +27,7 @@ const Domain = async function (
       return await get(url)
     } catch (err) {
       await appendFile(
-        `${loggingPath}/errors.log`,
+        `${dataFolder}/errors.log`,
         `${JSON.stringify({
           timestamp: Date.now(),
           url,

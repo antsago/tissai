@@ -33,7 +33,7 @@ describe("Crawler", () => {
     const getAllowedUrls = async () => {
       const crawler = await Crawler(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: "./foo",
+        dataFolder: "./foo",
         crawlDelay: 1,
       })
 
@@ -73,7 +73,7 @@ describe("Crawler", () => {
     it("fetches and parses page", async () => {
       const crawler = await Crawler(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: "./foo",
+        dataFolder: "./foo",
         crawlDelay: 1,
       })
       const url = `https://${DOMAIN}/url1`
@@ -99,7 +99,7 @@ describe("Crawler", () => {
     const getProducts = async (...args) => {
       const crawler = await Crawler(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: "./foo",
+        dataFolder: "./foo",
         crawlDelay: 1,
       })
 

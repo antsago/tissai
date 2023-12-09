@@ -17,7 +17,7 @@ const main = async (dataFolder, limit) => {
 
   const crawler = await Crawler(shop, {
     productToken: PRODUCT_TOKEN,
-    loggingPath: `${dataFolder}/${shop.domain}`,
+    dataFolder,
     crawlDelay: CRAWL_DELAY,
   })
 

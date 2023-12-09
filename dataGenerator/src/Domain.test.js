@@ -7,7 +7,7 @@ jest.mock("fs/promises")
 describe("Domain", () => {
   const DOMAIN = "example.com"
   const PRODUCT_TOKEN = "FooBar/1.0"
-  const LOGGING_PATH = "./foo"
+  const DATA_FOLDER = "./foo"
 
   let shop
   let response
@@ -37,7 +37,7 @@ describe("Domain", () => {
 
     const domain = await Domain(shop, {
       productToken: PRODUCT_TOKEN,
-      loggingPath: LOGGING_PATH,
+      dataFolder: DATA_FOLDER,
       crawlDelay: 1,
     })
 
@@ -53,7 +53,7 @@ describe("Domain", () => {
       response.mockResolvedValueOnce(robots).mockResolvedValueOnce(urlContent)
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: LOGGING_PATH,
+        dataFolder: DATA_FOLDER,
         crawlDelay: 1,
       })
 
@@ -73,7 +73,7 @@ describe("Domain", () => {
       response.mockResolvedValueOnce(robots)
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: LOGGING_PATH,
+        dataFolder: DATA_FOLDER,
         crawlDelay: 1,
       })
 
@@ -97,7 +97,7 @@ describe("Domain", () => {
         .mockRejectedValueOnce(error)
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: LOGGING_PATH,
+        dataFolder: DATA_FOLDER,
         crawlDelay: 1,
       })
 
@@ -105,7 +105,7 @@ describe("Domain", () => {
 
       await expect(act).rejects.toThrow(error)
       expect(appendFile).toHaveBeenCalledWith(
-        `${LOGGING_PATH}/errors.log`,
+        `${DATA_FOLDER}/errors.log`,
         `${JSON.stringify({
           timestamp: Date.now(),
           url,
@@ -135,7 +135,7 @@ describe("Domain", () => {
       response.mockResolvedValueOnce(robots).mockResolvedValueOnce(SITEMAP)
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: LOGGING_PATH,
+        dataFolder: DATA_FOLDER,
         crawlDelay: 1,
       })
 
@@ -152,7 +152,7 @@ describe("Domain", () => {
         .mockResolvedValueOnce(SITEMAP)
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: LOGGING_PATH,
+        dataFolder: DATA_FOLDER,
         crawlDelay: 1,
       })
 
@@ -166,7 +166,7 @@ describe("Domain", () => {
       response.mockResolvedValueOnce(robots).mockResolvedValueOnce(SITEMAP)
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: LOGGING_PATH,
+        dataFolder: DATA_FOLDER,
         crawlDelay: 1,
       })
 
@@ -184,7 +184,7 @@ describe("Domain", () => {
         .mockResolvedValueOnce(SITEMAP)
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: LOGGING_PATH,
+        dataFolder: DATA_FOLDER,
         crawlDelay: 1,
       })
 
@@ -211,7 +211,7 @@ describe("Domain", () => {
         .mockResolvedValueOnce(SITEMAP)
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: LOGGING_PATH,
+        dataFolder: DATA_FOLDER,
         crawlDelay: 1,
       })
 
@@ -236,7 +236,7 @@ describe("Domain", () => {
         .mockRejectedValueOnce(new Error("Booh!"))
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: LOGGING_PATH,
+        dataFolder: DATA_FOLDER,
         crawlDelay: 1,
       })
 
@@ -252,7 +252,7 @@ describe("Domain", () => {
       response.mockResolvedValueOnce(robots).mockResolvedValueOnce(SITEMAP)
       const domain = await Domain(shop, {
         productToken: PRODUCT_TOKEN,
-        loggingPath: LOGGING_PATH,
+        dataFolder: DATA_FOLDER,
         crawlDelay: 1,
       })
 
