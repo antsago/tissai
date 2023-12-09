@@ -182,10 +182,49 @@ describe("Crawler", () => {
         .mockResolvedValueOnce(SITEMAP)
         .mockResolvedValueOnce(PAGE_CONTENT)
 
-      const result = await getProducts([keyword])
+      const result = await getProducts({ keywords: [keyword] })
 
       expect(result).toStrictEqual([])
       expect(fetch).not.toHaveBeenCalledWith(PRODUCT_URL, expect.anything())
+    })
+
+    it("stops crawling after limit", async () => {
+      const sitemap = `
+        <?xml version="1.0" encoding="UTF-8"?>
+        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+          <url><loc>${PRODUCT_URL}</loc></url>
+          <url><loc>${PRODUCT_URL}2</loc></url>
+        </urlset>
+      `
+      const PRODUCT = {
+        name: "The name in og",
+        description: "The description in og",
+        image: `https//image.com/og-image`,
+        sellers: [
+          {
+            productUrl: PRODUCT_URL,
+            shop: {
+              name: shop.name,
+              image: shop.icon,
+            },
+          },
+        ],
+      }
+      const PAGE_CONTENT = `<html>
+        <script type="application/ld+json">
+          ${JSON.stringify({ ...PRODUCT, ["@type"]: "Product" })}
+        </script>
+      </html>`
+      response
+        .mockResolvedValueOnce(ROBOTS)
+        .mockResolvedValueOnce(sitemap)
+        .mockResolvedValueOnce(PAGE_CONTENT)
+        .mockResolvedValueOnce(PAGE_CONTENT)
+
+      const result = await getProducts({ limit: 1 })
+
+      expect(result.length).toBe(1)
+      expect(fetch).toHaveBeenCalledTimes(3)
     })
   })
 })
