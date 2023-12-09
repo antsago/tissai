@@ -1,6 +1,4 @@
-const { writeFile, readdir, readFile } = require("fs/promises")
 const Fetcher = require("./Fetcher")
-const Cache = require("./Cache")
 
 jest.useFakeTimers()
 jest.mock("fs/promises")
@@ -8,11 +6,11 @@ jest.mock("fs/promises")
 describe("Fetcher", () => {
   const PRODUCT_TOKEN = "FooBar/1.0"
   const CRAWL_DELAY = 100
-  const LOGGING_FOLDER = "./foo"
-  const LOGGING_PATH = `${LOGGING_FOLDER}/bar`
+  const URL = "https://www.example.com/b-@r"
 
-  let response
   let get
+  let cache
+  let response
   beforeEach(() => {
     jest.resetAllMocks()
 
@@ -25,17 +23,21 @@ describe("Fetcher", () => {
         headers: new Headers(),
       }),
     )
-    readdir.mockResolvedValue([])
 
-    get = new Fetcher(PRODUCT_TOKEN, Cache(LOGGING_PATH), CRAWL_DELAY)
+    cache = {
+      get: jest.fn(),
+      set: jest.fn(),
+    }
+
+    get = new Fetcher(PRODUCT_TOKEN, cache, CRAWL_DELAY)
   })
 
   it("sets user-agent", async () => {
     response.mockResolvedValueOnce("foo")
 
-    await get("foo")
+    await get(URL)
 
-    expect(fetch).toHaveBeenCalledWith("foo", {
+    expect(fetch).toHaveBeenCalledWith(URL, {
       headers: { ["User-Agent"]: PRODUCT_TOKEN },
     })
   })
@@ -73,7 +75,7 @@ describe("Fetcher", () => {
     expect(fetch).toHaveBeenCalledTimes(2)
   })
 
-  it("logs responses", async () => {
+  it("caches responses", async () => {
     const expected = {
       url: "/redirected",
       status: 200,
@@ -87,66 +89,25 @@ describe("Fetcher", () => {
       headers: new Headers(expected.headers),
     })
 
-    const result = await get("https://www.example.com/b-@r")
+    const result = await get(URL)
 
     expect(result).toEqual(expected)
-    expect(writeFile).toHaveBeenCalledWith(
-      `${LOGGING_PATH}/${Date.now()}@https%3A%2F%2Fwww.example.com%2Fb-%40r`,
-      JSON.stringify(expected),
-    )
+    expect(cache.set).toHaveBeenCalledWith(URL, expected)
   })
 
-  it("trims filenames over 150 characters long", async () => {
-    const longUrl =
-      "https://es.shein.com/A-multi-purpose-large-capacity-clothes-hanger-and-trousers-rack-that-does-not-take-up-space.-One-clothes-hanger-and-trousers-rack-can-hang-4-layers-of-trousers,-6-layers-of-trousers,-and-8-layers-of-trousers.-Super-space-saving-p-26369719-cat-7166.html"
-    response.mockResolvedValueOnce("foo")
-
-    await get(longUrl)
-
-    expect(writeFile).toHaveBeenCalledWith(
-      `${LOGGING_PATH}/${Date.now()}@https%3A%2F%2Fes.shein.com%2FA-multi-purpose-large-capacity-clothes-hanger-and-trousers-rack-that-does-not-take-up-space.-One-clothes-hanger-and-trous2bac94693b9320267853652cd171d112`,
-      expect.any(String),
-    )
-  })
-
-  it("reuses logged responses", async () => {
+  it("reuses cached responses", async () => {
     const expected = {
       url: "/redirected",
       status: 200,
       body: "foobar",
       headers: { "content-type": "text/xml" },
     }
-    const path = "1700753057613@https%3A%2F%2Fwww.example.com%2Fb-%40r"
-    readdir.mockResolvedValue([path])
-    readFile.mockResolvedValue(JSON.stringify(expected))
+    cache.get.mockResolvedValue(expected)
 
-    const result = await get("https://www.example.com/b-@r")
+    const result = await get(URL)
 
     expect(result).toEqual(expected)
     expect(fetch).not.toHaveBeenCalled()
-    expect(readFile).toHaveBeenCalledWith(`${LOGGING_PATH}/${path}`, {
-      encoding: "utf8",
-    })
-  })
-
-  it("favours latest responses", async () => {
-    const expected = {
-      url: "/redirected",
-      status: 200,
-      body: "foobar",
-      headers: { "content-type": "text/xml" },
-    }
-    readdir.mockResolvedValue([
-      "1700753057613@https%3A%2F%2Fwww.example.com%2Fb-%40r",
-      "1700753057614@https%3A%2F%2Fwww.example.com%2Fb-%40r",
-    ])
-    readFile.mockResolvedValue(JSON.stringify(expected))
-
-    await get("https://www.example.com/b-@r")
-
-    expect(readFile).toHaveBeenCalledWith(
-      `${LOGGING_PATH}/1700753057614@https%3A%2F%2Fwww.example.com%2Fb-%40r`,
-      expect.anything(),
-    )
+    expect(cache.get).toHaveBeenCalledWith(URL)
   })
 })
