@@ -61,6 +61,7 @@ const SHOPS = [
     icon: "https://www.decimas.com/static/favicon.ico",
     domain: "www.decimas.com",
     sitemaps: ["https://www.decimas.com/sitemap.xml"],
+    urlKeywords: [".html"]
   },
   {
     name: "Cortefiel",

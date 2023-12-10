@@ -17,11 +17,13 @@ const Crawler = async function (shops, crawlOptions) {
   }
 
   const getProducts = async function* ({ keywords, limit } = {}) {
-    const domain = await Domain(shops[0], crawlOptions)
+    const shop = shops[0]
+    const domain = await Domain(shop, crawlOptions)
 
     let productsCreated = 0
     for await (const url of getAllowedUrls(domain)) {
-      if (keywords && !keywords.some((key) => url.includes(key))) {
+      if ((keywords && !keywords.some((key) => url.includes(key)))
+      || (shop.urlKeywords && !shop.urlKeywords.some((key) => url.includes(key)))) {
         continue
       }
 

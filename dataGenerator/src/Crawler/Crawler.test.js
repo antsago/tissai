@@ -146,6 +146,38 @@ describe("Crawler", () => {
       expect(fetch).not.toHaveBeenCalledWith(PRODUCT_URL, expect.anything())
     })
 
+    it("ignores pages without shops keywords", async () => {
+      shop.urlKeywords = ["good"]
+      const PRODUCT = {
+        name: "The name in og",
+        description: "The description in og",
+        image: `https//image.com/og-image`,
+        sellers: [
+          {
+            productUrl: PRODUCT_URL,
+            shop: {
+              name: shop.name,
+              image: shop.icon,
+            },
+          },
+        ],
+      }
+      const PAGE_CONTENT = `<html>
+        <script type="application/ld+json">
+          ${JSON.stringify({ ...PRODUCT, ["@type"]: "Product" })}
+        </script>
+      </html>`
+      response
+        .mockResolvedValueOnce(ROBOTS)
+        .mockResolvedValueOnce(SITEMAP)
+        .mockResolvedValueOnce(PAGE_CONTENT)
+
+      const result = await getProducts()
+
+      expect(result).toStrictEqual([])
+      expect(fetch).not.toHaveBeenCalledWith(PRODUCT_URL, expect.anything())
+    })
+
     it("stops crawling after limit", async () => {
       const sitemap = `
         <?xml version="1.0" encoding="UTF-8"?>
