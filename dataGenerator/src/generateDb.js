@@ -12,20 +12,24 @@ const PRODUCT_KEYWORDS = [
 ]
 const CRAWL_DELAY = 10000
 
-const main = async (dataFolder, limit) => {
-  const crawler = await Crawler(SHOPS[0], {
+const logShop = async (shop, dataFolder, limit) => {
+  const crawler = await Crawler([shop], {
     productToken: PRODUCT_TOKEN,
     dataFolder,
     crawlDelay: CRAWL_DELAY,
   })
-
-  console.log("[")
+  
   for await (const product of crawler.getProducts({
     keywords: PRODUCT_KEYWORDS,
     limit,
   })) {
     console.log(`${JSON.stringify(product)},`)
   }
+}
+
+const main = async (dataFolder, limit) => {
+  console.log("[")
+  await Promise.all(SHOPS.map(shop => logShop(shop, dataFolder, limit)))
   console.log("]")
 }
 
