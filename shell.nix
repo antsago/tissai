@@ -12,5 +12,6 @@ pkgs.mkShell {
     python311Packages.pip
     python311Packages.transformers
     python311Packages.torch
+    python311Packages.sentence-transformers
   ];
 }
