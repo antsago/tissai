@@ -3,8 +3,8 @@ import books from "../../../../data/books.json"
 import relationships from "../../../../data/relationships.json"
 
 export const load: PageServerLoad = ({ params }) => {
-	const book = (books as any)[params.isbn]
-	const recommended = (relationships as any)[params.isbn]
+	const book = (books as any)[params.id]
+	const recommended = (relationships as any)[params.id]
 
 	return {
 		book,

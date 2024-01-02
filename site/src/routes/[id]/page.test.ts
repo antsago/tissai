@@ -30,7 +30,7 @@ describe("render detail page", () => {
 		const BOOK = books[ISBN]
 		const RELATIONSHIPS = relationships[ISBN]
 
-		render(page, { data: await load({ params: { isbn: ISBN } } as any) })
+		render(page, { data: await load({ params: { id: ISBN } } as any) })
 
 		const heading = screen.getByRole("heading")
 		const description = screen.getByRole("main")
