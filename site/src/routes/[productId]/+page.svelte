@@ -14,7 +14,7 @@
 	</div>
 	<!-- sticky -->
 	<a
-		class="sticky bottom-6 mt-auto py-6 px-10 bg-amber-600 rounded-2xl text-amber-200 text-center"
+		class="sticky bottom-6 mt-auto py-6 px-10 bg-amber-600 rounded-2xl border border-amber-700 text-amber-200 text-center"
 		href={data.sellers?.[0].productUrl}
 		>Crompra en {data.sellers[0].shop.name}</a
 	>
