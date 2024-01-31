@@ -2,19 +2,23 @@
 	export let data
 </script>
 
-<div class="flex flex-col grow px-6 py-6">
-	<img
-		class="aspect-square object-cover rounded-lg ring-2 ring-stone-200/50"
-		alt={data.name}
-		src={data.image}
-	/>
-	<div class="p-6 my-6 bg-stone-200 rounded-lg ring-1 ring-stone-300">
-		<h1 class="text-stone-800 uppercase text-lg">{data.name}</h1>
+<div class="flex flex-col grow">
+	<div class="bg-stone-100 py-px">
+		<img
+			class="w-full max-w-md mx-auto aspect-square object-cover"
+			alt={data.name}
+			src={data.image}
+		/>
+	</div>
+	<div class="mt-6 p-6 bg-stone-100">
+		<h1 class="text-stone-900 uppercase text-lg">{data.name}</h1>
 		<p class="mt-4 text-stone-700 text-base" role="main">{data.description}</p>
 	</div>
 	<a
-		class="sticky bottom-6 mt-auto py-6 px-10 bg-amber-600 rounded-2xl border border-amber-700 text-amber-200 text-center"
+		class="sticky bottom-0 mt-auto py-6 px-10 bg-orange-100 border-t border-orange-300/50 text-orange-900 text-center"
 		href={data.sellers?.[0].productUrl}
-		>Crompra en {data.sellers[0].shop.name}</a
 	>
+		Crompra en 
+		<span class="font-semibold">{data.sellers[0].shop.name}</span>
+	</a>
 </div>
