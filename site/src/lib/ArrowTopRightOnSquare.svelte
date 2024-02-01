@@ -1,5 +1,6 @@
 <script>
-	export let foo = ""
+	let classes = ""
+	export { classes as class}
 </script>
 
 <svg
@@ -8,7 +9,7 @@
 	viewBox="0 0 24 24"
 	stroke-width="1.5"
 	stroke="currentColor"
-	class={foo}
+	class={classes}
 >
 	<path
 		stroke-linecap="round"

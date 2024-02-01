@@ -22,6 +22,6 @@
 	>
 		Crompra en
 		<span class="font-semibold">{data.sellers[0].shop.name}</span>
-		<OutLink foo="inline-block ml-1 align-text-bottom w-5 h-5" />
+		<OutLink class="inline-block ml-1 align-text-bottom w-5 h-5" />
 	</a>
 </div>
