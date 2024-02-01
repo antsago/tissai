@@ -1,5 +1,5 @@
 <script>
-	import OutLink from './ArrowTopRightOnSquare.svelte'
+	import OutLink from '$lib/ArrowTopRightOnSquare.svelte'
 
 	export let data
 </script>
