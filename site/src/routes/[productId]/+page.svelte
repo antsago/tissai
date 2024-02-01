@@ -10,7 +10,7 @@
 			src={data.image}
 		/>
 	</div>
-	<div class="mt-6 p-6 bg-stone-100">
+	<div class="my-6 p-6 bg-stone-100">
 		<h1 class="text-stone-900 uppercase text-lg">{data.name}</h1>
 		<p class="mt-4 text-stone-700 text-base" role="main">{data.description}</p>
 	</div>
@@ -20,5 +20,8 @@
 	>
 		Crompra en 
 		<span class="font-semibold">{data.sellers[0].shop.name}</span>
+		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="inline-block ml-1 align-text-bottom w-5 h-5">
+			<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+		</svg>
 	</a>
 </div>
