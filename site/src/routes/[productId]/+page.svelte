@@ -1,5 +1,5 @@
 <script>
-	import OutLink from '$lib/ArrowTopRightOnSquare.svelte'
+	import OutLink from "$lib/ArrowTopRightOnSquare.svelte"
 
 	export let data
 </script>
@@ -20,8 +20,8 @@
 		class="sticky bottom-0 mt-auto py-6 px-10 bg-orange-100 border-t border-orange-300/50 text-orange-900 text-center"
 		href={data.sellers?.[0].productUrl}
 	>
-		Crompra en 
+		Crompra en
 		<span class="font-semibold">{data.sellers[0].shop.name}</span>
-		<OutLink foo="inline-block ml-1 align-text-bottom w-5 h-5"/>
+		<OutLink foo="inline-block ml-1 align-text-bottom w-5 h-5" />
 	</a>
 </div>

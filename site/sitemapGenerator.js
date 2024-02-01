@@ -18,7 +18,7 @@ ${Object.keys(books)
     <lastmod>2023-11-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>`
+  </url>`,
 	)
 	.join("\n")}
 </urlset>
