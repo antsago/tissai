@@ -7,14 +7,16 @@
 <div class="flex flex-col grow">
 	<div class="bg-stone-100">
 		<img
-			class="w-full max-w-md mx-auto border border-stone-200/50 aspect-square object-cover"
+			class="w-full max-w-sm mx-auto border border-stone-200/50 aspect-square object-cover"
 			alt={data.name}
 			src={data.image}
 		/>
 	</div>
-	<div class="my-6 p-6 bg-stone-200">
-		<h1 class="text-stone-900 uppercase text-lg">{data.name}</h1>
-		<p class="mt-4 text-stone-700 text-base" role="main">{data.description}</p>
+	<div class="my-6 bg-stone-200">
+		<div class="max-w-prose mx-auto p-6">
+			<h1 class="text-stone-900 uppercase text-lg">{data.name}</h1>
+			<p class="mt-4 text-stone-700 text-base" role="main">{data.description}</p>
+		</div>
 	</div>
 	<a
 		class="sticky bottom-0 mt-auto py-6 px-10 bg-orange-500 text-orange-100 text-center"
