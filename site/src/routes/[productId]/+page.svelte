@@ -4,27 +4,28 @@
 	export let data
 </script>
 
-<div class="flex flex-col space-y-6 md:flex-row md:space-y-0">
-	<div class="bg-stone-100 md:grow md:max-w-md">
-		<img
-			class="w-full max-w-sm mx-auto border-y border-stone-200/50 aspect-square object-cover"
-			alt={data.name}
-			src={data.image}
-		/>
-	</div>
-
-	<div class="flex flex-col md:max-w-sm bg-stone-200">
-		<div class="max-w-prose m-auto p-6">
-			<h1 class="text-stone-900 uppercase text-lg">{data.name}</h1>
-			<p class="mt-4 text-stone-700 text-base" role="main">{data.description}</p>
+<div class="md:bg-stone-100">
+	<div class="md:max-w-screen-md mx-auto flex flex-col space-y-6 md:flex-row md:space-y-0">
+		<div class="bg-stone-100 md:grow">
+			<img
+				class="w-full max-w-sm md:max-w-full mx-auto border-y border-stone-200/50 aspect-square object-cover"
+				alt={data.name}
+				src={data.image}
+			/>
 		</div>
-		<a
-			class="sticky bottom-0 py-6 px-10 bg-orange-500 text-orange-100 text-center"
-			href={data.sellers?.[0].productUrl}
-		>
-			Crompra en
-			<span class="font-semibold">{data.sellers[0].shop.name}</span>
-			<OutLink class="inline-block ml-1 align-text-bottom w-5 h-5" />
-		</a>
+		<div class="flex flex-col md:max-w-sm bg-stone-200">
+			<div class="max-w-prose m-auto p-6">
+				<h1 class="text-stone-900 uppercase text-lg">{data.name}</h1>
+				<p class="mt-4 text-stone-700 text-base" role="main">{data.description}</p>
+			</div>
+			<a
+				class="sticky bottom-0 py-6 px-10 bg-orange-500 text-orange-100 text-center"
+				href={data.sellers?.[0].productUrl}
+			>
+				Crompra en
+				<span class="font-semibold">{data.sellers[0].shop.name}</span>
+				<OutLink class="inline-block ml-1 align-text-bottom w-5 h-5" />
+			</a>
+		</div>
 	</div>
 </div>
