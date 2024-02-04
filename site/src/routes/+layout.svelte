@@ -10,9 +10,9 @@
 		<Logo class="w-10" />
 		<span class="font-['Kalam'] text-2xl">Tissai</span>
 	</nav>
-	<div class="my-6 flex flex-col">
-		<slot />
-	</div>
+	<div class="min-h-6 grow"/>
+	<slot />
+	<div class="min-h-6 grow-[2]"/>
 	<div class="mt-auto flex justify-center bg-stone-200 px-4 py-4 text-sm text-stone-500">
 		<small class="">2024 @ Tissai</small>
 	</div>
