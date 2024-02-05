@@ -6,6 +6,9 @@ in
 pkgs.mkShell {
   packages = with pkgs; [
     vim
+    postgresql
+    unixtools.ping
+
     nodejs_20
     yarn
     python311Packages.python
