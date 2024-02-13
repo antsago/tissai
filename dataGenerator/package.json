@@ -3,6 +3,7 @@
   "packageManager": "yarn@3.6.3",
   "scripts": {
     "db": "node src/generateDb",
+    "load": "node src/loadPg",
     "relationships": "python src/generateRelationships.py > ../data/relationships.json",
     "test": "jest",
     "format": "prettier . --write"
@@ -14,6 +15,7 @@
   "dependencies": {
     "dotenv": "^16.3.1",
     "jsdom": "^22.1.0",
+    "pg": "^8.11.3",
     "robots-parser": "^3.0.1",
     "xml2js": "^0.6.2"
   }
