@@ -1,8 +1,24 @@
 import type { PageServerLoad } from "./$types"
-import products from "../../../../data/products.json"
+import pg from "pg"
 
-export const load: PageServerLoad = ({ params }) => {
-	const product = products.find((p) => p.id === params.productId)
+async function getProduct(id: string) {
+  const pool = new pg.Pool({
+    host: 'postgres',
+    port: 5432,
+    user: 'postgres',
+    password: 'postgres',
+    database: 'postgres',
+  })
 
+  const query = `SELECT * FROM products WHERE id='${id}'`
+  const res = await pool.query(query)
+
+  await pool.end()	
+
+	return res.rows[0]
+}
+
+export const load: PageServerLoad = async ({ params }) => {
+	const product = await getProduct(params.productId)
 	return product
 }
