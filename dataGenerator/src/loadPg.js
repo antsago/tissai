@@ -1,4 +1,13 @@
-const { Pool } = require('pg')
+const { Pool, escapeLiteral } = require('pg')
+const products = require('../../data/products.json')
+
+function escape(literal) {
+  if(literal === null || literal === undefined) {
+    return "null"
+  }
+
+  return escapeLiteral(literal)
+}
 
 async function main() {
   const pool = new Pool({
@@ -23,20 +32,27 @@ async function main() {
     );`)
   console.log('Table created')
 
-  const res = await pool.query(
-    `INSERT INTO products (
-      id, name, description, images, brand, product_uri, shop_name, shop_icon
-    ) VALUES (
-      '5f4f389d-cc00-4bdf-a484-278e3b18975c',
-      'Conjunto de jersey, pantalón y chaleco | SPF',
-      'Shop the look! Complete outfits, smart prices. Jersey Estructura Lana. Pantalón Efecto Piel Slim. Chaleco Saddle.',
-      '{"https://myspringfield.com/on/demandware.static/-/Sites-storefront-springfield/default/dwa93e7817/P_00550823FM.jpg"}',
-      NULL,
-      'https://myspringfield.com/es/es/conjunto-de-jersey-pantalon-y-chaleco/00550823.html',
-      'Springfield',
-      'https://myspringfield.com/on/demandware.static/Sites-SPF-Site/-/default/dw531e4368/img/favicon/favicon-96x96.png'
-    );`
-  )
+  const values = products.map(product => {
+    const images = Array.isArray(product.image) ? product.image : [product.image]
+    return `(
+      ${escape(product.id)},
+      ${escape(product.name)},
+      ${escape(product.description)},
+      '{"${images.join('","')}"}',
+      ${escape(product.brand)},
+      ${escape(product.sellers?.[0]?.productUrl)},
+      ${escape(product.sellers?.[0]?.shop.name)},
+      ${escape(product.sellers?.[0]?.shop.image)}
+    )`
+  })
+
+  const query = `
+  INSERT INTO products
+  (id, name, description, images, brand, product_uri, shop_name, shop_icon)
+  VALUES ${values.join(',')};
+  `
+  const res = await pool.query(query)
+
   console.log(`Inserted ${res.rowCount} products`)
 
   await pool.end()
