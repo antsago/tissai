@@ -23,7 +23,8 @@
 				// Set *default* container specific settings.json values on container create.
 				"settings": {},
 				"extensions": [
-					"svelte.svelte-vscode"
+					"svelte.svelte-vscode",
+					"ms-python.python"
 				]
 			}
 	}
