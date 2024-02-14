@@ -1,5 +1,5 @@
 const { Pool, escapeLiteral } = require('pg')
-const products = require('../../data/products.json')
+const products = require('../../data/withEmbeddings.json')
 
 function escape(literal) {
   if(literal === null || literal === undefined) {
@@ -18,7 +18,7 @@ async function main() {
     database: 'postgres',
   })
    
-  // CREATE TABLE IF NOT EXISTS products (id uuid PRIMARY KEY, name text, description text, images text[], brand text, product_uri text, shop_name text, shop_icon text);
+  await pool.query('CREATE EXTENSION IF NOT EXISTS vector;')
   await pool.query(`
     CREATE TABLE IF NOT EXISTS products (
       id            uuid PRIMARY KEY,
@@ -28,7 +28,8 @@ async function main() {
       brand         text,
       product_uri   text,
       shop_name     text,
-      shop_icon     text
+      shop_icon     text,
+      embedding     vector(384)
     );`)
   console.log('Table created')
 
@@ -42,13 +43,14 @@ async function main() {
       ${escape(product.brand)},
       ${escape(product.sellers?.[0]?.productUrl)},
       ${escape(product.sellers?.[0]?.shop.name)},
-      ${escape(product.sellers?.[0]?.shop.image)}
+      ${escape(product.sellers?.[0]?.shop.image)},
+      '[${product.embedding.join(",")}]'
     )`
   })
 
   const query = `
   INSERT INTO products
-  (id, name, description, images, brand, product_uri, shop_name, shop_icon)
+  (id, name, description, images, brand, product_uri, shop_name, shop_icon, embedding)
   VALUES ${values.join(',')};
   `
   const res = await pool.query(query)
