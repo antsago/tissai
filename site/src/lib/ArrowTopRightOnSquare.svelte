@@ -1,6 +1,6 @@
 <script>
 	let classes = ""
-	export { classes as class}
+	export { classes as class }
 </script>
 
 <svg

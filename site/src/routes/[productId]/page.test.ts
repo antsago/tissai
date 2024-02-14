@@ -23,7 +23,6 @@ describe("Product Detail page", () => {
 			end: vi.fn(),
 		})
 
-
 		render(page, {
 			data: await load({ params: { productId: PRODUCT.id } } as any),
 		} as any)
