@@ -1,33 +1,28 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, vi } from "vitest"
 import { render, screen } from "@testing-library/svelte"
-import products from "../../../../data/products.json"
+import pg from "pg"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
 
-vi.mock("../../../../data/products.json", () => ({
-	default: [
-		{
-			id: "666",
-			name: "Product name",
-			description: "Shop the look!",
-			image: "https://example.com/product_image.jpg",
-			sellers: [
-				{
-					productUrl: "https://example.com/product.html",
-					shop: {
-						name: "Example",
-						image: "https://example.com/favicon.png",
-					},
-				},
-			],
-		},
-	],
-}))
+vi.mock("pg")
 
 describe("Product Detail page", () => {
 	it("shows product's details", async () => {
-		const PRODUCT = products[0]
+		const PRODUCT = {
+			id: "666",
+			name: "Product name",
+			description: "Shop the look!",
+			images: ["https://example.com/product_image.jpg"],
+			product_uri: "https://example.com/product.html",
+			shop_name: "Example",
+			shop_icon: "https://example.com/favicon.png",
+		}
+		pg.Pool.mockReturnValue({
+			query: vi.fn().mockResolvedValueOnce({ rows: [PRODUCT] }),
+			end: vi.fn(),
+		})
+
 
 		render(page, {
 			data: await load({ params: { productId: PRODUCT.id } } as any),
@@ -37,12 +32,12 @@ describe("Product Detail page", () => {
 		const heading = screen.getByRole("heading")
 		const description = screen.getByRole("main")
 		const buyLink = screen.getByRole("link", {
-			name: (n) => n.includes(PRODUCT.sellers[0].shop.name),
+			name: (n) => n.includes(PRODUCT.shop_name),
 		})
 
-		expect(image).toHaveAttribute("src", PRODUCT.image)
+		expect(image).toHaveAttribute("src", PRODUCT.images[0])
 		expect(heading).toHaveTextContent(PRODUCT.name)
 		expect(description).toHaveTextContent(PRODUCT.description)
-		expect(buyLink).toHaveAttribute("href", PRODUCT.sellers[0].productUrl)
+		expect(buyLink).toHaveAttribute("href", PRODUCT.product_uri)
 	})
 })
