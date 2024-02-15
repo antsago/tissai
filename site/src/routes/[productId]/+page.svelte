@@ -4,11 +4,11 @@
 	export let data
 </script>
 
-<div class="md:bg-stone-100">
-	<section
-		aria-labelledby="pdetailstitle"
-		class="md:max-w-screen-md mx-auto flex flex-col space-y-6 md:flex-row md:space-y-0"
-	>
+<section
+	aria-labelledby="pdetailstitle"
+	class="md:bg-stone-100"
+>
+	<div class="md:max-w-screen-md mx-auto flex flex-col space-y-6 md:flex-row md:space-y-0">
 		<div class="bg-stone-100 md:grow">
 			<img
 				class="w-full max-w-sm md:max-w-full mx-auto border-y border-stone-200/50 aspect-square object-cover"
@@ -32,5 +32,19 @@
 				<OutLink class="inline-block ml-1 align-text-bottom w-5 h-5" />
 			</a>
 		</div>
-	</section>
-</div>
+	</div>
+</section>
+
+<section aria-labelledby="recommandation">
+	<h2 id="recommandation">Productos similares</h2>
+	<ul>
+	{#each data.similar as recommandation}
+	<li>
+		<a href="/{recommandation.id}">
+			<img src={recommandation.image} alt={recommandation.name}/>
+			<span>{recommandation.name}</span>
+		</a>
+	</li>
+	{/each}
+	</ul>
+</section>

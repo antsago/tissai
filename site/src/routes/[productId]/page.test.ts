@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom/vitest"
 import type { MockInstance } from "vitest"
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import { render, screen, within } from "@testing-library/svelte"
+import { render, screen, within, cleanup } from "@testing-library/svelte"
 import pg from "pg"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
@@ -16,13 +16,13 @@ describe("Product Detail page", () => {
 		images: ["https://example.com/product_image.jpg"],
 		product_uri: "https://example.com/product.html",
 		shop_name: "Example",
-		shop_icon: "https://example.com/favicon.png",
 		similar: [],
 	}
 
 	let query: MockInstance
 	beforeEach(() => {
 		vi.resetAllMocks()
+		cleanup()
 		
 		query = vi.fn()
 		pg.Pool.mockReturnValue({
@@ -55,7 +55,7 @@ describe("Product Detail page", () => {
 		expect(heading).toHaveTextContent(PRODUCT.name)
 		expect(description).toBeInTheDocument()
 		expect(buyLink).toHaveAttribute("href", PRODUCT.product_uri)
-		expect(buyLink).toHaveAccessibleName(new RegExp(PRODUCT.shop_name))
+		expect(buyLink).toHaveAccessibleName(expect.stringContaining(PRODUCT.shop_name))
 	})
 
 	it("shows similar products", async () => {
@@ -69,12 +69,14 @@ describe("Product Detail page", () => {
 			similar: [SIMILAR],
 		}, "Productos similares")
 		
-		const image = section.getByRole('img')
 		const heading = section.getByRole("heading")
+		const title = section.getByText(SIMILAR.name)
+		const image = section.getByRole('img')
 		const buyLink = section.getByRole("link")
 
-		expect(image).toHaveAttribute("src", PRODUCT.images[0])
-		expect(heading).toHaveTextContent(PRODUCT.name)
-		expect(buyLink).toHaveAttribute("href", new RegExp(SIMILAR.id))
+		expect(heading).toHaveTextContent("Productos similares")
+		expect(title).toBeInTheDocument()
+		expect(image).toHaveAttribute("src", SIMILAR.image)
+		expect(buyLink).toHaveAttribute("href", expect.stringContaining(SIMILAR.id))
 	})
 })
