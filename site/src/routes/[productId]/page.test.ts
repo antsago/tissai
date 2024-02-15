@@ -31,18 +31,24 @@ describe("Product Detail page", () => {
 		})
 	})
 
-	it("shows product's details", async () => {
-		query.mockResolvedValueOnce({ rows: [PRODUCT] })
+	async function loadAndRender(data: any, sectionName: string) {
+		query.mockResolvedValueOnce({ rows: [data] })
 
 		render(page, {
 			data: await load({ params: { productId: PRODUCT.id } } as any),
 		} as any)
-		const section = screen.getByRole("region", { name: PRODUCT.name })
+		const section = screen.getByRole("region", { name: sectionName })
 		
-		const image = within(section).getByRole('img')
-		const heading = within(section).getByRole("heading")
-		const description = within(section).getByText(PRODUCT.description)
-		const buyLink = within(section).getByRole("link")
+		return within(section)
+	}
+
+	it("shows product's details", async () => {
+		const section = await loadAndRender(PRODUCT, PRODUCT.name )
+		
+		const image = section.getByRole('img')
+		const heading = section.getByRole("heading")
+		const description = section.getByText(PRODUCT.description)
+		const buyLink = section.getByRole("link")
 
 		expect(image).toHaveAttribute("src", PRODUCT.images[0])
 		expect(image).toHaveAccessibleName(PRODUCT.name)
@@ -58,19 +64,14 @@ describe("Product Detail page", () => {
 			name: 'Similar product',
 			image: 'https://example.com/related_product.jpg',
 		}
-		query.mockResolvedValueOnce({ rows: [{
+		const section = await loadAndRender({
 			...PRODUCT,
 			similar: [SIMILAR],
-		}] })
-
-		render(page, {
-			data: await load({ params: { productId: PRODUCT.id } } as any),
-		} as any)
-		const section = screen.getByRole("region", { name: "Productos similares" })
+		}, "Productos similares")
 		
-		const image = within(section).getByRole('img')
-		const heading = within(section).getByRole("heading")
-		const buyLink = within(section).getByRole("link")
+		const image = section.getByRole('img')
+		const heading = section.getByRole("heading")
+		const buyLink = section.getByRole("link")
 
 		expect(image).toHaveAttribute("src", PRODUCT.images[0])
 		expect(heading).toHaveTextContent(PRODUCT.name)
