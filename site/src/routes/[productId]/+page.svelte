@@ -5,7 +5,8 @@
 </script>
 
 <div class="md:bg-stone-100">
-	<div
+	<section
+		aria-labelledby="pdetailstitle"
 		class="md:max-w-screen-md mx-auto flex flex-col space-y-6 md:flex-row md:space-y-0"
 	>
 		<div class="bg-stone-100 md:grow">
@@ -17,8 +18,8 @@
 		</div>
 		<div class="flex flex-col md:max-w-sm bg-stone-200">
 			<div class="max-w-prose m-auto p-6">
-				<h1 class="text-stone-900 uppercase text-lg">{data.name}</h1>
-				<p class="mt-4 text-stone-700 text-base" role="main">
+				<h1 id="pdetailstitle" class="text-stone-900 uppercase text-lg">{data.name}</h1>
+				<p class="mt-4 text-stone-700 text-base">
 					{data.description}
 				</p>
 			</div>
@@ -31,5 +32,5 @@
 				<OutLink class="inline-block ml-1 align-text-bottom w-5 h-5" />
 			</a>
 		</div>
-	</div>
+	</section>
 </div>
