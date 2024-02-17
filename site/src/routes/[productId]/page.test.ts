@@ -56,6 +56,7 @@ describe("Product Detail page", () => {
 		expect(description).toBeInTheDocument()
 		expect(buyLink).toHaveAttribute("href", PRODUCT.product_uri)
 		expect(buyLink).toHaveAccessibleName(expect.stringContaining(PRODUCT.shop_name))
+		expect(query).toHaveBeenCalledWith(expect.stringContaining(PRODUCT.id))
 	})
 
 	it("shows similar products", async () => {

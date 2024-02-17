@@ -22,7 +22,7 @@ async function getProduct(id: string) {
 				ORDER BY p2.embedding <-> p.embedding
 				LIMIT 4
 			) AS s
-		WHERE p.id='5f4f389d-cc00-4bdf-a484-278e3b18975c'
+		WHERE p.id='${id}'
 		GROUP BY p.id;
 	`)
 
