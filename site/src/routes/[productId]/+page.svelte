@@ -5,7 +5,7 @@
 </script>
 
 <section
-	aria-labelledby="pdetailstitle"
+	aria-labelledby="product-details"
 	class="md:bg-stone-100"
 >
 	<div class="md:max-w-screen-md mx-auto flex flex-col space-y-6 md:flex-row md:space-y-0">
@@ -18,7 +18,7 @@
 		</div>
 		<div class="flex flex-col md:max-w-sm bg-stone-200">
 			<div class="max-w-prose m-auto p-6">
-				<h1 id="pdetailstitle" class="text-stone-900 uppercase text-lg">{data.name}</h1>
+				<h1 id="product-details" class="text-stone-900 uppercase text-lg">{data.name}</h1>
 				<p class="mt-4 text-stone-700 text-base">
 					{data.description}
 				</p>
@@ -35,14 +35,14 @@
 	</div>
 </section>
 
-<section aria-labelledby="recommandation">
-	<h2 id="recommandation">Productos similares</h2>
+<section aria-labelledby="similar-products">
+	<h2 id="similar-products">Productos similares</h2>
 	<ul>
-	{#each data.similar as recommandation}
+	{#each data.similar as recommendation}
 	<li>
-		<a href="/{recommandation.id}">
-			<img src={recommandation.image} alt={recommandation.name}/>
-			<span>{recommandation.name}</span>
+		<a href="/{recommendation.id}">
+			<img src={recommendation.image} alt={recommendation.name}/>
+			<span>{recommendation.name}</span>
 		</a>
 	</li>
 	{/each}
