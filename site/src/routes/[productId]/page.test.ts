@@ -68,14 +68,14 @@ describe("Product Detail page", () => {
 		const section = await loadAndRender({
 			...PRODUCT,
 			similar: [SIMILAR],
-		}, "Productos similares")
+		}, "Similares")
 		
 		const heading = section.getByRole("heading")
 		const title = section.getByText(SIMILAR.name)
 		const image = section.getByRole('img')
 		const buyLink = section.getByRole("link")
 
-		expect(heading).toHaveTextContent("Productos similares")
+		expect(heading).toHaveTextContent("Similares")
 		expect(title).toBeInTheDocument()
 		expect(image).toHaveAttribute("src", SIMILAR.image)
 		expect(buyLink).toHaveAttribute("href", expect.stringContaining(SIMILAR.id))

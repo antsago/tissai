@@ -32,7 +32,7 @@
 </Section>
 
 <Section labelledBy="similar-products" class="mt-12 py-8 space-y-4">
-	<h2 id="similar-products" class="mx-8 text-stone-900 text-lg">Productos similares</h2>
+	<h2 id="similar-products" class="mx-8 text-stone-900 text-lg">Similares</h2>
 	<ul class="flex flex-row overflow-x-scroll space-x-12 px-8">
 		{#each data.similar as recommendation}
 			<li class="min-w-64 max-w-64">
