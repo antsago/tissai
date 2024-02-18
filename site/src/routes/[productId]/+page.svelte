@@ -31,8 +31,8 @@
 	</div>
 </Section>
 
-<Section labelledBy="similar-products" class="mt-12 py-8 space-y-4">
-	<h2 id="similar-products" class="mx-8 text-stone-900 text-lg">Similares</h2>
+<Section labelledBy="similar-products" class="mt-12 py-8 space-y-5">
+	<h2 id="similar-products" class="mx-8 text-stone-700 text-lg font-medium">Similares</h2>
 	<ul class="flex flex-row overflow-x-scroll space-x-12 px-8">
 		{#each data.similar as recommendation}
 			<li class="min-w-64 max-w-64">
@@ -42,9 +42,9 @@
 						src={recommendation.image}
 						alt={recommendation.name}
 					/>
-					<span class="block w-full text-center uppercase text-stone-700 text-base">
+					<h3 class="block w-full text-base text-center uppercase text-stone-700">
 						{recommendation.name}
-					</span>
+					</h3>
 				</a>
 			</li>
 		{/each}
