@@ -10,11 +10,11 @@
 		<Logo class="w-10 md:w-12" />
 		<span class="font-['Kalam'] text-2xl md:text-3xl">Tissai</span>
 	</header>
-	<div class="min-h-6 grow" />
+	<div class="min-h-12 grow" />
 	<main>
 		<slot />
 	</main>
-	<div class="min-h-6 grow-[2]" />
+	<div class="min-h-12 grow-[2]" />
 	<footer
 		class="mt-auto flex justify-center bg-stone-200 px-4 py-4 text-sm text-stone-500"
 	>
