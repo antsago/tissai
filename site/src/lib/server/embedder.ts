@@ -1,3 +1,5 @@
+import { dirname } from 'path'
+import { fileURLToPath } from 'url';
 import { PythonShell } from "python-shell"
 
 type Embedding = number[]
@@ -8,8 +10,8 @@ type Embedder = {
 
 function Embedder(): Embedder {
 	const resolvers: Resolver[] = []
-	const modelPath = `${__dirname}/embedder.py`
-	const model = new PythonShell(modelPath, {
+	const currentDirectory = dirname(fileURLToPath(import.meta.url))
+	const model = new PythonShell(`${currentDirectory}/embedder.py`, {
 		mode: "text",
 		pythonOptions: ["-u"], // get print results in real-time
 	})
