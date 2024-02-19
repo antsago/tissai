@@ -2,7 +2,7 @@ import { dirname } from 'path'
 import { fileURLToPath } from 'url';
 import { PythonShell } from "python-shell"
 
-type Embedding = number[]
+export type Embedding = number[]
 type Resolver = (embedding: Embedding) => void
 type Embedder = {
 	embed: (query: string) => Promise<number[]>

@@ -2,5 +2,8 @@
 	export let data
 </script>
 
-<p>Query {data.query}</p>
-<p>Concated {data.concated}</p>
+<ul>Products
+	{#each data.products as product}
+		<li>{product.name}</li>
+	{/each}
+</ul>
