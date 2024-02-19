@@ -1,16 +1,8 @@
 import type { PageServerLoad } from "./$types"
-import pg from "pg"
+import runQuery from "$lib/server/db"
 
 async function getProduct(id: string) {
-	const pool = new pg.Pool({
-		host: "postgres",
-		port: 5432,
-		user: "postgres",
-		password: "postgres",
-		database: "postgres",
-	})
-
-	const res = await pool.query(`
+	const query = `
 		SELECT p.name, p.description, p.images, p.product_uri, p.shop_name, JSON_AGG(s.*) AS similar
 		FROM 
 			products AS p,
@@ -24,12 +16,10 @@ async function getProduct(id: string) {
 			) AS s
 		WHERE p.id='${id}'
 		GROUP BY p.id;
-	`)
+	`
+	const response = await runQuery(query)
 
-	const product = res.rows[0]
-	await pool.end()
-
-	return product
+	return response[0]
 }
 
 export const load: PageServerLoad = async ({ params }) => {
