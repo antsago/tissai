@@ -5,15 +5,15 @@
 	export let data
 </script>
 
-<Section labelledBy="product-details" class="md:flex-row md:max-w-screen-md">
-	<div class="bg-stone-100 md:grow">
+<Section labelledBy="product-details" class="md:flex-row">
+	<div class="bg-stone-100">
 		<img
-			class="w-full max-w-sm md:max-w-4xl mx-auto md:rounded-l border-y border-stone-200/50 aspect-square object-cover"
+			class="w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover"
 			alt={data.name}
 			src={data.images[0]}
 		/>
 	</div>
-	<div class="flex flex-col md:max-w-sm bg-stone-200 md:rounded-r">
+	<div class="flex flex-col md:max-w-sm bg-stone-200 md:rounded">
 		<div class="max-w-prose m-auto p-8">
 			<h1 id="product-details" class="text-stone-900 uppercase text-lg font-medium">{data.name}</h1>
 			<p class="mt-4 text-stone-700 text-base">
@@ -21,7 +21,7 @@
 			</p>
 		</div>
 		<a
-			class="sticky bottom-0 py-6 px-10 md:rounded-br bg-orange-500 text-orange-100 text-center"
+			class="sticky bottom-0 py-6 px-10 md:rounded-b bg-orange-500 text-orange-100 text-center"
 			href={data.product_uri}
 		>
 			Crompra en
