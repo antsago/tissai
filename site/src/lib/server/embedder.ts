@@ -1,0 +1,37 @@
+import { PythonShell } from "python-shell"
+
+type Embedding = number[]
+type Resolver = (embedding: Embedding) => void
+type Embedder = {
+	embed: (query: string) => Promise<number[]>
+}
+
+function Embedder(): Embedder {
+	const resolvers: Resolver[] = []
+	const modelPath = `${__dirname}/embedder.py`
+	const model = new PythonShell(modelPath, {
+		mode: "text",
+		pythonOptions: ["-u"], // get print results in real-time
+	})
+
+	model.on("message", (message: string) => {
+		const embedding = message
+			.slice(1, -1)
+			.split(" ")
+			.filter((n) => n !== "")
+			.map((n) => parseFloat(n))
+
+		resolvers.shift()?.(embedding)
+	})
+
+	return {
+		embed: async (query) => {
+			const promise = new Promise<Embedding>((res) => resolvers.push(res))
+
+			model.send(query)
+			return promise
+		},
+	}
+}
+
+export default Embedder
