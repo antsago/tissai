@@ -1,28 +1,11 @@
 import type { PageServerLoad } from "./$types"
-import { PythonShell } from "python-shell"
+import Embedder from "./embedder"
 
-const echo = new PythonShell("./src/routes/search/echo.py", {
-	mode: "text",
-	pythonOptions: ["-u"], // get print results in real-time
-})
-let resolve: (message: string) => void
-let reject
-echo.on("message", (message) => {
-	resolve(message)
-})
-echo.on("close", () => {
-	console.log("finished")
-})
+const embedder = Embedder()
 
 export const load: PageServerLoad = async ({ url }) => {
 	const query = url.searchParams.get("q") || ""
-	const p = new Promise((res, rej) => {
-		resolve = res
-		reject = rej
-	})
-	
-	echo.send(query)
-	const concated = await p
+	const concated = await embedder.embed(query)
 
 	return {
 		concated,
