@@ -1,26 +1,26 @@
 import { PythonShell } from "python-shell"
 
-function Embedder() {
+type Embedder = {
+	embed: (query: string) => Promise<string>
+}
+
+function Embedder(): Embedder {
 	const echo = new PythonShell("./src/routes/search/echo.py", {
 		mode: "text",
 		pythonOptions: ["-u"], // get print results in real-time
 	})
-	let resolve: (message: string) => void
-	let reject
+
+	type Resolve = (message: string) => void
+	const promises: Resolve[] = []
 	echo.on("message", (message) => {
-		resolve(message)
-	})
-	echo.on("close", () => {
-		console.log("finished")
+		const resolve = promises.shift()
+		resolve?.(message)
 	})
 	
 	return {
-		embed: async (query:string) => {
-			const promise = new Promise<string>((res, rej) => {
-				resolve = res
-				reject = rej
-			})
-			
+		embed: async (query) => {
+			const promise = new Promise<string>((res) => promises.push(res))
+
 			echo.send(query)
 			return promise
 		},
