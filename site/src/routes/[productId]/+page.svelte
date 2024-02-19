@@ -6,9 +6,9 @@
 </script>
 
 <Section labelledBy="product-details" class="md:flex-row">
-	<div class="bg-stone-100">
+	<div class="bg-stone-100 relative">
 		<img
-			class="w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover"
+			class="sticky top-0 w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover"
 			alt={data.name}
 			src={data.images[0]}
 		/>
