@@ -1,4 +1,3 @@
-import runQuery from "./db"
-import Embedder from "./Embedder"
+import Products from "./products"
 
-export { runQuery, Embedder }
+export { Products }
