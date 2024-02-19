@@ -6,10 +6,10 @@ import page from "./+layout.svelte"
 describe("Layout", () => {
 	it("shows header, main, and footer", async () => {
 		render(page)
-		
-		const header = screen.getByRole('banner')
-		const main = screen.getByRole('main')
-		const footer = screen.getByRole('contentinfo')
+
+		const header = screen.getByRole("banner")
+		const main = screen.getByRole("main")
+		const footer = screen.getByRole("contentinfo")
 
 		expect(header).toBeInTheDocument()
 		expect(main).toBeInTheDocument()

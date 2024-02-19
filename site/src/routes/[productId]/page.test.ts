@@ -23,7 +23,7 @@ describe("Product Detail page", () => {
 	beforeEach(() => {
 		vi.resetAllMocks()
 		cleanup()
-		
+
 		query = vi.fn()
 		pg.Pool.mockReturnValue({
 			query,
@@ -38,14 +38,14 @@ describe("Product Detail page", () => {
 			data: await load({ params: { productId: PRODUCT.id } } as any),
 		} as any)
 		const section = screen.getByRole("region", { name: sectionName })
-		
+
 		return within(section)
 	}
 
 	it("shows product's details", async () => {
-		const section = await loadAndRender(PRODUCT, PRODUCT.name )
-		
-		const image = section.getByRole('img')
+		const section = await loadAndRender(PRODUCT, PRODUCT.name)
+
+		const image = section.getByRole("img")
 		const heading = section.getByRole("heading")
 		const description = section.getByText(PRODUCT.description)
 		const buyLink = section.getByRole("link")
@@ -55,24 +55,29 @@ describe("Product Detail page", () => {
 		expect(heading).toHaveTextContent(PRODUCT.name)
 		expect(description).toBeInTheDocument()
 		expect(buyLink).toHaveAttribute("href", PRODUCT.product_uri)
-		expect(buyLink).toHaveAccessibleName(expect.stringContaining(PRODUCT.shop_name))
+		expect(buyLink).toHaveAccessibleName(
+			expect.stringContaining(PRODUCT.shop_name),
+		)
 		expect(query).toHaveBeenCalledWith(expect.stringContaining(PRODUCT.id))
 	})
 
 	it("shows similar products", async () => {
 		const SIMILAR = {
-			id: '000',
-			name: 'Similar product',
-			image: 'https://example.com/related_product.jpg',
+			id: "000",
+			name: "Similar product",
+			image: "https://example.com/related_product.jpg",
 		}
-		const section = await loadAndRender({
-			...PRODUCT,
-			similar: [SIMILAR],
-		}, "Similares")
-		
+		const section = await loadAndRender(
+			{
+				...PRODUCT,
+				similar: [SIMILAR],
+			},
+			"Similares",
+		)
+
 		const heading = section.getByRole("heading", { level: 2 })
 		const title = section.getByRole("heading", { level: 3 })
-		const image = section.getByRole('img')
+		const image = section.getByRole("img")
 		const buyLink = section.getByRole("link")
 
 		expect(heading).toHaveTextContent("Similares")
