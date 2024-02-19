@@ -1,5 +1,4 @@
 import type { PageServerLoad } from "./$types"
-import { PythonShell } from 'python-shell'
 import pg from "pg"
 
 async function getProduct(id: string) {
@@ -33,14 +32,7 @@ async function getProduct(id: string) {
 	return product
 }
 
-const echo = new PythonShell('echo.py')
-echo.on('message', (message) => {
-	console.log(message)
-})
-
 export const load: PageServerLoad = async ({ params }) => {
-	echo.send(params.productId)
-
 	const product = await getProduct(params.productId)
 	return product
 }

@@ -44,5 +44,7 @@
 		"vitest": "^1.0.0"
 	},
 	"type": "module",
-	"dependencies": {}
+	"dependencies": {
+		"python-shell": "^5.0.0"
+	}
 }
