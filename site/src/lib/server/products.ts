@@ -1,4 +1,4 @@
-import runQuery from "./db"
+import DB from "./db"
 import Embedder from "./Embedder"
 
 type Similar = {
@@ -21,6 +21,7 @@ export type Products = {
 
 function Products(): Products {
 	const embedder = Embedder()
+	const db = DB()
 
 	async function getDetails(id: string) {
 		const query = `
@@ -38,7 +39,7 @@ function Products(): Products {
 			WHERE p.id='${id}'
 			GROUP BY p.id;
 		`
-		const response = await runQuery(query)
+		const response = await db.query<ProductDetails>(query)
 
 		return response[0]
 	}
@@ -52,7 +53,7 @@ function Products(): Products {
 			ORDER BY embedding <-> '[${embedding}]'
 			LIMIT 20
 		`
-		return runQuery(sqlQuery)
+		return db.query<Similar>(sqlQuery)
 	}
 
 	return {
