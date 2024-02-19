@@ -1,6 +1,5 @@
 import type { PageServerLoad } from "./$types"
-import Embedder from "$lib/server/embedder"
-import runQuery from "$lib/server/db"
+import { runQuery, Embedder } from "$lib/server"
 
 const embedder = Embedder()
 

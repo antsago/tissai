@@ -1,5 +1,5 @@
 import type { PageServerLoad } from "./$types"
-import runQuery from "$lib/server/db"
+import { runQuery } from "$lib/server"
 
 async function getProduct(id: string) {
 	const query = `
