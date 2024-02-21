@@ -1,4 +1,4 @@
-import DB from "./db"
+import { DB } from "./db"
 import Embedder from "./Embedder"
 
 type Similar = {
@@ -19,7 +19,7 @@ export type Products = {
 	search: (query: string) => Promise<Similar[]>
 }
 
-function Products(): Products {
+export function Products(): Products {
 	const embedder = Embedder()
 	const db = DB()
 
@@ -61,5 +61,3 @@ function Products(): Products {
 		search,
 	}
 }
-
-export default Products

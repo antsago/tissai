@@ -4,7 +4,7 @@ export type DB = {
 	query: <T>(query: string) => Promise<T[]>
 }
 
-export default function DB(): DB {
+export function DB(): DB {
 	const runQuery = async (query: string) => {
 		const pool = new pg.Pool({
 			host: "postgres",
