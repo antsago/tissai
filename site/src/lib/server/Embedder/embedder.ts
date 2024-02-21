@@ -1,5 +1,5 @@
-import { dirname } from 'path'
-import { fileURLToPath } from 'url';
+import { dirname } from "path"
+import { fileURLToPath } from "url"
 import { PythonShell } from "python-shell"
 
 export type Embedding = number[]

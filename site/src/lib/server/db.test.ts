@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest"
-import { QUERY, SIMILAR, Fake } from 'mocks'
+import { QUERY, SIMILAR, Fake } from "mocks"
 import { DB } from "./db"
 
 describe("DB", () => {

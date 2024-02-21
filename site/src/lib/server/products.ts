@@ -2,20 +2,20 @@ import { DB } from "./db"
 import Embedder from "./Embedder"
 
 type Similar = {
-	id: string,
-	name: string,
-	image: string,
+	id: string
+	name: string
+	image: string
 }
 export type ProductDetails = {
-	name: string,
-	description: string,
-	images: string[],
-	productUri: string,
-	shopName: string,
-	similar: Similar[],
+	name: string
+	description: string
+	images: string[]
+	productUri: string
+	shopName: string
+	similar: Similar[]
 }
 export type Products = {
-	getDetails: (id: string) => Promise<ProductDetails>,
+	getDetails: (id: string) => Promise<ProductDetails>
 	search: (query: string) => Promise<Similar[]>
 }
 

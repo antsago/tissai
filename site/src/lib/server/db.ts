@@ -13,7 +13,7 @@ export function DB(): DB {
 		password: "postgres",
 		database: "postgres",
 	})
-	
+
 	const runQuery = async (query: string) => {
 		const response = await pool.query(query)
 		return response.rows

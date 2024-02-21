@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, beforeEach } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
-import { PRODUCT, SIMILAR, Fake } from 'mocks'
+import { PRODUCT, SIMILAR, Fake } from "mocks"
 import { Products } from "$lib/server"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
@@ -10,7 +10,7 @@ describe("Product Detail page", () => {
 	let fake: Fake
 	beforeEach(() => {
 		cleanup()
-		
+
 		fake = Fake()
 	})
 
@@ -18,7 +18,10 @@ describe("Product Detail page", () => {
 		fake.query.mockResolvedValueOnce({ rows: [data] })
 
 		render(page, {
-			data: await load({ params: { productId: PRODUCT.id }, locals: { products: Products() } } as any),
+			data: await load({
+				params: { productId: PRODUCT.id },
+				locals: { products: Products() },
+			} as any),
 		} as any)
 		const section = screen.getByRole("region", { name: sectionName })
 

@@ -1,16 +1,16 @@
 export const PRODUCT = {
-  id: "666",
-  name: "Product name",
-  description: "Shop the look!",
-  images: ["https://example.com/product_image.jpg"],
-  product_uri: "https://example.com/product.html",
-  shop_name: "Example",
-  similar: [],
+	id: "666",
+	name: "Product name",
+	description: "Shop the look!",
+	images: ["https://example.com/product_image.jpg"],
+	product_uri: "https://example.com/product.html",
+	shop_name: "Example",
+	similar: [],
 }
 export const SIMILAR = {
-  id: "000",
-  name: "Similar product",
-  image: "https://example.com/related_product.jpg",
+	id: "000",
+	name: "Similar product",
+	image: "https://example.com/related_product.jpg",
 }
 export const QUERY = "A query"
 export const EMBEDDING = [

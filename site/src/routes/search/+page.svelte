@@ -2,7 +2,8 @@
 	export let data
 </script>
 
-<ul>Products
+<ul>
+	Products
 	{#each data.products as product}
 		<li>{product.name}</li>
 	{/each}

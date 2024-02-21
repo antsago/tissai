@@ -5,16 +5,15 @@ import { describe, it, expect, vi, expectTypeOf, beforeEach } from "vitest"
 describe("Server hooks", () => {
 	const resolve = vi.fn()
 	const event: any = { locals: {} }
-	
+
 	let handle: Handle
 	beforeEach(async () => {
 		vi.resetModules()
-		
+
 		const hooks = await import("./hooks.server")
 		handle = hooks.handle
 	})
-	
-	
+
 	it("initializes products", async () => {
 		const expected = "The result"
 		resolve.mockResolvedValue(expected)

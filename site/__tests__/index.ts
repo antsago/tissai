@@ -1,2 +1,2 @@
-export * from './mocks'
-export * from './fakePg'
+export * from "./mocks"
+export * from "./fakePg"

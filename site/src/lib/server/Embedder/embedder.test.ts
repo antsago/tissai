@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest"
-import { QUERY, EMBEDDING } from 'mocks'
+import { QUERY, EMBEDDING } from "mocks"
 import Embedder from "./embedder"
 
 describe("Embedder", () => {
