@@ -41,7 +41,6 @@ describe("Product Detail page", () => {
 		expect(buyLink).toHaveAccessibleName(
 			expect.stringContaining(PRODUCT.shop_name),
 		)
-		expect(fake.query).toHaveBeenCalledWith(expect.stringContaining(PRODUCT.id))
 	})
 
 	it("shows similar products", async () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest"
-import { SIMILAR, QUERY, EMBEDDING, Fake } from 'mocks'
+import { PRODUCT, SIMILAR, QUERY, EMBEDDING, Fake } from 'mocks'
 import { Products } from "./products"
 
 describe("Products", () => {
@@ -18,5 +18,19 @@ describe("Products", () => {
 
 		expect(result).toStrictEqual([SIMILAR])
 		expect(fake.query).toHaveBeenCalledWith(expect.stringContaining(`ORDER BY embedding <-> '[${EMBEDDING}]`))
+	})
+
+	it("returns product details", async () => {
+		const expected = {
+			...PRODUCT,
+			similar: [SIMILAR],
+		}
+		fake.query.mockResolvedValueOnce({ rows: [expected]})
+
+		const result = await products.getDetails(PRODUCT.id)
+
+		expect(result).toStrictEqual(expected)
+		expect(fake.query).toHaveBeenCalledWith(expect.stringContaining(PRODUCT.id))
+		expect(fake.query).toHaveBeenCalledWith(expect.stringContaining("ORDER BY p2.embedding"))
 	})
 })
