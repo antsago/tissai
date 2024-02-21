@@ -1,10 +1,9 @@
 import type { PageServerLoad } from "./$types"
-import { products } from "$lib/server"
 
-export const load: PageServerLoad = async ({ url }) => {
+export const load: PageServerLoad = async ({ url, locals }) => {
 	const query = url.searchParams.get("q") || ""
 
 	return {
-		products: await products.search(query),
+		products: await locals.products.search(query),
 	}
 }
