@@ -19,5 +19,4 @@ describe("Products", () => {
 		expect(result).toStrictEqual([SIMILAR])
 		expect(fake.query).toHaveBeenCalledWith(expect.stringContaining(`ORDER BY embedding <-> '[${EMBEDDING}]`))
 	})
-
 })

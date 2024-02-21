@@ -1,6 +1,5 @@
 import type { PageServerLoad } from "./$types"
-import { products } from "$lib/server"
 
-export const load: PageServerLoad = async ({ params }) => {
-	return products.getDetails(params.productId)
+export const load: PageServerLoad = async ({ params, locals }) => {
+	return locals.products.getDetails(params.productId)
 }
