@@ -44,7 +44,7 @@
 		{#each data.similar as recommendation}
 			<li class="min-w-56 max-w-56">
 				<a
-					href="../{recommendation.id}"
+					href="./{recommendation.id}"
 					class="w-full block bg-stone-50 border-stone-300 border py-5 px-4 space-y-4 rounded"
 				>
 					<img
