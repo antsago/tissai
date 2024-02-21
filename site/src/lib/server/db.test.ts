@@ -11,6 +11,10 @@ describe("DB", () => {
 		db = DB()
 	})
 
+	it("initializes pool on create", async () => {
+		expect(fake.Pool).toHaveBeenCalled()
+	})
+
 	it("executes query", async () => {
 		fake.query.mockResolvedValueOnce({ rows: [SIMILAR] })
 
