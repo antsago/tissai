@@ -3,22 +3,13 @@ import type { MockInstance } from "vitest"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
 import pg from "pg"
+import { PRODUCT, SIMILAR } from 'mocks'
 import { load } from "./+page.server"
 import page from "./+page.svelte"
 
 vi.mock("pg")
 
 describe("Product Detail page", () => {
-	const PRODUCT = {
-		id: "666",
-		name: "Product name",
-		description: "Shop the look!",
-		images: ["https://example.com/product_image.jpg"],
-		product_uri: "https://example.com/product.html",
-		shop_name: "Example",
-		similar: [],
-	}
-
 	let query: MockInstance
 	beforeEach(() => {
 		vi.resetAllMocks()
@@ -62,11 +53,6 @@ describe("Product Detail page", () => {
 	})
 
 	it("shows similar products", async () => {
-		const SIMILAR = {
-			id: "000",
-			name: "Similar product",
-			image: "https://example.com/related_product.jpg",
-		}
 		const section = await loadAndRender(
 			{
 				...PRODUCT,

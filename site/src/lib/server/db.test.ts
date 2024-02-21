@@ -1,9 +1,8 @@
 import type { MockInstance } from "vitest"
 import { vi, describe, it, expect, beforeEach } from "vitest"
 import pg from "pg"
+import { QUERY, SIMILAR } from 'mocks'
 import { DB } from "./db"
-
-const QUERY = "A query"
 
 vi.mock("pg")
 
@@ -21,11 +20,6 @@ describe("DB", () => {
 	})
 
 	it("executes query", async () => {
-		const SIMILAR = {
-			id: "000",
-			name: "Similar product",
-			image: "https://example.com/related_product.jpg",
-		}
 		query.mockResolvedValueOnce({ rows: [SIMILAR] })
 
 		const result = await db.query(QUERY)
