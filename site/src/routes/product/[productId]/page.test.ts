@@ -1,29 +1,20 @@
 import "@testing-library/jest-dom/vitest"
-import type { MockInstance } from "vitest"
-import { describe, it, expect, vi, beforeEach } from "vitest"
+import { describe, it, expect, beforeEach } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
-import pg from "pg"
-import { PRODUCT, SIMILAR } from 'mocks'
+import { PRODUCT, SIMILAR, Fake } from 'mocks'
 import { load } from "./+page.server"
 import page from "./+page.svelte"
 
-vi.mock("pg")
-
 describe("Product Detail page", () => {
-	let query: MockInstance
+	let fake: Fake
 	beforeEach(() => {
-		vi.resetAllMocks()
 		cleanup()
-
-		query = vi.fn()
-		pg.Pool.mockReturnValue({
-			query,
-			end: vi.fn(),
-		})
+		
+		fake = Fake()
 	})
 
 	async function loadAndRender(data: any, sectionName: string) {
-		query.mockResolvedValueOnce({ rows: [data] })
+		fake.query.mockResolvedValueOnce({ rows: [data] })
 
 		render(page, {
 			data: await load({ params: { productId: PRODUCT.id } } as any),
@@ -49,7 +40,7 @@ describe("Product Detail page", () => {
 		expect(buyLink).toHaveAccessibleName(
 			expect.stringContaining(PRODUCT.shop_name),
 		)
-		expect(query).toHaveBeenCalledWith(expect.stringContaining(PRODUCT.id))
+		expect(fake.query).toHaveBeenCalledWith(expect.stringContaining(PRODUCT.id))
 	})
 
 	it("shows similar products", async () => {
