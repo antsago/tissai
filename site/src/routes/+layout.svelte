@@ -1,6 +1,8 @@
-<script>
+<script lang="ts">
 	import "../app.css"
 	import Logo from "$lib/Logo.svelte"
+
+	export let onSubmit: any
 </script>
 
 <div class="flex flex-col min-h-screen w-full bg-stone-50">
@@ -11,6 +13,10 @@
 		<span class="font-['Kalam'] text-2xl md:text-3xl">Tissai</span>
 	</header>
 	<div class="min-h-12 grow" />
+<form action="/search" on:submit={onSubmit} role="search">
+	<input name="q" type="search">
+	<button/>
+</form>
 	<main>
 		<slot />
 	</main>
