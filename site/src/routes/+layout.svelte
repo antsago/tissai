@@ -1,8 +1,10 @@
 <script lang="ts">
 	import "../app.css"
 	import Logo from "$lib/Logo.svelte"
+	import { page } from '$app/stores'
 
-	export let onSubmit: any
+	// Hook to test form submit
+	export let onSubmit: any = () => {}
 </script>
 
 <div class="flex flex-col min-h-screen w-full bg-stone-50">
@@ -14,7 +16,7 @@
 	</header>
 	<div class="min-h-12 grow" />
 <form action="/search" on:submit={onSubmit} role="search">
-	<input name="q" type="search">
+	<input name="q" type="search" value={$page.url.searchParams.get("q")}>
 	<button/>
 </form>
 	<main>
