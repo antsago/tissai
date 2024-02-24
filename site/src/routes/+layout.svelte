@@ -1,10 +1,8 @@
 <script lang="ts">
 	import "../app.css"
-	import { page } from '$app/stores'
-	import { Logo, MagnifyingGlass as SearchIcon } from "$lib/components"
+	import { Logo } from "$lib/components"
+	import SearchForm from "./SearchForm.svelte"
 
-	// Hook to test form submit
-	export let onSubmit: any = () => {}
 </script>
 
 <div class="flex flex-col min-h-screen w-full bg-stone-50">
@@ -17,20 +15,7 @@
 				<span class="hidden md:block font-['Kalam'] text-3xl md:text-3xl">Tissai</span>
 			</div>
 
-			<form
-				action="/search"
-				on:submit={onSubmit}
-				role="search"
-				class="flex-grow max-w-lg flex rounded-full border border-orange-600 bg-orange-50 px-4"
-			>
-				<input
-					name="q"
-					type="search"
-					value={$page.url.searchParams.get("q")}
-					class="flex-grow w-1 bg-inherit py-1"
-				/>
-				<button class="ml-auto p-px"><SearchIcon class="w-7 text-orange-600"/></button>
-			</form>
+			<SearchForm class="flex-grow max-w-lg"/>
 		</div>
 	</header>
 	<div class="min-h-12 grow" />
