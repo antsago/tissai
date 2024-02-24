@@ -1,8 +1,7 @@
 <script lang="ts">
 	import "../app.css"
-	import Logo from "$lib/Logo.svelte"
 	import { page } from '$app/stores'
-	import SearchIcon from "$lib/MagnifyingGlass.svelte"
+	import { Logo, MagnifyingGlass as SearchIcon } from "$lib/components"
 
 	// Hook to test form submit
 	export let onSubmit: any = () => {}

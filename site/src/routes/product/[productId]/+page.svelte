@@ -1,6 +1,5 @@
 <script>
-	import OutlinkIcon from "$lib/ArrowTopRightOnSquare.svelte"
-	import Section from "./Section.svelte"
+	import { ArrowTopRightOnSquare as OutlinkIcon, Section } from "$lib/components"
 
 	export let data
 </script>
