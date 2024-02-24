@@ -1,5 +1,5 @@
 <script>
-	import OutLink from "$lib/ArrowTopRightOnSquare.svelte"
+	import OutlinkIcon from "$lib/ArrowTopRightOnSquare.svelte"
 	import Section from "./Section.svelte"
 
 	export let data
@@ -31,7 +31,7 @@
 		>
 			Crompra en
 			<span class="font-semibold">{data.shop_name}</span>
-			<OutLink class="inline-block ml-1 align-text-bottom w-5 h-5" />
+			<OutlinkIcon class="inline-block ml-1 align-text-bottom w-5 h-5" />
 		</a>
 	</div>
 </Section>

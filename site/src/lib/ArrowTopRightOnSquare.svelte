@@ -1,3 +1,4 @@
+<!-- From https://heroicons.com/ (arrow-top-right-on-square)-->
 <script>
 	let classes = ""
 	export { classes as class }
