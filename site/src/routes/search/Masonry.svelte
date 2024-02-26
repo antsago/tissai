@@ -12,7 +12,7 @@
 		flex-flow: column wrap;
 		--max-item-height: 20rem;
 	}
-	.masonry :global(*:not(.break)) {
+	.masonry :global(>*:not(.break)) {
 		max-height: var(--max-item-height);
 	}
 
@@ -29,8 +29,8 @@
 		.masonry {
 			height: calc((var(--items-length) / 2 + 1) * var(--max-item-height));
 		}
-		.masonry :global(*:nth-of-type(2n+1)) { order: 1; }
-		.masonry :global(*:nth-of-type(2n)) { order: 2; }
+		.masonry :global(>*:nth-of-type(2n+1)) { order: 1; }
+		.masonry :global(>*:nth-of-type(2n)) { order: 2; }
 		.break:nth-of-type(1) {
 			display: block;
 		}
@@ -40,9 +40,9 @@
 		.masonry {
 			height: calc((var(--items-length) / 3 + 1) * var(--max-item-height));
 		}
-		.masonry :global(*:nth-of-type(3n+1)) { order: 1; }
-		.masonry :global(*:nth-of-type(3n+2)) { order: 2; }
-		.masonry :global(*:nth-of-type(3n)) { order: 3; }
+		.masonry :global(>*:nth-of-type(3n+1)) { order: 1; }
+		.masonry :global(>*:nth-of-type(3n+2)) { order: 2; }
+		.masonry :global(>*:nth-of-type(3n)) { order: 3; }
 		.break:nth-of-type(2) {
 			display: block;
 		}
@@ -52,10 +52,10 @@
 		.masonry {
 			height: calc((var(--items-length) / 4 + 1) * var(--max-item-height));
 		}
-		.masonry :global(*:nth-of-type(4n+1)) { order: 1; }
-		.masonry :global(*:nth-of-type(4n+2)) { order: 2; }
-		.masonry :global(*:nth-of-type(4n+3)) { order: 3; }
-		.masonry :global(*:nth-of-type(4n))   { order: 4; }
+		.masonry :global(>*:nth-of-type(4n+1)) { order: 1; }
+		.masonry :global(>*:nth-of-type(4n+2)) { order: 2; }
+		.masonry :global(>*:nth-of-type(4n+3)) { order: 3; }
+		.masonry :global(>*:nth-of-type(4n))   { order: 4; }
 		.break:nth-of-type(3) {
 			display: block;
 		}
@@ -65,11 +65,11 @@
 		.masonry {
 			height: calc((var(--items-length) / 5 + 1) * var(--max-item-height));
 		}
-		.masonry :global(*:nth-of-type(5n+1)) { order: 1; }
-		.masonry :global(*:nth-of-type(5n+2)) { order: 2; }
-		.masonry :global(*:nth-of-type(5n+3)) { order: 3; }
-		.masonry :global(*:nth-of-type(5n+4)) { order: 4; }
-		.masonry :global(*:nth-of-type(5n))   { order: 5; }
+		.masonry :global(>*:nth-of-type(5n+1)) { order: 1; }
+		.masonry :global(>*:nth-of-type(5n+2)) { order: 2; }
+		.masonry :global(>*:nth-of-type(5n+3)) { order: 3; }
+		.masonry :global(>*:nth-of-type(5n+4)) { order: 4; }
+		.masonry :global(>*:nth-of-type(5n))   { order: 5; }
 		.break:nth-of-type(4) {
 			display: block;
 		}
