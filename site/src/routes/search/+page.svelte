@@ -5,7 +5,7 @@
 </script>
 
 <section aria-label="Resultados de la búsqueda">
-	<Masonry class="h-[500vh]">
+	<Masonry class="items-stretch py-8" itemsLength={data.products.length}>
 		{#each data.products as product, i}
 			<div class="w-40 border border-stone-300 m-2 p-1">
 				<a href="../product/{product.id}">
