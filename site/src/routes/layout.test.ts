@@ -2,7 +2,7 @@ import type { Page } from '@sveltejs/kit'
 import type { Readable, Subscriber } from 'svelte/store'
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import { render, screen, cleanup } from "@testing-library/svelte"
+import { render, screen, cleanup, within } from "@testing-library/svelte"
 import page from "./+layout.svelte"
 
 vi.mock('$app/stores', () => {
@@ -27,7 +27,7 @@ vi.mock('$app/stores', () => {
 		subscription?.(pageValue)
 	}
 
-  const page: Readable<Omit<Page, "state">>	= {
+  const pageStore: Readable<Omit<Page, "state">>	= {
 		subscribe: (subFn) => {
 			subscription = subFn
 			subscription(pageValue)
@@ -37,7 +37,7 @@ vi.mock('$app/stores', () => {
 	}
 
   return {
-    page,
+    page: pageStore,
 		setPage
   }
 })
@@ -57,5 +57,14 @@ describe("Layout", () => {
 		expect(header).toBeInTheDocument()
 		expect(main).toBeInTheDocument()
 		expect(footer).toBeInTheDocument()
+	})
+
+	it("links to homepage", async () => {
+		render(page)
+
+		const header = screen.getByRole("banner")
+		const link = within(header).getByRole("link")
+
+		expect(link).toHaveAttribute("href", "/")
 	})
 })
