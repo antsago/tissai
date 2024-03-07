@@ -1,11 +1,11 @@
-import type { Page } from '@sveltejs/kit'
-import type { Readable, Subscriber } from 'svelte/store'
+import type { Page } from "@sveltejs/kit"
+import type { Readable, Subscriber } from "svelte/store"
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { render, screen, cleanup, within } from "@testing-library/svelte"
 import page from "./+layout.svelte"
 
-vi.mock('$app/stores', () => {
+vi.mock("$app/stores", () => {
 	let pageValue: Omit<Page, "state"> = {
 		url: new URL("http://localhost:3000"),
 		params: {},
@@ -13,9 +13,9 @@ vi.mock('$app/stores', () => {
 		error: null,
 		data: {},
 		route: {
-			id: null
+			id: null,
 		},
-		form: undefined
+		form: undefined,
 	}
 
 	let subscription: Subscriber<Omit<Page, "state">> | undefined
@@ -27,19 +27,21 @@ vi.mock('$app/stores', () => {
 		subscription?.(pageValue)
 	}
 
-  const pageStore: Readable<Omit<Page, "state">>	= {
+	const pageStore: Readable<Omit<Page, "state">> = {
 		subscribe: (subFn) => {
 			subscription = subFn
 			subscription(pageValue)
 
-			return () =>  { subscription = undefined }
-		}
+			return () => {
+				subscription = undefined
+			}
+		},
 	}
 
-  return {
-    page: pageStore,
-		setPage
-  }
+	return {
+		page: pageStore,
+		setPage,
+	}
 })
 
 describe("Layout", () => {

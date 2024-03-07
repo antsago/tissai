@@ -1,5 +1,8 @@
 <script>
-	import { ArrowTopRightOnSquare as OutlinkIcon, Section } from "$lib/components"
+	import {
+		ArrowTopRightOnSquare as OutlinkIcon,
+		Section,
+	} from "$lib/components"
 
 	export let data
 </script>

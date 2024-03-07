@@ -6,6 +6,17 @@
 	export let tiles: T[]
 </script>
 
+<ul class="{classes} masonry" style="--tiles-length: {tiles.length}">
+	{#each tiles as tile}
+		<li class="tile">
+			<slot {tile} />
+		</li>
+	{/each}
+	<span class="tile break"></span>
+	<span class="tile break"></span>
+	<span class="tile break"></span>
+</ul>
+
 <style>
 	.masonry {
 		--no-columns: 1;
@@ -16,7 +27,11 @@
 		--tiles-per-column: calc(var(--tiles-length) / var(--no-columns));
 		display: flex;
 		flex-flow: column wrap;
-		height: calc(var(--tiles-per-column) * (var(--max-tile-height) + var(--tile-margin) * 2) + var(--masonry-y-padding) * 2);
+		height: calc(
+			var(--tiles-per-column) *
+				(var(--max-tile-height) + var(--tile-margin) * 2) +
+				var(--masonry-y-padding) * 2
+		);
 		padding: var(--masonry-y-padding) var(--masonry-x-padding);
 	}
 	.tile:not(.break) {
@@ -38,8 +53,12 @@
 		.masonry {
 			--no-columns: 2;
 		}
-		.tile:nth-of-type(2n+1) { order: 1; }
-		.tile:nth-of-type(2n) { order: 2; }
+		.tile:nth-of-type(2n + 1) {
+			order: 1;
+		}
+		.tile:nth-of-type(2n) {
+			order: 2;
+		}
 		.break:nth-of-type(1) {
 			display: block;
 		}
@@ -49,9 +68,15 @@
 		.masonry {
 			--no-columns: 3;
 		}
-		.tile:nth-of-type(3n+1) { order: 1; }
-		.tile:nth-of-type(3n+2) { order: 2; }
-		.tile:nth-of-type(3n) { order: 3; }
+		.tile:nth-of-type(3n + 1) {
+			order: 1;
+		}
+		.tile:nth-of-type(3n + 2) {
+			order: 2;
+		}
+		.tile:nth-of-type(3n) {
+			order: 3;
+		}
 		.break:nth-of-type(2) {
 			display: block;
 		}
@@ -61,23 +86,20 @@
 		.masonry {
 			--no-columns: 4;
 		}
-		.tile:nth-of-type(4n+1) { order: 1; }
-		.tile:nth-of-type(4n+2) { order: 2; }
-		.tile:nth-of-type(4n+3) { order: 3; }
-		.tile:nth-of-type(4n)   { order: 4; }
+		.tile:nth-of-type(4n + 1) {
+			order: 1;
+		}
+		.tile:nth-of-type(4n + 2) {
+			order: 2;
+		}
+		.tile:nth-of-type(4n + 3) {
+			order: 3;
+		}
+		.tile:nth-of-type(4n) {
+			order: 4;
+		}
 		.break:nth-of-type(3) {
 			display: block;
 		}
 	}
 </style>
-
-<ul class="{classes} masonry" style="--tiles-length: {tiles.length}">
-	{#each tiles as tile}
-		<li class="tile">
-			<slot {tile} />
-		</li>
-	{/each}
-	<span class="tile break"></span>
-	<span class="tile break"></span>
-	<span class="tile break"></span>
-</ul>

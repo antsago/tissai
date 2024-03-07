@@ -1,14 +1,14 @@
-import type { Page } from '@sveltejs/kit'
-import type { Readable, Subscriber } from 'svelte/store'
+import type { Page } from "@sveltejs/kit"
+import type { Readable, Subscriber } from "svelte/store"
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
-import userEvent from '@testing-library/user-event'
-import * as stores from '$app/stores'
+import userEvent from "@testing-library/user-event"
+import * as stores from "$app/stores"
 import { QUERY } from "mocks"
 import SearchForm from "./SearchForm.svelte"
 
-vi.mock('$app/stores', () => {
+vi.mock("$app/stores", () => {
 	let pageValue: Omit<Page, "state"> = {
 		url: new URL("http://localhost:3000"),
 		params: {},
@@ -16,9 +16,9 @@ vi.mock('$app/stores', () => {
 		error: null,
 		data: {},
 		route: {
-			id: null
+			id: null,
 		},
-		form: undefined
+		form: undefined,
 	}
 
 	let subscription: Subscriber<Omit<Page, "state">> | undefined
@@ -30,19 +30,21 @@ vi.mock('$app/stores', () => {
 		subscription?.(pageValue)
 	}
 
-  const page: Readable<Omit<Page, "state">>	= {
+	const page: Readable<Omit<Page, "state">> = {
 		subscribe: (subFn) => {
 			subscription = subFn
 			subscription(pageValue)
 
-			return () =>  { subscription = undefined }
-		}
+			return () => {
+				subscription = undefined
+			}
+		},
 	}
 
-  return {
-    page,
-		setPage
-  }
+	return {
+		page,
+		setPage,
+	}
 })
 
 describe("SearchForm", () => {
@@ -56,35 +58,37 @@ describe("SearchForm", () => {
 		const onSubmit = vi.fn((e) => {
 			e.preventDefault()
 			submission = {
-				values: [...(new FormData(e.target)).entries()].reduce((o, [k, v]) => ({ ...o, [k]: v }), {}),
+				values: [...new FormData(e.target).entries()].reduce(
+					(o, [k, v]) => ({ ...o, [k]: v }),
+					{},
+				),
 				method: e.target.method,
-				action: e.target.action.replace('http://localhost:3000', ''),
+				action: e.target.action.replace("http://localhost:3000", ""),
 			}
 		})
-		render(SearchForm, { props: { onSubmit }})
+		render(SearchForm, { props: { onSubmit } })
 		const searchForm = screen.getByRole("search")
 		const searchInput = within(searchForm).getByRole("searchbox")
 		const submitButton = within(searchForm).getByRole("button")
 
-		await user.type(searchInput, 'A query')
+		await user.type(searchInput, "A query")
 		await user.click(submitButton)
 
 		expect(submission).toStrictEqual({
-			values: { q: 'A query'},
+			values: { q: "A query" },
 			method: "get",
-			action: "/search"
+			action: "/search",
 		})
 	})
 
 	it("shows query when on search page", async () => {
-		(stores as any).setPage({
+		;(stores as any).setPage({
 			url: new URL(`http://localhost:3000/search?q=${QUERY}`),
 		})
-		
+
 		render(SearchForm)
 		const searchForm = screen.getByRole("search")
 		const searchInput = within(searchForm).getByRole("searchbox")
-		
 
 		expect(searchInput).toHaveValue(QUERY)
 	})
