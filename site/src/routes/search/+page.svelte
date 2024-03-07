@@ -8,14 +8,14 @@
 <Section label="Resultados de la búsqueda">
 	<Masonry class="content-center" tiles={data.products} let:tile={product}>
 		<a class="w-full h-full flex flex-col rounded bg-stone-200" href="../product/{product.id}">
-			<div class="w-full flex-grow max-h-96">
+			<div class="w-full flex-basis-6 max-h-[25rem] rounded-t">
 				<img
 					src={product.image}
 					alt={product.name}
-					class="rounded border border-stone-300/50 object-contain"
+					class="h-full mx-auto rounded-t border border-b-0 border-stone-300/50"
 				/>
 			</div>
-			<h3 class="block min-h-[1.5rem] max-h-[4.5rem] mx-4 my-3 text-base text-center text-ellipsis overflow-hidden text-stone-700">{product.name}</h3>
+			<h3 class="block w-full px-4 py-3 border rounded-b border-stone-300/50 text-base text-center truncate text-stone-700">{product.name}</h3>
 		</a>
 	</Masonry>
 </Section>
