@@ -51,7 +51,7 @@ export function Products(): Products {
 				id, name, images[1] AS image
 			FROM products
 			ORDER BY embedding <-> '[${embedding}]'
-			LIMIT 20
+			LIMIT 24
 		`
 		return db.query<Similar>(sqlQuery)
 	}

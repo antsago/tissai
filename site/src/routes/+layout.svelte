@@ -2,7 +2,6 @@
 	import "../app.css"
 	import { Logo } from "$lib/components"
 	import SearchForm from "./SearchForm.svelte"
-
 </script>
 
 <div class="flex flex-col min-h-screen w-full bg-stone-50">
