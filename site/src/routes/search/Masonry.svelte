@@ -1,5 +1,4 @@
 <!-- From https://tobiasahlin.com/blog/masonry-with-css/ -->
-<!-- Needs a fixed height taller than the tallest column -->
 <script lang="ts" generics="T">
 	let classes = ""
 	export { classes as class }

@@ -19,7 +19,7 @@
 		value={initialValue}
 		class="flex-grow w-1 bg-inherit py-1"
 	/>
-	<button class="ml-auto p-px"
-		><SearchIcon class="w-7 text-orange-600" /></button
-	>
+	<button class="ml-auto p-px">
+		<SearchIcon class="w-7 text-orange-600" />
+	</button>
 </form>
