@@ -52,8 +52,11 @@ describe("Layout", () => {
 	})
 
 	it("shows header, main, and footer", async () => {
-		render(page)
+		;(stores as any).setPage({
+			url: new URL("http://localhost:3000/a-page"),
+		})
 
+		render(page)
 		const header = screen.getByRole("banner")
 		const main = screen.getByRole("main")
 		const footer = screen.getByRole("contentinfo")
@@ -64,8 +67,11 @@ describe("Layout", () => {
 	})
 
 	it("links to homepage", async () => {
-		render(page)
+		;(stores as any).setPage({
+			url: new URL("http://localhost:3000/a-page"),
+		})
 
+		render(page)
 		const header = screen.getByRole("banner")
 		const link = within(header).getByRole("link")
 
@@ -83,5 +89,16 @@ describe("Layout", () => {
 		const searchInput = within(searchForm).getByRole("searchbox")
 
 		expect(searchInput).toHaveValue(QUERY)
+	})
+
+	it("hides header on when on homepage", async () => {
+		;(stores as any).setPage({
+			url: new URL("http://localhost:3000"),
+		})
+
+		render(page)
+		const header = screen.queryByRole("banner", { hidden: true })
+
+		expect(header).not.toBeInTheDocument()
 	})
 })
