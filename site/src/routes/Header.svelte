@@ -11,9 +11,9 @@
 	<div class="max-w-screen-lg mx-auto flex justify-between items-center">
 		<a href="/" class="mr-6 flex items-end">
 			<Logo class="w-11 md:w-12" />
-			<span class="hidden md:block font-['Kalam'] text-3xl md:text-3xl"
-				>Tissai</span
-			>
+			<span class="hidden md:block text-3xl md:text-3xl font-['Kalam']">
+				Tissai
+			</span>
 		</a>
 
 		<SearchForm class="flex-grow max-w-lg" initialValue={searchQuery} />
