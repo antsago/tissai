@@ -17,9 +17,9 @@
 		name="q"
 		type="search"
 		value={initialValue}
-		class="flex-grow w-1 bg-inherit py-1"
+		class="flex-grow w-1 bg-inherit py-1 text-stone-600 text-sm"
 	/>
 	<button class="ml-auto p-px">
-		<SearchIcon class="w-7 text-orange-600" />
+		<SearchIcon class="w-7 text-orange-500" />
 	</button>
 </form>
