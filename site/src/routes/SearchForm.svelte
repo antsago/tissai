@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { page } from "$app/stores"
 	import { MagnifyingGlass as SearchIcon } from "$lib/components"
 
 	let classes = ""
 	export { classes as class }
+	export let initialValue: string | null = ""
 	export let onSubmit: any = () => {} // Hook to test form submit
 </script>
 
@@ -16,7 +16,7 @@
 	<input
 		name="q"
 		type="search"
-		value={$page.url.searchParams.get("q")}
+		value={initialValue}
 		class="flex-grow w-1 bg-inherit py-1"
 	/>
 	<button class="ml-auto p-px"

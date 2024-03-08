@@ -1,5 +1,6 @@
 <script lang="ts">
 	import "../app.css"
+	import { page } from "$app/stores"
 	import { Logo } from "$lib/components"
 	import SearchForm from "./SearchForm.svelte"
 </script>
@@ -16,7 +17,7 @@
 				>
 			</a>
 
-			<SearchForm class="flex-grow max-w-lg" />
+			<SearchForm class="flex-grow max-w-lg" initialValue={$page.url.searchParams.get("q")} />
 		</div>
 	</header>
 	<div class="min-h-12 grow" />

@@ -3,6 +3,8 @@ import type { Readable, Subscriber } from "svelte/store"
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { render, screen, cleanup, within } from "@testing-library/svelte"
+import * as stores from "$app/stores"
+import { QUERY } from "mocks"
 import page from "./+layout.svelte"
 
 vi.mock("$app/stores", () => {
@@ -68,5 +70,18 @@ describe("Layout", () => {
 		const link = within(header).getByRole("link")
 
 		expect(link).toHaveAttribute("href", "/")
+	})
+
+	it("shows search query when on search page", async () => {
+		;(stores as any).setPage({
+			url: new URL(`http://localhost:3000/search?q=${QUERY}`),
+		})
+
+		render(page)
+		const header = screen.getByRole("banner")
+		const searchForm = within(header).getByRole("search")
+		const searchInput = within(searchForm).getByRole("searchbox")
+
+		expect(searchInput).toHaveValue(QUERY)
 	})
 })

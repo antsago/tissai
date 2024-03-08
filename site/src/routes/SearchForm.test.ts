@@ -1,51 +1,9 @@
-import type { Page } from "@sveltejs/kit"
-import type { Readable, Subscriber } from "svelte/store"
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
 import userEvent from "@testing-library/user-event"
-import * as stores from "$app/stores"
 import { QUERY } from "mocks"
 import SearchForm from "./SearchForm.svelte"
-
-vi.mock("$app/stores", () => {
-	let pageValue: Omit<Page, "state"> = {
-		url: new URL("http://localhost:3000"),
-		params: {},
-		status: 200,
-		error: null,
-		data: {},
-		route: {
-			id: null,
-		},
-		form: undefined,
-	}
-
-	let subscription: Subscriber<Omit<Page, "state">> | undefined
-	const setPage = (newValue: Partial<Page>) => {
-		pageValue = {
-			...pageValue,
-			...newValue,
-		}
-		subscription?.(pageValue)
-	}
-
-	const page: Readable<Omit<Page, "state">> = {
-		subscribe: (subFn) => {
-			subscription = subFn
-			subscription(pageValue)
-
-			return () => {
-				subscription = undefined
-			}
-		},
-	}
-
-	return {
-		page,
-		setPage,
-	}
-})
 
 describe("SearchForm", () => {
 	beforeEach(() => {
@@ -81,12 +39,16 @@ describe("SearchForm", () => {
 		})
 	})
 
-	it("shows query when on search page", async () => {
-		;(stores as any).setPage({
-			url: new URL(`http://localhost:3000/search?q=${QUERY}`),
-		})
-
+	it("defaults to empty initial value", async () => {
 		render(SearchForm)
+		const searchForm = screen.getByRole("search")
+		const searchInput = within(searchForm).getByRole("searchbox")
+
+		expect(searchInput).toHaveValue("")
+	})
+
+	it("displays initial value if passed", async () => {
+		render(SearchForm, { initialValue: QUERY })
 		const searchForm = screen.getByRole("search")
 		const searchInput = within(searchForm).getByRole("searchbox")
 
