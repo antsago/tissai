@@ -6,12 +6,12 @@
 </script>
 
 <header
-	class="px-6 py-2 bg-orange-100 border-b-2 border-orange-700 text-orange-500"
+	class="px-6 py-4 border-b border-orange-600"
 >
 	<div class="max-w-screen-lg mx-auto flex justify-between items-center">
-		<a href="/" class="mr-6 flex">
-			<Logo class="w-11 md:w-12" />
-			<span class="hidden md:block pt-[0.5rem] text-3xl md:text-3xl font-['Kalam']">
+		<a href="/" class="mr-8 flex">
+			<Logo class="w-12 text-orange-600" />
+			<span class="hidden md:block pt-[0.5rem] text-4xl text-orange-500 font-['Kalam']">
 				Tissai
 			</span>
 		</a>
