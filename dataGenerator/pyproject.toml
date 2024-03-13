@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "datagenerator"
+version = "0.1.0"
+description = ""
+authors = ["Antonio Sánchez <sago.ant@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+sentence-transformers = "^2.5.1"
+rake-nltk = "^1.0.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

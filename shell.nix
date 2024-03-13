@@ -11,10 +11,10 @@ pkgs.mkShell {
 
     nodejs_20
     yarn
-    python311Packages.python
-    python311Packages.pip
-    python311Packages.transformers
-    python311Packages.torch
-    python311Packages.sentence-transformers
+    python3
+    poetry
   ];
+
+  # fixes libstdc++ and libgl.so issues
+  LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
 }
