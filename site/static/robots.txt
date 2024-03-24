@@ -1,4 +1,4 @@
-sitemap:https://www.wibnix.com/sitemap.xml
-
 User-agent: *
 Disallow:
+
+# Sitemap:https://www.wibnix.com/sitemap.xml

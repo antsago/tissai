@@ -1,26 +1,30 @@
+# Mac
 .DS_Store
+
+# Data directory
+/data
+
+# Node
 node_modules
-/build
-/site/.svelte-kit
-/package
-.env
-.env.*
-!.env.example
-vite.config.js.timestamp-*
-vite.config.ts.timestamp-*
+coverage
+
+# Python
+__pycache__
+
+# Yarn
+.pnp.*
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
-/data
-coverage
-.vercel
 
-# Swap the comments on the following lines if you wish to use zero-installs
-# In that case, don't forget to run `yarn config set enableGlobalCache false`!
-# Documentation here: https://yarnpkg.com/features/caching#zero-installs
-
-#!.yarn/cache
-.pnp.*
+# Svelte
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+/site/build
+/site/.svelte-kit
+.env
+.env.*
+!.env.example
