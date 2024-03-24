@@ -13,18 +13,18 @@ __pycache__
 
 # Yarn
 .pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
+*/.yarn/*
+!*/.yarn/patches
+!*/.yarn/plugins
+!*/.yarn/releases
+!*/.yarn/sdks
+!*/.yarn/versions
 
 # Svelte
-vite.config.js.timestamp-*
-vite.config.ts.timestamp-*
-/site/build
-/site/.svelte-kit
 .env
 .env.*
 !.env.example
+/site/build
+/site/.svelte-kit
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
