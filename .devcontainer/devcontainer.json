@@ -6,6 +6,7 @@
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "devcontainer",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"overrideCommand": false,
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
@@ -18,7 +19,8 @@
 				"settings": {},
 				"extensions": [
 					"svelte.svelte-vscode",
-					"ms-python.python"
+					"ms-python.python",
+					"azuretools.vscode-docker"
 				]
 			}
 	}
