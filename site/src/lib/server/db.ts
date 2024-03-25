@@ -7,11 +7,7 @@ export type DB = {
 let pg = postgres
 export function DB(): DB {
 	const pool = new pg.Pool({
-		host: "postgres",
-		port: 5432,
-		user: "postgres",
-		password: "postgres",
-		database: "postgres",
+		connectionString: process.env.PG_CONNECTION_STRING,
 	})
 
 	const runQuery = async (query: string) => {
