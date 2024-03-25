@@ -1,0 +1,6 @@
+.yarn/cache
+.yarn/install-state.gz
+build
+coverage
+node_modules
+.svelte-kit
