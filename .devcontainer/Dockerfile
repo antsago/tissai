@@ -24,7 +24,7 @@ RUN sudo apt update && sudo apt install -y \
 # Docker
   docker-ce-cli socat \
 # Other tooling
-  vim iputils-ping
+  vim iputils-ping dnsutils
 
 # Poetry
 RUN curl -sSL https://install.python-poetry.org | python3 -
