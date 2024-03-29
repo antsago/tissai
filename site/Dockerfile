@@ -17,6 +17,7 @@ WORKDIR /app
 # Build svelte
 RUN yarn
 RUN yarn build
+RUN cp src/lib/server/Embedder/embedder.py build/server/chunks/embedder.py
 
 # --- #
 
