@@ -11,11 +11,7 @@ function escape(literal) {
 
 async function main() {
   const pool = new Pool({
-    host: 'postgres',
-    port: 5432,
-    user: 'postgres',
-    password: 'postgres',
-    database: 'postgres',
+		connectionString: process.env.PG_CONNECTION_STRING,
   })
    
   await pool.query('CREATE EXTENSION IF NOT EXISTS vector;')
