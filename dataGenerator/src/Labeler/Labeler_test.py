@@ -1,4 +1,4 @@
-from Labeler import getTests
+from .labeler import getTests
 
 def test_words_are_tokenized():
   title = "vaqueros ajustados"
