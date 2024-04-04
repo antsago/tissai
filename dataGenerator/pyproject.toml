@@ -5,6 +5,8 @@ package-mode = false
 python = "^3.9.2"
 sentence-transformers = "^2.5.1"
 rake-nltk = "^1.0.6"
+spacy = {extras = ["cuda11x"], version = "^3.7.4"}
+es-core-news-sm = "^3.1.0"
 
 
 [build-system]
