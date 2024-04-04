@@ -1,6 +1,6 @@
-from generateLabels import getTests
+from Labeler import getTests
 
-def tests_foo():
+def test_words_are_tokenized():
   title = "vaqueros ajustados"
   result = getTests(title)
   assert result == ['vaqueros', 'ajustados']
