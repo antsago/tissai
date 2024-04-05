@@ -13,7 +13,7 @@ from .labeler import getLabels
     # Supports multiple sentences
     ("vaqueros ajustados. talla alta", {'alta', 'ajustados', 'alta', 'vaqueros', 'talla'}),
     # Ignores symbols
-    ("vaqueros , & ' ( ) []", {'vaqueros'}),
+    ("vaqueros , & ' ( ) [] |", {'vaqueros'}),
     # Ignores stopwords
     ("vaqueros en aquí", {'vaqueros'}),
   ],
