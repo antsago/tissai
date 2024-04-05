@@ -1,5 +1,10 @@
 import Labeler
 from products import products
+from collections import Counter
+from functools import reduce
 
-if __name__ == "__main__":
-  print(Labeler.getLabels(products[27]['name']))
+def countLabels(count, product):
+  count.update(Labeler.getLabels(product['name']))
+  return count
+
+count = reduce(countLabels, products, Counter())
