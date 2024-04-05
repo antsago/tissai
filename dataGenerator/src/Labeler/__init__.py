@@ -1,1 +1,1 @@
-from .labeler import getTests
+from .labeler import getLabels

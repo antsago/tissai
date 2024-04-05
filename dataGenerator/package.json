@@ -4,7 +4,7 @@
   "scripts": {
     "db": "node src/generateDb",
     "load": "node src/loadPg",
-    "relationships": "python src/generateRelationships.py > ../data/relationships.json",
+    "labels": "poetry run python src/generateLabels.py",
     "test": "npm-run-all --sequential test:js test:py",
     "test:js": "jest",
     "test:py": "poetry run pytest",
