@@ -1,5 +1,7 @@
 import json
+import pathlib
 
-dbFile = open('../data/products.json')
+currentDirectory = pathlib.Path(__file__).parent.resolve()
+dbFile = open(f'{currentDirectory}/../../data/products.json')
 
 products = json.load(dbFile)
