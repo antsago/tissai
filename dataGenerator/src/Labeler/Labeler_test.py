@@ -16,6 +16,10 @@ from .labeler import getLabels
     ("vaqueros , & ' ( ) [] |", {'vaqueros'}),
     # Ignores stopwords
     ("vaqueros en aquí", {'vaqueros'}),
+    # Ignores numbers
+    ("vaqueros 1986 5 bolsillos", {'vaqueros', 'bolsillos'}),
+    # Ignores currency
+    ("vaqueros $230 por 2€", {'vaqueros'}),
   ],
 )
 
