@@ -1,8 +1,8 @@
-const { Pool, escapeLiteral } = require('pg')
-const products = require('../../data/withEmbeddings.json')
+const { Pool, escapeLiteral } = require("pg")
+const products = require("../../data/withEmbeddings.json")
 
 function escape(literal) {
-  if(literal === null || literal === undefined) {
+  if (literal === null || literal === undefined) {
     return "null"
   }
 
@@ -11,10 +11,10 @@ function escape(literal) {
 
 async function main() {
   const pool = new Pool({
-		connectionString: process.env.PG_CONNECTION_STRING,
+    connectionString: process.env.PG_CONNECTION_STRING,
   })
-   
-  await pool.query('CREATE EXTENSION IF NOT EXISTS vector;')
+
+  await pool.query("CREATE EXTENSION IF NOT EXISTS vector;")
   await pool.query(`
     CREATE TABLE IF NOT EXISTS products (
       id            uuid PRIMARY KEY,
@@ -27,10 +27,12 @@ async function main() {
       shop_icon     text,
       embedding     vector(384)
     );`)
-  console.log('Table created')
+  console.log("Table created")
 
-  const values = products.map(product => {
-    const images = Array.isArray(product.image) ? product.image : [product.image]
+  const values = products.map((product) => {
+    const images = Array.isArray(product.image)
+      ? product.image
+      : [product.image]
     return `(
       ${escape(product.id)},
       ${escape(product.name)},
@@ -47,7 +49,7 @@ async function main() {
   const query = `
   INSERT INTO products
   (id, name, description, images, brand, product_uri, shop_name, shop_icon, embedding)
-  VALUES ${values.join(',')};
+  VALUES ${values.join(",")};
   `
   const res = await pool.query(query)
 

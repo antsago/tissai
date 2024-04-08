@@ -22,8 +22,10 @@ const Crawler = async function (shops, crawlOptions) {
 
     let productsCreated = 0
     for await (const url of getAllowedUrls(domain)) {
-      if ((keywords && !keywords.some((key) => url.includes(key)))
-      || (shop.urlKeywords && !shop.urlKeywords.some((key) => url.includes(key)))) {
+      if (
+        (keywords && !keywords.some((key) => url.includes(key))) ||
+        (shop.urlKeywords && !shop.urlKeywords.some((key) => url.includes(key)))
+      ) {
         continue
       }
 

@@ -18,7 +18,7 @@ const logShop = async (shop, dataFolder, limit) => {
     dataFolder,
     crawlDelay: CRAWL_DELAY,
   })
-  
+
   for await (const product of crawler.getProducts({
     keywords: PRODUCT_KEYWORDS,
     limit,
@@ -29,7 +29,7 @@ const logShop = async (shop, dataFolder, limit) => {
 
 const main = async (dataFolder, limit) => {
   console.log("[")
-  await Promise.all(SHOPS.map(shop => logShop(shop, dataFolder, limit)))
+  await Promise.all(SHOPS.map((shop) => logShop(shop, dataFolder, limit)))
   console.log("]")
 }
 

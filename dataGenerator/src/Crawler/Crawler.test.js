@@ -82,16 +82,14 @@ describe("Crawler", () => {
 
       expect(result).toStrictEqual([expect.objectContaining(PRODUCT)])
     })
-  
+
     it("ignores disallowed urls", async () => {
       const robots = `
         Sitemap: https://${DOMAIN}/sitemap.xml
         User-Agent: ${PRODUCT_TOKEN}
         Disallow: /product
       `
-      response
-        .mockResolvedValueOnce(robots)
-        .mockResolvedValueOnce(SITEMAP)
+      response.mockResolvedValueOnce(robots).mockResolvedValueOnce(SITEMAP)
 
       const result = await getProducts()
 
