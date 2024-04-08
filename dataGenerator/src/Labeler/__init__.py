@@ -1,1 +1,1 @@
-from .labeler import getLabels
+from .labeler import Labeler

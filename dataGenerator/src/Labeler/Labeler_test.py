@@ -1,5 +1,5 @@
 import pytest
-from .labeler import getLabels
+from .labeler import Labeler
 
 @pytest.mark.parametrize(
   "title,expected",
@@ -24,5 +24,5 @@ from .labeler import getLabels
 )
 
 def test_get_labels(title, expected):
-  result = getLabels(title)
+  result = Labeler(title).getLabels()
   assert result == expected
