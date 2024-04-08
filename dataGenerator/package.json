@@ -8,7 +8,9 @@
     "test": "npm-run-all --sequential test:js test:py",
     "test:js": "jest",
     "test:py": "poetry run pytest",
-    "format": "prettier . --write"
+    "format": "npm-run-all --sequential format:js format:py",
+    "format:js": "prettier . --write",
+    "format:py": "poetry run black ."
   },
   "devDependencies": {
     "jest": "^29.6.4",
