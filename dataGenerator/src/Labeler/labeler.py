@@ -13,3 +13,7 @@ def getLabels(title):
   )
   doc = nlp(title)
   return { token.lower_ for token in doc if isMeaningless(token) }
+
+def getCategory(title):
+  doc = nlp(title)
+  return doc[0].lower_
