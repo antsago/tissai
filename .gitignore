@@ -10,6 +10,7 @@ coverage
 
 # Python
 __pycache__
+.venv
 
 # Yarn
 .pnp.*
