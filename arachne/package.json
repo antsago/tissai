@@ -1,5 +1,5 @@
 {
-  "name": "crawler",
+  "name": "arachne",
   "version": "0.0.1",
   "private": true,
   "packageManager": "yarn@4.1.1",
