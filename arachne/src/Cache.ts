@@ -2,6 +2,9 @@ import { readdir, readFile } from "fs/promises"
 import { createHash } from "node:crypto"
 
 let fs = { readdir, readFile }
+export function setFs(mock: typeof fs) {
+  fs = mock
+}
 
 const encodePath = (url: string, maxLength: number) => {
   const encoded = encodeURIComponent(url)
@@ -37,7 +40,3 @@ const Cache = function (cacheFolder: string, maxPathLength = 150) {
 }
 
 export default Cache
-
-export function setFs(mock: typeof fs) {
-  fs = mock
-}
