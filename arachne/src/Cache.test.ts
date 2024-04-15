@@ -1,5 +1,5 @@
 import { expect, describe, it, beforeEach } from 'vitest'
-import { FakeFs, MockFs } from '#mocks'
+import { FakeFs } from '#mocks'
 import Cache from './Cache.js'
 
 const CACHE_FOLDER = "./foo"
@@ -12,7 +12,7 @@ const CACHED_RESPONSE = {
 }
 
 describe('Cache', () => {
-  let fake: MockFs
+  let fake: FakeFs
   let cache: ReturnType<typeof Cache>
   beforeEach(() => {
     fake = FakeFs()
