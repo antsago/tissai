@@ -1,6 +1,6 @@
-import { expect, describe, it, vi, beforeEach } from 'vitest'
-import type { MockedObject } from 'vitest'
-import Cache, { setFs } from './Cache.js'
+import { expect, describe, it, beforeEach } from 'vitest'
+import { FakeFs, MockFs } from '#mocks'
+import Cache from './Cache.js'
 
 const CACHE_FOLDER = "./foo"
 const URL = "www.example.com"
@@ -12,15 +12,10 @@ const CACHED_RESPONSE = {
 }
 
 describe('Cache', () => {
-  let fake: MockedObject<Parameters<typeof setFs>[0]>
+  let fake: MockFs
   let cache: ReturnType<typeof Cache>
   beforeEach(() => {
-    fake = {
-      readdir: vi.fn(),
-      readFile: vi.fn(),
-    } as any
-    setFs(fake)
-
+    fake = FakeFs()
     cache = Cache(CACHE_FOLDER)
   })
 

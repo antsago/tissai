@@ -10,6 +10,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest"
   },
+  "imports": {
+    "#mocks": "./__tests__/index.ts"
+  },
   "devDependencies": {
     "@tsconfig/node20": "20.1.4",
     "@types/node": "20.12.7",
