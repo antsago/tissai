@@ -1,9 +1,6 @@
 # Mac
 .DS_Store
 
-# Data directory
-/data
-
 # Node
 node_modules
 coverage
@@ -21,11 +18,19 @@ __pycache__
 !*/.yarn/sdks
 !*/.yarn/versions
 
-# Svelte
+# Env
 .env
 .env.*
 !.env.example
+
+# Site folder
 /site/build
 /site/.svelte-kit
-vite.config.js.timestamp-*
-vite.config.ts.timestamp-*
+/site/vite.config.js.timestamp-*
+/site/vite.config.ts.timestamp-*
+
+# Data folder
+/data
+
+# Arachne folder
+/arachne/build
