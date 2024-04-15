@@ -5,8 +5,9 @@
   "packageManager": "yarn@4.1.1",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --outDir ./build src/*[^.test].ts",
     "dev": "yarn build && node build/index.js",
+    "typecheck": "tsc --noEmit",
     "test": "vitest"
   },
   "devDependencies": {
