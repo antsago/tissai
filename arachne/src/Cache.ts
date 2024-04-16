@@ -19,7 +19,7 @@ const encodePath = (url: string, maxLength: number) => {
   return `${pruned}${checksum}`
 }
 
-const Cache = function (cacheFolder: string, maxPathLength = 150) {
+export const Cache = function (cacheFolder: string, maxPathLength = 150) {
   const get = async (url: string) => {
     const cachedResponses = (await fs.readdir(cacheFolder)).sort().reverse()
 
@@ -38,5 +38,4 @@ const Cache = function (cacheFolder: string, maxPathLength = 150) {
   
   return { get }
 }
-
-export default Cache
+export type Cache = ReturnType<typeof Cache>
