@@ -1,21 +1,12 @@
 import { expect, describe, it, beforeEach } from 'vitest'
-import { vi, MockedObject } from "vitest"
-import Db, { setPg } from './Db.js'
+import { FakePg } from '#mocks'
+import { Db } from './Db.js'
 
 describe('Db', () => {
-  let db: ReturnType<typeof Db>
-  let fakePg: MockedObject<any>
+  let db: Db
+  let fakePg: FakePg
   beforeEach(() => {
-    const Pool = vi.fn()
-    const query = vi.fn()
-    Pool.mockReturnValue({
-      query,
-      end: vi.fn(),
-    })
-    setPg(Pool as any)
-
-    fakePg = { Pool, query }
-
+    fakePg = FakePg()
     db = Db()
   })
 

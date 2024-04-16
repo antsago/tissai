@@ -5,7 +5,7 @@ export function setPg(mock: typeof pg.Pool) {
   Pool = mock
 }
 
-const Db = () => {
+export const Db = () => {
   const pool = new Pool()
 
 	const runQuery = async (query: string) => {
@@ -18,4 +18,4 @@ const Db = () => {
   }
 }
 
-export default Db 
+export type Db = ReturnType<typeof Db>
