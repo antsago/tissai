@@ -8,7 +8,14 @@ export function setPg(mock: typeof pg.Pool) {
 const Db = () => {
   const pool = new Pool()
 
-  return {}
+	const runQuery = async (query: string) => {
+		const response = await pool.query(query)
+		return response.rows
+	}
+
+  return {
+    query: runQuery,
+  }
 }
 
 export default Db 
