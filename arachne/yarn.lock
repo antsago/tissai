@@ -519,6 +519,7 @@ __metadata:
     "@types/node": "npm:20.12.7"
     "@types/pg": "npm:^8"
     pg: "npm:8.11.5"
+    robots-parser: "npm:3.0.1"
     typescript: "npm:5.4.5"
     vitest: "npm:1.5.0"
   languageName: unknown
@@ -1607,6 +1608,13 @@ __metadata:
   version: 0.12.0
   resolution: "retry@npm:0.12.0"
   checksum: 10c0/59933e8501727ba13ad73ef4a04d5280b3717fd650408460c987392efe9d7be2040778ed8ebe933c5cbd63da3dcc37919c141ef8af0a54a6e4fca5a2af177bfe
+  languageName: node
+  linkType: hard
+
+"robots-parser@npm:3.0.1":
+  version: 3.0.1
+  resolution: "robots-parser@npm:3.0.1"
+  checksum: 10c0/91443b15ab1b39f69ac998a2dae8859ad35c981504e5facbb34d494fd6163877e821ce7ed830d14e9efdd6ed28c347491c3d699738943501dec2b6bedfdd6a81
   languageName: node
   linkType: hard
 
