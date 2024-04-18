@@ -18,3 +18,14 @@ def test_extracts_json_ld_products():
     """
     result = parse(page)
     assert result == product
+
+def test_ignores_empty_pages():
+    page = f"""
+        <html>
+          <head>
+            <script src=\"_ascript\"></script>
+          </head>
+        </html>
+    """
+    result = parse(page)
+    assert result == None
