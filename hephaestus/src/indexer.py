@@ -1,5 +1,4 @@
 from uuid import uuid4 as uuid
-from page import Page
 
 def toProduct(page):
   return [{

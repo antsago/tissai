@@ -1,4 +1,3 @@
-import json
 import indexer
 from asymmetric_matchers import anything
 
