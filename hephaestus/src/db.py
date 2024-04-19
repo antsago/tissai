@@ -1,6 +1,6 @@
 import psycopg2
 
-def main():
+def getPage():
   with psycopg2.connect("postgres://postgres:postgres@postgres:5432/uranus") as conn:
     with conn.cursor() as curs:
       curs.execute("SELECT id, body FROM pages;")
