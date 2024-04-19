@@ -69,3 +69,15 @@ def test_ignores_non_product():
         "description": product["description"],
         "images": [product["image"]],
     }
+
+def test_handles_images_array():
+    result = indexer.toProduct([{
+        **product,
+        "image": [product["image"]],
+    }])
+    assert result == {
+        "id": anything(),
+        "title": product["name"],
+        "description": product["description"],
+        "images": [product["image"]],
+    }

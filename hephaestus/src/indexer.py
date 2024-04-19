@@ -16,5 +16,5 @@ def toProduct(dataArry):
     "id": uuid(),
     "title": productLd["name"],
     "description": productLd["description"],
-    "images": [productLd["image"]],
+    "images": productLd["image"] if isinstance(productLd["image"], list) else [productLd["image"]],
   }
