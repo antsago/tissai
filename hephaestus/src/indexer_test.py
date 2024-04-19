@@ -23,46 +23,6 @@ expectedProduct = {
   "images": [product["image"]],
 }
 
-def test_extracts_json_ld():
-    page = f"""
-        <html>
-          <head>
-            <script type=\"application/ld+json\">{json.dumps(product)}</script>
-            <script src=\"_ascript\"></script>
-          </head>
-        </html>
-    """
-
-    result = indexer.parse(page)
-
-    assert result == [product]
-
-def test_extracts_multiple_json_ld():
-    page = f"""
-        <html>
-          <head>
-            <script type=\"application/ld+json\">{json.dumps(product)}</script>
-            <script type=\"application/ld+json\">{json.dumps(org)}</script>
-          </head>
-        </html>
-    """
-
-    result = indexer.parse(page)
-
-    assert result == [product, org]
-
-def test_ignores_empty_pages():
-    page = f"""
-        <html>
-          <head>
-            <script src=\"_ascript\"></script>
-          </head>
-        </html>
-    """
-    result = indexer.parse(page)
-
-    assert result == []
-
 def test_converts_jsonld_to_product():
     result = indexer.toProduct([product])
 

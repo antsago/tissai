@@ -1,9 +1,10 @@
 import db
+from page import Page
 import indexer
 
 db.createGaiaDb()
 
 for rawPage in db.getPages():
-  page = indexer.parse(rawPage["body"])
+  page = Page(rawPage)
   product = indexer.toProduct(page)
   db.loadProduct(product)
