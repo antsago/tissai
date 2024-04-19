@@ -1,5 +1,5 @@
 import json
-import indexer
+import parser
 
 def test_extracts_json_ld_products():
     product = {
@@ -15,7 +15,7 @@ def test_extracts_json_ld_products():
           </head>
         </html>
     """
-    result = indexer.parse(page)
+    result = parser.parse(page)
     assert result == product
 
 def test_ignores_empty_pages():
@@ -26,5 +26,5 @@ def test_ignores_empty_pages():
           </head>
         </html>
     """
-    result = indexer.parse(page)
+    result = parser.parse(page)
     assert result == None
