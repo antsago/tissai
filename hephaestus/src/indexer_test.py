@@ -26,7 +26,9 @@ def test_extracts_json_ld():
           </head>
         </html>
     """
+
     result = indexer.parse(page)
+
     assert result == [product]
 
 def test_extracts_multiple_json_ld():
@@ -38,7 +40,9 @@ def test_extracts_multiple_json_ld():
           </head>
         </html>
     """
+
     result = indexer.parse(page)
+
     assert result == [product, org]
 
 def test_ignores_empty_pages():
@@ -50,10 +54,12 @@ def test_ignores_empty_pages():
         </html>
     """
     result = indexer.parse(page)
+
     assert result == []
 
 def test_converts_jsonld_to_product():
     result = indexer.toProduct([product])
+
     assert result == {
         "id": anything(),
         "title": product["name"],
@@ -63,6 +69,7 @@ def test_converts_jsonld_to_product():
 
 def test_ignores_non_product():
     result = indexer.toProduct([org, product])
+
     assert result == {
         "id": anything(),
         "title": product["name"],
@@ -75,6 +82,7 @@ def test_handles_images_array():
         **product,
         "image": [product["image"]],
     }])
+
     assert result == {
         "id": anything(),
         "title": product["name"],

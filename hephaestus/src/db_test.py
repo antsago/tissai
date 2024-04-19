@@ -23,16 +23,21 @@ class FakePg(dict):
     def __setattr__(self, key, value):
         self[key] = value
 
-def test_getPage():
+def test_getPages():
   fake = FakePg()
-  page = {
+  page1 = {
     "id": "page-id",
     "body": "the page body",
   }
-  fake.cursor.fetchone.return_value = (page["id"], page["body"])
+  page2 = {
+    "id": "page-id-2",
+    "body": "the second page body",
+  }
+  fake.cursor.fetchone.side_effect = [(page1["id"], page1["body"]), (page2["id"], page2["body"]), None]
 
-  result = db.getPage()
-  assert result == page
+  result = list(db.getPages())
+
+  assert result == [page1, page2]
 
 def test_saveProduct():
   product = {
@@ -42,6 +47,7 @@ def test_saveProduct():
     "images": "the product name",
   }
   fake = FakePg()
+
   db.loadProduct(product)
 
   assert fake.cursor.execute.called == 1
