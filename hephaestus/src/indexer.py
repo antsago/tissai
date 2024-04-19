@@ -1,4 +1,5 @@
 import json
+from uuid import uuid4 as uuid
 from bs4 import BeautifulSoup
 
 def parse(page):
@@ -13,3 +14,11 @@ def parse(page):
   linkedData = json.loads(jsonString)
 
   return linkedData
+
+def toProduct(data):
+  return {
+    "id": uuid(),
+    "title": data["name"],
+    "description": data["description"],
+    "images": [data["image"]],
+  }
