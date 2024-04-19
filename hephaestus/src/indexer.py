@@ -9,10 +9,12 @@ def parse(page):
 
   return [json.loads(tag.string) for tag in ldTags]
 
-def toProduct(data):
+def toProduct(dataArry):
+  productLd = [data for data in dataArry if data["@type"] == "Product"][0]
+
   return {
     "id": uuid(),
-    "title": data["name"],
-    "description": data["description"],
-    "images": [data["image"]],
+    "title": productLd["name"],
+    "description": productLd["description"],
+    "images": [productLd["image"]],
   }
