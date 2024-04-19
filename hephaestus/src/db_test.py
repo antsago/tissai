@@ -1,5 +1,7 @@
+import re
 from unittest.mock import MagicMock
 import db
+import psycopg2 
 
 class FakePg(dict):
     def __init__(self):
@@ -9,7 +11,7 @@ class FakePg(dict):
       cursorContext = MagicMock()
       self.cursor = MagicMock()
 
-      db.psycopg2.connect = self.connect
+      psycopg2.connect = self.connect
       self.connect.return_value = connectionContext
       connectionContext.__enter__.return_value = self.connection
       self.connection.cursor.return_value = cursorContext
@@ -31,3 +33,16 @@ def test_getPage():
 
   result = db.getPage()
   assert result == page
+
+def test_saveProduct():
+  product = {
+    "id": "page-id",
+    "title": "the product name",
+    "description": "the product name",
+    "images": "the product name",
+  }
+  fake = FakePg()
+  db.loadProduct(product)
+
+  assert fake.cursor.execute.called == 1
+  assert re.compile('INSERT INTO products').search(fake.cursor.execute.call_args.args[0]) != None
