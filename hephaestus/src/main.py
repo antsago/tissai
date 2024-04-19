@@ -3,7 +3,7 @@ import indexer
 
 db.createGaiaDb()
 
-for page in db.getPages():
-  data = indexer.parse(page["body"])
-  product = indexer.toProduct(data)
+for rawPage in db.getPages():
+  page = indexer.parse(rawPage["body"])
+  product = indexer.toProduct(page)
   db.loadProduct(product)

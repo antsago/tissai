@@ -16,6 +16,12 @@ org = {
   'logo': 'https://algo-bonito.com/LogoFondoTrans_1024_1024x.png',
   'url': 'https://algo-bonito.com'
 }
+expectedProduct = {
+  "id": anything(),
+  "title": product["name"],
+  "description": product["description"],
+  "images": [product["image"]],
+}
 
 def test_extracts_json_ld():
     page = f"""
@@ -60,22 +66,22 @@ def test_ignores_empty_pages():
 def test_converts_jsonld_to_product():
     result = indexer.toProduct([product])
 
-    assert result == {
-        "id": anything(),
-        "title": product["name"],
-        "description": product["description"],
-        "images": [product["image"]],
-    }
+    assert result == [expectedProduct]
 
 def test_ignores_non_product():
     result = indexer.toProduct([org, product])
 
-    assert result == {
-        "id": anything(),
-        "title": product["name"],
-        "description": product["description"],
-        "images": [product["image"]],
-    }
+    assert result == [expectedProduct]
+
+def test_handles_pages_with_multiple_products():
+    result = indexer.toProduct([product, product])
+
+    assert result == [expectedProduct, expectedProduct]
+
+def test_handles_pages_without_product():
+    result = indexer.toProduct([org])
+
+    assert result == []
 
 def test_handles_images_array():
     result = indexer.toProduct([{
@@ -83,9 +89,4 @@ def test_handles_images_array():
         "image": [product["image"]],
     }])
 
-    assert result == {
-        "id": anything(),
-        "title": product["name"],
-        "description": product["description"],
-        "images": [product["image"]],
-    }
+    assert result == [expectedProduct]
