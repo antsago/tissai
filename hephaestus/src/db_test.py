@@ -4,14 +4,16 @@ import db
 class FakePg(dict):
     def __init__(self):
       self.connect = MagicMock()
+      connectionContext = MagicMock()
       self.connection = MagicMock()
+      cursorContext = MagicMock()
       self.cursor = MagicMock()
-      self.connect.return_value = MagicMock()
-      self.connect().__enter__.return_value = self.connection
-      self.connection.cursor.return_value = MagicMock()
-      self.connection.cursor().__enter__.return_value = self.cursor
 
       db.psycopg2.connect = self.connect
+      self.connect.return_value = connectionContext
+      connectionContext.__enter__.return_value = self.connection
+      self.connection.cursor.return_value = cursorContext
+      cursorContext.__enter__.return_value = self.cursor
     
     def __getattr__(self, key):
         return self[key]
