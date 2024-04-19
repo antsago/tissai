@@ -1,4 +1,7 @@
 import psycopg2
+import psycopg2.extras
+
+psycopg2.extras.register_uuid()
 
 def getPage():
   with psycopg2.connect("postgres://postgres:postgres@postgres:5432/uranus") as conn:
@@ -17,7 +20,7 @@ def loadProduct(product):
       """
         INSERT INTO products
           (id, title, description, images)
-        VALUES (%(id), %(title), %(description), %(images))
+        VALUES (%(id)s, %(title)s, %(description)s, %(images)s);
       """,
       product)
 
@@ -29,5 +32,6 @@ def createGaiaDb():
           id            uuid PRIMARY KEY,
           title         text,
           description   text,
-          images        text[],
+          images        text[]
+        );
       """)
