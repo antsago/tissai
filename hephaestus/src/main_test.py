@@ -1,6 +1,5 @@
 import re
-from mocks import MockPg
-from fakes import productSchema, pageForTest
+from __tests__ import MockPg, productSchema, pageForTest
 
 def test_turns_pages_into_products():
   mocked = MockPg()

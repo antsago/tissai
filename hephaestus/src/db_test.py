@@ -1,6 +1,5 @@
 import re
-from mocks import MockPg
-from fakes import product
+from __tests__ import MockPg, product
 import db
 
 def test_getPages():

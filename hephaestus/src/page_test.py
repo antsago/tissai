@@ -1,4 +1,4 @@
-from fakes import productSchema, orgSchema, pageForTest
+from __tests__ import productSchema, orgSchema, pageForTest
 from page import Page
 
 def test_extracts_json_ld():

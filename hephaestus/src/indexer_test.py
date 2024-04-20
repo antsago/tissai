@@ -1,6 +1,6 @@
-import indexer
 from asymmetric_matchers import anything
-from fakes import productSchema, orgSchema
+from __tests__ import productSchema, orgSchema
+import indexer
 
 expectedProduct = {
   "id": anything(),
