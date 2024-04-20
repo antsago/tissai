@@ -19,8 +19,8 @@ def loadProduct(product):
       curs.execute(
       """
         INSERT INTO products
-          (id, title, description, images)
-        VALUES (%(id)s, %(title)s, %(description)s, %(images)s);
+          (id, title, description, images, page)
+        VALUES (%(id)s, %(title)s, %(description)s, %(images)s, %(page)s);
       """,
       product)
 
@@ -32,6 +32,7 @@ def createGaiaDb():
           id            uuid PRIMARY KEY,
           title         text,
           description   text,
-          images        text[]
+          images        text[],
+          page          uuid
         );
       """)

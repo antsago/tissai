@@ -1,4 +1,5 @@
-import re
+from unittest.mock import call
+from asymmetric_matchers import string_matching
 from __tests__ import MockPg, product
 import db
 
@@ -23,5 +24,4 @@ def test_saveProduct():
 
   db.loadProduct(product)
 
-  assert mocked.cursor.execute.call_count == 1
-  assert re.compile('INSERT INTO products').search(mocked.cursor.execute.call_args.args[0]) != None
+  assert mocked.cursor.execute.call_args_list == [call(string_matching('INSERT INTO products'), product)]

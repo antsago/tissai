@@ -6,5 +6,6 @@ db.createGaiaDb()
 
 for rawPage in db.getPages():
   page = Page(rawPage)
-  product = indexer.toProduct(page)
-  db.loadProduct(product)
+  products = indexer.toProduct(page)
+  for product in products:
+    db.loadProduct(product)

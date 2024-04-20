@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 class Page():
   def __init__(self, page):
     self.soup = BeautifulSoup(page["body"], 'lxml')
+    self.id = page["id"]
 
   @property
   def jsonLd(self):

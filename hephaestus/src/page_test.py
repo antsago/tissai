@@ -21,3 +21,10 @@ def test_ignores_empty_pages():
     page = Page(rawPage)
 
     assert page.jsonLd == []
+
+def test_stores_page_id():
+    rawPage = pageForTest([])
+
+    page = Page(rawPage)
+
+    assert page.id == rawPage["id"]

@@ -8,6 +8,7 @@ expectedProduct = {
   "title": productSchema["name"],
   "description": productSchema["description"],
   "images": [productSchema["image"]],
+  "page": anything()
 }
 
 def test_converts_jsonld_to_product():
@@ -47,3 +48,11 @@ def test_handles_images_array():
     result = indexer.toProduct(page)
 
     assert result == [expectedProduct]
+
+def test_records_page_of_origin():
+    id = "the-page-id"
+    page = MagicMock(jsonLd = [productSchema], id=id)
+
+    [result] = indexer.toProduct(page)
+
+    assert result["page"] == id
