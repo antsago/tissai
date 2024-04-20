@@ -1,45 +1,19 @@
-import json
+from fakes import productSchema, orgSchema, pageForTest
 from page import Page
 
-product = {
-  "@context": "https://schema.org/",
-  "@type": "Product",
-  "name": "The name of the product",
-  "description": "The description in ld",
-  "image": "https//image.com/png",
-}
-org = {
-  '@context': 'http://schema.org',
-  '@type': 'Organization',
-  'name': 'Algo Bonito',
-  'logo': 'https://algo-bonito.com/LogoFondoTrans_1024_1024x.png',
-  'url': 'https://algo-bonito.com'
-}
-pageForTest = lambda schemas: {
-    "id": "test-id",
-    "body": f"""
-        <html>
-          <head>
-            {"".join([f'<script type="application/ld+json">{json.dumps(schema)}</script>' for schema in schemas])}
-            <script src=\"_ascript\"></script>
-          </head>
-        </html>
-    """,
-}
-
 def test_extracts_json_ld():
-    rawPage = pageForTest([product])
+    rawPage = pageForTest([productSchema])
 
     page = Page(rawPage)
 
-    assert page.jsonLd == [product]
+    assert page.jsonLd == [productSchema]
 
 def test_extracts_multiple_json_ld():
-    rawPage = pageForTest([product, org])
+    rawPage = pageForTest([productSchema, orgSchema])
 
     page = Page(rawPage)
 
-    assert page.jsonLd == [product, org]
+    assert page.jsonLd == [productSchema, orgSchema]
 
 def test_ignores_empty_pages():
     rawPage = pageForTest([])
