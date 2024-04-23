@@ -6,6 +6,7 @@ python = "^3.9"
 beautifulsoup4 = "^4.12.3"
 lxml = "^5.2.1"
 psycopg2-binary = "^2.9.9"
+rdflib = "^7.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.1.1"

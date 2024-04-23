@@ -5,7 +5,7 @@ productSchema = {
   "@type": "Product",
   "name": "The name of the product",
   "description": "The description in ld",
-  "image": "https//image.com/png",
+  "image": "https://image.com/png",
 }
 orgSchema = {
   '@context': 'http://schema.org',
