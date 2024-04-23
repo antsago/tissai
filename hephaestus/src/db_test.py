@@ -33,3 +33,10 @@ def test_saveProduct():
   db.loadProduct(product)
 
   assert mocked.cursor.execute.call_args_list == [call(string_matching('INSERT INTO products'), product)]
+
+def test_dbCreation():
+  mocked = MockPg()
+
+  db.createGaiaDb()
+
+  assert mocked.cursor.execute.call_args_list == [call(string_matching('CREATE TABLE .* predicates'))]

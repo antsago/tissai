@@ -28,11 +28,15 @@ def createGaiaDb():
   with psycopg2.connect("postgres://postgres:postgres@postgres:5432/gaia") as conn:
     with conn.cursor() as curs:
       curs.execute("""
-        CREATE TABLE IF NOT EXISTS products (
-          id            uuid PRIMARY KEY,
-          title         text,
-          description   text,
-          images        text[],
-          page          uuid
+        CREATE TABLE IF NOT EXISTS predicates (
+          id                     uuid PRIMARY KEY,
+          page                   uuid,
+          predicate              text,
+          subject_string_value   text,
+          subject_rfd_type       text,
+          subject_json_type      text,
+          object_string_value    text,
+          object_rfd_type        text,
+          object_json_type       text
         );
       """)
