@@ -30,6 +30,33 @@ def test_empty_pages():
     predicates = Predicates(rawPage)
     assert [] == list(predicates.jsonLd)
 
+def test_non_string_json_ld():
+    rawPage = pageForTest([{
+        "@context":{ "@vocab": "http://schema.org/" },
+        "@type":"Offer",
+        "seller":{
+            "@type":"Organization",
+            "name":"DECATHLON"
+        },
+        "isFamilyFriendly": True,
+        "itemCondition":"https://schema.org/NewCondition",
+        "price":24.99,
+        "validFrom": "2011-04-01"
+    }])
+
+    predicates = Predicates(rawPage)
+
+    assert list_containing([
+        (string_matching(".*"), "http://schema.org/isFamilyFriendly", "true"),
+        (string_matching(".*"), "http://schema.org/itemCondition", "https://schema.org/NewCondition"),
+        (string_matching(".*"), "http://schema.org/price", "24.99"),
+        (string_matching(".*"), "http://schema.org/seller", string_matching(".*")),
+        (string_matching(".*"), "http://schema.org/validFrom", "2011-04-01"),
+        (string_matching(".*"), "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://schema.org/Offer"),
+        (string_matching(".*"), "http://schema.org/name", "DECATHLON"),
+        (string_matching(".*"), "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://schema.org/Organization"),
+    ]) == list(predicates.jsonLd)
+
 def test_stores_page_id():
     rawPage = pageForTest([])
     predicates = Predicates(rawPage)
