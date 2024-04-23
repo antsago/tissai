@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from rdflib import Graph
 
-def getJsonLd(soup):
+def parseJsonLd(soup):
   g = Graph()
 
   ldTags = soup.find_all(name="script", type="application/ld+json")
@@ -13,4 +13,4 @@ class Predicates():
   def __init__(self, page):
     self.soup = BeautifulSoup(page["body"], 'lxml')
     self.pageId = page["id"]
-    self.jsonLd = getJsonLd(self.soup)
+    self.jsonLd = parseJsonLd(self.soup)

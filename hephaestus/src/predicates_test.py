@@ -15,22 +15,22 @@ orgPredicates = [
     (string_matching(".*"), 'http://schema.org/image', 'https://image.com/png'),
 ]
 
-def test_extracts_json_ld():
+def test_json_ld():
     rawPage = pageForTest([productSchema])
-    page = Predicates(rawPage)
-    assert list_containing(productPredicates) == list(page.jsonLd)
+    predicates = Predicates(rawPage)
+    assert list_containing(productPredicates) == list(predicates.jsonLd)
 
-def test_extracts_multiple_json_ld():
+def test_multiple_json_ld():
     rawPage = pageForTest([productSchema, orgSchema])
-    page = Predicates(rawPage)
-    assert list_containing([*productPredicates, *orgPredicates]) == list(page.jsonLd)
+    predicates = Predicates(rawPage)
+    assert list_containing([*productPredicates, *orgPredicates]) == list(predicates.jsonLd)
 
-def test_ignores_empty_pages():
+def test_empty_pages():
     rawPage = pageForTest([])
-    page = Predicates(rawPage)
-    assert [] == list(page.jsonLd)
+    predicates = Predicates(rawPage)
+    assert [] == list(predicates.jsonLd)
 
 def test_stores_page_id():
     rawPage = pageForTest([])
-    page = Predicates(rawPage)
-    assert page.pageId == rawPage["id"]
+    predicates = Predicates(rawPage)
+    assert predicates.pageId == rawPage["id"]
