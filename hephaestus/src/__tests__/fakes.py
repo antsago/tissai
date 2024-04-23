@@ -1,14 +1,14 @@
 import json
 
 productSchema = {
-  "@context": "https://schema.org/",
+  "@context": { "@vocab": "http://schema.org/" },
   "@type": "Product",
   "name": "The name of the product",
   "description": "The description in ld",
   "image": "https://image.com/png",
 }
 orgSchema = {
-  '@context': 'http://schema.org',
+  "@context": { "@vocab": "http://schema.org/" },
   '@type': 'Organization',
   'name': 'Algo Bonito',
   'logo': 'https://algo-bonito.com/LogoFondoTrans_1024_1024x.png',
