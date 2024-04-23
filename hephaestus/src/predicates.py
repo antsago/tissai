@@ -12,5 +12,5 @@ def getJsonLd(soup):
 class Predicates():
   def __init__(self, page):
     self.soup = BeautifulSoup(page["body"], 'lxml')
-    self.id = page["id"]
+    self.pageId = page["id"]
     self.jsonLd = getJsonLd(self.soup)

@@ -1,6 +1,6 @@
 from asymmetric_matchers import string_matching, list_containing
 from __tests__ import productSchema, orgSchema, pageForTest
-from hephaestus.src.predicates import Predicates
+from predicates import Predicates
 
 productPredicates = [
     (string_matching(".*"), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Product'),
@@ -33,4 +33,4 @@ def test_ignores_empty_pages():
 def test_stores_page_id():
     rawPage = pageForTest([])
     page = Predicates(rawPage)
-    assert page.id == rawPage["id"]
+    assert page.pageId == rawPage["id"]
