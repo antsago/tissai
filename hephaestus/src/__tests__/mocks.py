@@ -3,6 +3,7 @@ import psycopg2
 
 class MockPg(dict):
     def __init__(self):
+      self.extras = MagicMock()
       self.connect = MagicMock()
       connectionContext = MagicMock()
       self.connection = MagicMock()
@@ -10,6 +11,7 @@ class MockPg(dict):
       self.cursor = MagicMock()
 
       psycopg2.connect = self.connect
+      psycopg2.extras = self.extras
       self.connect.return_value = connectionContext
       connectionContext.__enter__.return_value = self.connection
       self.connection.cursor.return_value = cursorContext

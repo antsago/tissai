@@ -1,7 +1,15 @@
+import importlib
 from unittest.mock import call
 from asymmetric_matchers import string_matching
 from __tests__ import MockPg, product
 import db
+
+def test_configures_psycopg():
+  mocked = MockPg()
+
+  importlib.reload(db)
+
+  assert mocked.extras.register_uuid.call_count == 1
 
 def test_getPages():
   mocked = MockPg()
