@@ -1,12 +1,12 @@
 import db
-from page import Page
+from predicates import Predicates
 import indexer
 
 try:
   db.createGaiaDb()
 
   for rawPage in db.getPages():
-    page = Page(rawPage)
+    page = Predicates(rawPage)
     products = indexer.toProduct(page)
     for product in products:
       db.loadProduct(product)

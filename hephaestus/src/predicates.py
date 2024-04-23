@@ -1,4 +1,3 @@
-import json
 from bs4 import BeautifulSoup
 from rdflib import Graph
 
@@ -10,7 +9,7 @@ def getJsonLd(soup):
 
   return ((str(s), str(p), str(o)) for s,p,o in g)
 
-class Page():
+class Predicates():
   def __init__(self, page):
     self.soup = BeautifulSoup(page["body"], 'lxml')
     self.id = page["id"]

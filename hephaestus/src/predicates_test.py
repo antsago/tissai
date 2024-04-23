@@ -1,6 +1,6 @@
 from asymmetric_matchers import string_matching, list_containing
 from __tests__ import productSchema, orgSchema, pageForTest
-from page import Page
+from hephaestus.src.predicates import Predicates
 
 productPredicates = [
     (string_matching(".*"), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Product'),
@@ -17,20 +17,20 @@ orgPredicates = [
 
 def test_extracts_json_ld():
     rawPage = pageForTest([productSchema])
-    page = Page(rawPage)
+    page = Predicates(rawPage)
     assert list_containing(productPredicates) == list(page.jsonLd)
 
 def test_extracts_multiple_json_ld():
     rawPage = pageForTest([productSchema, orgSchema])
-    page = Page(rawPage)
+    page = Predicates(rawPage)
     assert list_containing([*productPredicates, *orgPredicates]) == list(page.jsonLd)
 
 def test_ignores_empty_pages():
     rawPage = pageForTest([])
-    page = Page(rawPage)
+    page = Predicates(rawPage)
     assert [] == list(page.jsonLd)
 
 def test_stores_page_id():
     rawPage = pageForTest([])
-    page = Page(rawPage)
+    page = Predicates(rawPage)
     assert page.id == rawPage["id"]
