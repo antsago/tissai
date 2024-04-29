@@ -34,8 +34,6 @@ def parseJsonLd(soup):
       objectType=getNodeType(o),
   ) for s,p,o in g)
 
-class Predicates():
-  def __init__(self, page):
-    self.soup = BeautifulSoup(page["body"], 'lxml')
-    self.pageId = page["id"]
-    self.jsonLd = parseJsonLd(self.soup)
+def createPredicates(page):
+  soup = BeautifulSoup(page["body"], 'lxml')
+  return parseJsonLd(soup)

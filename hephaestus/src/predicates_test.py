@@ -1,6 +1,6 @@
 from asymmetric_matchers import string_matching, list_containing
 from __tests__ import productSchema, orgSchema, pageForTest
-from predicates import Predicates, Predicate
+from predicates import createPredicates, Predicate
 
 productPredicates = [
     Predicate(string_matching(".*"), "IRI", 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Product', "IRI"),
@@ -17,18 +17,18 @@ orgPredicates = [
 
 def test_json_ld():
     rawPage = pageForTest([productSchema])
-    predicates = Predicates(rawPage)
-    assert list_containing(productPredicates) == list(predicates.jsonLd)
+    predicates = createPredicates(rawPage)
+    assert list_containing(productPredicates) == list(predicates)
 
 def test_multiple_json_ld():
     rawPage = pageForTest([productSchema, orgSchema])
-    predicates = Predicates(rawPage)
-    assert list_containing([*productPredicates, *orgPredicates]) == list(predicates.jsonLd)
+    predicates = createPredicates(rawPage)
+    assert list_containing([*productPredicates, *orgPredicates]) == list(predicates)
 
 def test_empty_pages():
     rawPage = pageForTest([])
-    predicates = Predicates(rawPage)
-    assert [] == list(predicates.jsonLd)
+    predicates = createPredicates(rawPage)
+    assert [] == list(predicates)
 
 def test_non_string_json_ld():
     rawPage = pageForTest([{
@@ -47,7 +47,7 @@ def test_non_string_json_ld():
         "validFrom": "2011-04-01"
     }])
 
-    predicates = Predicates(rawPage)
+    predicates = createPredicates(rawPage)
 
     assert list_containing([
         Predicate(string_matching(".*"), "IRI", "http://schema.org/isFamilyFriendly", False, "http://www.w3.org/2001/XMLSchema#boolean"),
@@ -58,9 +58,9 @@ def test_non_string_json_ld():
         Predicate(string_matching(".*"), "IRI", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://schema.org/Offer", "IRI"),
         Predicate(string_matching(".*"), "IRI", "http://schema.org/name", "DECATHLON", "Value"),
         Predicate(string_matching(".*"), "IRI", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://schema.org/Organization", "IRI"),
-    ]) == list(predicates.jsonLd)
+    ]) == list(predicates)
 
-def test_stores_page_id():
-    rawPage = pageForTest([])
-    predicates = Predicates(rawPage)
-    assert predicates.pageId == rawPage["id"]
+# def test_stores_page_id():
+#     rawPage = pageForTest([])
+#     predicates = Predicates(rawPage)
+#     assert predicates.pageId == rawPage["id"]
