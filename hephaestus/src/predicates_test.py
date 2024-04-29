@@ -41,7 +41,7 @@ def test_non_string_json_ld():
             "@type":"Organization",
             "name":"DECATHLON"
         },
-        "isFamilyFriendly": True,
+        "isFamilyFriendly": False,
         "itemCondition":"https://schema.org/NewCondition",
         "price":24.99,
         "validFrom": "2011-04-01"
@@ -50,7 +50,7 @@ def test_non_string_json_ld():
     predicates = Predicates(rawPage)
 
     assert list_containing([
-        Predicate(string_matching(".*"), "IRI", "http://schema.org/isFamilyFriendly", True, "http://www.w3.org/2001/XMLSchema#boolean"),
+        Predicate(string_matching(".*"), "IRI", "http://schema.org/isFamilyFriendly", False, "http://www.w3.org/2001/XMLSchema#boolean"),
         Predicate(string_matching(".*"), "IRI", "http://schema.org/itemCondition", "https://schema.org/NewCondition", "Value"),
         Predicate(string_matching(".*"), "IRI", "http://schema.org/price", 24.99, "http://www.w3.org/2001/XMLSchema#double"),
         Predicate(string_matching(".*"), "IRI", "http://schema.org/seller", string_matching(".*"), "IRI"),

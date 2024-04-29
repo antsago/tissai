@@ -9,10 +9,16 @@ def getNodeType(node):
   if isinstance(node, IdentifiedNode):
     return "IRI"
 
-  if not hasattr(node, "datatype") or node.datatype == None:
-    return "Value"
-  
-  return str(node.datatype)
+  if hasattr(node, "datatype") and node.datatype != None:
+    return str(node.datatype)
+
+  return "Value"
+
+def getNodeValue(node):
+  if hasattr(node, "value") and node.value != None:
+    return node.value
+
+  return str(node)
 
 def parseJsonLd(soup):
   g = Graph()
@@ -23,7 +29,7 @@ def parseJsonLd(soup):
   return (Predicate(
       subject=str(s),
       predicate=str(p),
-      object=getattr(o, "value", None) or str(o),
+      object=getNodeValue(o),
       subjectType="IRI",
       objectType=getNodeType(o),
   ) for s,p,o in g)
