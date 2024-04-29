@@ -1,18 +1,18 @@
 from asymmetric_matchers import string_matching, list_containing
 from __tests__ import productSchema, orgSchema, pageForTest
-from predicates import Predicates
+from predicates import Predicates, Predicate
 
 productPredicates = [
-    (string_matching(".*"), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Product'),
-    (string_matching(".*"), 'http://schema.org/name', 'The name of the product'),
-    (string_matching(".*"), 'http://schema.org/description', 'The description in ld'),
-    (string_matching(".*"), 'http://schema.org/image', 'https://image.com/png'),
+    Predicate(string_matching(".*"), "IRI", 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Product', "IRI"),
+    Predicate(string_matching(".*"), "IRI", 'http://schema.org/name', 'The name of the product', "Value"),
+    Predicate(string_matching(".*"), "IRI", 'http://schema.org/description', 'The description in ld', "Value"),
+    Predicate(string_matching(".*"), "IRI", 'http://schema.org/image', 'https://image.com/png', "Value"),
 ]
 orgPredicates = [
-    (string_matching(".*"), 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Product'),
-    (string_matching(".*"), 'http://schema.org/name', 'The name of the product'),
-    (string_matching(".*"), 'http://schema.org/description', 'The description in ld'),
-    (string_matching(".*"), 'http://schema.org/image', 'https://image.com/png'),
+    Predicate(string_matching(".*"), "IRI", 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Product', "IRI"),
+    Predicate(string_matching(".*"), "IRI", 'http://schema.org/name', 'The name of the product', "Value"),
+    Predicate(string_matching(".*"), "IRI", 'http://schema.org/description', 'The description in ld', "Value"),
+    Predicate(string_matching(".*"), "IRI", 'http://schema.org/image', 'https://image.com/png', "Value"),
 ]
 
 def test_json_ld():
@@ -32,7 +32,10 @@ def test_empty_pages():
 
 def test_non_string_json_ld():
     rawPage = pageForTest([{
-        "@context":{ "@vocab": "http://schema.org/" },
+        "@context":{
+            "@vocab": "http://schema.org/",
+            "validFrom": { "@type": "Date"},
+        },
         "@type":"Offer",
         "seller":{
             "@type":"Organization",
@@ -47,14 +50,14 @@ def test_non_string_json_ld():
     predicates = Predicates(rawPage)
 
     assert list_containing([
-        (string_matching(".*"), "http://schema.org/isFamilyFriendly", "true"),
-        (string_matching(".*"), "http://schema.org/itemCondition", "https://schema.org/NewCondition"),
-        (string_matching(".*"), "http://schema.org/price", "24.99"),
-        (string_matching(".*"), "http://schema.org/seller", string_matching(".*")),
-        (string_matching(".*"), "http://schema.org/validFrom", "2011-04-01"),
-        (string_matching(".*"), "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://schema.org/Offer"),
-        (string_matching(".*"), "http://schema.org/name", "DECATHLON"),
-        (string_matching(".*"), "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://schema.org/Organization"),
+        Predicate(string_matching(".*"), "IRI", "http://schema.org/isFamilyFriendly", True, "http://www.w3.org/2001/XMLSchema#boolean"),
+        Predicate(string_matching(".*"), "IRI", "http://schema.org/itemCondition", "https://schema.org/NewCondition", "Value"),
+        Predicate(string_matching(".*"), "IRI", "http://schema.org/price", 24.99, "http://www.w3.org/2001/XMLSchema#double"),
+        Predicate(string_matching(".*"), "IRI", "http://schema.org/seller", string_matching(".*"), "IRI"),
+        Predicate(string_matching(".*"), "IRI", "http://schema.org/validFrom", "2011-04-01", "http://schema.org/Date"),
+        Predicate(string_matching(".*"), "IRI", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://schema.org/Offer", "IRI"),
+        Predicate(string_matching(".*"), "IRI", "http://schema.org/name", "DECATHLON", "Value"),
+        Predicate(string_matching(".*"), "IRI", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://schema.org/Organization", "IRI"),
     ]) == list(predicates.jsonLd)
 
 def test_stores_page_id():
