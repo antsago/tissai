@@ -1,9 +1,16 @@
 from bs4 import BeautifulSoup
 from rdflib import Graph
 from rdflib.term import IdentifiedNode
-from collections import namedtuple
+from dataclasses import dataclass
+from typing import Union
 
-Predicate = namedtuple('Predicate', ["subject", "subjectType", "predicate", "object", "objectType"])
+@dataclass
+class Predicate:
+  subject: Union[str, bool, None, int, float]
+  subjectType: str
+  predicate: str
+  object: Union[str, bool, None, int, float]
+  objectType: str
 
 def getNodeType(node):
   if isinstance(node, IdentifiedNode):
