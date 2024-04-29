@@ -1,19 +1,32 @@
+import json
 from asymmetric_matchers import string_matching, list_containing
-from __tests__ import productSchema, orgSchema, pageForTest
 from predicates import createPredicates, Predicate
 
+productSchema = {
+  "@context": { "@vocab": "http://schema.org/" },
+  "@type": "Product",
+}
 productPredicates = [
     Predicate(string_matching(".*"), "IRI", 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Product', "IRI"),
-    Predicate(string_matching(".*"), "IRI", 'http://schema.org/name', 'The name of the product', "Value"),
-    Predicate(string_matching(".*"), "IRI", 'http://schema.org/description', 'The description in ld', "Value"),
-    Predicate(string_matching(".*"), "IRI", 'http://schema.org/image', 'https://image.com/png', "Value"),
 ]
+orgSchema = {
+  "@context": { "@vocab": "http://schema.org/" },
+  '@type': 'Organization',
+}
 orgPredicates = [
-    Predicate(string_matching(".*"), "IRI", 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Product', "IRI"),
-    Predicate(string_matching(".*"), "IRI", 'http://schema.org/name', 'The name of the product', "Value"),
-    Predicate(string_matching(".*"), "IRI", 'http://schema.org/description', 'The description in ld', "Value"),
-    Predicate(string_matching(".*"), "IRI", 'http://schema.org/image', 'https://image.com/png', "Value"),
+    Predicate(string_matching(".*"), "IRI", 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Organization', "IRI"),
 ]
+pageForTest = lambda schemas: {
+    "id": "test-id",
+    "body": f"""
+        <html>
+          <head>
+            {"".join([f'<script type="application/ld+json">{json.dumps(schema)}</script>' for schema in schemas])}
+            <script src=\"_ascript\"></script>
+          </head>
+        </html>
+    """,
+}
 
 def test_json_ld():
     rawPage = pageForTest([productSchema])
