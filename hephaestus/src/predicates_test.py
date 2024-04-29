@@ -15,6 +15,7 @@ pageForTest = lambda schemas: {
     """,
 }
 predForTest = lambda predicate, object, objectType = "IRI": Predicate(
+    page=PAGE_ID,
     subject=string_matching(".*"),
     subjectType="IRI",
     predicate=predicate,
@@ -77,8 +78,3 @@ def test_non_string_json_ld():
         predForTest("http://schema.org/validFrom", "2011-04-01", "http://schema.org/Date"),
         predForTest("http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://schema.org/Organization"),
     ]) == list(predicates)
-
-# def test_stores_page_id():
-#     rawPage = pageForTest([])
-#     predicates = Predicates(rawPage)
-#     assert predicates.pageId == rawPage["id"]

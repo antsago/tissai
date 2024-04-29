@@ -6,6 +6,7 @@ from typing import Union
 
 @dataclass
 class Predicate:
+  page: str
   subject: Union[str, bool, None, int, float]
   subjectType: str
   predicate: str
@@ -35,6 +36,7 @@ def createPredicates(page):
   [g.parse(data=tag.string, format="json-ld") for tag in ldTags]
 
   return (Predicate(
+      page=page["id"],
       subject=str(s),
       predicate=str(p),
       object=getNodeValue(o),
