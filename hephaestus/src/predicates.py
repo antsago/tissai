@@ -20,10 +20,11 @@ def getNodeValue(node):
 
   return str(node)
 
-def parseJsonLd(soup):
-  g = Graph()
-
+def createPredicates(page):
+  soup = BeautifulSoup(page["body"], 'lxml')
   ldTags = soup.find_all(name="script", type="application/ld+json")
+
+  g = Graph()
   [g.parse(data=tag.string, format="json-ld") for tag in ldTags]
 
   return (Predicate(
@@ -33,7 +34,3 @@ def parseJsonLd(soup):
       subjectType="IRI",
       objectType=getNodeType(o),
   ) for s,p,o in g)
-
-def createPredicates(page):
-  soup = BeautifulSoup(page["body"], 'lxml')
-  return parseJsonLd(soup)
