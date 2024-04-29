@@ -5,6 +5,15 @@ from collections import namedtuple
 
 Predicate = namedtuple('Predicate', ["subject", "subjectType", "predicate", "object", "objectType"])
 
+def getNodeType(node):
+  if isinstance(node, IdentifiedNode):
+    return "IRI"
+
+  if not hasattr(node, "datatype") or node.datatype == None:
+    return "Value"
+  
+  return str(node.datatype)
+
 def parseJsonLd(soup):
   g = Graph()
 
@@ -16,7 +25,7 @@ def parseJsonLd(soup):
       predicate=str(p),
       object=getattr(o, "value", None) or str(o),
       subjectType="IRI",
-      objectType="IRI" if isinstance(o, IdentifiedNode) else str(getattr(o, "datatype", None) or "Value"),
+      objectType=getNodeType(o),
   ) for s,p,o in g)
 
 class Predicates():
