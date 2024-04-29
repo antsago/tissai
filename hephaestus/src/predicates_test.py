@@ -1,5 +1,5 @@
 import json
-from asymmetric_matchers import string_matching, list_containing
+from asymmetric_matchers import string_matching, list_containing, anything
 from predicates import createPredicates, Predicate
 
 PAGE_ID = "test-id"
@@ -15,6 +15,7 @@ pageForTest = lambda schemas: {
     """,
 }
 predForTest = lambda predicate, object, objectType = "IRI": Predicate(
+    id=anything(),
     page=PAGE_ID,
     subject=string_matching(".*"),
     subjectType="IRI",

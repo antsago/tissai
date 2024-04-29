@@ -3,9 +3,11 @@ from rdflib import Graph
 from rdflib.term import IdentifiedNode
 from dataclasses import dataclass
 from typing import Union
+from uuid import uuid4 as uuid
 
 @dataclass
 class Predicate:
+  id: str
   page: str
   subject: Union[str, bool, None, int, float]
   subjectType: str
@@ -36,6 +38,7 @@ def createPredicates(page):
   [g.parse(data=tag.string, format="json-ld") for tag in ldTags]
 
   return (Predicate(
+      id=uuid(),
       page=page["id"],
       subject=str(s),
       predicate=str(p),
