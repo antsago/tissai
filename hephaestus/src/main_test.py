@@ -1,8 +1,8 @@
-import pytest
-import importlib
-from unittest.mock import call
-from asymmetric_matchers import string_matching, list_containing, dict_containing
-from __tests__ import MockPg, productSchema, pageForTest
+# import pytest
+# import importlib
+# from unittest.mock import call
+# from asymmetric_matchers import string_matching, list_containing, dict_containing
+# from __tests__ import MockPg, productSchema, pageForTest
 
 # def test_turns_pages_into_products():
 #   mocked = MockPg()

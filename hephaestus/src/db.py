@@ -13,17 +13,6 @@ def getPages():
           "body": row[1],
         }
 
-def loadProduct(product):
-  with psycopg2.connect("postgres://postgres:postgres@postgres:5432/gaia") as conn:
-    with conn.cursor() as curs:
-      curs.execute(
-      """
-        INSERT INTO products
-          (id, title, description, images, page)
-        VALUES (%(id)s, %(title)s, %(description)s, %(images)s, %(page)s);
-      """,
-      product)
-
 def createGaiaDb():
   with psycopg2.connect("postgres://postgres:postgres@postgres:5432/gaia") as conn:
     with conn.cursor() as curs:

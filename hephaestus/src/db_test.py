@@ -1,7 +1,7 @@
 import importlib
 from unittest.mock import call
 from asymmetric_matchers import string_matching
-from __tests__ import MockPg, product
+from __tests__ import MockPg
 import db
 
 def test_configures_psycopg():
@@ -26,13 +26,6 @@ def test_getPages():
   result = list(db.getPages())
 
   assert result == [page1, page2]
-
-def test_saveProduct():
-  mocked = MockPg()
-
-  db.loadProduct(product)
-
-  assert mocked.cursor.execute.call_args_list == [call(string_matching('INSERT INTO products'), product)]
 
 def test_dbCreation():
   mocked = MockPg()

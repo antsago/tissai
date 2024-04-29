@@ -25,9 +25,3 @@ pageForTest = lambda schemas: {
         </html>
     """,
 }
-product = {
-  "id": "page-id",
-  "title": "the product name",
-  "description": "the product name",
-  "images": "the product name",
-}
