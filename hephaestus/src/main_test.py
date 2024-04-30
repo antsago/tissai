@@ -22,17 +22,17 @@ pageForTest = lambda schemas: {
         </html>
     """,
 }
+page1 = {
+  **pageForTest([productSchema]),
+  "id": "page-id",
+}
+page2 = {
+  **pageForTest([productSchema]),
+  "id": "page-id-2",
+}
 
 def test_extracts_triples_from_pages():
   mocked = MockPg()
-  page1 = {
-    **pageForTest([productSchema]),
-    "id": "page-id",
-  }
-  page2 = {
-    **pageForTest([productSchema]),
-    "id": "page-id-2",
-  }
   mocked.cursor.fetchone.side_effect = [(page1["id"], page1["body"]), (page2["id"], page2["body"]), None]
 
   import main
@@ -44,21 +44,13 @@ def test_extracts_triples_from_pages():
     call(string_matching('INSERT INTO triples'), dict_containing({ "page": page2["id"], }))
   ]) == mocked.cursor.execute.call_args_list
 
-# def test_prints_current_page_on_error(capsys):
-#   mocked = MockPg()
-#   page1 = {
-#     **pageForTest([productSchema]),
-#     "id": "page-id",
-#   }
-#   page2 = {
-#     **pageForTest([productSchema]),
-#     "id": "page-id-2",
-#   }
-#   mocked.cursor.fetchone.side_effect = [(page1["id"], page1["body"]), (page2["id"], page2["body"]), None]
-#   mocked.cursor.execute.side_effect = [None, None, None, Exception("Booh!")]
+def test_prints_current_page_on_error(capsys):
+  mocked = MockPg()
+  mocked.cursor.fetchone.side_effect = [(page1["id"], page1["body"]), (page2["id"], page2["body"]), None]
+  mocked.cursor.execute.side_effect = [None, None, None, None, Exception("Booh!")]
 
-#   with pytest.raises(Exception):
-#     import main
-#     importlib.reload(main)
+  with pytest.raises(Exception):
+    import main
+    importlib.reload(main)
 
-#   assert capsys.readouterr().out == string_matching(page2["id"])
+  assert capsys.readouterr().out == string_matching(page2["id"])
