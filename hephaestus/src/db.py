@@ -1,3 +1,4 @@
+import json
 import psycopg2
 import psycopg2.extras
 
@@ -33,17 +34,17 @@ def createGaiaDb():
         );
       """)
 
-def addTriple(predicate):
+def addTriple(triple):
   toStore = {
-    "id": predicate.id,
-    "page": predicate.page,
-    "predicate": predicate.predicate,
-    "subject_value": predicate.subject,
-    "subject_rfd_type": predicate.subjectType,
-    "subject_is_string": True,
-    "object_value": predicate.object,
-    "object_rfd_type": predicate.objectType,
-    "object_is_string": True,
+    "id": triple.id,
+    "page": triple.page,
+    "predicate": triple.predicate,
+    "subject_value": triple.subject if type(triple.subject) == str else json.dumps(triple.subject),
+    "subject_rfd_type": triple.subjectType,
+    "subject_is_string": type(triple.subject) == str,
+    "object_value": triple.object if type(triple.object) == str else json.dumps(triple.object),
+    "object_rfd_type": triple.objectType,
+    "object_is_string": type(triple.object) == str,
   }
   with psycopg2.connect(GAIA_CONNECTION_STRING) as conn:
     with conn.cursor() as curs:

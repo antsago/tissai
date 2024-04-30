@@ -1,4 +1,5 @@
 import importlib
+import pytest
 from unittest.mock import call
 from asymmetric_matchers import string_matching
 from __tests__ import MockPg
@@ -28,19 +29,33 @@ def test_getPages():
 
   assert result == [page1, page2]
 
-def test_adds_triples():
+@pytest.mark.parametrize("input, expected", [
+  ({}, {}),
+  ({ "subjectType": "Value" }, { "subject_rfd_type": "Value" }),
+  ({ "subjectType": "http://schema.org/Date" }, { "subject_rfd_type": "http://schema.org/Date" }),
+  ({ "objectType": "Value" }, { "object_rfd_type": "Value" }),
+  ({ "objectType": "http://schema.org/Date" }, { "object_rfd_type": "http://schema.org/Date" }),
+  ({ "subject": True }, { "subject_value": "true", "subject_is_string": False }),
+  ({ "subject": None }, { "subject_value": "null", "subject_is_string": False }),
+  ({ "subject": 24.99 }, { "subject_value": "24.99", "subject_is_string": False }),
+  ({ "object": True }, { "object_value": "true", "object_is_string": False }),
+  ({ "object": None }, { "object_value": "null", "object_is_string": False }),
+  ({ "object": 24.99 }, { "object_value": "24.99", "object_is_string": False }),
+])
+def test_adds_triples(input, expected):
   mocked = MockPg()
-  predicate = Triple(
-      id="id",
-      page="page-id",
-      subject="Subject",
-      predicate="Predicate",
-      object="Object",
-      subjectType="IRI",
-      objectType="IRI",
-  )
+  triple = Triple(**{
+    "id": "id",
+    "page": "page-id",
+    "subject": "Subject",
+    "predicate": "Predicate",
+    "object": "Object",
+    "subjectType": "IRI",
+    "objectType": "IRI",
+    **input
+  })
 
-  db.addTriple(predicate)
+  db.addTriple(triple)
 
   assert [call(string_matching('INSERT INTO triples'), {
     "id": "id",
@@ -52,6 +67,7 @@ def test_adds_triples():
     "object_value": "Object",
     "object_rfd_type": "IRI",
     "object_is_string": True,
+    **expected,
   })] == mocked.cursor.execute.call_args_list
 
 def test_dbCreation():
