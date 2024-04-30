@@ -27,15 +27,8 @@ productSchema = {
   "@context": { "@vocab": "http://schema.org/" },
   "@type": "Product",
 }
-orgSchema = {
-  "@context": { "@vocab": "http://schema.org/" },
-  '@type': 'Organization',
-}
 productTriples = [
     tripleForTest('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Product'),
-]
-orgTriples = [
-    tripleForTest('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Organization'),
 ]
 
 def test_json_ld():
@@ -44,9 +37,17 @@ def test_json_ld():
     assert list_containing(productTriples) == list(predicates)
 
 def test_multiple_json_ld():
-    rawPage = pageForTest([productSchema, orgSchema])
+    rawPage = pageForTest([
+        productSchema,
+        {
+            "@context": { "@vocab": "http://schema.org/" },
+            '@type': 'Organization',
+        }])
     predicates = createTriples(rawPage)
-    assert list_containing([*productTriples, *orgTriples]) == list(predicates)
+    assert list_containing([
+        *productTriples,
+        tripleForTest('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Organization'),
+    ]) == list(predicates)
 
 def test_empty_pages():
     rawPage = pageForTest([])
