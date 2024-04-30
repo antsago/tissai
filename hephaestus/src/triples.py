@@ -6,7 +6,7 @@ from typing import Union
 from uuid import uuid4 as uuid
 
 @dataclass
-class Predicate:
+class Triple:
   id: str
   page: str
   subject: Union[str, bool, None, int, float]
@@ -30,14 +30,14 @@ def getNodeValue(node):
 
   return str(node)
 
-def createPredicates(page):
+def createTriples(page):
   soup = BeautifulSoup(page["body"], 'lxml')
   ldTags = soup.find_all(name="script", type="application/ld+json")
 
   g = Graph()
   [g.parse(data=tag.string, format="json-ld") for tag in ldTags]
 
-  return (Predicate(
+  return (Triple(
       id=uuid(),
       page=page["id"],
       subject=str(s),

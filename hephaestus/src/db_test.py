@@ -2,7 +2,7 @@ import importlib
 from unittest.mock import call
 from asymmetric_matchers import string_matching
 from __tests__ import MockPg
-from predicates import Predicate
+from triples import Triple
 import db
 
 def test_configures_psycopg():
@@ -30,7 +30,7 @@ def test_getPages():
 
 def test_insertPredicate():
   mocked = MockPg()
-  predicate = Predicate(
+  predicate = Triple(
       id="id",
       page="page-id",
       subject="Subject",
@@ -40,9 +40,9 @@ def test_insertPredicate():
       objectType="IRI",
   )
 
-  db.addPredicate(predicate)
+  db.addTriple(predicate)
 
-  assert [call(string_matching('INSERT INTO predicates'), {
+  assert [call(string_matching('INSERT INTO triples'), {
     "id": "id",
     "page": "page-id",
     "predicate": "Predicate",
@@ -59,4 +59,4 @@ def test_dbCreation():
 
   db.createGaiaDb()
 
-  assert mocked.cursor.execute.call_args_list == [call(string_matching('CREATE TABLE .* predicates'))]
+  assert mocked.cursor.execute.call_args_list == [call(string_matching('CREATE TABLE .* triples'))]

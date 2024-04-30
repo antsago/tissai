@@ -1,6 +1,6 @@
 import json
 from asymmetric_matchers import string_matching, list_containing, anything
-from predicates import createPredicates, Predicate
+from triples import createTriples, Triple
 
 PAGE_ID = "test-id"
 pageForTest = lambda schemas: {
@@ -14,7 +14,7 @@ pageForTest = lambda schemas: {
         </html>
     """,
 }
-predForTest = lambda predicate, object, objectType = "IRI": Predicate(
+tripleForTest = lambda predicate, object, objectType = "IRI": Triple(
     id=anything(),
     page=PAGE_ID,
     subject=string_matching(".*"),
@@ -31,26 +31,26 @@ orgSchema = {
   "@context": { "@vocab": "http://schema.org/" },
   '@type': 'Organization',
 }
-productPredicates = [
-    predForTest('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Product'),
+productTriples = [
+    tripleForTest('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Product'),
 ]
-orgPredicates = [
-    predForTest('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Organization'),
+orgTriples = [
+    tripleForTest('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Organization'),
 ]
 
 def test_json_ld():
     rawPage = pageForTest([productSchema])
-    predicates = createPredicates(rawPage)
-    assert list_containing(productPredicates) == list(predicates)
+    predicates = createTriples(rawPage)
+    assert list_containing(productTriples) == list(predicates)
 
 def test_multiple_json_ld():
     rawPage = pageForTest([productSchema, orgSchema])
-    predicates = createPredicates(rawPage)
-    assert list_containing([*productPredicates, *orgPredicates]) == list(predicates)
+    predicates = createTriples(rawPage)
+    assert list_containing([*productTriples, *orgTriples]) == list(predicates)
 
 def test_empty_pages():
     rawPage = pageForTest([])
-    predicates = createPredicates(rawPage)
+    predicates = createTriples(rawPage)
     assert [] == list(predicates)
 
 def test_non_string_json_ld():
@@ -68,14 +68,14 @@ def test_non_string_json_ld():
         "validFrom": "2011-04-01"
     }])
 
-    predicates = createPredicates(rawPage)
+    predicates = createTriples(rawPage)
 
     assert list_containing([
-        predForTest('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Organization'),
-        predForTest("http://schema.org/isFamilyFriendly", False, "http://www.w3.org/2001/XMLSchema#boolean"),
-        predForTest("http://schema.org/itemCondition", "https://schema.org/NewCondition", "Value"),
-        predForTest("http://schema.org/price", 24.99, "http://www.w3.org/2001/XMLSchema#double"),
-        predForTest("http://schema.org/seller", string_matching(".*"), "IRI"),
-        predForTest("http://schema.org/validFrom", "2011-04-01", "http://schema.org/Date"),
-        predForTest("http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://schema.org/Organization"),
+        tripleForTest('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Organization'),
+        tripleForTest("http://schema.org/isFamilyFriendly", False, "http://www.w3.org/2001/XMLSchema#boolean"),
+        tripleForTest("http://schema.org/itemCondition", "https://schema.org/NewCondition", "Value"),
+        tripleForTest("http://schema.org/price", 24.99, "http://www.w3.org/2001/XMLSchema#double"),
+        tripleForTest("http://schema.org/seller", string_matching(".*"), "IRI"),
+        tripleForTest("http://schema.org/validFrom", "2011-04-01", "http://schema.org/Date"),
+        tripleForTest("http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://schema.org/Organization"),
     ]) == list(predicates)

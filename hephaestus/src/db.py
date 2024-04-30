@@ -20,7 +20,7 @@ def createGaiaDb():
   with psycopg2.connect(GAIA_CONNECTION_STRING) as conn:
     with conn.cursor() as curs:
       curs.execute("""
-        CREATE TABLE IF NOT EXISTS predicates (
+        CREATE TABLE IF NOT EXISTS triples (
           id                     uuid PRIMARY KEY,
           page                   uuid NOT NULL,
           predicate              text NOT NULL,
@@ -33,7 +33,7 @@ def createGaiaDb():
         );
       """)
 
-def addPredicate(predicate):
+def addTriple(predicate):
   toStore = {
     "id": predicate.id,
     "page": predicate.page,
@@ -49,7 +49,7 @@ def addPredicate(predicate):
     with conn.cursor() as curs:
       curs.execute(
       """
-        INSERT INTO predicates (
+        INSERT INTO triples (
           id,
           page,
           predicate,
