@@ -1,27 +1,48 @@
-# import pytest
-# import importlib
-# from unittest.mock import call
-# from asymmetric_matchers import string_matching, list_containing, dict_containing
-# from __tests__ import MockPg, productSchema, pageForTest
+import json
+import pytest
+import importlib
+from unittest.mock import call
+from asymmetric_matchers import string_matching, list_containing, dict_containing
+from __tests__ import MockPg
 
-# def test_turns_pages_into_products():
-#   mocked = MockPg()
-#   page1 = {
-#     **pageForTest([productSchema]),
-#     "id": "page-id",
-#   }
-#   page2 = {
-#     **pageForTest([productSchema]),
-#     "id": "page-id-2",
-#   }
-#   mocked.cursor.fetchone.side_effect = [(page1["id"], page1["body"]), (page2["id"], page2["body"]), None]
+PAGE_ID = "test-id"
+productSchema = {
+  "@context": { "@vocab": "http://schema.org/" },
+  "@type": "Product",
+  "name": "Testing",
+}
+pageForTest = lambda schemas: {
+    "id": PAGE_ID,
+    "body": f"""
+        <html>
+          <head>
+            {"".join([f'<script type="application/ld+json">{json.dumps(schema)}</script>' for schema in schemas])}
+            <script src=\"_ascript\"></script>
+          </head>
+        </html>
+    """,
+}
 
-#   import main
+def test_extracts_triples_from_pages():
+  mocked = MockPg()
+  page1 = {
+    **pageForTest([productSchema]),
+    "id": "page-id",
+  }
+  page2 = {
+    **pageForTest([productSchema]),
+    "id": "page-id-2",
+  }
+  mocked.cursor.fetchone.side_effect = [(page1["id"], page1["body"]), (page2["id"], page2["body"]), None]
 
-#   assert list_containing([
-#     call(string_matching('INSERT INTO products'), dict_containing({ "page": page1["id"], })),
-#     call(string_matching('INSERT INTO products'), dict_containing({ "page": page2["id"], }))
-#   ]) == mocked.cursor.execute.call_args_list
+  import main
+
+  assert mocked.cursor.execute.call_count >= 5
+  assert list_containing([
+    call(string_matching('CREATE TABLE .* triples')),
+    call(string_matching('INSERT INTO triples'), dict_containing({ "page": page1["id"], })),
+    call(string_matching('INSERT INTO triples'), dict_containing({ "page": page2["id"], }))
+  ]) == mocked.cursor.execute.call_args_list
 
 # def test_prints_current_page_on_error(capsys):
 #   mocked = MockPg()

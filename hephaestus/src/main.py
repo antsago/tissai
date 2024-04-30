@@ -1,15 +1,12 @@
-# import db
-# from predicates import Predicates
-# import indexer
+import db
+from triples import createTriples
 
 # try:
-#   db.createGaiaDb()
+db.createGaiaDb()
 
-#   for rawPage in db.getPages():
-#     page = Predicates(rawPage)
-#     products = indexer.toProduct(page)
-#     for product in products:
-#       db.loadProduct(product)
+for page in db.getPages():
+  for triple in createTriples(page):
+    db.addTriple(triple)
 # except Exception as error:
-#   print(page.id)
+#   print(page["id"])
 #   raise error
