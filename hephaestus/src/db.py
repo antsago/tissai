@@ -3,8 +3,11 @@ import psycopg2.extras
 
 psycopg2.extras.register_uuid()
 
+URANUS_CONNECTION_STRING = "postgres://postgres:postgres@postgres:5432/uranus"
+GAIA_CONNECTION_STRING = "postgres://postgres:postgres@postgres:5432/gaia"
+
 def getPages():
-  with psycopg2.connect("postgres://postgres:postgres@postgres:5432/uranus") as conn:
+  with psycopg2.connect(URANUS_CONNECTION_STRING) as conn:
     with conn.cursor() as curs:
       curs.execute("SELECT id, body FROM pages;")
       while (row := curs.fetchone()) is not None:
@@ -14,7 +17,7 @@ def getPages():
         }
 
 def createGaiaDb():
-  with psycopg2.connect("postgres://postgres:postgres@postgres:5432/gaia") as conn:
+  with psycopg2.connect(GAIA_CONNECTION_STRING) as conn:
     with conn.cursor() as curs:
       curs.execute("""
         CREATE TABLE IF NOT EXISTS predicates (
@@ -42,7 +45,7 @@ def addPredicate(predicate):
     "object_rfd_type": predicate.objectType,
     "object_is_string": True,
   }
-  with psycopg2.connect("postgres://postgres:postgres@postgres:5432/gaia") as conn:
+  with psycopg2.connect(GAIA_CONNECTION_STRING) as conn:
     with conn.cursor() as curs:
       curs.execute(
       """
