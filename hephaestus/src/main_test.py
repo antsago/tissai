@@ -1,26 +1,13 @@
-import json
 import pytest
 import importlib
 from unittest.mock import call
 from asymmetric_matchers import string_matching, list_containing, dict_containing
-from __tests__ import MockPg
+from __tests__ import MockPg, pageForTest
 
-PAGE_ID = "test-id"
 productSchema = {
   "@context": { "@vocab": "http://schema.org/" },
   "@type": "Product",
   "name": "Testing",
-}
-pageForTest = lambda schemas: {
-    "id": PAGE_ID,
-    "body": f"""
-        <html>
-          <head>
-            {"".join([f'<script type="application/ld+json">{json.dumps(schema)}</script>' for schema in schemas])}
-            <script src=\"_ascript\"></script>
-          </head>
-        </html>
-    """,
 }
 page1 = {
   **pageForTest([productSchema]),

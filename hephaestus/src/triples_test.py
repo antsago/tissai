@@ -1,19 +1,7 @@
-import json
 from asymmetric_matchers import string_matching, list_containing, anything
 from triples import createTriples, Triple
+from __tests__ import PAGE_ID, pageForTest
 
-PAGE_ID = "test-id"
-pageForTest = lambda schemas: {
-    "id": PAGE_ID,
-    "body": f"""
-        <html>
-          <head>
-            {"".join([f'<script type="application/ld+json">{json.dumps(schema)}</script>' for schema in schemas])}
-            <script src=\"_ascript\"></script>
-          </head>
-        </html>
-    """,
-}
 tripleForTest = lambda predicate, object, objectType = "IRI": Triple(
     id=anything(),
     page=PAGE_ID,
