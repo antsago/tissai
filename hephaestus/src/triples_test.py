@@ -32,30 +32,30 @@ productTriples = [
 ]
 
 def test_json_ld():
-    rawPage = pageForTest([productSchema])
-    predicates = createTriples(rawPage)
-    assert list_containing(productTriples) == list(predicates)
+    page = pageForTest([productSchema])
+    triples = createTriples(page)
+    assert list_containing(productTriples) == list(triples)
 
 def test_multiple_json_ld():
-    rawPage = pageForTest([
+    page = pageForTest([
         productSchema,
         {
             "@context": { "@vocab": "http://schema.org/" },
             '@type': 'Organization',
         }])
-    predicates = createTriples(rawPage)
+    triples = createTriples(page)
     assert list_containing([
         *productTriples,
         tripleForTest('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Organization'),
-    ]) == list(predicates)
+    ]) == list(triples)
 
 def test_empty_pages():
-    rawPage = pageForTest([])
-    predicates = createTriples(rawPage)
-    assert [] == list(predicates)
+    page = pageForTest([])
+    triples = createTriples(page)
+    assert [] == list(triples)
 
 def test_non_string_json_ld():
-    rawPage = pageForTest([{
+    page = pageForTest([{
         "@context":{
             "@vocab": "http://schema.org/",
             "validFrom": { "@type": "Date"},
@@ -69,7 +69,7 @@ def test_non_string_json_ld():
         "validFrom": "2011-04-01"
     }])
 
-    predicates = createTriples(rawPage)
+    triples = createTriples(page)
 
     assert list_containing([
         tripleForTest('http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Organization'),
@@ -79,4 +79,4 @@ def test_non_string_json_ld():
         tripleForTest("http://schema.org/seller", string_matching(".*"), "IRI"),
         tripleForTest("http://schema.org/validFrom", "2011-04-01", "http://schema.org/Date"),
         tripleForTest("http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://schema.org/Organization"),
-    ]) == list(predicates)
+    ]) == list(triples)
