@@ -28,7 +28,7 @@ def test_getPages():
 
   assert result == [page1, page2]
 
-def test_insertPredicate():
+def test_adds_triples():
   mocked = MockPg()
   predicate = Triple(
       id="id",
