@@ -1,6 +1,14 @@
 import re
 import json
 from bs4 import BeautifulSoup
+from dataclasses import dataclass
+from typing import List, Dict
+
+@dataclass
+class Content:
+  jsonLd: List[Dict]
+  opengraph: Dict
+  headings: Dict
 
 def extractJsonLd(soup):
   ldTags = soup.find_all(name="script", type="application/ld+json")
@@ -28,9 +36,10 @@ def extractHeadings(soup):
     "canonical": canonical["href"] if canonical != None else None,
   }
 
-class Content:
-  def __init__(self, page):
-    soup = BeautifulSoup(page["body"], 'lxml')
-    self.jsonLd = extractJsonLd(soup)
-    self.opengraph = extractOpengraph(soup)
-    self.headings = extractHeadings(soup)
+def parsePage(page):
+  soup = BeautifulSoup(page["body"], 'lxml')
+  return Content(
+    jsonLd = extractJsonLd(soup),
+    opengraph = extractOpengraph(soup),
+    headings = extractHeadings(soup),
+  )

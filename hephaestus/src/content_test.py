@@ -1,4 +1,4 @@
-from content import Content
+from content import parsePage
 from __tests__ import PAGE_ID, pageForTest
 
 productSchema = {
@@ -8,7 +8,7 @@ productSchema = {
 
 def test_parse_json_ld():
   page = pageForTest([productSchema])
-  content = Content(page)
+  content = parsePage(page)
   assert [productSchema] == content.jsonLd
 
 def test_parse_opengraph():
@@ -27,7 +27,7 @@ def test_parse_opengraph():
         </html>
     """,
   }
-  content = Content(page)
+  content = parsePage(page)
   assert opengraph == content.opengraph
 
 def test_parse_headings():
@@ -56,5 +56,5 @@ def test_parse_headings():
         </html>
     """,
   }
-  content = Content(page)
+  content = parsePage(page)
   assert headings == content.headings
