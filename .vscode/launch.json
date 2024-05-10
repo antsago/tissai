@@ -1,11 +1,11 @@
 {
   "configurations": [
     {
-      "name": "Python (dataGenerator)",
+      "name": "Python (indexer)",
       "type": "debugpy",
       "request": "launch",
       "program": "${file}",
-      "python": "${workspaceFolder}/dataGenerator/.venv/bin/python",
+      "python": "${workspaceFolder}/indexer/.venv/bin/python",
       "console": "integratedTerminal"
     }
   ]
