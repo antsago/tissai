@@ -7,14 +7,6 @@
       "program": "${file}",
       "python": "${workspaceFolder}/dataGenerator/.venv/bin/python",
       "console": "integratedTerminal"
-    },
-    {
-      "name": "Python (hephaestus)",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${file}",
-      "python": "${workspaceFolder}/hephaestus/.venv/bin/python",
-      "console": "integratedTerminal"
     }
   ]
 }
