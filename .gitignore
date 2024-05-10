@@ -33,5 +33,5 @@ __pycache__
 # Data folder
 /data
 
-# Arachne folder
-/arachne/build
+# crawler folder
+/crawler/build
