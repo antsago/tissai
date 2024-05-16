@@ -1,0 +1,25 @@
+{
+  "name": "indexer",
+  "version": "0.0.1",
+  "packageManager": "yarn@4.1.1",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --outDir ./build src/*[^.test].ts",
+    "dev": "yarn build && node build/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest"
+  },
+  "imports": {
+    "#mocks": "./__tests__/index.ts"
+  },
+  "devDependencies": {
+    "@tsconfig/node20": "20.1.4",
+    "@types/node": "20.12.7",
+    "@types/pg": "^8",
+    "typescript": "5.4.5",
+    "vitest": "1.5.0"
+  },
+  "dependencies": {
+    "pg": "8.11.5"
+  }
+}

@@ -30,5 +30,8 @@ __pycache__
 /site/vite.config.js.timestamp-*
 /site/vite.config.ts.timestamp-*
 
+# Indexer folder
+/indexer/build
+
 # Data folder
 /data
