@@ -32,6 +32,3 @@ __pycache__
 
 # Data folder
 /data
-
-# crawler folder
-/crawler/build
