@@ -30,6 +30,28 @@ const fullPage = (ld: object) => ({
   `,
 })
 
+expect.extend({
+  toHaveInserted(pg: MockPg, table, values) {
+    const { isNot, equals } = this
+    const expected = expect.arrayContaining([[expect.stringContaining(`INSERT INTO ${table}`), expect.arrayContaining(values)]])
+    const actual = pg.query.mock.calls
+    return {
+      pass: equals(actual, expected),
+      message: () => isNot ? `Found insertion into "${table}"` : `Expected insertion into "${table}"`,
+      actual,
+      expected, 
+    }
+  }
+})
+
+interface CustomMatchers {
+  toHaveInserted: (table: string, values: any[]) => void
+}
+
+declare module 'vitest' {
+  interface Assertion<T = any> extends CustomMatchers {}
+}
+
 describe('indexer', () => {
   let pg: MockPg
   beforeEach(async () => {
@@ -51,8 +73,8 @@ describe('indexer', () => {
 
     await import('./index.js')
 
-    expect(pg.query).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO products'), expect.arrayContaining([PRODUCT.title, PRODUCT.description, PRODUCT.image]))
-    expect(pg.query).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO offers'), expect.arrayContaining([PAGE.site, PAGE.url]))
+    expect(pg).toHaveInserted('products', [PRODUCT.title, PRODUCT.description, PRODUCT.image])
+    expect(pg).toHaveInserted('offers', [PAGE.site, PAGE.url])
   })
 
   it("extracts offer details", async () => {
@@ -77,14 +99,8 @@ describe('indexer', () => {
 
     await import('./index.js')
 
-    expect(pg.query).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO products'), expect.anything())
-    expect(pg.query).toHaveBeenCalledWith(
-      expect.stringContaining('INSERT INTO sellers'),
-      expect.arrayContaining([OFFER.seller]),
-    )
-    expect(pg.query).toHaveBeenCalledWith(
-      expect.stringContaining('INSERT INTO offers'),
-      expect.arrayContaining([PAGE.site, PAGE.url, OFFER.price, OFFER.curency]),
-    )
+    expect(pg).toHaveInserted('products', [])
+    expect(pg).toHaveInserted('sellers', [OFFER.seller])
+    expect(pg).toHaveInserted('offers', [PAGE.site, PAGE.url, OFFER.price, OFFER.curency])
   })
 })
