@@ -13,24 +13,22 @@ const OFFER = {
 }
 const PAGE = {
   id: "test_id",
+  url: "https://example.com/product",
+  site: "site-id",
+}
+
+const fullPage = (ld: object) => ({
+  ...PAGE,
   body: `
     <html>
       <head>
         <script type="application/ld+json">
-        ${JSON.stringify({
-          "@context": "https://schema.org/",
-          "@type": "Product",
-          "name": PRODUCT.title,
-          "description": PRODUCT.description,
-          "image": PRODUCT.image,
-        })}
+        ${JSON.stringify(ld)}
         </script>
       </head>
     </html>
   `,
-  url: "https://example.com/product",
-  site: "site-id",
-}
+})
 
 describe('indexer', () => {
   let pg: MockPg
@@ -42,8 +40,14 @@ describe('indexer', () => {
   })
 
   it("extracts product and offer", async () => {
-    pg.query.mockResolvedValue({ rows: [] }) 
-    pg.query.mockResolvedValueOnce({ rows: [PAGE] }) 
+    const page = fullPage({
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": PRODUCT.title,
+      "description": PRODUCT.description,
+      "image": PRODUCT.image,
+    })
+    pg.query.mockResolvedValueOnce({ rows: [page] }) 
 
     await import('./index.js')
 
@@ -52,38 +56,24 @@ describe('indexer', () => {
   })
 
   it("extracts offer details", async () => {
-    const PAGE2 = {
-      id: "test_id",
-      body: `
-        <html>
-          <head>
-            <script type="application/ld+json">
-            ${JSON.stringify({
-              "@context": "https://schema.org/",
-              "@type": "Product",
-              "name": PRODUCT.title,
-              "description": PRODUCT.description,
-              "image": PRODUCT.image,
-              "offers": {
-                "@type": "Offer",
-                "url": "https://example.com/offer",
-                "price": OFFER.price,
-                "priceCurrency": OFFER.curency,
-                "seller": {
-                  "@type": "Organization",
-                  "name": OFFER.seller,
-                }
-              }
-            })}
-            </script>
-          </head>
-        </html>
-      `,
-      url: "https://example.com/product",
-      site: "site-id",
-    }
-    pg.query.mockResolvedValue({ rows: [] }) 
-    pg.query.mockResolvedValueOnce({ rows: [PAGE2] }) 
+    const page = fullPage({
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": PRODUCT.title,
+      "description": PRODUCT.description,
+      "image": PRODUCT.image,
+      "offers": {
+        "@type": "Offer",
+        "url": "https://example.com/offer",
+        "price": OFFER.price,
+        "priceCurrency": OFFER.curency,
+        "seller": {
+          "@type": "Organization",
+          "name": OFFER.seller,
+        }
+      }
+    })
+    pg.query.mockResolvedValueOnce({ rows: [page] }) 
 
     await import('./index.js')
 
