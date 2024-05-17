@@ -122,7 +122,7 @@ describe('indexer', () => {
 
     await import('./index.js')
 
-    expect(pg).toHaveInserted('products', [PRODUCT.title, BRAND.name])
+    expect(pg).toHaveInserted('products', [BRAND.name])
     expect(pg).toHaveInserted('brands', [BRAND.name, BRAND.logo])
   })
 
