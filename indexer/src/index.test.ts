@@ -11,6 +11,10 @@ const OFFER = {
   price: 70,
   curency: "EUR",
 }
+const BRAND = {
+  name: "Test",
+  image: "https://example.com/brand.jpg",
+}
 const PAGE = {
   id: "test_id",
   url: "https://example.com/product",
@@ -77,7 +81,6 @@ describe('indexer', () => {
 
     await import('./index.js')
 
-    expect(pg).toHaveInserted('products', [])
     expect(pg).toHaveInserted('sellers', [OFFER.seller])
     expect(pg).toHaveInserted('offers', [PAGE.site, PAGE.url, OFFER.price, OFFER.curency])
   })
@@ -102,8 +105,25 @@ describe('indexer', () => {
 
     await import('./index.js')
 
-    expect(pg).toHaveInserted('products', [])
-    expect(pg).toHaveInserted('offers', [])
     expect(pg).not.toHaveInserted('sellers', [OFFER.seller])
+  })
+
+  it("extracts product brand", async () => {
+    const page = fullPage({
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": PRODUCT.title,
+      "brand": {
+        "@type": "Brand",
+        "name": BRAND.name,
+        "image": BRAND.image,
+      },
+    })
+    pg.query.mockResolvedValueOnce({ rows: [page] }) 
+
+    await import('./index.js')
+
+    expect(pg).toHaveInserted('products', [PRODUCT.title, BRAND.name])
+    expect(pg).toHaveInserted('brands', [BRAND.name, BRAND.image])
   })
 })

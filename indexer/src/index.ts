@@ -16,6 +16,8 @@ const product = {
   title: productTag.name,
   description: productTag.description,
   image: productTag.image,
+  brandName: productTag?.brand?.name,
+  brandLogo: productTag?.brand?.image,
 }
 
 const offer = {
@@ -35,9 +37,13 @@ if (offer.seller) {
   }
 }
 
+if (product.brandName) {
+  await db.query('INSERT INTO brands (name, logo) VALUES ($1, $2)', [product.brandName, product.brandLogo])
+}
+
 await db.query(
-  'INSERT INTO products (id, title, description, image) VALUES ($1, $2, $3, $4);',
-  [product.id, product.title, product.description, product.image],
+  'INSERT INTO products (id, title, description, image, brand) VALUES ($1, $2, $3, $4, $5);',
+  [product.id, product.title, product.description, product.image, product.brandName],
 )
 await db.query(
   'INSERT INTO offers (id, url, site, product, seller, price, currency) VALUES ($1, $2, $3, $4, $5, $6, $7);',
