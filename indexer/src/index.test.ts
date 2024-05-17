@@ -27,7 +27,10 @@ const fullPage = (ld: object) => ({
     <html>
       <head>
         <script type="application/ld+json">
-        ${JSON.stringify(ld)}
+        ${JSON.stringify({
+          "@context": "https://schema.org/",
+          ...ld,
+        })}
         </script>
       </head>
     </html>
@@ -45,7 +48,6 @@ describe('indexer', () => {
 
   it("extracts product and offer", async () => {
     const page = fullPage({
-      "@context": "https://schema.org/",
       "@type": "Product",
       "name": PRODUCT.title,
       "description": PRODUCT.description,
@@ -61,7 +63,6 @@ describe('indexer', () => {
 
   it("extracts offer details", async () => {
     const page = fullPage({
-      "@context": "https://schema.org/",
       "@type": "Product",
       "name": PRODUCT.title,
       "description": PRODUCT.description,
@@ -87,7 +88,6 @@ describe('indexer', () => {
 
   it("does not re-insert sellers", async () => {
     const page = fullPage({
-      "@context": "https://schema.org/",
       "@type": "Product",
       "name": PRODUCT.title,
       "description": PRODUCT.description,
@@ -110,7 +110,6 @@ describe('indexer', () => {
 
   it("extracts product brand", async () => {
     const page = fullPage({
-      "@context": "https://schema.org/",
       "@type": "Product",
       "name": PRODUCT.title,
       "brand": {
