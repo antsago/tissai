@@ -65,8 +65,6 @@ describe('indexer', () => {
     const page = fullPage({
       "@type": "Product",
       "name": PRODUCT.title,
-      "description": PRODUCT.description,
-      "image": PRODUCT.image,
       "offers": {
         "@type": "Offer",
         "url": "https://example.com/offer",
@@ -90,8 +88,6 @@ describe('indexer', () => {
     const page = fullPage({
       "@type": "Product",
       "name": PRODUCT.title,
-      "description": PRODUCT.description,
-      "image": PRODUCT.image,
       "offers": {
         "@type": "Offer",
         "seller": {
