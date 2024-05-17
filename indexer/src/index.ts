@@ -29,7 +29,10 @@ const offer = {
 }
 
 if (offer.seller) {
-  await db.query('INSERT INTO sellers (name) VALUES ($1)', [offer.seller])
+  const sellers = await db.query('SELECT name FROM sellers WHERE name = $1', offer.seller)
+  if (!sellers.length) {
+    await db.query('INSERT INTO sellers (name) VALUES ($1)', [offer.seller])
+  }
 }
 
 await db.query(

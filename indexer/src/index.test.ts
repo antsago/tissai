@@ -81,4 +81,29 @@ describe('indexer', () => {
     expect(pg).toHaveInserted('sellers', [OFFER.seller])
     expect(pg).toHaveInserted('offers', [PAGE.site, PAGE.url, OFFER.price, OFFER.curency])
   })
+
+  it("does not re-insert sellers", async () => {
+    const page = fullPage({
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": PRODUCT.title,
+      "description": PRODUCT.description,
+      "image": PRODUCT.image,
+      "offers": {
+        "@type": "Offer",
+        "seller": {
+          "@type": "Organization",
+          "name": OFFER.seller,
+        }
+      }
+    })
+    pg.query.mockResolvedValueOnce({ rows: [page] }) 
+    pg.query.mockResolvedValueOnce({ rows: [{ name: OFFER.seller }] }) 
+
+    await import('./index.js')
+
+    expect(pg).toHaveInserted('products', [])
+    expect(pg).toHaveInserted('offers', [])
+    expect(pg).not.toHaveInserted('sellers', [OFFER.seller])
+  })
 })
