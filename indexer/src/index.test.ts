@@ -13,7 +13,7 @@ const OFFER = {
 }
 const BRAND = {
   name: "Test",
-  image: "https://example.com/brand.jpg",
+  logo: "https://example.com/brand.jpg",
 }
 const PAGE = {
   id: "test_id",
@@ -86,7 +86,7 @@ describe('indexer', () => {
     expect(pg).toHaveInserted('offers', [PAGE.site, PAGE.url, OFFER.price, OFFER.curency])
   })
 
-  it("does not re-insert sellers", async () => {
+  it("does not re-insert existing seller", async () => {
     const page = fullPage({
       "@type": "Product",
       "name": PRODUCT.title,
@@ -115,7 +115,7 @@ describe('indexer', () => {
       "brand": {
         "@type": "Brand",
         "name": BRAND.name,
-        "image": BRAND.image,
+        "image": BRAND.logo,
       },
     })
     pg.query.mockResolvedValueOnce({ rows: [page] }) 
@@ -123,6 +123,24 @@ describe('indexer', () => {
     await import('./index.js')
 
     expect(pg).toHaveInserted('products', [PRODUCT.title, BRAND.name])
-    expect(pg).toHaveInserted('brands', [BRAND.name, BRAND.image])
+    expect(pg).toHaveInserted('brands', [BRAND.name, BRAND.logo])
+  })
+
+  it("does not re-insert existing brand", async () => {
+    const page = fullPage({
+      "@type": "Product",
+      "name": PRODUCT.title,
+      "brand": {
+        "@type": "Brand",
+        "name": BRAND.name,
+        "image": BRAND.logo,
+      },
+    })
+    pg.query.mockResolvedValueOnce({ rows: [page] }) 
+    pg.query.mockResolvedValueOnce({ rows: [BRAND] }) 
+
+    await import('./index.js')
+
+    expect(pg).not.toHaveInserted('brands', [])
   })
 })

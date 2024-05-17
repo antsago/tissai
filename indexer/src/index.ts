@@ -32,13 +32,18 @@ const offer = {
 
 if (offer.seller) {
   const sellers = await db.query('SELECT name FROM sellers WHERE name = $1', offer.seller)
+
   if (!sellers.length) {
     await db.query('INSERT INTO sellers (name) VALUES ($1)', [offer.seller])
   }
 }
 
 if (product.brandName) {
-  await db.query('INSERT INTO brands (name, logo) VALUES ($1, $2)', [product.brandName, product.brandLogo])
+  const brands = await db.query('SELECT name FROM brands WHERE name = $1', product.brandName)
+
+  if(!brands.length) {
+    await db.query('INSERT INTO brands (name, logo) VALUES ($1, $2)', [product.brandName, product.brandLogo])
+  }
 }
 
 await db.query(
