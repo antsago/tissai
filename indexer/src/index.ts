@@ -1,8 +1,10 @@
 import { randomUUID } from "node:crypto"
 import { parse } from "node-html-parser"
 import { Db } from "./Db.js"
+import Embedder from "./Embedder/index.js"
 
 const db = Db()
+const embedder = Embedder()
 const page = (await db.query("SELECT * FROM pages"))[0]
 
 const root = parse(page.body)
@@ -30,6 +32,10 @@ const offer = {
   seller: productTag.offers?.seller.name,
 }
 
+const augmented = {
+  embedding: await embedder.embed(product.title),
+}
+
 if (offer.seller) {
   const sellers = await db.query('SELECT name FROM sellers WHERE name = $1', offer.seller)
 
@@ -47,8 +53,8 @@ if (product.brandName) {
 }
 
 await db.query(
-  'INSERT INTO products (id, title, description, image, brand) VALUES ($1, $2, $3, $4, $5);',
-  [product.id, product.title, product.description, product.image, product.brandName],
+  'INSERT INTO products (id, title, description, image, brand, embedding) VALUES ($1, $2, $3, $4, $5, $6);',
+  [product.id, product.title, product.description, product.image, product.brandName, augmented.embedding],
 )
 await db.query(
   'INSERT INTO offers (id, url, site, product, seller, price, currency) VALUES ($1, $2, $3, $4, $5, $6, $7);',

@@ -1,23 +1,39 @@
-import { dirname } from "node:path"
-import { fileURLToPath } from "node:url"
+import { dirname } from "path"
+import { fileURLToPath } from "url"
 import { PythonShell } from "python-shell"
 
-const currentDirectory = dirname(fileURLToPath(import.meta.url))
-const model = new PythonShell(`${currentDirectory}/embedder.py`, {
-	mode: "text",
-	pythonOptions: ["-u"], // get print results in real-time
-})
+export type Embedding = number[]
+type Resolver = (embedding: Embedding) => void
+type Embedder = {
+	embed: (query: string) => Promise<number[]>
+}
 
-const promise = new Promise((res, rej) => {
-	model.on("message", (message: string) => {
-		res(message)
+function Embedder(): Embedder {
+	const resolvers: Resolver[] = []
+	const currentDirectory = dirname(fileURLToPath(import.meta.url))
+	const model = new PythonShell(`${currentDirectory}/embedder.py`, {
+		mode: "text",
+		pythonOptions: ["-u"], // get print results in real-time
 	})
-})
 
-model.send("A query")
+	model.on("message", (message: string) => {
+		const embedding = message
+			.slice(1, -1)
+			.split(" ")
+			.filter((n) => n !== "")
+			.map((n) => parseFloat(n))
 
-const m = await promise
+		resolvers.shift()?.(embedding)
+	})
 
-console.log(m)
+	return {
+		embed: async (query) => {
+			const promise = new Promise<Embedding>((res) => resolvers.push(res))
 
-model.kill()
+			model.send(query)
+			return promise
+		},
+	}
+}
+
+export default Embedder
