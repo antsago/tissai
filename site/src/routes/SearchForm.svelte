@@ -18,9 +18,13 @@
 		name="q"
 		type="search"
 		value={initialValue}
-		class={`flex-grow w-1 bg-inherit py-2 ml-6 text-stone-700 text-sm ${large ? 'text-base' : 'text-sm'}`}
+		class={`flex-grow w-1 bg-inherit py-2 ml-6 text-stone-700 text-sm ${large ? "text-base" : "text-sm"}`}
+	/>
+	<button
+		class={`ml-auto py-2 -my-px -mr-px border rounded-r-full border-orange-500 bg-orange-500 ${large ? "pl-4 pr-6" : "pl-2 pr-4"}`}
+	>
+		<SearchIcon
+			class={`stroke-[2.5] text-orange-100 ${large ? "w-7" : "w-5"}`}
 		/>
-	<button class={`ml-auto py-2 -my-px -mr-px border rounded-r-full border-orange-500 bg-orange-500 ${large ? 'pl-4 pr-6' : 'pl-2 pr-4'}`}>
-		<SearchIcon class={`stroke-[2.5] text-orange-100 ${large ? 'w-7' : 'w-5'}`} />
 	</button>
 </form>
