@@ -4,7 +4,7 @@
   "packageManager": "yarn@4.1.1",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf ./build && tsc && cd ./src && cp --parents **/*.py ../build/",
     "dev": "yarn build && node build/index.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest"
@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "node-html-parser": "6.1.13",
-    "pg": "8.11.5"
+    "pg": "8.11.5",
+    "python-shell": "5.0.0"
   }
 }

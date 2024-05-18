@@ -1057,6 +1057,7 @@ __metadata:
     "@types/pg": "npm:^8"
     node-html-parser: "npm:6.1.13"
     pg: "npm:8.11.5"
+    python-shell: "npm:5.0.0"
     typescript: "npm:5.4.5"
     vitest: "npm:1.5.0"
   languageName: unknown
@@ -1702,6 +1703,13 @@ __metadata:
     err-code: "npm:^2.0.2"
     retry: "npm:^0.12.0"
   checksum: 10c0/9c7045a1a2928094b5b9b15336dcd2a7b1c052f674550df63cc3f36cd44028e5080448175b6f6ca32b642de81150f5e7b1a98b728f15cb069f2dd60ac2616b96
+  languageName: node
+  linkType: hard
+
+"python-shell@npm:5.0.0":
+  version: 5.0.0
+  resolution: "python-shell@npm:5.0.0"
+  checksum: 10c0/5db210839c57db62f13e38c3c71ebedc3ea36d3c767addbed40362597d82de06f536468ed83298b6b80d245d86a02984b0ee1297430c32dc7959b4bfc189fede
   languageName: node
   linkType: hard
 
