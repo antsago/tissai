@@ -536,5 +536,5 @@ describe('indexer', () => {
     await import('./index.js')
 
     expect(pg).toHaveInserted('products', [PRODUCT.title, EMBEDDING])
-  }, 10000)
+  })
 })
