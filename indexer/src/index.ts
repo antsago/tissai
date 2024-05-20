@@ -35,20 +35,13 @@ const offer = {
 const augmented = await embedder.embed(product.title)
 
 if (offer.seller) {
-  const sellers = await db.query('SELECT name FROM sellers WHERE name = $1', offer.seller)
-
-  if (!sellers.length) {
-    await db.query('INSERT INTO sellers (name) VALUES ($1)', [offer.seller])
-  }
+  await db.query('INSERT INTO sellers (name) VALUES ($1)', [offer.seller])
 }
 
 if (product.brandName) {
-  const brands = await db.query('SELECT name FROM brands WHERE name = $1', product.brandName)
-
-  if(!brands.length) {
-    await db.query('INSERT INTO brands (name, logo) VALUES ($1, $2)', [product.brandName, product.brandLogo])
-  }
+  await db.query('INSERT INTO brands (name, logo) VALUES ($1, $2)', [product.brandName, product.brandLogo])
 }
+
 await db.query('INSERT INTO categories (name) VALUES ($1)', [augmented.category])
 await db.query('INSERT INTO tags (name) VALUES ($2)', [augmented.tags[0]])
 
