@@ -21,23 +21,17 @@ await db.insertCategory(page.id, augmented.category)
 
 await db.insertTags(page.id, augmented.tags)
 
-await db.query(
-  `INSERT INTO products (
-    id, title, description, image, brand, embedding, category, tags
-  ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8
-  );`,
-  [
-    product.id,
-    product.title,
-    product.description,
-    product.image,
-    product.brandName,
-    augmented.embedding,
-    augmented.category, augmented.tags,
-  ],
+await db.insertProduct(
+  page.id,
+  product.id,
+  product.title,
+  augmented.embedding,
+  augmented.category,
+  augmented.tags,
+  product.description,
+  product.image,
+  product.brandName,
 )
-await db.insertTrace(page.id, "products", product.id)
 
 await db.query(
   'INSERT INTO offers (id, url, site, product, seller, price, currency) VALUES ($1, $2, $3, $4, $5, $6, $7);',

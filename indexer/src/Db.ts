@@ -25,24 +25,54 @@ export const Db = () => {
       objectTable,
       objectId,
     ])
-  const insertSeller = async (pageId: string, sellerName: string) => Promise.all([
-    runQuery('INSERT INTO sellers (name) VALUES ($1);', [sellerName]),
-    insertTrace(pageId, "sellers", sellerName)
+  const insertSeller = async (pageId: string, name: string) => Promise.all([
+    runQuery('INSERT INTO sellers (name) VALUES ($1);', [name]),
+    insertTrace(pageId, "sellers", name)
   ])
-  const insertBrand = async (pageId: string, brandName: string, brandLogo: string) => Promise.all([
-    runQuery('INSERT INTO brands (name, logo) VALUES ($1, $2);', [brandName, brandLogo]),
-    insertTrace(pageId, "brands", brandName)
+  const insertBrand = async (pageId: string, name: string, logo: string) => Promise.all([
+    runQuery('INSERT INTO brands (name, logo) VALUES ($1, $2);', [name, logo]),
+    insertTrace(pageId, "brands", name)
   ])
-  const insertCategory = async (pageId: string, categoryName: string) => Promise.all([
-    runQuery('INSERT INTO categories (name) VALUES ($1)', [categoryName]),
-    insertTrace(pageId, "categories", categoryName)
+  const insertCategory = async (pageId: string, name: string) => Promise.all([
+    runQuery('INSERT INTO categories (name) VALUES ($1)', [name]),
+    insertTrace(pageId, "categories", name)
   ])
   const insertTags = async (pageId: string, tags: string[]) => Promise.all(
-    tags.map(tag => [
-      runQuery('INSERT INTO tags (name) VALUES ($2);', [tag]),
-      insertTrace(pageId, "tags", tag),
+    tags.map(name => [
+      runQuery('INSERT INTO tags (name) VALUES ($2);', [name]),
+      insertTrace(pageId, "tags", name),
     ]).flat()
   )
+  const insertProduct = async (
+    pageId: string,
+    id: string,
+    title: string,
+    embedding: number[],
+    category: string,
+    tags: string[],
+    description?: string,
+    image?: string | string[],
+    brand?: string,
+  ) => Promise.all([
+    runQuery(
+      `INSERT INTO products (
+        id, title, description, image, brand, embedding, category, tags
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6, $7, $8
+      );`,
+      [
+        id,
+        title,
+        description,
+        image,
+        brand,
+        embedding,
+        category,
+        tags,
+      ],
+    ),
+    insertTrace(pageId, "products", id)
+  ])
 
   return {
     query: runQuery,
@@ -51,6 +81,7 @@ export const Db = () => {
     insertBrand,
     insertCategory,
     insertTags,
+    insertProduct,
   }
 }
 
