@@ -73,6 +73,34 @@ export const Db = () => {
     ),
     insertTrace(pageId, "products", id)
   ])
+  const insertOffer = async (
+    pageId: string,
+    id: string,
+    url: string,
+    site: string,
+    product: string,
+    seller?: string,
+    price?: number,
+    currency?: string,
+  ) => Promise.all([
+    runQuery(
+      `INSERT INTO offers (
+        id, url, site, product, seller, price, currency
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6, $7
+      );`,
+      [
+        id,
+        url,
+        site,
+        product,
+        seller,
+        price,
+        currency,
+      ],
+    ),
+    insertTrace(pageId, "offers", id)
+  ])
 
   return {
     query: runQuery,
@@ -82,6 +110,7 @@ export const Db = () => {
     insertCategory,
     insertTags,
     insertProduct,
+    insertOffer,
   }
 }
 

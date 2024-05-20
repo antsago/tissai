@@ -33,8 +33,13 @@ await db.insertProduct(
   product.brandName,
 )
 
-await db.query(
-  'INSERT INTO offers (id, url, site, product, seller, price, currency) VALUES ($1, $2, $3, $4, $5, $6, $7);',
-  [offer.id, offer.url, offer.site, offer.product, offer.seller, offer.price, offer.currency],
+await db.insertOffer(
+  page.id,
+  offer.id,
+  offer.url,
+  offer.site,
+  offer.product,
+  offer.seller,
+  offer.price,
+  offer.currency,
 )
-await db.insertTrace(page.id, "offers", offer.id)
