@@ -10,8 +10,7 @@ const { product, offer } = parseStructuredInfo(page)
 const augmented = await embedder.embed(product.title)
 
 if (offer.seller) {
-  await db.query('INSERT INTO sellers (name) VALUES ($1);', [offer.seller])
-  await db.insertTrace(page.id, "sellers", offer.seller)
+  await db.insertSeller(page.id, offer.seller)
 }
 
 if (product.brandName) {

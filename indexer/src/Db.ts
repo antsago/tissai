@@ -25,10 +25,15 @@ export const Db = () => {
       objectTable,
       objectId,
     ])
+  const insertSeller = async (pageId: string, sellerName: string) => Promise.all([
+    runQuery('INSERT INTO sellers (name) VALUES ($1);', [sellerName]),
+    insertTrace(pageId, "sellers", sellerName)
+  ])
 
   return {
     query: runQuery,
     insertTrace,
+    insertSeller,
   }
 }
 
