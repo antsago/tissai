@@ -1,37 +1,13 @@
 import { randomUUID } from "node:crypto"
-import { parse } from "node-html-parser"
 import { Db } from "./Db.js"
 import Embedder from "./Embedder/index.js"
+import parseStructuredInfo from "./parseStructuredInfo.js"
 
 const db = Db()
 const embedder = Embedder()
 const page = (await db.query("SELECT * FROM pages"))[0]
 
-const root = parse(page.body)
-const productTag = root.querySelectorAll('script[type="application/ld+json"]')
-  .map(t => t.textContent)
-  .map(t => JSON.parse(t))
-  .filter(t => t["@type"] === "Product")[0]
-
-const product = {
-  id: randomUUID(),
-  title: productTag.name,
-  description: productTag.description,
-  image: productTag.image,
-  brandName: productTag?.brand?.name,
-  brandLogo: productTag?.brand?.image,
-}
-
-const offer = {
-  id: randomUUID(),
-  url: page.url,
-  site: page.site,
-  product: product.id,
-  price: productTag.offers?.price,
-  currency: productTag.offers?.priceCurrency,
-  seller: productTag.offers?.seller.name,
-}
-
+const { product, offer } = parseStructuredInfo(page)
 const augmented = await embedder.embed(product.title)
 
 if (offer.seller) {
