@@ -23,12 +23,12 @@ isMeaningless = lambda token: not (
 
 for query in sys.stdin:
   title = json.loads(query)
-  embedding = model.encode([title], convert_to_numpy=True)[0].tolist()
   doc = nlp(title)
-  tags = list({token.lower_ for token in doc[1:] if isMeaningless(token)})
-  category = doc[0].lower_
-  print(json.dumps({
-    "embedding": embedding,
-    "category": category,
-    "tags": tags,
-  }, separators=(',', ':')))
+
+  augmented = {
+    "embedding": model.encode([title], convert_to_numpy=True)[0].tolist(),
+    "category": doc[0].lower_,
+    "tags": list({token.lower_ for token in doc[1:] if isMeaningless(token)}),
+  }
+
+  print(json.dumps(augmented, separators=(',', ':')))
