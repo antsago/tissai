@@ -33,12 +33,17 @@ export const Db = () => {
     runQuery('INSERT INTO brands (name, logo) VALUES ($1, $2);', [brandName, brandLogo]),
     insertTrace(pageId, "brands", brandName)
   ])
+  const insertCategory = async (pageId: string, categoryName: string) => Promise.all([
+    runQuery('INSERT INTO categories (name) VALUES ($1)', [categoryName]),
+    insertTrace(pageId, "categories", categoryName)
+  ])
 
   return {
     query: runQuery,
     insertTrace,
     insertSeller,
     insertBrand,
+    insertCategory,
   }
 }
 

@@ -17,8 +17,7 @@ if (product.brandName) {
   await db.insertBrand(page.id, product.brandName, product.brandLogo)
 }
 
-await db.query('INSERT INTO categories (name) VALUES ($1)', [augmented.category])
-await db.insertTrace(page.id, "categories", augmented.category)
+await db.insertCategory(page.id, augmented.category)
 
 await Promise.all(augmented.tags.map(async tag => {
   await db.query('INSERT INTO tags (name) VALUES ($2);', [tag])
