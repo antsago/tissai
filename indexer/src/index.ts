@@ -14,8 +14,7 @@ if (offer.seller) {
 }
 
 if (product.brandName) {
-  await db.query('INSERT INTO brands (name, logo) VALUES ($1, $2);', [product.brandName, product.brandLogo])
-  await db.insertTrace(page.id, "brands", product.brandName)
+  await db.insertBrand(page.id, product.brandName, product.brandLogo)
 }
 
 await db.query('INSERT INTO categories (name) VALUES ($1)', [augmented.category])
