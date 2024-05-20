@@ -90,4 +90,17 @@ describe('indexer', () => {
     expect(pg).toHaveInserted('products', [BRAND.name])
     expect(pg).toHaveInserted('brands', [BRAND.name, BRAND.logo])
   })
+
+  it("extracts multiple tags", async () => {
+    const page = fullPage({
+      "@type": "Product",
+      "name": "Test multiple tags",
+    })
+    pg.query.mockResolvedValueOnce({ rows: [page] }) 
+
+    await import('./index.js')
+
+    expect(pg).toHaveInserted('tags', ["multiple"])
+    expect(pg).toHaveInserted('tags', ["tags"])
+  })
 })

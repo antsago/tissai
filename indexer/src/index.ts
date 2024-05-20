@@ -43,7 +43,7 @@ if (product.brandName) {
 }
 
 await db.query('INSERT INTO categories (name) VALUES ($1)', [augmented.category])
-await db.query('INSERT INTO tags (name) VALUES ($2)', [augmented.tags[0]])
+await Promise.all(augmented.tags.map(tag => db.query('INSERT INTO tags (name) VALUES ($2)', [tag])))
 
 await db.query(
   `INSERT INTO products (
