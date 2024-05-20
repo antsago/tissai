@@ -32,9 +32,7 @@ const offer = {
   seller: productTag.offers?.seller.name,
 }
 
-const augmented = {
-  embedding: await embedder.embed(product.title),
-}
+const augmented = await embedder.embed(product.title)
 
 if (offer.seller) {
   const sellers = await db.query('SELECT name FROM sellers WHERE name = $1', offer.seller)
@@ -51,10 +49,24 @@ if (product.brandName) {
     await db.query('INSERT INTO brands (name, logo) VALUES ($1, $2)', [product.brandName, product.brandLogo])
   }
 }
+await db.query('INSERT INTO categories (name) VALUES ($1)', [augmented.category])
+await db.query('INSERT INTO tags (name) VALUES ($2)', [augmented.tags[0]])
 
 await db.query(
-  'INSERT INTO products (id, title, description, image, brand, embedding) VALUES ($1, $2, $3, $4, $5, $6);',
-  [product.id, product.title, product.description, product.image, product.brandName, augmented.embedding],
+  `INSERT INTO products (
+    id, title, description, image, brand, embedding, category, tags
+  ) VALUES (
+    $1, $2, $3, $4, $5, $6, $7, $8
+  );`,
+  [
+    product.id,
+    product.title,
+    product.description,
+    product.image,
+    product.brandName,
+    augmented.embedding,
+    augmented.category, augmented.tags,
+  ],
 )
 await db.query(
   'INSERT INTO offers (id, url, site, product, seller, price, currency) VALUES ($1, $2, $3, $4, $5, $6, $7);',
