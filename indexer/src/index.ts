@@ -2,15 +2,22 @@ import { Db } from "./Db.js"
 import Embedder from "./Embedder/index.js"
 import parseStructuredInfo from "./parseStructuredInfo.js"
 
+type Page = {
+  id: string,
+  body: string,
+  url: string,
+  site: string,
+}
+
 const db = Db()
 const embedder = Embedder()
-const page = (await db.query("SELECT * FROM pages"))[0]
+const page = (await db.query<Page>("SELECT * FROM pages"))[0]
 
 const { product, offer } = parseStructuredInfo(page)
 const augmented = await embedder.embed(product.title)
 
 await Promise.all([
-  db.insertProduct(
+  db.insert.product(
     page.id,
     product.id,
     product.title,
@@ -21,7 +28,7 @@ await Promise.all([
     product.image,
     product.brandName,
   ),
-  db.insertOffer(
+  db.insert.offer(
     page.id,
     offer.id,
     offer.url,
@@ -31,8 +38,8 @@ await Promise.all([
     offer.price,
     offer.currency,
   ),
-  db.insertCategory(page.id, augmented.category),
-  db.insertTags(page.id, augmented.tags),
-  offer.seller ? db.insertSeller(page.id, offer.seller) : Promise.resolve(),
-  product.brandName ? db.insertBrand(page.id, product.brandName, product.brandLogo) : Promise.resolve(),
+  db.insert.category(page.id, augmented.category),
+  db.insert.tags(page.id, augmented.tags),
+  offer.seller ? db.insert.seller(page.id, offer.seller) : Promise.resolve(),
+  product.brandName ? db.insert.brand(page.id, product.brandName, product.brandLogo) : Promise.resolve(),
 ])
