@@ -9,15 +9,7 @@ describe('DB', () => {
     await masterDb.query('CREATE DATABASE test;')
 
     testDb = Db('test')
-    await testDb.query(`
-      CREATE TABLE traces (
-        id              uuid PRIMARY KEY,
-        timestamp       timestamp with time zone,
-        page_of_origin  uuid,
-        object_table    text,
-        object_id       text
-      );`
-    )
+    await testDb.createTracesTable()
   })
 
   afterEach(async () => {

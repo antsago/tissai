@@ -16,11 +16,21 @@ export const Db = (database?: string) => {
 		return response.rows
 	}
   const insert = createInserts(runQuery)
+  const createTracesTable = () => runQuery(`
+    CREATE TABLE traces (
+      id              uuid PRIMARY KEY,
+      timestamp       timestamp with time zone,
+      page_of_origin  uuid,
+      object_table    text,
+      object_id       text
+    );`
+  )
 
   return {
     query: runQuery,
-    insert,
     close: () => pool.end(),
+    insert,
+    createTracesTable,
   }
 }
 
