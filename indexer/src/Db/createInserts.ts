@@ -12,10 +12,6 @@ function createInserts(connection: Connection) {
   const insertCategory = categories.create(connection)
   const insertTag = tags.create(connection)
 
-  const insertTags = async (pageId: string, tags: string[]) => Promise.all(
-    tags.map(name => insertTag(pageId, name)).flat()
-  )
-
   const insertProduct = async (
     pageId: string,
     id: string,
@@ -81,7 +77,6 @@ function createInserts(connection: Connection) {
     seller: insertSeller,
     brand: insertBrand,
     category: insertCategory,
-    tags: insertTags,
     tag: insertTag,
     product: insertProduct,
     offer: insertOffer,
