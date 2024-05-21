@@ -39,7 +39,7 @@ await Promise.all([
     offer.currency,
   ),
   db.insert.category(page.id, augmented.category),
-  db.insert.tags(page.id, augmented.tags),
+  augmented.tags.map(name => db.insert.tag(page.id, name)),
   offer.seller ? db.insert.seller(page.id, offer.seller) : Promise.resolve(),
   product.brandName ? db.insert.brand(page.id, product.brandName, product.brandLogo) : Promise.resolve(),
-])
+].flat())

@@ -3,18 +3,17 @@ import * as traces from "./traces.js"
 import * as sellers from "./sellers.js"
 import * as brands from "./brands.js"
 import * as categories from "./categories.js"
+import * as tags from "./tags.js"
 
 function createInserts(connection: Connection) {
   const insertTrace = traces.create(connection)
   const insertSeller = sellers.create(connection)
   const insertBrand = brands.create(connection)
   const insertCategory = categories.create(connection)
+  const insertTag = tags.create(connection)
 
   const insertTags = async (pageId: string, tags: string[]) => Promise.all(
-    tags.map(name => [
-      connection.query('INSERT INTO tags (name) VALUES ($2);', [name]),
-      insertTrace(pageId, "tags", name),
-    ]).flat()
+    tags.map(name => insertTag(pageId, name)).flat()
   )
 
   const insertProduct = async (
@@ -83,6 +82,7 @@ function createInserts(connection: Connection) {
     brand: insertBrand,
     category: insertCategory,
     tags: insertTags,
+    tag: insertTag,
     product: insertProduct,
     offer: insertOffer,
   }
