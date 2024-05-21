@@ -4,6 +4,7 @@ import * as sellers from "./sellers.js"
 import * as brands from "./brands.js"
 import * as categories from "./categories.js"
 import * as tags from "./tags.js"
+import * as products from "./products.js"
 
 function createInserts(connection: Connection) {
   const insertTrace = traces.create(connection)
@@ -11,37 +12,7 @@ function createInserts(connection: Connection) {
   const insertBrand = brands.create(connection)
   const insertCategory = categories.create(connection)
   const insertTag = tags.create(connection)
-
-  const insertProduct = async (
-    pageId: string,
-    id: string,
-    title: string,
-    embedding: number[],
-    category: string,
-    tags: string[],
-    description?: string,
-    image?: string | string[],
-    brand?: string,
-  ) => Promise.all([
-    connection.query(
-      `INSERT INTO products (
-        id, title, description, image, brand, embedding, category, tags
-      ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8
-      );`,
-      [
-        id,
-        title,
-        description,
-        image,
-        brand,
-        embedding,
-        category,
-        tags,
-      ],
-    ),
-    insertTrace(pageId, "products", id)
-  ])
+  const insertProduct = products.create(connection)
 
   const insertOffer = async (
     pageId: string,
