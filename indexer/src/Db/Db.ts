@@ -10,9 +10,9 @@ export const Db = (database?: string) => {
   const insert = createInserts(connection)
 
   const initialize = () => Promise.all([
-    traces.initialize(connection)(),
-    sellers.initialize(connection)(),
-    brands.initialize(connection)(),
+    traces.initialize(connection),
+    sellers.initialize(connection),
+    brands.initialize(connection),
   ])
 
   return {

@@ -12,7 +12,7 @@ export const create = (connection: Connection) =>
   ])
 
 export const initialize = (connection: Connection) =>
-  () => connection.query(`
+  connection.query(`
     CREATE TABLE ${TABLE} (
       ${TABLE.name}   text PRIMARY KEY
     );`

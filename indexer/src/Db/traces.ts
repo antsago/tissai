@@ -23,7 +23,7 @@ export const create = (connection: Connection) =>
     ])
 
 export const initialize = (connection: Connection) =>
-  () => connection.query(`
+  connection.query(`
     CREATE TABLE ${TABLE} (
       ${TABLE.id}             uuid PRIMARY KEY,
       ${TABLE.timestamp}      timestamp with time zone,
