@@ -6,6 +6,7 @@ import * as brands from "./brands.js"
 import * as categories from "./categories.js"
 import * as tags from "./tags.js"
 import * as products from "./products.js"
+import * as offers from "./offers.js"
 
 export const Db = (database?: string) => {
   const connection = Connection(database)
@@ -21,6 +22,7 @@ export const Db = (database?: string) => {
       categories.initialize(connection),
       tags.initialize(connection),
       products.initialize(connection),
+      offers.initialize(connection),
     ])
   }
 
