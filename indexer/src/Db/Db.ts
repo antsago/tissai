@@ -1,20 +1,16 @@
 import createInserts from "./createInserts.js"
 import { Connection } from "./Connection.js"
 import * as traces from "./traces.js"
+import * as sellers from "./sellers.js"
 
 export const Db = (database?: string) => {
   const connection = Connection(database)
 
   const insert = createInserts(connection)
-  const createTracesTable = traces.initialize(connection)
-  const createSellersTable = () => connection.query(`
-    CREATE TABLE sellers (
-      name            text PRIMARY KEY
-    );`
-  )
+
   const initialize = () => Promise.all([
-    createTracesTable(),
-    createSellersTable(),
+    traces.initialize(connection)(),
+    sellers.initialize(connection)(),
   ])
 
   return {

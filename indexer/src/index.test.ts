@@ -1,5 +1,6 @@
 import { expect, describe, it, beforeEach, vi } from 'vitest'
 import { MockPg, PRODUCT, OFFER, BRAND, PAGE, AUGMENTED_DATA } from '#mocks'
+import { SELLERS, TRACES } from './Db/index.js'
 
 const fullPage = (ld: object) => ({
   ...PAGE,
@@ -48,10 +49,10 @@ describe('indexer', () => {
     expect(pg).toHaveInserted('offers', [PAGE.site, PAGE.url])
     expect(pg).toHaveInserted('categories', [AUGMENTED_DATA.category])
     expect(pg).toHaveInserted('tags', [AUGMENTED_DATA.tags[0]])
-    expect(pg).toHaveInserted('traces', [PAGE.id, "products"])
-    expect(pg).toHaveInserted('traces', [PAGE.id, "offers"])
-    expect(pg).toHaveInserted('traces', [PAGE.id, "categories", AUGMENTED_DATA.category])
-    expect(pg).toHaveInserted('traces', [PAGE.id, "tags", AUGMENTED_DATA.tags[0]])
+    expect(pg).toHaveInserted(TRACES, [PAGE.id, "products"])
+    expect(pg).toHaveInserted(TRACES, [PAGE.id, "offers"])
+    expect(pg).toHaveInserted(TRACES, [PAGE.id, "categories", AUGMENTED_DATA.category])
+    expect(pg).toHaveInserted(TRACES, [PAGE.id, "tags", AUGMENTED_DATA.tags[0]])
   })
 
   it("extracts offer details", async () => {
@@ -73,9 +74,9 @@ describe('indexer', () => {
 
     await import('./index.js')
 
-    expect(pg).toHaveInserted('sellers', [OFFER.seller])
+    expect(pg).toHaveInserted(SELLERS, [OFFER.seller])
     expect(pg).toHaveInserted('offers', [PAGE.site, PAGE.url, OFFER.price, OFFER.curency])
-    expect(pg).toHaveInserted('traces', [PAGE.id, "sellers", OFFER.seller])
+    expect(pg).toHaveInserted(TRACES, [PAGE.id, SELLERS.toString(), OFFER.seller])
   })
 
   it("extracts product brand", async () => {
@@ -94,7 +95,7 @@ describe('indexer', () => {
 
     expect(pg).toHaveInserted('products', [BRAND.name])
     expect(pg).toHaveInserted('brands', [BRAND.name, BRAND.logo])
-    expect(pg).toHaveInserted('traces', [PAGE.id, "brands", BRAND.name])
+    expect(pg).toHaveInserted(TRACES, [PAGE.id, "brands", BRAND.name])
   })
 
   it("extracts multiple tags", async () => {
