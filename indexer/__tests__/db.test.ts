@@ -28,7 +28,7 @@ describe('DB', () => {
       objectId: OFFER.seller,
     }
 
-    await testDb.insert.trace(TRACE.pageId, TRACE.objectTable, TRACE.objectId)
+    await testDb.traces.create(TRACE.pageId, TRACE.objectTable, TRACE.objectId)
 
     const traces = await testDb.query(`SELECT * FROM ${TRACES};`)
     expect(traces).toStrictEqual([{
@@ -41,7 +41,7 @@ describe('DB', () => {
   })
 
   it('inserts sellers', async () => {
-    await testDb.insert.seller(PAGE.id, OFFER.seller)
+    await testDb.sellers.create(PAGE.id, OFFER.seller)
 
     const sellers = await testDb.query(`SELECT * FROM ${SELLERS};`)
     const traces = await testDb.query(`SELECT * FROM ${TRACES};`)

@@ -7,35 +7,30 @@ import * as tags from "./tags.js"
 import * as products from "./products.js"
 import * as offers from "./offers.js"
 
+const tables = {traces, sellers, brands, categories, tags, products, offers}
+type TABLES = typeof tables
+type CRUD_METHODS = {
+  [T in keyof TABLES]: {
+    create: ReturnType<TABLES[T]["create"]>
+  }
+}
+
 export const Db = (database?: string) => {
   const connection = Connection(database)
-
+  
   const initialize = async () => {
     await connection.query("CREATE EXTENSION vector;")
-    await Promise.all([
-      traces.initialize(connection),
-      sellers.initialize(connection),
-      brands.initialize(connection),
-      categories.initialize(connection),
-      tags.initialize(connection),
-      products.initialize(connection),
-      offers.initialize(connection),
-    ])
+    await Promise.all(Object.values(tables).map(table => table.initialize(connection)))
   }
-  const insert = {
-    trace: traces.create(connection),
-    seller: sellers.create(connection),
-    brand: brands.create(connection),
-    category: categories.create(connection),
-    tag: tags.create(connection),
-    product: products.create(connection),
-    offer: offers.create(connection),
-  }
+  const crudMethods = Object.values(tables).reduce((aggregate, table) => ({
+    ...aggregate,
+    [table.TABLE as keyof typeof tables]: { create: table.create(connection) },
+  }), {} as CRUD_METHODS)
 
   return {
     ...connection,
-    insert,
     initialize,
+    ...crudMethods,
   }
 }
 

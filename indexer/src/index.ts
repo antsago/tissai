@@ -17,7 +17,7 @@ const { product, offer } = parseStructuredInfo(page)
 const augmented = await embedder.embed(product.title)
 
 await Promise.all([
-  db.insert.product(
+  db.products.create(
     page.id,
     product.id,
     product.title,
@@ -28,7 +28,7 @@ await Promise.all([
     product.image,
     product.brandName,
   ),
-  db.insert.offer(
+  db.offers.create(
     page.id,
     offer.id,
     offer.url,
@@ -38,8 +38,8 @@ await Promise.all([
     offer.price,
     offer.currency,
   ),
-  db.insert.category(page.id, augmented.category),
-  augmented.tags.map(name => db.insert.tag(page.id, name)),
-  offer.seller ? db.insert.seller(page.id, offer.seller) : Promise.resolve(),
-  product.brandName ? db.insert.brand(page.id, product.brandName, product.brandLogo) : Promise.resolve(),
+  db.categories.create(page.id, augmented.category),
+  augmented.tags.map(name => db.tags.create(page.id, name)),
+  offer.seller ? db.sellers.create(page.id, offer.seller) : Promise.resolve(),
+  product.brandName ? db.brands.create(page.id, product.brandName, product.brandLogo) : Promise.resolve(),
 ].flat())
