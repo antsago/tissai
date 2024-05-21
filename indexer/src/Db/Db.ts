@@ -1,4 +1,3 @@
-import createInserts from "./createInserts.js"
 import { Connection } from "./Connection.js"
 import * as traces from "./traces.js"
 import * as sellers from "./sellers.js"
@@ -11,8 +10,6 @@ import * as offers from "./offers.js"
 export const Db = (database?: string) => {
   const connection = Connection(database)
 
-  const insert = createInserts(connection)
-
   const initialize = async () => {
     await connection.query("CREATE EXTENSION vector;")
     await Promise.all([
@@ -24,6 +21,15 @@ export const Db = (database?: string) => {
       products.initialize(connection),
       offers.initialize(connection),
     ])
+  }
+  const insert = {
+    trace: traces.create(connection),
+    seller: sellers.create(connection),
+    brand: brands.create(connection),
+    category: categories.create(connection),
+    tag: tags.create(connection),
+    product: products.create(connection),
+    offer: offers.create(connection),
   }
 
   return {
