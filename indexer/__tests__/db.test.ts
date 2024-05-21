@@ -10,8 +10,7 @@ describe('DB', () => {
     await masterDb.query('CREATE DATABASE test;')
 
     testDb = Db('test')
-    await testDb.createTracesTable()
-    await testDb.createSellersTable()
+    await testDb.initialize()
   })
 
   afterEach(async () => {

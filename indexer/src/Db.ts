@@ -30,13 +30,16 @@ export const Db = (database?: string) => {
       name            text PRIMARY KEY
     );`
   )
+  const initialize = () => Promise.all([
+    createTracesTable(),
+    createSellersTable(),
+  ])
 
   return {
     query: runQuery,
     close: () => pool.end(),
     insert,
-    createTracesTable,
-    createSellersTable,
+    initialize,
   }
 }
 
