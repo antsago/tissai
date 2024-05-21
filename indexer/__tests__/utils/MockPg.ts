@@ -1,5 +1,5 @@
 import { vi } from "vitest"
-import { setPg } from "../src/Db.js"
+import { setPg } from "../../src/Db.js"
 
 export function MockPg() {
   const Pool = vi.fn()

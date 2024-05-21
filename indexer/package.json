@@ -10,7 +10,7 @@
     "test": "poetry run vitest"
   },
   "imports": {
-    "#mocks": "./__tests__/index.ts"
+    "#mocks": "./__tests__/utils/index.ts"
   },
   "devDependencies": {
     "@tsconfig/node20": "20.1.4",
