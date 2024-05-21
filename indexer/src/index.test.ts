@@ -1,6 +1,6 @@
 import { expect, describe, it, beforeEach, vi } from 'vitest'
 import { MockPg, PRODUCT, OFFER, BRAND, PAGE, AUGMENTED_DATA } from '#mocks'
-import { BRANDS, SELLERS, TRACES } from './Db/index.js'
+import { BRANDS, CATEGORIES, SELLERS, TRACES } from './Db/index.js'
 
 const fullPage = (ld: object) => ({
   ...PAGE,
@@ -47,11 +47,11 @@ describe('indexer', () => {
       AUGMENTED_DATA.tags,
     ])
     expect(pg).toHaveInserted('offers', [PAGE.site, PAGE.url])
-    expect(pg).toHaveInserted('categories', [AUGMENTED_DATA.category])
+    expect(pg).toHaveInserted(CATEGORIES, [AUGMENTED_DATA.category])
     expect(pg).toHaveInserted('tags', [AUGMENTED_DATA.tags[0]])
     expect(pg).toHaveInserted(TRACES, [PAGE.id, "products"])
     expect(pg).toHaveInserted(TRACES, [PAGE.id, "offers"])
-    expect(pg).toHaveInserted(TRACES, [PAGE.id, "categories", AUGMENTED_DATA.category])
+    expect(pg).toHaveInserted(TRACES, [PAGE.id, CATEGORIES.toString(), AUGMENTED_DATA.category])
     expect(pg).toHaveInserted(TRACES, [PAGE.id, "tags", AUGMENTED_DATA.tags[0]])
   })
 
