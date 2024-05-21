@@ -1,5 +1,5 @@
-import { expect, describe, it, beforeEach, afterEach, vi } from 'vitest'
-import { Db } from '../src/Db'
+import { expect, describe, it, beforeEach, afterEach } from 'vitest'
+import { Db } from '../src/Db/index.js'
 import { OFFER, PAGE } from '#mocks'
 
 const TEST_TABLE = "test"

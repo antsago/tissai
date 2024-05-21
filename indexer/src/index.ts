@@ -1,4 +1,4 @@
-import { Db } from "./Db.js"
+import { Db } from "./Db/index.js"
 import Embedder from "./Embedder/index.js"
 import parseStructuredInfo from "./parseStructuredInfo.js"
 

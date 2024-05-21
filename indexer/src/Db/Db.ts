@@ -1,7 +1,5 @@
 import createInserts from "./createInserts.js"
-import Connection from "./Connection.js"
-
-export * from './Connection.js'
+import { Connection } from "./Connection.js"
 
 export const Db = (database?: string) => {
   const connection = Connection(database)

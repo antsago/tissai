@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto"
-import type { Connection } from "./Db.js"
+import { Connection } from "./Connection.js"
 
 function createInserts(connection: Connection) {
   const insertTrace = (pageId: string, objectTable: string, objectId: string) =>
