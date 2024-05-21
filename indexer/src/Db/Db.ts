@@ -2,6 +2,7 @@ import createInserts from "./createInserts.js"
 import { Connection } from "./Connection.js"
 import * as traces from "./traces.js"
 import * as sellers from "./sellers.js"
+import * as brands from "./brands.js"
 
 export const Db = (database?: string) => {
   const connection = Connection(database)
@@ -11,6 +12,7 @@ export const Db = (database?: string) => {
   const initialize = () => Promise.all([
     traces.initialize(connection)(),
     sellers.initialize(connection)(),
+    brands.initialize(connection)(),
   ])
 
   return {

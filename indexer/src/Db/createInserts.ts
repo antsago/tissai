@@ -1,15 +1,12 @@
 import { Connection } from "./Connection.js"
 import * as traces from "./traces.js"
 import * as sellers from "./sellers.js"
+import * as brands from "./brands.js"
 
 function createInserts(connection: Connection) {
   const insertTrace = traces.create(connection)
   const insertSeller = sellers.create(connection)
-
-  const insertBrand = async (pageId: string, name: string, logo: string) => Promise.all([
-    connection.query('INSERT INTO brands (name, logo) VALUES ($1, $2);', [name, logo]),
-    insertTrace(pageId, "brands", name)
-  ])
+  const insertBrand = brands.create(connection)
 
   const insertCategory = async (pageId: string, name: string) => Promise.all([
     connection.query('INSERT INTO categories (name) VALUES ($1)', [name]),
