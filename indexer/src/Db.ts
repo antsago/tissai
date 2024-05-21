@@ -7,8 +7,9 @@ export function setPg(mock: typeof PgPool) {
 }
 export type RunQuery = <T>(query: string, values?: any[]) => Promise<T[]>
 
-export const Db = () => {
-  const pool = new Pool()
+export const Db = (database?: string) => {
+  const connectionString = `${process.env.PG_CONNECTION_STRING}/${database ?? process.env.PG_DATABASE}`
+  const pool = new Pool({ connectionString })
 
 	const runQuery: RunQuery = async (query, values) => {
 		const response = await pool.query(query, values)
