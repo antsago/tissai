@@ -1,10 +1,18 @@
 import { randomUUID } from "node:crypto"
 import { Connection } from "./Connection.js"
 
+export const TRACES = Object.assign("traces", {
+  id: "id",
+  timestamp: "timestamp",
+  page: "page_of_origin",
+  objectTable: "object_table",
+  objectId: "object_id",
+})
+
 function createInserts(connection: Connection) {
   const insertTrace = (pageId: string, objectTable: string, objectId: string) =>
-    connection.query(`INSERT INTO traces (
-      id, timestamp, page_of_origin, object_table, object_id
+    connection.query(`INSERT INTO ${TRACES} (
+      ${TRACES.id}, ${TRACES.timestamp}, ${TRACES.page}, ${TRACES.objectTable}, ${TRACES.objectId}
     ) VALUES (
       $1, CURRENT_TIMESTAMP, $2, $3, $4
     );`, [

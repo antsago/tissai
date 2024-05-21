@@ -1,5 +1,5 @@
 import { expect, describe, it, beforeEach, afterEach } from 'vitest'
-import { Db } from '../src/Db/index.js'
+import { Db, TRACES } from '../src/Db/index.js'
 import { OFFER, PAGE } from '#mocks'
 
 const TEST_TABLE = "test"
@@ -30,7 +30,7 @@ describe('DB', () => {
 
     await testDb.insert.trace(TRACE.pageId, TRACE.objectTable, TRACE.objectId)
 
-    const traces = await testDb.query('SELECT * FROM traces;')
+    const traces = await testDb.query(`SELECT * FROM ${TRACES};`)
     expect(traces).toStrictEqual([{
       id: expect.any(String),
       page_of_origin: TRACE.pageId,
@@ -44,7 +44,7 @@ describe('DB', () => {
     await testDb.insert.seller(PAGE.id, OFFER.seller)
 
     const sellers = await testDb.query('SELECT * FROM sellers;')
-    const traces = await testDb.query('SELECT * FROM traces;')
+    const traces = await testDb.query(`SELECT * FROM ${TRACES};`)
 
     expect(sellers).toStrictEqual([{ name: OFFER.seller }])
     expect(traces).toStrictEqual([{

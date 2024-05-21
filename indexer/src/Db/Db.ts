@@ -1,17 +1,18 @@
 import createInserts from "./createInserts.js"
 import { Connection } from "./Connection.js"
+import { TRACES } from "./createInserts.js"
 
 export const Db = (database?: string) => {
   const connection = Connection(database)
 
   const insert = createInserts(connection)
   const createTracesTable = () => connection.query(`
-    CREATE TABLE traces (
-      id              uuid PRIMARY KEY,
-      timestamp       timestamp with time zone,
-      page_of_origin  uuid,
-      object_table    text,
-      object_id       text
+    CREATE TABLE ${TRACES} (
+      ${TRACES.id}             uuid PRIMARY KEY,
+      ${TRACES.timestamp}      timestamp with time zone,
+      ${TRACES.page}           uuid,
+      ${TRACES.objectTable}    text,
+      ${TRACES.objectId}       text
     );`
   )
   const createSellersTable = () => connection.query(`
