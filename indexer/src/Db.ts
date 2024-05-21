@@ -20,6 +20,7 @@ export const Db = (database?: string) => {
   return {
     query: runQuery,
     insert,
+    close: () => pool.end(),
   }
 }
 

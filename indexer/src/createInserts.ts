@@ -3,7 +3,7 @@ import type { RunQuery } from "./Db.js"
 
 function createInserts(runQuery: RunQuery) {
   const insertTrace = (pageId: string, objectTable: string, objectId: string) =>
-    runQuery(`INSERT INTO trazes (
+    runQuery(`INSERT INTO traces (
       id, timestamp, page_of_origin, object_table, object_id
     ) VALUES (
       $1, CURRENT_TIMESTAMP, $2, $3, $4

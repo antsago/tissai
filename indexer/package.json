@@ -7,7 +7,8 @@
     "build": "rm -rf ./build && tsc && cd ./src && cp --parents **/*.py ../build/",
     "dev": "yarn build && node build/index.js",
     "typecheck": "tsc --noEmit",
-    "test": "poetry run vitest"
+    "test": "poetry run vitest",
+    "test:integration": "poetry run vitest run __tests__"
   },
   "imports": {
     "#mocks": "./__tests__/utils/index.ts"
