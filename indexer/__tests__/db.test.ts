@@ -1,5 +1,6 @@
 import { expect, describe, it, beforeEach, afterEach, vi } from 'vitest'
 import { Db } from '../src/Db'
+import { OFFER, PAGE } from '#mocks'
 
 describe('DB', () => {
   let testDb: Db
@@ -10,6 +11,7 @@ describe('DB', () => {
 
     testDb = Db('test')
     await testDb.createTracesTable()
+    await testDb.createSellersTable()
   })
 
   afterEach(async () => {
@@ -21,19 +23,35 @@ describe('DB', () => {
 
   it('inserts traces', async () => {
     const TRACE = {
-      pageId: "5f4f389d-cc00-4bdf-a484-278e3b18975c",
+      pageId: PAGE.id,
       objectTable: "sellers",
-      objectId: "test seller",
+      objectId: OFFER.seller,
     }
+
     await testDb.insert.trace(TRACE.pageId, TRACE.objectTable, TRACE.objectId)
 
-    const traces = await testDb.query('SELECT * from traces;')
-
+    const traces = await testDb.query('SELECT * FROM traces;')
     expect(traces).toStrictEqual([{
       id: expect.any(String),
       page_of_origin: TRACE.pageId,
       object_table: TRACE.objectTable,
       object_id: TRACE.objectId,
+      timestamp: expect.any(Date),
+    }])
+  })
+
+  it('inserts sellers', async () => {
+    await testDb.insert.seller(PAGE.id, OFFER.seller)
+
+    const sellers = await testDb.query('SELECT * FROM sellers;')
+    const traces = await testDb.query('SELECT * FROM traces;')
+
+    expect(sellers).toStrictEqual([{ name: OFFER.seller }])
+    expect(traces).toStrictEqual([{
+      id: expect.any(String),
+      page_of_origin: PAGE.id,
+      object_table: "sellers",
+      object_id: OFFER.seller,
       timestamp: expect.any(Date),
     }])
   })

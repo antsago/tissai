@@ -25,12 +25,18 @@ export const Db = (database?: string) => {
       object_id       text
     );`
   )
+  const createSellersTable = () => runQuery(`
+    CREATE TABLE sellers (
+      name            text PRIMARY KEY
+    );`
+  )
 
   return {
     query: runQuery,
     close: () => pool.end(),
     insert,
     createTracesTable,
+    createSellersTable,
   }
 }
 

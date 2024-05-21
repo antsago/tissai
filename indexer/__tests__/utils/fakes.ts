@@ -16,7 +16,7 @@ export const BRAND = {
 }
 
 export const PAGE = {
-  id: "test_id",
+  id: "5f4f389d-cc00-4bdf-a484-278e3b18975d",
   url: "https://example.com/product",
   site: "site-id",
 }
