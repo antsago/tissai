@@ -2,21 +2,22 @@ import { expect, describe, it, beforeEach, afterEach, vi } from 'vitest'
 import { Db } from '../src/Db'
 import { OFFER, PAGE } from '#mocks'
 
+const TEST_TABLE = "test"
 describe('DB', () => {
   let testDb: Db
   let masterDb: Db
   beforeEach(async () => {
     masterDb = Db()
-    await masterDb.query('CREATE DATABASE test;')
+    await masterDb.query(`CREATE DATABASE ${TEST_TABLE};`)
 
-    testDb = Db('test')
+    testDb = Db(TEST_TABLE)
     await testDb.initialize()
   })
 
   afterEach(async () => {
     await testDb.close()
 
-    await masterDb.query('DROP DATABASE test;')
+    await masterDb.query(`DROP DATABASE ${TEST_TABLE};`)
     await masterDb.close()
   })
 
