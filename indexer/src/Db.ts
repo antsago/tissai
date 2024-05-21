@@ -1,22 +1,13 @@
-import { Pool as PgPool } from "pg"
 import createInserts from "./createInserts.js"
+import Connection from "./Connection.js"
 
-let Pool = PgPool
-export function setPg(mock: typeof PgPool) {
-  Pool = mock
-}
-export type RunQuery = <T>(query: string, values?: any[]) => Promise<T[]>
+export * from './Connection.js'
 
 export const Db = (database?: string) => {
-  const connectionString = `${process.env.PG_CONNECTION_STRING}/${database ?? process.env.PG_DATABASE}`
-  const pool = new Pool({ connectionString })
+  const connection = Connection(database)
 
-	const runQuery: RunQuery = async (query, values) => {
-		const response = await pool.query(query, values)
-		return response.rows
-	}
-  const insert = createInserts(runQuery)
-  const createTracesTable = () => runQuery(`
+  const insert = createInserts(connection)
+  const createTracesTable = () => connection.query(`
     CREATE TABLE traces (
       id              uuid PRIMARY KEY,
       timestamp       timestamp with time zone,
@@ -25,7 +16,7 @@ export const Db = (database?: string) => {
       object_id       text
     );`
   )
-  const createSellersTable = () => runQuery(`
+  const createSellersTable = () => connection.query(`
     CREATE TABLE sellers (
       name            text PRIMARY KEY
     );`
@@ -36,8 +27,7 @@ export const Db = (database?: string) => {
   ])
 
   return {
-    query: runQuery,
-    close: () => pool.end(),
+    ...connection,
     insert,
     initialize,
   }

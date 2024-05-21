@@ -48,10 +48,10 @@ describe('indexer', () => {
     expect(pg).toHaveInserted('offers', [PAGE.site, PAGE.url])
     expect(pg).toHaveInserted('categories', [AUGMENTED_DATA.category])
     expect(pg).toHaveInserted('tags', [AUGMENTED_DATA.tags[0]])
-    expect(pg).toHaveInserted('trazes', [PAGE.id, "products"])
-    expect(pg).toHaveInserted('trazes', [PAGE.id, "offers"])
-    expect(pg).toHaveInserted('trazes', [PAGE.id, "categories", AUGMENTED_DATA.category])
-    expect(pg).toHaveInserted('trazes', [PAGE.id, "tags", AUGMENTED_DATA.tags[0]])
+    expect(pg).toHaveInserted('traces', [PAGE.id, "products"])
+    expect(pg).toHaveInserted('traces', [PAGE.id, "offers"])
+    expect(pg).toHaveInserted('traces', [PAGE.id, "categories", AUGMENTED_DATA.category])
+    expect(pg).toHaveInserted('traces', [PAGE.id, "tags", AUGMENTED_DATA.tags[0]])
   })
 
   it("extracts offer details", async () => {
@@ -75,7 +75,7 @@ describe('indexer', () => {
 
     expect(pg).toHaveInserted('sellers', [OFFER.seller])
     expect(pg).toHaveInserted('offers', [PAGE.site, PAGE.url, OFFER.price, OFFER.curency])
-    expect(pg).toHaveInserted('trazes', [PAGE.id, "sellers", OFFER.seller])
+    expect(pg).toHaveInserted('traces', [PAGE.id, "sellers", OFFER.seller])
   })
 
   it("extracts product brand", async () => {
@@ -94,7 +94,7 @@ describe('indexer', () => {
 
     expect(pg).toHaveInserted('products', [BRAND.name])
     expect(pg).toHaveInserted('brands', [BRAND.name, BRAND.logo])
-    expect(pg).toHaveInserted('trazes', [PAGE.id, "brands", BRAND.name])
+    expect(pg).toHaveInserted('traces', [PAGE.id, "brands", BRAND.name])
   })
 
   it("extracts multiple tags", async () => {
