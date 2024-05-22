@@ -7,7 +7,7 @@
     "build": "rm -rf ./build && tsc && cd ./src && cp --parents **/*.py ../build/",
     "dev": "yarn build && node build/index.js",
     "typecheck": "tsc --noEmit",
-    "test": "poetry run vitest",
+    "test": "poetry run vitest run",
     "test:integration": "poetry run vitest run __tests__",
     "format": "yarn format:js & yarn format:py",
     "format:js": "prettier . --write",

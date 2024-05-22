@@ -1,16 +1,27 @@
-import { expect, describe, it, beforeEach, afterEach } from "vitest"
+import {
+  expect,
+  describe,
+  it,
+  beforeEach,
+  afterEach,
+  vi,
+  afterAll,
+} from "vitest"
 import { Db, TRACES, SELLERS } from "../src/Db/index.js"
 import { OFFER, PAGE } from "#mocks"
 
 const TEST_TABLE = "test"
 describe("DB", () => {
+  const masterDb = Db()
+  vi.stubEnv("PG_DATABASE", TEST_TABLE)
+
   let db: Db
-  let masterDb: Db
   beforeEach(async () => {
-    masterDb = Db()
+    vi.resetModules()
+
     await masterDb.query(`CREATE DATABASE ${TEST_TABLE};`)
 
-    db = Db(TEST_TABLE)
+    db = Db()
     await db.initialize()
   })
 
@@ -18,6 +29,9 @@ describe("DB", () => {
     await db.close()
 
     await masterDb.query(`DROP DATABASE ${TEST_TABLE};`)
+  })
+
+  afterAll(async () => {
     await masterDb.close()
   })
 
