@@ -1,10 +1,10 @@
-import { Db, Page } from "./Db/index.js"
+import { Db, Page, PAGES } from "./Db/index.js"
 import Embedder from "./Embedder/index.js"
 import parsePage from "./parsePage.js"
 
 const db = Db()
 const embedder = Embedder()
-const page = (await db.query<Page>("SELECT * FROM pages"))[0]
+const page = (await db.query<Page>(`SELECT * FROM ${PAGES}`))[0]
 
 const { product, offer } = parsePage(page)
 const augmented = await embedder.embed(product.title)
