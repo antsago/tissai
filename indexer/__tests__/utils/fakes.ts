@@ -11,17 +11,19 @@ export const PAGE = {
   site: SITE.id,
 }
 
-export const pageWithSchema = (ld: object) => ({
+export const pageWithSchema = (...schemas: object[]) => ({
   ...PAGE,
   body: `
     <html>
       <head>
-        <script type="application/ld+json">
-        ${JSON.stringify({
-          "@context": "https://schema.org/",
-          ...ld,
-        })}
-        </script>
+        ${schemas.map(schema => `
+          <script type="application/ld+json">
+            ${JSON.stringify({
+              "@context": "https://schema.org/",
+              ...schema,
+            })}
+          </script>
+        `).join()}
       </head>
     </html>
   `,
