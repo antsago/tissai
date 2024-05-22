@@ -7,7 +7,7 @@ import {
   vi,
   afterAll,
 } from "vitest"
-import { PRODUCT, AUGMENTED_DATA, SITE, PAGE, pageWithSchema } from "#mocks"
+import { PRODUCT, AUGMENTED_DATA, SITE, PAGE, pageWithSchema, OFFER, BRAND } from "#mocks"
 import {
   Db,
   TRACES,
@@ -15,6 +15,8 @@ import {
   OFFERS,
   CATEGORIES,
   TAGS,
+  SELLERS,
+  BRANDS,
 } from "../src/Db/index.js"
 
 const TEST_TABLE = "test"
@@ -42,13 +44,28 @@ describe("DB", () => {
     await masterDb.close()
   })
 
-  it("extracts product details", async () => {
+  it("extracts and stores page entities", async () => {
     await db.sites.create(SITE)
     await db.pages.create(pageWithSchema({
       "@type": "Product",
       name: PRODUCT.title,
       description: PRODUCT.description,
       image: PRODUCT.image,
+      brand: {
+        "@type": "Brand",
+        name: BRAND.name,
+        image: BRAND.logo,
+      },
+      offers: {
+        "@type": "Offer",
+        url: "https://example.com/offer",
+        price: OFFER.price,
+        priceCurrency: OFFER.curency,
+        seller: {
+          "@type": "Organization",
+          name: OFFER.seller,
+        },
+      },
     }))
 
     await import("../src/index.js")
@@ -63,7 +80,7 @@ describe("DB", () => {
         embedding: AUGMENTED_DATA.embedding,
         category: AUGMENTED_DATA.category,
         tags: AUGMENTED_DATA.tags,
-        brand: null,
+        brand: BRAND.name,
       },
     ])
     const offers = await db.query(`SELECT * FROM ${OFFERS};`)
@@ -73,15 +90,19 @@ describe("DB", () => {
         product: products[0].id,
         site: PAGE.site,
         url: PAGE.url,
-        seller: null,
-        price: null,
-        currency: null,
+        seller: OFFER.seller,
+        price: String(OFFER.price),
+        currency: OFFER.curency,
       },
     ])
     const categories = await db.query(`SELECT * FROM ${CATEGORIES};`)
     expect(categories).toStrictEqual([{ name: AUGMENTED_DATA.category }])
     const tags = await db.query(`SELECT * FROM ${TAGS};`)
     expect(tags).toStrictEqual([{ name: AUGMENTED_DATA.tags[0] }])
+    const brands = await db.query(`SELECT * FROM ${BRANDS};`)
+    expect(brands).toStrictEqual([{ name: BRAND.name, logo: BRAND.logo }])
+    const sellers = await db.query(`SELECT * FROM ${SELLERS};`)
+    expect(sellers).toStrictEqual([{ name: OFFER.seller }])
     const traces = await db.query(`SELECT * FROM ${TRACES};`)
     expect(traces).toContainEqual({
       id: expect.any(String),
@@ -109,6 +130,20 @@ describe("DB", () => {
       [TRACES.pageId]: PAGE.id,
       [TRACES.objectTable]: TAGS.toString(),
       [TRACES.objectId]: tags[0].name,
+      [TRACES.timestamp]: expect.any(Date),
+    })
+    expect(traces).toContainEqual({
+      id: expect.any(String),
+      [TRACES.pageId]: PAGE.id,
+      [TRACES.objectTable]: BRANDS.toString(),
+      [TRACES.objectId]: brands[0].name,
+      [TRACES.timestamp]: expect.any(Date),
+    })
+    expect(traces).toContainEqual({
+      id: expect.any(String),
+      [TRACES.pageId]: PAGE.id,
+      [TRACES.objectTable]: SELLERS.toString(),
+      [TRACES.objectId]: sellers[0].name,
       [TRACES.timestamp]: expect.any(Date),
     })
   })
