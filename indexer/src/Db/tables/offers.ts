@@ -25,19 +25,17 @@ export const create =
   ) =>
     Promise.all([
       connection.query(
-        `
-      INSERT INTO ${TABLE} (
-        ${TABLE.id},
-        ${TABLE.url},
-        ${TABLE.site},
-        ${TABLE.product},
-        ${TABLE.seller},
-        ${TABLE.price},
-        ${TABLE.currency}
-      ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7
-      );
-    `,
+        `INSERT INTO ${TABLE} (
+          ${TABLE.id},
+          ${TABLE.url},
+          ${TABLE.site},
+          ${TABLE.product},
+          ${TABLE.seller},
+          ${TABLE.price},
+          ${TABLE.currency}
+        ) VALUES (
+          $1, $2, $3, $4, $5, $6, $7
+        );`,
         [id, url, site, product, seller, price, currency],
       ),
       traces.create(connection)(pageId, TABLE.toString(), id),

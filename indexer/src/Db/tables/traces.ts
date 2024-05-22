@@ -14,10 +14,10 @@ export const create =
   (pageId: string, objectTable: string, objectId: string) =>
     connection.query(
       `INSERT INTO ${TABLE} (
-      ${TABLE.id}, ${TABLE.timestamp}, ${TABLE.pageId}, ${TABLE.objectTable}, ${TABLE.objectId}
-    ) VALUES (
-      $1, CURRENT_TIMESTAMP, $2, $3, $4
-    );`,
+        ${TABLE.id}, ${TABLE.timestamp}, ${TABLE.pageId}, ${TABLE.objectTable}, ${TABLE.objectId}
+      ) VALUES (
+        $1, CURRENT_TIMESTAMP, $2, $3, $4
+      );`,
       [randomUUID(), pageId, objectTable, objectId],
     )
 

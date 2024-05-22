@@ -27,19 +27,18 @@ export const create =
   ) =>
     Promise.all([
       connection.query(
-        `
-      INSERT INTO ${TABLE} (
-        ${TABLE.id},
-        ${TABLE.title},
-        ${TABLE.description},
-        ${TABLE.images},
-        ${TABLE.brand},
-        ${TABLE.embedding},
-        ${TABLE.category},
-        ${TABLE.tags}
-      ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8
-      );`,
+        `INSERT INTO ${TABLE} (
+          ${TABLE.id},
+          ${TABLE.title},
+          ${TABLE.description},
+          ${TABLE.images},
+          ${TABLE.brand},
+          ${TABLE.embedding},
+          ${TABLE.category},
+          ${TABLE.tags}
+        ) VALUES (
+          $1, $2, $3, $4, $5, $6, $7, $8
+        );`,
         [id, title, description, images, brand, embedding, category, tags],
       ),
       traces.create(connection)(pageId, TABLE.toString(), id),
