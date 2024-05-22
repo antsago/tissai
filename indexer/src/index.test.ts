@@ -1,5 +1,5 @@
 import { expect, describe, it, beforeEach, vi } from "vitest"
-import { MockPg, PRODUCT, OFFER, BRAND, PAGE, AUGMENTED_DATA } from "#mocks"
+import { MockPg, PRODUCT, OFFER, BRAND, PAGE } from "#mocks"
 import {
   BRANDS,
   CATEGORIES,
