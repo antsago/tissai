@@ -3,7 +3,7 @@ import { setPg } from "../../src/Db/index.js"
 
 export function MockPg() {
   const Pool = vi.fn()
-  const query = vi.fn().mockResolvedValue({ rows: [] }) 
+  const query = vi.fn().mockResolvedValue({ rows: [] })
   Pool.mockReturnValue({
     query,
     end: vi.fn(),

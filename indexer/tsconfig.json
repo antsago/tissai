@@ -2,8 +2,8 @@
   "extends": "@tsconfig/node20/tsconfig.json",
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "build",
+    "outDir": "build"
   },
   "include": ["./src/**/*"],
-  "exclude": ["**/*.test.ts"],
+  "exclude": ["**/*.test.ts"]
 }

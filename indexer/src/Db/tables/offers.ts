@@ -11,17 +11,21 @@ export const TABLE = Object.assign("offers", {
   currency: "currency",
 })
 
-export const create = (connection: Connection) => (
-  pageId: string,
-  id: string,
-  url: string,
-  site: string,
-  product: string,
-  seller?: string,
-  price?: number,
-  currency?: string,
-) => Promise.all([
-    connection.query(`
+export const create =
+  (connection: Connection) =>
+  (
+    pageId: string,
+    id: string,
+    url: string,
+    site: string,
+    product: string,
+    seller?: string,
+    price?: number,
+    currency?: string,
+  ) =>
+    Promise.all([
+      connection.query(
+        `
       INSERT INTO ${TABLE} (
         ${TABLE.id},
         ${TABLE.url},
@@ -33,17 +37,11 @@ export const create = (connection: Connection) => (
       ) VALUES (
         $1, $2, $3, $4, $5, $6, $7
       );
-    `, [
-      id,
-      url,
-      site,
-      product,
-      seller,
-      price,
-      currency,
-    ]),
-    traces.create(connection)(pageId, TABLE.toString(), id),
-])
+    `,
+        [id, url, site, product, seller, price, currency],
+      ),
+      traces.create(connection)(pageId, TABLE.toString(), id),
+    ])
 
 export const initialize = (connection: Connection) =>
   connection.query(`
@@ -55,5 +53,4 @@ export const initialize = (connection: Connection) =>
       ${TABLE.seller}         text,
       ${TABLE.price}          numeric,
       ${TABLE.currency}       text
-    );`
-  )
+    );`)

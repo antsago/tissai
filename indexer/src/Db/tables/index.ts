@@ -1,8 +1,8 @@
 export { default } from "./Tables.js"
-export { TABLE as TRACES  } from './traces.js'
-export { TABLE as SELLERS  } from './sellers.js'
-export { TABLE as BRANDS  } from './brands.js'
-export { TABLE as CATEGORIES  } from './categories.js'
-export { TABLE as TAGS  } from './tags.js'
-export { TABLE as PRODUCTS  } from './products.js'
-export { TABLE as OFFERS  } from './offers.js'
+export { TABLE as TRACES } from "./traces.js"
+export { TABLE as SELLERS } from "./sellers.js"
+export { TABLE as BRANDS } from "./brands.js"
+export { TABLE as CATEGORIES } from "./categories.js"
+export { TABLE as TAGS } from "./tags.js"
+export { TABLE as PRODUCTS } from "./products.js"
+export { TABLE as OFFERS } from "./offers.js"

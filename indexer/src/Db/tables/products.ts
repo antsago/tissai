@@ -12,18 +12,22 @@ export const TABLE = Object.assign("products", {
   tags: "tags",
 })
 
-export const create = (connection: Connection) => (
-  pageId: string,
-  id: string,
-  title: string,
-  embedding: number[],
-  category: string,
-  tags: string[],
-  description?: string,
-  images?: string | string[],
-  brand?: string
-) => Promise.all([
-    connection.query(`
+export const create =
+  (connection: Connection) =>
+  (
+    pageId: string,
+    id: string,
+    title: string,
+    embedding: number[],
+    category: string,
+    tags: string[],
+    description?: string,
+    images?: string | string[],
+    brand?: string,
+  ) =>
+    Promise.all([
+      connection.query(
+        `
       INSERT INTO ${TABLE} (
         ${TABLE.id},
         ${TABLE.title},
@@ -36,20 +40,10 @@ export const create = (connection: Connection) => (
       ) VALUES (
         $1, $2, $3, $4, $5, $6, $7, $8
       );`,
-      [
-        id,
-        title,
-        description,
-        images,
-        brand,
-        embedding,
-        category,
-        tags,
-      ],
-    ),
-    traces.create(connection)(pageId, TABLE.toString(), id),
-])
-
+        [id, title, description, images, brand, embedding, category, tags],
+      ),
+      traces.create(connection)(pageId, TABLE.toString(), id),
+    ])
 
 export const initialize = (connection: Connection) =>
   connection.query(`
@@ -62,5 +56,4 @@ export const initialize = (connection: Connection) =>
       ${TABLE.description}    text,
       ${TABLE.images}         text[],
       ${TABLE.brand}          text
-    );`
-  )
+    );`)

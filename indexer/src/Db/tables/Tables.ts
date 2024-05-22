@@ -25,11 +25,17 @@ type CRUD_METHODS = {
 }
 
 const Tables = (connection: Connection) => ({
-  initialize: () => Promise.all(Object.values(TABLE_MODULES).map(table => table.initialize(connection))),
-  crud: Object.values(TABLE_MODULES).reduce((aggregate, table) => ({
-    ...aggregate,
-    [table.TABLE]: { create: table.create(connection) },
-  }), {} as CRUD_METHODS)
+  initialize: () =>
+    Promise.all(
+      Object.values(TABLE_MODULES).map((table) => table.initialize(connection)),
+    ),
+  crud: Object.values(TABLE_MODULES).reduce(
+    (aggregate, table) => ({
+      ...aggregate,
+      [table.TABLE]: { create: table.create(connection) },
+    }),
+    {} as CRUD_METHODS,
+  ),
 })
 
 export default Tables
