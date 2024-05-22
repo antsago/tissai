@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto"
-import { Connection } from "./Connection.js"
+import { Connection } from "../Connection.js"
 
 export const TABLE = Object.assign("traces", {
   id: "id",

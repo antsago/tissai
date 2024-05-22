@@ -1,7 +1,7 @@
-import { Connection } from "./Connection.js"
+import { Connection } from "../Connection.js"
 import * as traces from "./traces.js"
 
-export const TABLE = Object.assign("tags", {
+export const TABLE = Object.assign("sellers", {
   name: "name",
 })
 

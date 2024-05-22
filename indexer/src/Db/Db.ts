@@ -1,5 +1,5 @@
 import { Connection } from "./Connection.js"
-import Tables from "./Tables.js"
+import Tables from "./tables/index.js"
 
 export const Db = (database?: string) => {
   const connection = Connection(database)
