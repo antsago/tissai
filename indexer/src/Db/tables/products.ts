@@ -12,6 +12,10 @@ export const TABLE = Object.assign("products", {
   tags: "tags",
 })
 
+function formatEmbedding(embedding: number[]) {
+  return `[${embedding.join(",")}]`
+}
+
 export const create =
   (connection: Connection) =>
   (
@@ -22,7 +26,7 @@ export const create =
     category: string,
     tags: string[],
     description?: string,
-    images?: string | string[],
+    images?: string[],
     brand?: string,
   ) =>
     Promise.all([
@@ -39,7 +43,16 @@ export const create =
         ) VALUES (
           $1, $2, $3, $4, $5, $6, $7, $8
         );`,
-        [id, title, description, images, brand, embedding, category, tags],
+        [
+          id,
+          title,
+          description,
+          images,
+          brand,
+          formatEmbedding(embedding),
+          category,
+          tags,
+        ],
       ),
       traces.create(connection)(pageId, TABLE.toString(), id),
     ])

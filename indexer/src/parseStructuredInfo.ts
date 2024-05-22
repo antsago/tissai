@@ -13,7 +13,9 @@ function parseStructuredInfo(page: any) {
     id: randomUUID(),
     title: productTag.name,
     description: productTag.description,
-    image: productTag.image,
+    image: Array.isArray(productTag.image)
+      ? productTag.image
+      : [productTag.image],
     brandName: productTag?.brand?.name,
     brandLogo: productTag?.brand?.image,
   }

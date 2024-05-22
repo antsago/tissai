@@ -47,3 +47,5 @@ await Promise.all(
       : Promise.resolve(),
   ].flat(),
 )
+
+await db.close()

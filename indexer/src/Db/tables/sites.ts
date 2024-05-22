@@ -1,5 +1,15 @@
 import { Connection } from "../Connection.js"
 
+export type Site = {
+  id: string
+  name: string
+  icon: string
+  domain: string
+  sitemaps?: string[]
+  sitemapWhitelist?: string[]
+  urlKeywords?: string[]
+}
+
 export const TABLE = Object.assign("sites", {
   id: "id",
   name: "name",
@@ -12,15 +22,7 @@ export const TABLE = Object.assign("sites", {
 
 export const create =
   (connection: Connection) =>
-  (
-    id: string,
-    name: string,
-    icon: string,
-    domain: string,
-    sitemaps?: string[],
-    sitemapWhitelist?: string[],
-    urlKeywords?: string[],
-  ) =>
+  ({ id, name, icon, domain, sitemaps, sitemapWhitelist, urlKeywords }: Site) =>
     connection.query(
       `INSERT INTO ${TABLE} (
         ${TABLE.id},
@@ -31,7 +33,7 @@ export const create =
         ${TABLE.sitemapWhitelist},
         ${TABLE.urlKeywords}
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $6
+        $1, $2, $3, $4, $5, $6, $7
       );`,
       [id, name, icon, domain, sitemaps, sitemapWhitelist, urlKeywords],
     )

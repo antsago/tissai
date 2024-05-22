@@ -1,6 +1,13 @@
 import { Connection } from "../Connection.js"
 import { TABLE as SITES } from "./sites.js"
 
+export type Page = {
+  id: string
+  url: string
+  body: string
+  site: string
+}
+
 export const TABLE = Object.assign("pages", {
   id: "id",
   url: "url",
@@ -10,7 +17,7 @@ export const TABLE = Object.assign("pages", {
 
 export const create =
   (connection: Connection) =>
-  (id: string, url: string, body: string, site: string) =>
+  ({ id, url, body, site }: Page) =>
     connection.query(
       `INSERT INTO ${TABLE} (
         ${TABLE.id}, ${TABLE.url}, ${TABLE.body}, ${TABLE.site}
