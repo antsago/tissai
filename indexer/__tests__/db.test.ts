@@ -4,18 +4,18 @@ import { OFFER, PAGE } from "#mocks"
 
 const TEST_TABLE = "test"
 describe("DB", () => {
-  let testDb: Db
+  let db: Db
   let masterDb: Db
   beforeEach(async () => {
     masterDb = Db()
     await masterDb.query(`CREATE DATABASE ${TEST_TABLE};`)
 
-    testDb = Db(TEST_TABLE)
-    await testDb.initialize()
+    db = Db(TEST_TABLE)
+    await db.initialize()
   })
 
   afterEach(async () => {
-    await testDb.close()
+    await db.close()
 
     await masterDb.query(`DROP DATABASE ${TEST_TABLE};`)
     await masterDb.close()
@@ -28,9 +28,9 @@ describe("DB", () => {
       objectId: OFFER.seller,
     }
 
-    await testDb.traces.create(TRACE.pageId, TRACE.objectTable, TRACE.objectId)
+    await db.traces.create(TRACE.pageId, TRACE.objectTable, TRACE.objectId)
 
-    const traces = await testDb.query(`SELECT * FROM ${TRACES};`)
+    const traces = await db.query(`SELECT * FROM ${TRACES};`)
     expect(traces).toStrictEqual([
       {
         id: expect.any(String),
@@ -43,10 +43,10 @@ describe("DB", () => {
   })
 
   it("inserts sellers", async () => {
-    await testDb.sellers.create(PAGE.id, OFFER.seller)
+    await db.sellers.create(PAGE.id, OFFER.seller)
 
-    const sellers = await testDb.query(`SELECT * FROM ${SELLERS};`)
-    const traces = await testDb.query(`SELECT * FROM ${TRACES};`)
+    const sellers = await db.query(`SELECT * FROM ${SELLERS};`)
+    const traces = await db.query(`SELECT * FROM ${TRACES};`)
 
     expect(sellers).toStrictEqual([{ name: OFFER.seller }])
     expect(traces).toStrictEqual([
