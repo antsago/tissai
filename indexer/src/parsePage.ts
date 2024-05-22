@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto"
 import { parse } from "node-html-parser"
 
-function parseStructuredInfo(page: any) {
+function parsePage(page: any) {
   const root = parse(page.body)
   const productTag = root
     .querySelectorAll('script[type="application/ld+json"]')
@@ -36,4 +36,4 @@ function parseStructuredInfo(page: any) {
   }
 }
 
-export default parseStructuredInfo
+export default parsePage

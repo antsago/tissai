@@ -1,6 +1,6 @@
 import { Db } from "./Db/index.js"
 import Embedder from "./Embedder/index.js"
-import parseStructuredInfo from "./parseStructuredInfo.js"
+import parsePage from "./parsePage.js"
 
 type Page = {
   id: string
@@ -13,7 +13,7 @@ const db = Db()
 const embedder = Embedder()
 const page = (await db.query<Page>("SELECT * FROM pages"))[0]
 
-const { product, offer } = parseStructuredInfo(page)
+const { product, offer } = parsePage(page)
 const augmented = await embedder.embed(product.title)
 
 await Promise.all([
