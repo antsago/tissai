@@ -8,7 +8,10 @@
     "dev": "yarn build && node build/index.js",
     "typecheck": "tsc --noEmit",
     "test": "poetry run vitest",
-    "test:integration": "poetry run vitest run __tests__"
+    "test:integration": "poetry run vitest run __tests__",
+    "format": "yarn format:js & yarn format:py",
+    "format:js": "prettier . --write",
+    "format:py": "poetry run black ."
   },
   "imports": {
     "#mocks": "./__tests__/utils/index.ts"
@@ -17,6 +20,7 @@
     "@tsconfig/node20": "20.1.4",
     "@types/node": "20.12.7",
     "@types/pg": "^8",
+    "prettier": "3.2.5",
     "typescript": "5.4.5",
     "vitest": "1.5.0"
   },
