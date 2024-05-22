@@ -6,13 +6,17 @@ import * as categories from "./categories.js"
 import * as tags from "./tags.js"
 import * as products from "./products.js"
 import * as offers from "./offers.js"
+import * as sites from "./sites.js"
+import * as pages from "./pages.js"
 
 const TABLE_MODULES = {
   brands,
   categories,
   offers,
+  pages,
   products,
   sellers,
+  sites,
   tags,
   traces,
 }
@@ -25,10 +29,14 @@ type CRUD_METHODS = {
 }
 
 const Tables = (connection: Connection) => ({
-  initialize: () =>
-    Promise.all(
-      Object.values(TABLE_MODULES).map((table) => table.initialize(connection)),
-    ),
+  initialize: async () => {
+    const { sites, ...others } = TABLE_MODULES
+
+    sites.initialize(connection)
+    await Promise.all(
+      Object.values(others).map((table) => table.initialize(connection)),
+    )
+  },
   crud: Object.values(TABLE_MODULES).reduce(
     (aggregate, table) => ({
       ...aggregate,
