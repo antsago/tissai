@@ -2,7 +2,7 @@ import { expect } from "vitest"
 import type { MockPg } from "./MockPg.js"
 
 interface CustomMatchers {
-  toHaveInserted: (table: string, values: any[]) => void
+  toHaveInserted: (table: string, values?: any[]) => void
 }
 
 declare module "vitest" {
@@ -10,7 +10,7 @@ declare module "vitest" {
 }
 
 expect.extend({
-  toHaveInserted(pg: MockPg, table, values) {
+  toHaveInserted(pg: MockPg, table, values = []) {
     const { isNot, equals } = this
     const expected = expect.arrayContaining([
       [
