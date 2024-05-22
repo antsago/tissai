@@ -28,7 +28,7 @@ export const pageWithSchema = (ld: object) => ({
 })
 
 export const PRODUCT = {
-  title: "Test example product",
+  title: "Test product",
   description: "Product description",
   image: "https://example.com/product-image.jpg",
 }

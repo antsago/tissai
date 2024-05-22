@@ -1,30 +1,13 @@
 import { expect, describe, it, beforeEach, vi } from "vitest"
-import { MockPg, PRODUCT, OFFER, BRAND, PAGE } from "#mocks"
+import { MockPg, PRODUCT, OFFER, BRAND, PAGE, pageWithSchema } from "#mocks"
 import {
   BRANDS,
-  CATEGORIES,
   OFFERS,
   PRODUCTS,
   SELLERS,
   TAGS,
   TRACES,
 } from "./Db/index.js"
-
-const fullPage = (ld: object) => ({
-  ...PAGE,
-  body: `
-    <html>
-      <head>
-        <script type="application/ld+json">
-        ${JSON.stringify({
-          "@context": "https://schema.org/",
-          ...ld,
-        })}
-        </script>
-      </head>
-    </html>
-  `,
-})
 
 describe("indexer", () => {
   let pg: MockPg
@@ -36,7 +19,7 @@ describe("indexer", () => {
   })
 
   it("extracts offer details", async () => {
-    const page = fullPage({
+    const page = pageWithSchema({
       "@type": "Product",
       name: PRODUCT.title,
       offers: {
@@ -69,7 +52,7 @@ describe("indexer", () => {
   })
 
   it("extracts product brand", async () => {
-    const page = fullPage({
+    const page = pageWithSchema({
       "@type": "Product",
       name: PRODUCT.title,
       brand: {
@@ -88,7 +71,7 @@ describe("indexer", () => {
   })
 
   it("extracts multiple tags", async () => {
-    const page = fullPage({
+    const page = pageWithSchema({
       "@type": "Product",
       name: "Test multiple tags",
     })
