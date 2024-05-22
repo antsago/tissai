@@ -1,13 +1,6 @@
-import { Db } from "./Db/index.js"
+import { Db, Page } from "./Db/index.js"
 import Embedder from "./Embedder/index.js"
 import parsePage from "./parsePage.js"
-
-type Page = {
-  id: string
-  body: string
-  url: string
-  site: string
-}
 
 const db = Db()
 const embedder = Embedder()
