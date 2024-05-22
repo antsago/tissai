@@ -1,4 +1,6 @@
 import { Connection } from "../Connection.js"
+import { TABLE as BRANDS } from "./brands.js"
+import { TABLE as CATEGORIES } from "./categories.js"
 import * as traces from "./traces.js"
 
 export const TABLE = Object.assign("products", {
@@ -62,10 +64,10 @@ export const initialize = (connection: Connection) =>
     CREATE TABLE ${TABLE} (
       ${TABLE.id}             uuid PRIMARY KEY,
       ${TABLE.title}          text NOT NULL,
-      ${TABLE.category}       text NOT NULL,
+      ${TABLE.category}       text NOT NULL REFERENCES ${CATEGORIES},
       ${TABLE.tags}           text[] NOT NULL,
       ${TABLE.embedding}      vector(384) NOT NULL,
       ${TABLE.description}    text,
       ${TABLE.images}         text[],
-      ${TABLE.brand}          text
+      ${TABLE.brand}          text REFERENCES ${BRANDS}
     );`)

@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto"
 import { Connection } from "../Connection.js"
+import { TABLE as PAGES } from "./pages.js"
 
 export const TABLE = Object.assign("traces", {
   id: "id",
@@ -25,8 +26,8 @@ export const initialize = (connection: Connection) =>
   connection.query(`
     CREATE TABLE ${TABLE} (
       ${TABLE.id}             uuid PRIMARY KEY,
-      ${TABLE.timestamp}      timestamp with time zone,
-      ${TABLE.pageId}         uuid,
-      ${TABLE.objectTable}    text,
-      ${TABLE.objectId}       text
+      ${TABLE.timestamp}      timestamp with time zone NOT NULL,
+      ${TABLE.pageId}         uuid NOT NULL REFERENCES ${PAGES},
+      ${TABLE.objectTable}    text NOT NULL,
+      ${TABLE.objectId}       text NOT NULL
     );`)
