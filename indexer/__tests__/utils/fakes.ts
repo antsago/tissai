@@ -9,6 +9,7 @@ export const PAGE = {
   id: "4fd6e0ea-8c16-4ca5-b171-7db323b7025f",
   url: "https://example.com/page.html",
   site: SITE.id,
+  body: "<html><head></head></html>"
 }
 
 export const pageWithSchema = (...schemas: object[]) => ({
