@@ -7,7 +7,15 @@ import {
   vi,
   afterAll,
 } from "vitest"
-import { PRODUCT, AUGMENTED_DATA, SITE, PAGE, pageWithSchema, OFFER, BRAND } from "#mocks"
+import {
+  PRODUCT,
+  AUGMENTED_DATA,
+  SITE,
+  PAGE,
+  pageWithSchema,
+  OFFER,
+  BRAND,
+} from "#mocks"
 import {
   Db,
   TRACES,
@@ -46,27 +54,29 @@ describe("DB", () => {
 
   it("extracts and stores page entities", async () => {
     await db.sites.create(SITE)
-    await db.pages.create(pageWithSchema({
-      "@type": "Product",
-      name: PRODUCT.title,
-      description: PRODUCT.description,
-      image: PRODUCT.image,
-      brand: {
-        "@type": "Brand",
-        name: BRAND.name,
-        image: BRAND.logo,
-      },
-      offers: {
-        "@type": "Offer",
-        url: "https://example.com/offer",
-        price: OFFER.price,
-        priceCurrency: OFFER.curency,
-        seller: {
-          "@type": "Organization",
-          name: OFFER.seller,
+    await db.pages.create(
+      pageWithSchema({
+        "@type": "Product",
+        name: PRODUCT.title,
+        description: PRODUCT.description,
+        image: PRODUCT.image,
+        brand: {
+          "@type": "Brand",
+          name: BRAND.name,
+          image: BRAND.logo,
         },
-      },
-    }))
+        offers: {
+          "@type": "Offer",
+          url: "https://example.com/offer",
+          price: OFFER.price,
+          priceCurrency: OFFER.curency,
+          seller: {
+            "@type": "Organization",
+            name: OFFER.seller,
+          },
+        },
+      }),
+    )
 
     await import("../src/index.js")
 

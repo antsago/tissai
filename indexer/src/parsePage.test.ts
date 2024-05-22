@@ -6,9 +6,11 @@ describe("parsePage", () => {
   it("returns page url", async () => {
     const result = parsePage(PAGE)
 
-    expect(result).toStrictEqual(expect.objectContaining({
-      url: PAGE.url,
-    }))
+    expect(result).toStrictEqual(
+      expect.objectContaining({
+        url: PAGE.url,
+      }),
+    )
   })
 
   it("parses JSON-LD tags", async () => {
@@ -41,9 +43,11 @@ describe("parsePage", () => {
 
     const result = parsePage(page)
 
-    expect(result).toStrictEqual(expect.objectContaining({
-      jsonLd: [productSchema, breadcrumbSchema],
-    }))
+    expect(result).toStrictEqual(
+      expect.objectContaining({
+        jsonLd: [productSchema, breadcrumbSchema],
+      }),
+    )
   })
 
   it("extracts heading information", async () => {

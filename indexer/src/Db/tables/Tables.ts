@@ -30,19 +30,13 @@ type CRUD_METHODS = {
 
 const Tables = (connection: Connection) => ({
   initialize: async () => {
-    const initializeInParalel = (tables: Partial<TABLE_MODULES>) => Promise.all(
-      Object.values(tables).map((table) => table.initialize(connection)),
-    )
+    const initializeInParalel = (tables: Partial<TABLE_MODULES>) =>
+      Promise.all(
+        Object.values(tables).map((table) => table.initialize(connection)),
+      )
 
-    const {
-      sites,
-      categories,
-      brands,
-      sellers,
-      pages,
-      products,
-      ...others
-    } = TABLE_MODULES
+    const { sites, categories, brands, sellers, pages, products, ...others } =
+      TABLE_MODULES
 
     await initializeInParalel({ sites, categories, brands, sellers })
     await initializeInParalel({ pages, products })
