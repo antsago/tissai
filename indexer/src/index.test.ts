@@ -1,5 +1,5 @@
 import { expect, describe, it, beforeEach, vi } from "vitest"
-import { MockPg, PRODUCT, AUGMENTED_DATA, pageWithSchema } from "#mocks"
+import { MockPg, MockPython, PRODUCT, AUGMENTED_DATA, pageWithSchema } from "#mocks"
 import {
   BRANDS,
   CATEGORIES,
@@ -8,25 +8,6 @@ import {
   SELLERS,
   TAGS,
 } from "./Db/index.js"
-import { EventEmitter } from "stream"
-
-function MockPython(setPShell) {
-  const eventEmitter = new EventEmitter<{ message: [unknown] }>()
-  const send = vi.fn()
-  const worker = Object.assign(eventEmitter, { send })
-  
-  const pythonShell = vi.fn().mockReturnValue(worker)
-  setPShell(pythonShell as any)
-
-  const mockImplementation = (mock: () => unknown) => {
-    worker.send.mockImplementation(() => {
-      worker.emit("message", mock())
-    })
-  }
-
-  return { worker, mockImplementation }
-}
-type MockPython = ReturnType<typeof MockPython>
 
 describe("indexer", () => {
   let pg: MockPg
@@ -34,10 +15,9 @@ describe("indexer", () => {
   beforeEach(async () => {
     vi.resetModules()
 
-    const { MockPg } = await import("#mocks")
+    const { MockPg, MockPython } = await import("#mocks")
     pg = MockPg()
-    const { setPShell } = await import("./EntityExtractor/index.js")
-    python = await MockPython(setPShell)
+    python = MockPython()
   })
 
   it("handles title-only products", async () => {
