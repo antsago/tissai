@@ -1,6 +1,6 @@
 import { Db, Page, PAGES } from "./Db/index.js"
 import parsePage from "./parsePage.js"
-import EntityExtractor from "./EntityExtractor.js"
+import EntityExtractor from "./EntityExtractor/index.js"
 
 const db = Db()
 const extractEntities = EntityExtractor()

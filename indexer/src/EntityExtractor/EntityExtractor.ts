@@ -1,7 +1,7 @@
-import type { StructuredData } from "./parsePage.js"
+import type { StructuredData } from "../parsePage.js"
 import { randomUUID } from "node:crypto"
-import { Page } from "./Db/index.js"
-import Embedder from "./Embedder/index.js"
+import { Page } from "../Db/index.js"
+import Embedder from "./embedder.js"
 
 type DerivedData = {
   embedding: number[]
