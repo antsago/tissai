@@ -1,9 +1,9 @@
 import { Db, Page, PAGES } from "./Db/index.js"
 import parsePage from "./parsePage.js"
-import Extractor from "./Extractor.js"
+import EntityExtractor from "./EntityExtractor.js"
 
 const db = Db()
-const extractEntities = Extractor()
+const extractEntities = EntityExtractor()
 const page = (await db.query<Page>(`SELECT * FROM ${PAGES}`))[0]
 
 const structuredData = parsePage(page)

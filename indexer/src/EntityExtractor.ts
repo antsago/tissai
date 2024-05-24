@@ -5,7 +5,7 @@ import parsePage from "./parsePage.js"
 
 type StructuredData = ReturnType<typeof parsePage>
 
-const Extractor = () => {
+const EntityExtractor = () => {
   const embedder = Embedder()
 
   return async ({ jsonLd }: StructuredData, page: Page) => {
@@ -58,4 +58,4 @@ const Extractor = () => {
   }
 }
 
-export default Extractor
+export default EntityExtractor
