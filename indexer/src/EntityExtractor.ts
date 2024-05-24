@@ -8,8 +8,8 @@ const EntityExtractor = () => {
 
   return async ({ jsonLd }: StructuredData, page: Page) => {
     const productTag = jsonLd.filter((t) => t["@type"] === "Product")[0]
-    const product = {
-      id: randomUUID(),
+
+    const structuredInfo = {
       title: productTag.name,
       description: productTag.description,
       image: Array.isArray(productTag.image)
@@ -17,40 +17,47 @@ const EntityExtractor = () => {
         : [productTag.image],
       brandName: productTag?.brand?.name,
       brandLogo: productTag?.brand?.image,
+      price: productTag.offers?.price,
+      currency: productTag.offers?.priceCurrency,
+      seller: productTag.offers?.seller.name,
     }
+    const derivedInfo = await embedder.embed(structuredInfo.title)
+
+    const category = {
+      name: derivedInfo.category,
+    }
+    const tags = derivedInfo.tags.map(t => ({ name: t }))
+
+    const seller = structuredInfo.seller ? { name: structuredInfo.seller } : undefined
+    const brand = structuredInfo.brandName ? { name: structuredInfo.brandName, logo: structuredInfo.brandLogo } : undefined
+
+    const product = {
+      id: randomUUID(),
+      title: structuredInfo.title,
+      images: structuredInfo.image,
+      description: structuredInfo.description,
+      brand: brand?.name,
+      category: category.name,
+      tags: tags.map(t => t.name),
+      embedding: derivedInfo.embedding,
+    }
+
     const offer = {
       id: randomUUID(),
       url: page.url,
       site: page.site,
       product: product.id,
-      price: productTag.offers?.price,
-      currency: productTag.offers?.priceCurrency,
-      seller: productTag.offers?.seller.name,
+      price: structuredInfo.price,
+      currency: structuredInfo.currency,
+      seller: seller?.name,
     }
-    const augmented = await embedder.embed(product.title)
-
-    const category = {
-      name: augmented.category,
-    }
-    const tags = augmented.tags.map(t => ({ name: t }))
-    const seller = offer.seller ? { name: offer.seller } : undefined
-    const brand = product.brandName ? { name: product.brandName, logo: product.brandLogo } : undefined
 
     return {
       category,
       tags,
       seller,
       brand,
-      product: {
-        id: product.id,
-        title: product.title,
-        images: product.image,
-        description: product.description,
-        brand: brand?.name,
-        category: category.name,
-        tags: tags.map(t => t.name),
-        embedding: augmented.embedding,
-      },
+      product,
       offer,
     }
   }
