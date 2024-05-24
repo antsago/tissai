@@ -1,7 +1,20 @@
 import { parse } from "node-html-parser"
 import { Page } from "./Db/index.js"
 
-function parsePage(page: Page) {
+export type StructuredData = {
+  jsonLd: any[],
+  opengraph: Record<`og:${string}`, string>,
+  headings: Partial<{
+    title: string
+    description: string
+    keywords: string
+    author: string
+    robots: string
+    canonical: string
+  }>
+}
+
+function parsePage(page: Page): StructuredData {
   const root = parse(page.body)
   const jsonLd = root
     .querySelectorAll('script[type="application/ld+json"]')
@@ -35,7 +48,5 @@ function parsePage(page: Page) {
     opengraph,
   }
 }
-
-export type StructuredData = ReturnType<typeof parsePage>
 
 export default parsePage
