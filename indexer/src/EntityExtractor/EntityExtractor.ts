@@ -13,7 +13,7 @@ type DerivedData = {
 
 const EntityExtractor = () => {
   const currentDirectory = dirname(fileURLToPath(import.meta.url))
-  const parseTitle = PythonPool<string, DerivedData>(`${currentDirectory}/embedder.py`)
+  const parseTitle = PythonPool<string, DerivedData>(`${currentDirectory}/parseTitle.py`)
 
   return async ({ jsonLd }: StructuredData, page: Page) => {
     const productTag = jsonLd.filter((t) => t["@type"] === "Product")[0]
