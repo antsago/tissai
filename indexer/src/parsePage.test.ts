@@ -3,16 +3,6 @@ import { PAGE, pageWithSchema } from "#mocks"
 import parsePage from "./parsePage.js"
 
 describe("parsePage", () => {
-  it("returns page url", async () => {
-    const result = parsePage(PAGE)
-
-    expect(result).toStrictEqual(
-      expect.objectContaining({
-        url: PAGE.url,
-      }),
-    )
-  })
-
   it("parses JSON-LD tags", async () => {
     const productSchema = {
       "@context": "https://schema.org/",

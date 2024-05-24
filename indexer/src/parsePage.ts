@@ -30,7 +30,6 @@ function parsePage(page: Page) {
   )
 
   return {
-    url: page.url,
     jsonLd,
     headings,
     opengraph,
