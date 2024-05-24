@@ -37,4 +37,6 @@ function parsePage(page: Page) {
   }
 }
 
+export type StructuredData = ReturnType<typeof parsePage>
+
 export default parsePage

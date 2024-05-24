@@ -1,9 +1,7 @@
+import type { StructuredData } from "./parsePage.js"
 import { randomUUID } from "node:crypto"
 import { Page } from "./Db/index.js"
 import Embedder from "./Embedder/index.js"
-import parsePage from "./parsePage.js"
-
-type StructuredData = ReturnType<typeof parsePage>
 
 const EntityExtractor = () => {
   const embedder = Embedder()
