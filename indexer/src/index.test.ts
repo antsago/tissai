@@ -18,12 +18,19 @@ function MockPython(setPShell) {
   const pythonShell = vi.fn().mockReturnValue(worker)
   setPShell(pythonShell as any)
 
-  return { worker }
+  const mockImplementation = (mock: () => unknown) => {
+    worker.send.mockImplementation(() => {
+      worker.emit("message", mock())
+    })
+  }
+
+  return { worker, mockImplementation }
 }
+type MockPython = ReturnType<typeof MockPython>
 
 describe("indexer", () => {
   let pg: MockPg
-  let python: ReturnType<typeof MockPython>
+  let python: MockPython
   beforeEach(async () => {
     vi.resetModules()
 
@@ -39,10 +46,8 @@ describe("indexer", () => {
       name: PRODUCT.title,
     })
     pg.query.mockResolvedValueOnce({ rows: [page] })
+    python.mockImplementation(() => ({ ...AUGMENTED_DATA, embedding: JSON.parse(AUGMENTED_DATA.embedding) }))
     
-    python.worker.send.mockImplementation(() => {
-      python.worker.emit("message", { ...AUGMENTED_DATA, embedding: JSON.parse(AUGMENTED_DATA.embedding) })
-    })
     await import("./index.js")
 
     expect(pg).toHaveInserted(PRODUCTS)
