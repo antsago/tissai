@@ -1,7 +1,9 @@
 import type { StructuredData } from "../parsePage.js"
+import { dirname } from "node:path"
 import { randomUUID } from "node:crypto"
+import { fileURLToPath } from "node:url"
 import { Page } from "../Db/index.js"
-import Embedder from "./embedder.js"
+import PythonPool from "./PythonPool.js"
 
 type DerivedData = {
   embedding: number[]
@@ -10,7 +12,8 @@ type DerivedData = {
 }
 
 const EntityExtractor = () => {
-  const parseTitle = Embedder<string, DerivedData>()
+  const currentDirectory = dirname(fileURLToPath(import.meta.url))
+  const parseTitle = PythonPool<string, DerivedData>(`${currentDirectory}/embedder.py`)
 
   return async ({ jsonLd }: StructuredData, page: Page) => {
     const productTag = jsonLd.filter((t) => t["@type"] === "Product")[0]

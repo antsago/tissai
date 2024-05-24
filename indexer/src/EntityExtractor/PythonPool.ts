@@ -1,13 +1,11 @@
-import { dirname } from "path"
-import { fileURLToPath } from "url"
 import { PythonShell } from "python-shell"
 
 type Resolver<T> = (value: T | PromiseLike<T>) => void
 
-function Embedder<Input extends string | object, Output>() {
+function PythonPool<Input extends string | object, Output>(scriptPath: string) {
   const resolvers: Resolver<Output>[] = []
-  const currentDirectory = dirname(fileURLToPath(import.meta.url))
-  const model = new PythonShell(`${currentDirectory}/embedder.py`, {
+
+  const model = new PythonShell(scriptPath, {
     mode: "json",
     pythonOptions: ["-u"], // get print results in real-time
   })
@@ -24,4 +22,4 @@ function Embedder<Input extends string | object, Output>() {
   }
 }
 
-export default Embedder
+export default PythonPool
