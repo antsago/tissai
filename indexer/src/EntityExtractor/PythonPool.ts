@@ -1,8 +1,13 @@
-import { PythonShell } from "python-shell"
+import { PythonShell as PShell } from "python-shell"
+
+let PythonShell = PShell
+export function setPShell(mock: typeof PShell) {
+  PythonShell = mock
+}
 
 type Resolver<T> = (value: T | PromiseLike<T>) => void
 
-function PythonPool<Input extends string | object, Output>(scriptPath: string) {
+function PythonPool<Input extends string | Object, Output>(scriptPath: string) {
   const resolvers: Resolver<Output>[] = []
 
   const worker = new PythonShell(scriptPath, {
