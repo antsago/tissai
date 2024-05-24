@@ -3,8 +3,14 @@ import { randomUUID } from "node:crypto"
 import { Page } from "./Db/index.js"
 import Embedder from "./Embedder/index.js"
 
+type DerivedData = {
+  embedding: number[]
+  category: string
+  tags: string[]
+}
+
 const EntityExtractor = () => {
-  const embedder = Embedder()
+  const parseTitle = Embedder<string, DerivedData>()
 
   return async ({ jsonLd }: StructuredData, page: Page) => {
     const productTag = jsonLd.filter((t) => t["@type"] === "Product")[0]
@@ -21,7 +27,7 @@ const EntityExtractor = () => {
       currency: productTag.offers?.priceCurrency,
       seller: productTag.offers?.seller.name,
     }
-    const derivedInfo = await embedder.embed(structuredInfo.title)
+    const derivedInfo = await parseTitle(structuredInfo.title)
 
     const category = {
       name: derivedInfo.category,
