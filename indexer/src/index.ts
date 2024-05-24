@@ -1,65 +1,14 @@
-import { randomUUID } from "node:crypto"
 import { Db, Page, PAGES } from "./Db/index.js"
-import Embedder from "./Embedder/index.js"
 import parsePage from "./parsePage.js"
-
-type StructuredData = ReturnType<typeof parsePage>
-async function extractEntities({ jsonLd }: StructuredData, embedder: Embedder, page: Page) {
-  const productTag = jsonLd.filter((t) => t["@type"] === "Product")[0]
-  const product = {
-    id: randomUUID(),
-    title: productTag.name,
-    description: productTag.description,
-    image: Array.isArray(productTag.image)
-      ? productTag.image
-      : [productTag.image],
-    brandName: productTag?.brand?.name,
-    brandLogo: productTag?.brand?.image,
-  }
-  const offer = {
-    id: randomUUID(),
-    url: page.url,
-    site: page.site,
-    product: product.id,
-    price: productTag.offers?.price,
-    currency: productTag.offers?.priceCurrency,
-    seller: productTag.offers?.seller.name,
-  }
-  const augmented = await embedder.embed(product.title)
-
-  const category = {
-    name: augmented.category,
-  }
-  const tags = augmented.tags.map(t => ({ name: t }))
-  const seller = offer.seller ? { name: offer.seller } : undefined
-  const brand = product.brandName ? { name: product.brandName, logo: product.brandLogo } : undefined
-
-  return {
-    category,
-    tags,
-    seller,
-    brand,
-    product: {
-      id: product.id,
-      title: product.title,
-      images: product.image,
-      description: product.description,
-      brand: brand?.name,
-      category: category.name,
-      tags: tags.map(t => t.name),
-      embedding: augmented.embedding,
-    },
-    offer,
-  }
-}
+import Extractor from "./Extractor.js"
 
 const db = Db()
-const embedder = Embedder()
+const extractEntities = Extractor()
 const page = (await db.query<Page>(`SELECT * FROM ${PAGES}`))[0]
 
 const structuredData = parsePage(page)
 
-const { product, offer, category, tags, seller, brand } = await extractEntities(structuredData, embedder, page)
+const { product, offer, category, tags, seller, brand } = await extractEntities(structuredData, page)
 
 await Promise.all(
   [
