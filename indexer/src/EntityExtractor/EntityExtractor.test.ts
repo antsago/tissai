@@ -28,47 +28,51 @@ describe("EntityExtractor", () => {
     extract = EntityExtractor()
   })
 
-  it("extracts category", async () => {
-    python.mockImplementation(() => DERIVED_DATA)
-
-    const { category } = await extract(
-      { jsonLd: [productTag], opengraph: {}, headings: {} },
-      PAGE,
-    )
-
-    expect(category).toStrictEqual({
-      name: DERIVED_DATA.category,
+  describe("categories", () => {
+    it("extracts category", async () => {
+      python.mockImplementation(() => DERIVED_DATA)
+  
+      const { category } = await extract(
+        { jsonLd: [productTag], opengraph: {}, headings: {} },
+        PAGE,
+      )
+  
+      expect(category).toStrictEqual({
+        name: DERIVED_DATA.category,
+      })
     })
   })
 
-  it("extracts tags", async () => {
-    python.mockImplementation(() => DERIVED_DATA)
-
-    const { tags } = await extract(
-      { jsonLd: [productTag], opengraph: {}, headings: {} },
-      PAGE,
-    )
-
-    expect(tags).toStrictEqual([{
-      name: DERIVED_DATA.tags[0],
-    }])
-  })
-
-  it("extracts multiple tags", async () => {
-    const foundTags = ["two", "tags"]
-    python.mockImplementation(() => ({
-      ...DERIVED_DATA,
-      tags: foundTags,
-    }))
-
-    const { tags } = await extract(
-      { jsonLd: [productTag], opengraph: {}, headings: {} },
-      PAGE,
-    )
-
-    expect(tags).toStrictEqual([
-      { name: foundTags[0] },
-      { name: foundTags[1] },
-    ])
+  describe("tags", () => {
+    it("extracts tags", async () => {
+      python.mockImplementation(() => DERIVED_DATA)
+  
+      const { tags } = await extract(
+        { jsonLd: [productTag], opengraph: {}, headings: {} },
+        PAGE,
+      )
+  
+      expect(tags).toStrictEqual([{
+        name: DERIVED_DATA.tags[0],
+      }])
+    })
+  
+    it("extracts multiple tags", async () => {
+      const foundTags = ["two", "tags"]
+      python.mockImplementation(() => ({
+        ...DERIVED_DATA,
+        tags: foundTags,
+      }))
+  
+      const { tags } = await extract(
+        { jsonLd: [productTag], opengraph: {}, headings: {} },
+        PAGE,
+      )
+  
+      expect(tags).toStrictEqual([
+        { name: foundTags[0] },
+        { name: foundTags[1] },
+      ])
+    })
   })
 })
