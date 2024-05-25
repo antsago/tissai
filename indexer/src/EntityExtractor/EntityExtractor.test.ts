@@ -281,6 +281,27 @@ describe("EntityExtractor", () => {
       }])
     })
 
+    it("turns name to lowercase", async () => {
+      const offer = {
+        "@type": ["Offer"],
+        seller: [{
+          "@type": ["Organization"],
+          name: ["Uppercase"],
+        }],
+      }
+
+      const { sellers } = await extract(
+        { jsonLd: [{...jsonLd,
+          offers: [offer]
+        }], opengraph: {}, headings: {} },
+        PAGE,
+      )
+  
+      expect(sellers).toStrictEqual([{
+        name: "uppercase",
+      }])
+    })
+
     it("extracts multiple sellers", async () => {
       const offer2 = {
         "@type": ["Offer"],
