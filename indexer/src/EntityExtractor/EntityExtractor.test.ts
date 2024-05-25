@@ -300,5 +300,33 @@ describe("EntityExtractor", () => {
         name: jsonLd.offers[0].seller[0].name[0],
       }])
     })
+
+    it("extracts multiple sellers", async () => {
+      const offer2 = {
+        "@type": ["Offer"],
+        seller: [{
+          "@type": ["Organization"],
+          name: ["Batemper"],
+        }],
+      }
+      python.mockImplementation(() => DERIVED_DATA)
+  
+      const { sellers } = await extract(
+        { jsonLd: [{
+          ...jsonLd,
+          offers: [jsonLd.offers[0], offer2]
+        }], opengraph: {}, headings: {} },
+        PAGE,
+      )
+  
+      expect(sellers).toStrictEqual([
+        {
+          name: jsonLd.offers[0].seller[0].name[0],
+        },
+        {
+          name: offer2.seller[0].name[0],
+        },
+      ])
+    })
   })
 })
