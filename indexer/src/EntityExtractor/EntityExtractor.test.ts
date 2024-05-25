@@ -204,7 +204,7 @@ describe("EntityExtractor", () => {
     it("extracts offer", async () => {
       python.mockImplementation(() => DERIVED_DATA)
   
-      const { offers } = await extract(
+      const { offers, product } = await extract(
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
         PAGE,
       )
@@ -213,10 +213,33 @@ describe("EntityExtractor", () => {
         id: expect.any(String),
         url: PAGE.url,
         site: PAGE.site,
-        product: expect.any(String),
+        product: product.id,
         price: jsonLd.offers[0].price[0],
         currency: jsonLd.offers[0].priceCurrency[0],
         seller: jsonLd.offers[0].seller[0].name[0],
+      }])
+    })
+
+    it("extracts implicit offer", async () => {
+      python.mockImplementation(() => DERIVED_DATA)
+  
+      const { offers, product } = await extract(
+        { jsonLd: [{
+          "@context": jsonLd["@context"],
+          "@type": jsonLd["@type"],
+          name: jsonLd["name"],
+        }], opengraph: {}, headings: {} },
+        PAGE,
+      )
+  
+      expect(offers).toStrictEqual([{
+        id: expect.any(String),
+        url: PAGE.url,
+        site: PAGE.site,
+        product: product.id,
+        price: undefined,
+        currency: undefined,
+        seller: undefined,
       }])
     })
   })
