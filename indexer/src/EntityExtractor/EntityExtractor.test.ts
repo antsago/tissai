@@ -22,10 +22,16 @@ describe("EntityExtractor", () => {
       description: "The description",
       image: "https://example.com/image.jpg",
     }
-    const DERIVED_DATA = { ...AUGMENTED_DATA, embedding: JSON.parse(AUGMENTED_DATA.embedding) }
+    const DERIVED_DATA = {
+      ...AUGMENTED_DATA,
+      embedding: JSON.parse(AUGMENTED_DATA.embedding),
+    }
     python.mockImplementation(() => DERIVED_DATA)
-    
-    const { category } = await EntityExtractor()({ jsonLd: [productSchema], opengraph: {}, headings: {} }, PAGE)
+
+    const { category } = await EntityExtractor()(
+      { jsonLd: [productSchema], opengraph: {}, headings: {} },
+      PAGE,
+    )
 
     expect(category).toStrictEqual({
       name: DERIVED_DATA.category,

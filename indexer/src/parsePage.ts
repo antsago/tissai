@@ -2,8 +2,8 @@ import { parse } from "node-html-parser"
 import { Page } from "./Db/index.js"
 
 export type StructuredData = {
-  jsonLd: any[],
-  opengraph: Record<`og:${string}`, string>,
+  jsonLd: any[]
+  opengraph: Record<`og:${string}`, string>
   headings: Partial<{
     title: string
     description: string
@@ -15,11 +15,11 @@ export type StructuredData = {
 }
 
 function expandJsonLd(linkedData: any): any {
-  if (typeof linkedData !== 'object') {
+  if (typeof linkedData !== "object") {
     return linkedData
   }
   if (Array.isArray(linkedData)) {
-    return linkedData.map(v => expandJsonLd(v))
+    return linkedData.map((v) => expandJsonLd(v))
   }
 
   const properties = Object.entries(linkedData)
@@ -29,13 +29,13 @@ function expandJsonLd(linkedData: any): any {
         return [
           key,
           value
-            .filter(v => v !== null)
-            .map(v => expandJsonLd(v))
+            .filter((v) => v !== null)
+            .map((v) => expandJsonLd(v))
             .flat(),
-          ]
+        ]
       }
 
-      if (typeof value === 'object') {
+      if (typeof value === "object") {
         return [key, [expandJsonLd(value)]]
       }
 

@@ -6,7 +6,7 @@ export function MockPython() {
   const eventEmitter = new EventEmitter<{ message: [unknown] }>()
   const send = vi.fn()
   const worker = Object.assign(eventEmitter, { send })
-  
+
   const pythonShell = vi.fn().mockReturnValue(worker)
   setPShell(pythonShell as any)
 

@@ -5,11 +5,11 @@ import parsePage from "./parsePage.js"
 describe("parsePage", () => {
   describe("JSON-LD", () => {
     const PRESERVED_TYPES: [string, unknown][] = [
-      ['strings', 'a string'],
-      ['numbers', 10],
-      ['booleans', true],
-      ['objects', {}],
-    ] 
+      ["strings", "a string"],
+      ["numbers", 10],
+      ["booleans", true],
+      ["objects", {}],
+    ]
 
     it("processes all tags", () => {
       const productSchema = {
@@ -38,9 +38,9 @@ describe("parsePage", () => {
         ],
       }
       const page = pageWithSchema(productSchema, breadcrumbSchema)
-  
+
       const result = parsePage(page)
-  
+
       expect(result).toStrictEqual(
         expect.objectContaining({
           jsonLd: [
@@ -70,7 +70,7 @@ describe("parsePage", () => {
 
       expect(result).toStrictEqual(
         expect.objectContaining({
-          jsonLd: [{ foo: [value]}],
+          jsonLd: [{ foo: [value] }],
         }),
       )
     })
@@ -106,7 +106,7 @@ describe("parsePage", () => {
 
       expect(result).toStrictEqual(
         expect.objectContaining({
-          jsonLd: [{ foo: ["a"]}],
+          jsonLd: [{ foo: ["a"] }],
         }),
       )
     })
@@ -136,7 +136,7 @@ describe("parsePage", () => {
     })
 
     it("recurses on array values", () => {
-      const page = pageWithSchema({ foo: [{ bar: "a"}] })
+      const page = pageWithSchema({ foo: [{ bar: "a" }] })
 
       const result = parsePage(page)
 

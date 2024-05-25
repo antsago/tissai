@@ -1,5 +1,11 @@
 import { expect, describe, it, beforeEach, vi } from "vitest"
-import { MockPg, MockPython, PRODUCT, AUGMENTED_DATA, pageWithSchema } from "#mocks"
+import {
+  MockPg,
+  MockPython,
+  PRODUCT,
+  AUGMENTED_DATA,
+  pageWithSchema,
+} from "#mocks"
 import {
   BRANDS,
   CATEGORIES,
@@ -27,8 +33,11 @@ describe("indexer", () => {
       name: PRODUCT.title,
     })
     pg.query.mockResolvedValueOnce({ rows: [page] })
-    python.mockImplementation(() => ({ ...AUGMENTED_DATA, embedding: JSON.parse(AUGMENTED_DATA.embedding) }))
-    
+    python.mockImplementation(() => ({
+      ...AUGMENTED_DATA,
+      embedding: JSON.parse(AUGMENTED_DATA.embedding),
+    }))
+
     await import("./index.js")
 
     expect(pg).toHaveInserted(PRODUCTS)
