@@ -12,6 +12,18 @@ type DerivedData = {
   tags: string[]
 }
 
+function extractOg (opengraph: StructuredData["opengraph"]) {
+  if (opengraph["og:type"] !== "product") {
+    return {}
+  }
+
+  return {
+    title: opengraph["og:title"],
+    description: opengraph["og:description"],
+    image: opengraph["og:image"] ? [opengraph["og:image"]] : undefined,
+  }
+}
+
 const EntityExtractor = () => {
   const currentDirectory = dirname(fileURLToPath(import.meta.url))
   const parseTitle = PythonPool<string, DerivedData>(
@@ -31,11 +43,7 @@ const EntityExtractor = () => {
       currency: productTag?.offers?.[0].priceCurrency?.[0],
       seller: productTag?.offers?.[0].seller?.[0].name[0],
     }
-    const opengraphInfo = {
-      title: opengraph["og:title"],
-      description: opengraph["og:description"],
-      image: opengraph["og:image"] ? [opengraph["og:image"]] : undefined,
-    }
+    const opengraphInfo = extractOg(opengraph)
     const headingInfo = {
       title: headings.title,
       description: headings.description,

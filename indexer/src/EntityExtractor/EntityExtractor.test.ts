@@ -175,5 +175,18 @@ describe("EntityExtractor", () => {
         embedding: DERIVED_DATA.embedding,
       })
     })
+
+    it("ignores non-product opengraph", async () => {
+      python.mockImplementation(() => DERIVED_DATA)
+  
+      const { product } = await extract(
+        { jsonLd: [], opengraph: { ...opengraph, "og:type": "foo" }, headings },
+        PAGE,
+      )
+  
+      expect(product).toStrictEqual(expect.objectContaining({
+        title: headings.title,
+      }))
+    })
   })
 })
