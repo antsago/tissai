@@ -15,7 +15,7 @@ import {
   TAGS,
 } from "./Db/index.js"
 
-describe("indexer", () => {
+describe("index", () => {
   let pg: MockPg
   let python: MockPython
   beforeEach(async () => {

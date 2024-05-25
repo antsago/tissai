@@ -9,18 +9,18 @@ describe("EntityExtractor", () => {
   })
 
   it("extracts category", async () => {
-    const productSchema = {
-      "@context": "https://schema.org/",
-      "@type": "Product",
-      name: "The name of the product",
-      productID: "121230",
-      brand: {
-        "@type": "Brand",
-        name: "WEDZE",
+    const productTag = {
+      "@context": ["https://schema.org/"],
+      "@type": ["Product"],
+      name: ["The name of the product"],
+      productID: ["121230"],
+      brand: [{
+        "@type": ["Brand"],
+        name: ["WEDZE"],
         image: ["https://brand.com/image.jpg"],
-      },
-      description: "The description",
-      image: "https://example.com/image.jpg",
+      }],
+      description: ["The description"],
+      image: ["https://example.com/image.jpg"],
     }
     const DERIVED_DATA = {
       ...AUGMENTED_DATA,
@@ -29,7 +29,7 @@ describe("EntityExtractor", () => {
     python.mockImplementation(() => DERIVED_DATA)
 
     const { category } = await EntityExtractor()(
-      { jsonLd: [productSchema], opengraph: {}, headings: {} },
+      { jsonLd: [productTag], opengraph: {}, headings: {} },
       PAGE,
     )
 

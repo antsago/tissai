@@ -18,19 +18,17 @@ const EntityExtractor = () => {
   )
 
   return async ({ jsonLd }: StructuredData, page: Page) => {
-    const productTag = jsonLd.filter((t) => t["@type"] === "Product")[0]
+    const productTag = jsonLd.filter((t) => t["@type"].includes("Product"))[0]
 
     const structuredInfo = {
-      title: productTag.name,
-      description: productTag.description,
-      image: Array.isArray(productTag.image)
-        ? productTag.image
-        : [productTag.image],
-      brandName: productTag?.brand?.name,
-      brandLogo: productTag?.brand?.image,
-      price: productTag.offers?.price,
-      currency: productTag.offers?.priceCurrency,
-      seller: productTag.offers?.seller.name,
+      title: productTag.name[0],
+      description: productTag.description?.[0],
+      image: productTag.image,
+      brandName: productTag.brand?.[0].name[0],
+      brandLogo: productTag.brand?.[0].image?.[0],
+      price: productTag.offers?.[0].price?.[0],
+      currency: productTag.offers?.[0].priceCurrency?.[0],
+      seller: productTag.offers?.[0].seller?.[0].name[0],
     }
     const derivedInfo = await parseTitle(structuredInfo.title)
 
