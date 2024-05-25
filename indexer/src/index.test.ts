@@ -3,7 +3,7 @@ import {
   MockPg,
   MockPython,
   PRODUCT,
-  AUGMENTED_DATA,
+  DERIVED_DATA,
   pageWithSchema,
 } from "#mocks"
 import {
@@ -33,10 +33,7 @@ describe("index", () => {
       name: PRODUCT.title,
     })
     pg.query.mockResolvedValueOnce({ rows: [page] })
-    python.mockImplementation(() => ({
-      ...AUGMENTED_DATA,
-      embedding: JSON.parse(AUGMENTED_DATA.embedding),
-    }))
+    python.mockImplementation(() => DERIVED_DATA)
 
     await import("./index.js")
 

@@ -1,5 +1,5 @@
 import { expect, describe, it, beforeEach, vi } from "vitest"
-import { MockPython, AUGMENTED_DATA, PAGE } from "#mocks"
+import { MockPython, DERIVED_DATA, PAGE } from "#mocks"
 import EntityExtractor from "./EntityExtractor.js"
 
 const jsonLd = {
@@ -7,23 +7,29 @@ const jsonLd = {
   "@type": ["Product"],
   name: ["The name of the product"],
   productID: ["121230"],
-  brand: [{
-    "@type": ["Brand"],
-    name: ["wedze"],
-    image: ["https://brand.com/image.jpg"],
-  }],
+  brand: [
+    {
+      "@type": ["Brand"],
+      name: ["wedze"],
+      image: ["https://brand.com/image.jpg"],
+    },
+  ],
   description: ["The description"],
   image: ["https://example.com/image.jpg"],
-  offers: [{
-    "@type": ["Offer"],
-    url: ["https://example.com/offer"],
-    price: [10],
-    priceCurrency: ["EUR"],
-    seller: [{
-      "@type": ["Organization"],
-      name: ["pertemba"],
-    }],
-  }]
+  offers: [
+    {
+      "@type": ["Offer"],
+      url: ["https://example.com/offer"],
+      price: [10],
+      priceCurrency: ["EUR"],
+      seller: [
+        {
+          "@type": ["Organization"],
+          name: ["pertemba"],
+        },
+      ],
+    },
+  ],
 }
 const opengraph = {
   "og:type": "product",
@@ -39,10 +45,6 @@ const headings = {
   author: "The author",
   robots: "index,follow",
   canonical: PAGE.url,
-}
-const DERIVED_DATA = {
-  ...AUGMENTED_DATA,
-  embedding: JSON.parse(AUGMENTED_DATA.embedding),
 }
 
 describe("EntityExtractor", () => {
@@ -60,7 +62,7 @@ describe("EntityExtractor", () => {
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
         PAGE,
       )
-  
+
       expect(category).toStrictEqual({
         name: DERIVED_DATA.category,
       })
@@ -73,24 +75,26 @@ describe("EntityExtractor", () => {
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
         PAGE,
       )
-  
-      expect(tags).toStrictEqual([{
-        name: DERIVED_DATA.tags[0],
-      }])
+
+      expect(tags).toStrictEqual([
+        {
+          name: DERIVED_DATA.tags[0],
+        },
+      ])
     })
-  
+
     it("extracts multiple tags", async () => {
       const foundTags = ["two", "tags"]
       python.mockImplementation(() => ({
         ...DERIVED_DATA,
         tags: foundTags,
       }))
-  
+
       const { tags } = await extract(
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
         PAGE,
       )
-  
+
       expect(tags).toStrictEqual([
         { name: foundTags[0] },
         { name: foundTags[1] },
@@ -104,7 +108,7 @@ describe("EntityExtractor", () => {
         { jsonLd: [jsonLd], opengraph, headings },
         PAGE,
       )
-  
+
       expect(product).toStrictEqual({
         id: expect.any(String),
         title: jsonLd.name[0],
@@ -116,17 +120,23 @@ describe("EntityExtractor", () => {
         embedding: DERIVED_DATA.embedding,
       })
     })
-    
+
     it("handles title-only product", async () => {
       const { product } = await extract(
-        { jsonLd: [{
-          "@context": jsonLd["@context"],
-          "@type": jsonLd["@type"],
-          "name": jsonLd["name"],
-        }], opengraph: {}, headings: {} },
+        {
+          jsonLd: [
+            {
+              "@context": jsonLd["@context"],
+              "@type": jsonLd["@type"],
+              name: jsonLd["name"],
+            },
+          ],
+          opengraph: {},
+          headings: {},
+        },
         PAGE,
       )
-  
+
       expect(product).toStrictEqual({
         id: expect.any(String),
         title: jsonLd.name[0],
@@ -138,13 +148,13 @@ describe("EntityExtractor", () => {
         embedding: DERIVED_DATA.embedding,
       })
     })
-    
+
     it("defaults to opengraph", async () => {
       const { product } = await extract(
         { jsonLd: [], opengraph, headings },
         PAGE,
       )
-  
+
       expect(product).toStrictEqual({
         id: expect.any(String),
         title: opengraph["og:title"],
@@ -162,7 +172,7 @@ describe("EntityExtractor", () => {
         { jsonLd: [], opengraph: {}, headings },
         PAGE,
       )
-  
+
       expect(product).toStrictEqual({
         id: expect.any(String),
         title: headings.title,
@@ -180,10 +190,12 @@ describe("EntityExtractor", () => {
         { jsonLd: [], opengraph: { ...opengraph, "og:type": "foo" }, headings },
         PAGE,
       )
-  
-      expect(product).toStrictEqual(expect.objectContaining({
-        title: headings.title,
-      }))
+
+      expect(product).toStrictEqual(
+        expect.objectContaining({
+          title: headings.title,
+        }),
+      )
     })
   })
 
@@ -193,37 +205,47 @@ describe("EntityExtractor", () => {
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
         PAGE,
       )
-  
-      expect(offers).toStrictEqual([{
-        id: expect.any(String),
-        url: PAGE.url,
-        site: PAGE.site,
-        product: product.id,
-        price: jsonLd.offers[0].price[0],
-        currency: jsonLd.offers[0].priceCurrency[0],
-        seller: jsonLd.offers[0].seller[0].name[0],
-      }])
+
+      expect(offers).toStrictEqual([
+        {
+          id: expect.any(String),
+          url: PAGE.url,
+          site: PAGE.site,
+          product: product.id,
+          price: jsonLd.offers[0].price[0],
+          currency: jsonLd.offers[0].priceCurrency[0],
+          seller: jsonLd.offers[0].seller[0].name[0],
+        },
+      ])
     })
 
     it("extracts implicit offer", async () => {
       const { offers, product } = await extract(
-        { jsonLd: [{
-          "@context": jsonLd["@context"],
-          "@type": jsonLd["@type"],
-          name: jsonLd["name"],
-        }], opengraph: {}, headings: {} },
+        {
+          jsonLd: [
+            {
+              "@context": jsonLd["@context"],
+              "@type": jsonLd["@type"],
+              name: jsonLd["name"],
+            },
+          ],
+          opengraph: {},
+          headings: {},
+        },
         PAGE,
       )
-  
-      expect(offers).toStrictEqual([{
-        id: expect.any(String),
-        url: PAGE.url,
-        site: PAGE.site,
-        product: product.id,
-        price: undefined,
-        currency: undefined,
-        seller: undefined,
-      }])
+
+      expect(offers).toStrictEqual([
+        {
+          id: expect.any(String),
+          url: PAGE.url,
+          site: PAGE.site,
+          product: product.id,
+          price: undefined,
+          currency: undefined,
+          seller: undefined,
+        },
+      ])
     })
 
     it("extracts multiple offers", async () => {
@@ -232,20 +254,28 @@ describe("EntityExtractor", () => {
         url: ["https://example.com/offer"],
         price: [20],
         priceCurrency: ["USD"],
-        seller: [{
-          "@type": ["Organization"],
-          name: ["batemper"],
-        }],
+        seller: [
+          {
+            "@type": ["Organization"],
+            name: ["batemper"],
+          },
+        ],
       }
 
       const { offers, product } = await extract(
-        { jsonLd: [{
-          ...jsonLd,
-          offers: [jsonLd.offers[0], offer2]
-        }], opengraph: {}, headings: {} },
+        {
+          jsonLd: [
+            {
+              ...jsonLd,
+              offers: [jsonLd.offers[0], offer2],
+            },
+          ],
+          opengraph: {},
+          headings: {},
+        },
         PAGE,
       )
-  
+
       expect(offers).toStrictEqual([
         {
           id: expect.any(String),
@@ -275,50 +305,66 @@ describe("EntityExtractor", () => {
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
         PAGE,
       )
-  
-      expect(sellers).toStrictEqual([{
-        name: jsonLd.offers[0].seller[0].name[0],
-      }])
+
+      expect(sellers).toStrictEqual([
+        {
+          name: jsonLd.offers[0].seller[0].name[0],
+        },
+      ])
     })
 
     it("turns name to lowercase", async () => {
       const offer = {
         "@type": ["Offer"],
-        seller: [{
-          "@type": ["Organization"],
-          name: ["Uppercase"],
-        }],
+        seller: [
+          {
+            "@type": ["Organization"],
+            name: ["Uppercase"],
+          },
+        ],
       }
 
       const { sellers } = await extract(
-        { jsonLd: [{...jsonLd,
-          offers: [offer]
-        }], opengraph: {}, headings: {} },
+        {
+          jsonLd: [{ ...jsonLd, offers: [offer] }],
+          opengraph: {},
+          headings: {},
+        },
         PAGE,
       )
-  
-      expect(sellers).toStrictEqual([{
-        name: "uppercase",
-      }])
+
+      expect(sellers).toStrictEqual([
+        {
+          name: "uppercase",
+        },
+      ])
     })
 
     it("extracts multiple sellers", async () => {
       const offer2 = {
         "@type": ["Offer"],
-        seller: [{
-          "@type": ["Organization"],
-          name: ["batemper"],
-        }],
+        seller: [
+          {
+            "@type": ["Organization"],
+            name: ["batemper"],
+          },
+        ],
       }
-  
+
       const { sellers } = await extract(
-        { jsonLd: [{
-          ...jsonLd,
-          offers: [jsonLd.offers[0], offer2]
-        }], opengraph: {}, headings: {} },
+        {
+          jsonLd: [
+            {
+              ...jsonLd,
+              offers: [jsonLd.offers[0], offer2],
+            },
+          ],
+          opengraph: {},
+          headings: {},
+        },
         PAGE,
       )
-  
+
       expect(sellers).toStrictEqual([
         {
           name: jsonLd.offers[0].seller[0].name[0],
@@ -336,7 +382,7 @@ describe("EntityExtractor", () => {
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
         PAGE,
       )
-  
+
       expect(brand).toStrictEqual({
         name: jsonLd.brand[0].name[0],
         logo: jsonLd.brand[0].image[0],
@@ -349,13 +395,19 @@ describe("EntityExtractor", () => {
         name: ["wedze"],
       }
       const { brand } = await extract(
-        { jsonLd: [{
-          ...jsonLd,
-          brand: [brandLd]
-        }], opengraph: {}, headings: {} },
+        {
+          jsonLd: [
+            {
+              ...jsonLd,
+              brand: [brandLd],
+            },
+          ],
+          opengraph: {},
+          headings: {},
+        },
         PAGE,
       )
-  
+
       expect(brand).toStrictEqual({
         name: brandLd.name[0],
         logo: undefined,
@@ -368,16 +420,24 @@ describe("EntityExtractor", () => {
         name: ["WEDZE"],
       }
       const { brand } = await extract(
-        { jsonLd: [{
-          ...jsonLd,
-          brand: [brandLd]
-        }], opengraph: {}, headings: {} },
+        {
+          jsonLd: [
+            {
+              ...jsonLd,
+              brand: [brandLd],
+            },
+          ],
+          opengraph: {},
+          headings: {},
+        },
         PAGE,
       )
-  
-      expect(brand).toStrictEqual(expect.objectContaining({
-        name: "wedze",
-      }))
+
+      expect(brand).toStrictEqual(
+        expect.objectContaining({
+          name: "wedze",
+        }),
+      )
     })
   })
 })

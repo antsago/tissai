@@ -9,12 +9,13 @@ import {
 } from "vitest"
 import {
   PRODUCT,
-  AUGMENTED_DATA,
+  DERIVED_DATA,
   SITE,
   PAGE,
   pageWithSchema,
   OFFER,
   BRAND,
+  EMBEDDING_FROM_PG,
 } from "#mocks"
 import {
   Db,
@@ -88,9 +89,9 @@ describe("DB", () => {
         title: PRODUCT.title,
         description: PRODUCT.description,
         images: [PRODUCT.image],
-        embedding: AUGMENTED_DATA.embedding,
-        category: AUGMENTED_DATA.category,
-        tags: AUGMENTED_DATA.tags,
+        embedding: EMBEDDING_FROM_PG,
+        category: DERIVED_DATA.category,
+        tags: DERIVED_DATA.tags,
         brand: BRAND.name,
       },
     ])
@@ -107,9 +108,9 @@ describe("DB", () => {
       },
     ])
     const categories = await db.query(`SELECT * FROM ${CATEGORIES};`)
-    expect(categories).toStrictEqual([{ name: AUGMENTED_DATA.category }])
+    expect(categories).toStrictEqual([{ name: DERIVED_DATA.category }])
     const tags = await db.query(`SELECT * FROM ${TAGS};`)
-    expect(tags).toStrictEqual([{ name: AUGMENTED_DATA.tags[0] }])
+    expect(tags).toStrictEqual([{ name: DERIVED_DATA.tags[0] }])
     const brands = await db.query(`SELECT * FROM ${BRANDS};`)
     expect(brands).toStrictEqual([{ name: BRAND.name, logo: BRAND.logo }])
     const sellers = await db.query(`SELECT * FROM ${SELLERS};`)

@@ -12,7 +12,7 @@ type DerivedData = {
   tags: string[]
 }
 
-function extractOg (opengraph: StructuredData["opengraph"]) {
+function extractOg(opengraph: StructuredData["opengraph"]) {
   if (opengraph["og:type"] !== "product") {
     return {}
   }
@@ -30,7 +30,10 @@ const EntityExtractor = () => {
     `${currentDirectory}/parseTitle.py`,
   )
 
-  return async ({ jsonLd, opengraph, headings }: StructuredData, page: Page) => {
+  return async (
+    { jsonLd, opengraph, headings }: StructuredData,
+    page: Page,
+  ) => {
     const productTag = jsonLd.filter((t) => t["@type"].includes("Product"))[0]
 
     const jsonLdInfo = {
@@ -58,7 +61,8 @@ const EntityExtractor = () => {
     }
     const tags = derivedInfo.tags.map((t) => ({ name: t }))
 
-    const sellers = structuredInfo.offers?.map((offer: any) => ({ name: offer.seller })) ?? []
+    const sellers =
+      structuredInfo.offers?.map((offer: any) => ({ name: offer.seller })) ?? []
     const brand = structuredInfo.brandName
       ? { name: structuredInfo.brandName, logo: structuredInfo.brandLogo }
       : undefined
@@ -82,15 +86,17 @@ const EntityExtractor = () => {
       price: offer.price,
       currency: offer.currency,
       seller: offer.seller,
-    })) ?? [{
-      id: randomUUID(),
-      url: page.url,
-      site: page.site,
-      product: product.id,
-      price: undefined,
-      currency: undefined,
-      seller: undefined,
-    }]
+    })) ?? [
+      {
+        id: randomUUID(),
+        url: page.url,
+        site: page.site,
+        product: product.id,
+        price: undefined,
+        currency: undefined,
+        seller: undefined,
+      },
+    ]
 
     return {
       category,
