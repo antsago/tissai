@@ -51,12 +51,11 @@ describe("EntityExtractor", () => {
   beforeEach(async () => {
     python = MockPython()
     extract = EntityExtractor()
+    python.mockImplementation(() => DERIVED_DATA)
   })
 
   describe("categories", () => {
     it("extracts category", async () => {
-      python.mockImplementation(() => DERIVED_DATA)
-  
       const { category } = await extract(
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
         PAGE,
@@ -70,8 +69,6 @@ describe("EntityExtractor", () => {
 
   describe("tags", () => {
     it("extracts tag", async () => {
-      python.mockImplementation(() => DERIVED_DATA)
-  
       const { tags } = await extract(
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
         PAGE,
@@ -103,8 +100,6 @@ describe("EntityExtractor", () => {
 
   describe("products", () => {
     it("extracts product", async () => {
-      python.mockImplementation(() => DERIVED_DATA)
-  
       const { product } = await extract(
         { jsonLd: [jsonLd], opengraph, headings },
         PAGE,
@@ -123,8 +118,6 @@ describe("EntityExtractor", () => {
     })
     
     it("handles title-only product", async () => {
-      python.mockImplementation(() => DERIVED_DATA)
-  
       const { product } = await extract(
         { jsonLd: [{
           "@context": jsonLd["@context"],
@@ -147,8 +140,6 @@ describe("EntityExtractor", () => {
     })
     
     it("defaults to opengraph", async () => {
-      python.mockImplementation(() => DERIVED_DATA)
-  
       const { product } = await extract(
         { jsonLd: [], opengraph, headings },
         PAGE,
@@ -167,8 +158,6 @@ describe("EntityExtractor", () => {
     })
 
     it("defaults to headings", async () => {
-      python.mockImplementation(() => DERIVED_DATA)
-  
       const { product } = await extract(
         { jsonLd: [], opengraph: {}, headings },
         PAGE,
@@ -187,8 +176,6 @@ describe("EntityExtractor", () => {
     })
 
     it("ignores non-product opengraph", async () => {
-      python.mockImplementation(() => DERIVED_DATA)
-  
       const { product } = await extract(
         { jsonLd: [], opengraph: { ...opengraph, "og:type": "foo" }, headings },
         PAGE,
@@ -202,8 +189,6 @@ describe("EntityExtractor", () => {
 
   describe("offers", () => {
     it("extracts offer", async () => {
-      python.mockImplementation(() => DERIVED_DATA)
-  
       const { offers, product } = await extract(
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
         PAGE,
@@ -221,8 +206,6 @@ describe("EntityExtractor", () => {
     })
 
     it("extracts implicit offer", async () => {
-      python.mockImplementation(() => DERIVED_DATA)
-  
       const { offers, product } = await extract(
         { jsonLd: [{
           "@context": jsonLd["@context"],
@@ -254,8 +237,7 @@ describe("EntityExtractor", () => {
           name: ["batemper"],
         }],
       }
-      python.mockImplementation(() => DERIVED_DATA)
-  
+
       const { offers, product } = await extract(
         { jsonLd: [{
           ...jsonLd,
@@ -289,8 +271,6 @@ describe("EntityExtractor", () => {
 
   describe("sellers", () => {
     it("extracts seller", async () => {
-      python.mockImplementation(() => DERIVED_DATA)
-  
       const { sellers } = await extract(
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
         PAGE,
@@ -306,10 +286,9 @@ describe("EntityExtractor", () => {
         "@type": ["Offer"],
         seller: [{
           "@type": ["Organization"],
-          name: ["Batemper"],
+          name: ["batemper"],
         }],
       }
-      python.mockImplementation(() => DERIVED_DATA)
   
       const { sellers } = await extract(
         { jsonLd: [{
@@ -324,9 +303,23 @@ describe("EntityExtractor", () => {
           name: jsonLd.offers[0].seller[0].name[0],
         },
         {
-          name: offer2.seller[0].name[0].toLowerCase(),
+          name: offer2.seller[0].name[0],
         },
       ])
+    })
+  })
+
+  describe("brands", () => {
+    it("extracts brand", async () => {
+      const { brand } = await extract(
+        { jsonLd: [jsonLd], opengraph: {}, headings: {} },
+        PAGE,
+      )
+  
+      expect(brand).toStrictEqual({
+        name: jsonLd.brand[0].name[0],
+        logo: jsonLd.brand[0].image[0],
+      })
     })
   })
 })
