@@ -358,6 +358,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash.defaults@npm:^4":
+  version: 4.2.9
+  resolution: "@types/lodash.defaults@npm:4.2.9"
+  dependencies:
+    "@types/lodash": "npm:*"
+  checksum: 10c0/cf5c0318b67161e0cf40e6a124ad19fa102aa6b9b7c997d8f0f2609f725e5bd9b549bb0786369b22fc3983312f707673322cc04934b1f848ad935328758a3dfb
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:*":
+  version: 4.17.4
+  resolution: "@types/lodash@npm:4.17.4"
+  checksum: 10c0/0124c64cb9fe7a0f78b6777955abd05ef0d97844d49118652eae45f8fa57bfb7f5a7a9bccc0b5a84c0a6dc09631042e4590cb665acb9d58dfd5e6543c75341ec
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:*":
   version: 20.12.12
   resolution: "@types/node@npm:20.12.12"
@@ -1053,8 +1069,10 @@ __metadata:
   resolution: "indexer@workspace:."
   dependencies:
     "@tsconfig/node20": "npm:20.1.4"
+    "@types/lodash.defaults": "npm:^4"
     "@types/node": "npm:20.12.7"
     "@types/pg": "npm:^8"
+    lodash.defaults: "npm:4.2.0"
     node-html-parser: "npm:6.1.13"
     pg: "npm:8.11.5"
     prettier: "npm:3.2.5"
@@ -1143,6 +1161,13 @@ __metadata:
     mlly: "npm:^1.4.2"
     pkg-types: "npm:^1.0.3"
   checksum: 10c0/f61cbd00d7689f275558b1a45c7ff2a3ddf8472654123ed880215677b9adfa729f1081e50c27ffb415cdb9fa706fb755fec5e23cdd965be375c8059e87ff1cc9
+  languageName: node
+  linkType: hard
+
+"lodash.defaults@npm:4.2.0":
+  version: 4.2.0
+  resolution: "lodash.defaults@npm:4.2.0"
+  checksum: 10c0/d5b77aeb702caa69b17be1358faece33a84497bcca814897383c58b28a2f8dfc381b1d9edbec239f8b425126a3bbe4916223da2a576bb0411c2cefd67df80707
   languageName: node
   linkType: hard
 

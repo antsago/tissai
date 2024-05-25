@@ -2,6 +2,7 @@ import type { StructuredData } from "../parsePage.js"
 import { dirname } from "node:path"
 import { randomUUID } from "node:crypto"
 import { fileURLToPath } from "node:url"
+import defaults from "lodash.defaults"
 import { Page } from "../Db/index.js"
 import PythonPool from "./PythonPool.js"
 
@@ -17,19 +18,29 @@ const EntityExtractor = () => {
     `${currentDirectory}/parseTitle.py`,
   )
 
-  return async ({ jsonLd }: StructuredData, page: Page) => {
+  return async ({ jsonLd, opengraph, headings }: StructuredData, page: Page) => {
     const productTag = jsonLd.filter((t) => t["@type"].includes("Product"))[0]
 
-    const structuredInfo = {
-      title: productTag.name[0],
-      description: productTag.description?.[0],
-      image: productTag.image,
-      brandName: productTag.brand?.[0].name[0],
-      brandLogo: productTag.brand?.[0].image?.[0],
-      price: productTag.offers?.[0].price?.[0],
-      currency: productTag.offers?.[0].priceCurrency?.[0],
-      seller: productTag.offers?.[0].seller?.[0].name[0],
+    const jsonLdInfo = {
+      title: productTag?.name[0],
+      description: productTag?.description?.[0],
+      image: productTag?.image,
+      brandName: productTag?.brand?.[0].name[0],
+      brandLogo: productTag?.brand?.[0].image?.[0],
+      price: productTag?.offers?.[0].price?.[0],
+      currency: productTag?.offers?.[0].priceCurrency?.[0],
+      seller: productTag?.offers?.[0].seller?.[0].name[0],
     }
+    const opengraphInfo = {
+      title: opengraph["og:title"],
+      description: opengraph["og:description"],
+      image: opengraph["og:image"] ? [opengraph["og:image"]] : undefined,
+    }
+    const headingInfo = {
+      title: headings.title,
+      description: headings.description,
+    }
+    const structuredInfo = defaults({}, jsonLdInfo, opengraphInfo, headingInfo)
     const derivedInfo = await parseTitle(structuredInfo.title)
 
     const category = {
