@@ -242,5 +242,48 @@ describe("EntityExtractor", () => {
         seller: undefined,
       }])
     })
+
+    it.skip("extracts multiple offers", async () => {
+      const offer2 = {
+        "@type": ["Offer"],
+        url: ["https://example.com/offer"],
+        price: [20],
+        priceCurrency: ["USD"],
+        seller: [{
+          "@type": ["Organization"],
+          name: ["Batemper"],
+        }],
+      }
+      python.mockImplementation(() => DERIVED_DATA)
+  
+      const { offers, product } = await extract(
+        { jsonLd: [{
+          ...jsonLd,
+          offers: [jsonLd.offers[0], offer2]
+        }], opengraph: {}, headings: {} },
+        PAGE,
+      )
+  
+      expect(offers).toStrictEqual([
+        {
+          id: expect.any(String),
+          url: PAGE.url,
+          site: PAGE.site,
+          product: product.id,
+          price: jsonLd.offers[0].price[0],
+          currency: jsonLd.offers[0].priceCurrency[0],
+          seller: jsonLd.offers[0].seller[0].name[0],
+        },
+        {
+          id: expect.any(String),
+          url: PAGE.url,
+          site: PAGE.site,
+          product: product.id,
+          price: offer2.price[0],
+          currency: offer2.priceCurrency[0],
+          seller: offer2.seller[0].name[0],
+        },
+      ])
+    })
   })
 })
