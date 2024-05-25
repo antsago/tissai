@@ -21,7 +21,7 @@ const jsonLd = {
     priceCurrency: ["EUR"],
     seller: [{
       "@type": ["Organization"],
-      name: ["Pertemba"],
+      name: ["pertemba"],
     }],
   }]
 }
@@ -251,7 +251,7 @@ describe("EntityExtractor", () => {
         priceCurrency: ["USD"],
         seller: [{
           "@type": ["Organization"],
-          name: ["Batemper"],
+          name: ["batemper"],
         }],
       }
       python.mockImplementation(() => DERIVED_DATA)
@@ -324,7 +324,7 @@ describe("EntityExtractor", () => {
           name: jsonLd.offers[0].seller[0].name[0],
         },
         {
-          name: offer2.seller[0].name[0],
+          name: offer2.seller[0].name[0].toLowerCase(),
         },
       ])
     })

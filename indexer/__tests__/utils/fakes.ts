@@ -38,7 +38,7 @@ export const PRODUCT = {
 }
 
 export const OFFER = {
-  seller: "Test Seller",
+  seller: "test seller",
   price: 70,
   curency: "EUR",
 }

@@ -42,7 +42,7 @@ const EntityExtractor = () => {
       offers: productTag?.offers?.map((offer: any) => ({
         price: offer.price?.[0],
         currency: offer.priceCurrency?.[0],
-        seller: offer.seller?.[0].name[0],
+        seller: offer.seller?.[0].name[0]?.toLowerCase(),
       })),
     }
     const opengraphInfo = extractOg(opengraph)
