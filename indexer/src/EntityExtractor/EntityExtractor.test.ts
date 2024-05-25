@@ -14,6 +14,16 @@ const jsonLd = {
   }],
   description: ["The description"],
   image: ["https://example.com/image.jpg"],
+  offers: [{
+    "@type": ["Offer"],
+    url: ["https://example.com/offer"],
+    price: [10],
+    priceCurrency: ["EUR"],
+    seller: [{
+      "@type": ["Organization"],
+      name: ["Pertemba"],
+    }],
+  }]
 }
 const opengraph = {
   "og:type": "product",
@@ -59,7 +69,7 @@ describe("EntityExtractor", () => {
   })
 
   describe("tags", () => {
-    it("extracts tags", async () => {
+    it("extracts tag", async () => {
       python.mockImplementation(() => DERIVED_DATA)
   
       const { tags } = await extract(
@@ -187,6 +197,27 @@ describe("EntityExtractor", () => {
       expect(product).toStrictEqual(expect.objectContaining({
         title: headings.title,
       }))
+    })
+  })
+
+  describe("offers", () => {
+    it("extracts offer", async () => {
+      python.mockImplementation(() => DERIVED_DATA)
+  
+      const { offers } = await extract(
+        { jsonLd: [jsonLd], opengraph: {}, headings: {} },
+        PAGE,
+      )
+  
+      expect(offers).toStrictEqual([{
+        id: expect.any(String),
+        url: PAGE.url,
+        site: PAGE.site,
+        product: expect.any(String),
+        price: jsonLd.offers[0].price[0],
+        currency: jsonLd.offers[0].priceCurrency[0],
+        seller: jsonLd.offers[0].seller[0].name[0],
+      }])
     })
   })
 })

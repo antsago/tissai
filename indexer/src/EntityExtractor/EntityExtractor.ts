@@ -90,7 +90,7 @@ const EntityExtractor = () => {
       seller,
       brand,
       product,
-      offer,
+      offers: [offer],
     }
   }
 }

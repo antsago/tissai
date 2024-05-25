@@ -8,7 +8,7 @@ const page = (await db.query<Page>(`SELECT * FROM ${PAGES}`))[0]
 
 const structuredData = parsePage(page)
 
-const { product, offer, category, tags, seller, brand } = await extractEntities(
+const { product, offers, category, tags, seller, brand } = await extractEntities(
   structuredData,
   page,
 )
@@ -37,13 +37,13 @@ await db.products.create(
 )
 await db.offers.create(
   page.id,
-  offer.id,
-  offer.url,
-  offer.site,
-  offer.product,
-  offer.seller,
-  offer.price,
-  offer.currency,
+  offers[0].id,
+  offers[0].url,
+  offers[0].site,
+  offers[0].product,
+  offers[0].seller,
+  offers[0].price,
+  offers[0].currency,
 )
 
 await db.close()
