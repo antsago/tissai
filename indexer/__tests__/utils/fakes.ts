@@ -44,7 +44,7 @@ export const OFFER = {
 }
 
 export const BRAND = {
-  name: "Test",
+  name: "test",
   logo: "https://example.com/brand.jpg",
 }
 

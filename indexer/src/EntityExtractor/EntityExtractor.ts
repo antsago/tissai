@@ -37,7 +37,7 @@ const EntityExtractor = () => {
       title: productTag?.name[0],
       description: productTag?.description?.[0],
       image: productTag?.image,
-      brandName: productTag?.brand?.[0].name[0],
+      brandName: productTag?.brand?.[0].name[0]?.toLowerCase(),
       brandLogo: productTag?.brand?.[0].image?.[0],
       offers: productTag?.offers?.map((offer: any) => ({
         price: offer.price?.[0],

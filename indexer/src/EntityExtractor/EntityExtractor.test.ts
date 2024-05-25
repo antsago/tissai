@@ -9,7 +9,7 @@ const jsonLd = {
   productID: ["121230"],
   brand: [{
     "@type": ["Brand"],
-    name: ["WEDZE"],
+    name: ["wedze"],
     image: ["https://brand.com/image.jpg"],
   }],
   description: ["The description"],
@@ -340,6 +340,25 @@ describe("EntityExtractor", () => {
       expect(brand).toStrictEqual({
         name: jsonLd.brand[0].name[0],
         logo: jsonLd.brand[0].image[0],
+      })
+    })
+
+    it("turns name to lowercase", async () => {
+      const brandLd = {
+        "@type": ["Brand"],
+        name: ["WEDZE"],
+      }
+      const { brand } = await extract(
+        { jsonLd: [{
+          ...jsonLd,
+          brand: [brandLd]
+        }], opengraph: {}, headings: {} },
+        PAGE,
+      )
+  
+      expect(brand).toStrictEqual({
+        name: "wedze",
+        logo: undefined,
       })
     })
   })
