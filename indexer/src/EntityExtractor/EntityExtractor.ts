@@ -39,9 +39,11 @@ const EntityExtractor = () => {
       image: productTag?.image,
       brandName: productTag?.brand?.[0].name[0],
       brandLogo: productTag?.brand?.[0].image?.[0],
-      price: productTag?.offers?.[0].price?.[0],
-      currency: productTag?.offers?.[0].priceCurrency?.[0],
-      seller: productTag?.offers?.[0].seller?.[0].name[0],
+      offers: productTag?.offers?.map((offer: any) => ({
+        price: offer.price?.[0],
+        currency: offer.priceCurrency?.[0],
+        seller: offer.seller?.[0].name[0],
+      })),
     }
     const opengraphInfo = extractOg(opengraph)
     const headingInfo = {
@@ -56,7 +58,7 @@ const EntityExtractor = () => {
     }
     const tags = derivedInfo.tags.map((t) => ({ name: t }))
 
-    const sellers = productTag?.offers?.map((offer: any) => ({ name: offer.seller?.[0].name[0] })) ?? []
+    const sellers = structuredInfo.offers?.map((offer: any) => ({ name: offer.seller })) ?? []
     const brand = structuredInfo.brandName
       ? { name: structuredInfo.brandName, logo: structuredInfo.brandLogo }
       : undefined
@@ -77,8 +79,8 @@ const EntityExtractor = () => {
       url: page.url,
       site: page.site,
       product: product.id,
-      price: structuredInfo.price,
-      currency: structuredInfo.currency,
+      price: structuredInfo.offers?.[0].price,
+      currency: structuredInfo.offers?.[0].currency,
       seller: sellers[0]?.name,
     }
 
