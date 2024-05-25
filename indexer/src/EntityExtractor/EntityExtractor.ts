@@ -56,9 +56,9 @@ const EntityExtractor = () => {
     }
     const tags = derivedInfo.tags.map((t) => ({ name: t }))
 
-    const seller = structuredInfo.seller
-      ? { name: structuredInfo.seller }
-      : undefined
+    const sellers = structuredInfo.seller
+      ? [{ name: structuredInfo.seller }]
+      : []
     const brand = structuredInfo.brandName
       ? { name: structuredInfo.brandName, logo: structuredInfo.brandLogo }
       : undefined
@@ -81,16 +81,16 @@ const EntityExtractor = () => {
       product: product.id,
       price: structuredInfo.price,
       currency: structuredInfo.currency,
-      seller: seller?.name,
+      seller: sellers[0]?.name,
     }
 
     return {
       category,
       tags,
-      seller,
       brand,
       product,
       offers: [offer],
+      sellers,
     }
   }
 }

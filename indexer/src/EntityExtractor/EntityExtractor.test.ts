@@ -286,4 +286,19 @@ describe("EntityExtractor", () => {
       ])
     })
   })
+
+  describe("sellers", () => {
+    it("extracts seller", async () => {
+      python.mockImplementation(() => DERIVED_DATA)
+  
+      const { sellers } = await extract(
+        { jsonLd: [jsonLd], opengraph: {}, headings: {} },
+        PAGE,
+      )
+  
+      expect(sellers).toStrictEqual([{
+        name: jsonLd.offers[0].seller[0].name[0],
+      }])
+    })
+  })
 })
