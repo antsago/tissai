@@ -56,6 +56,7 @@ describe("DB", () => {
     await db.sites.create(SITE)
     await db.pages.create(
       pageWithSchema({
+        "@context": "https://schema.org/",
         "@type": "Product",
         name: PRODUCT.title,
         description: PRODUCT.description,

@@ -14,12 +14,43 @@ export type StructuredData = {
   }>
 }
 
+function expandJsonLd(linkedData: any): any {
+  if (typeof linkedData !== 'object') {
+    return linkedData
+  }
+  if (Array.isArray(linkedData)) {
+    return linkedData.map(v => expandJsonLd(v))
+  }
+
+  const properties = Object.entries(linkedData)
+    .filter(([key, value]) => value !== null)
+    .map(([key, value]) => {
+      if (Array.isArray(value)) {
+        return [
+          key,
+          value
+            .filter(v => v !== null)
+            .map(v => expandJsonLd(v))
+            .flat(),
+          ]
+      }
+
+      if (typeof value === 'object') {
+        return [key, [expandJsonLd(value)]]
+      }
+
+      return [key, [value]]
+    })
+  return Object.fromEntries(properties)
+}
+
 function parsePage(page: Page): StructuredData {
   const root = parse(page.body)
   const jsonLd = root
     .querySelectorAll('script[type="application/ld+json"]')
     .map((t) => t.textContent)
     .map((t) => JSON.parse(t))
+    .map(expandJsonLd)
 
   const headings = {
     title: root?.querySelector("title")?.textContent,

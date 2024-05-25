@@ -21,10 +21,7 @@ export const pageWithSchema = (...schemas: object[]) => ({
           .map(
             (schema) => `
           <script type="application/ld+json">
-            ${JSON.stringify({
-              "@context": "https://schema.org/",
-              ...schema,
-            })}
+            ${JSON.stringify(schema)}
           </script>
         `,
           )

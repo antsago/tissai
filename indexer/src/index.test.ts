@@ -22,6 +22,7 @@ describe("indexer", () => {
 
   it("handles title-only products", async () => {
     const page = pageWithSchema({
+      "@context": "https://schema.org",
       "@type": "Product",
       name: PRODUCT.title,
     })
