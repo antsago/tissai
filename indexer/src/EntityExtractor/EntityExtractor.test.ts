@@ -343,6 +343,25 @@ describe("EntityExtractor", () => {
       })
     })
 
+    it("handles brands without logo", async () => {
+      const brandLd = {
+        "@type": ["Brand"],
+        name: ["wedze"],
+      }
+      const { brand } = await extract(
+        { jsonLd: [{
+          ...jsonLd,
+          brand: [brandLd]
+        }], opengraph: {}, headings: {} },
+        PAGE,
+      )
+  
+      expect(brand).toStrictEqual({
+        name: brandLd.name[0],
+        logo: undefined,
+      })
+    })
+
     it("turns name to lowercase", async () => {
       const brandLd = {
         "@type": ["Brand"],
@@ -356,10 +375,9 @@ describe("EntityExtractor", () => {
         PAGE,
       )
   
-      expect(brand).toStrictEqual({
+      expect(brand).toStrictEqual(expect.objectContaining({
         name: "wedze",
-        logo: undefined,
-      })
+      }))
     })
   })
 })
