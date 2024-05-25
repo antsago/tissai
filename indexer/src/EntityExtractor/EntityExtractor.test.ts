@@ -243,7 +243,7 @@ describe("EntityExtractor", () => {
       }])
     })
 
-    it.skip("extracts multiple offers", async () => {
+    it("extracts multiple offers", async () => {
       const offer2 = {
         "@type": ["Offer"],
         url: ["https://example.com/offer"],

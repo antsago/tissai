@@ -74,22 +74,30 @@ const EntityExtractor = () => {
       embedding: derivedInfo.embedding,
     }
 
-    const offer = {
+    const offers = structuredInfo.offers?.map((offer: any) => ({
       id: randomUUID(),
       url: page.url,
       site: page.site,
       product: product.id,
-      price: structuredInfo.offers?.[0].price,
-      currency: structuredInfo.offers?.[0].currency,
-      seller: sellers[0]?.name,
-    }
+      price: offer.price,
+      currency: offer.currency,
+      seller: offer.seller,
+    })) ?? [{
+      id: randomUUID(),
+      url: page.url,
+      site: page.site,
+      product: product.id,
+      price: undefined,
+      currency: undefined,
+      seller: undefined,
+    }]
 
     return {
       category,
       tags,
       brand,
       product,
-      offers: [offer],
+      offers,
       sellers,
     }
   }
