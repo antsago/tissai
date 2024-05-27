@@ -29,6 +29,29 @@ import {
 } from "../src/Db/index.js"
 
 const TEST_TABLE = "test"
+const FULL_SCHEMA = {
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  name: PRODUCT.title,
+  description: PRODUCT.description,
+  image: PRODUCT.image,
+  brand: {
+    "@type": "Brand",
+    name: BRAND.name,
+    image: BRAND.logo,
+  },
+  offers: {
+    "@type": "Offer",
+    url: "https://example.com/offer",
+    price: OFFER.price,
+    priceCurrency: OFFER.currency,
+    seller: {
+      "@type": "Organization",
+      name: OFFER.seller,
+    },
+  },
+}
+
 describe("indexer", () => {
   const masterDb = Db()
   vi.stubEnv("PG_DATABASE", TEST_TABLE)
@@ -55,30 +78,7 @@ describe("indexer", () => {
 
   it("extracts and stores page entities", async () => {
     await db.sites.create(SITE)
-    await db.pages.create(
-      pageWithSchema({
-        "@context": "https://schema.org/",
-        "@type": "Product",
-        name: PRODUCT.title,
-        description: PRODUCT.description,
-        image: PRODUCT.image,
-        brand: {
-          "@type": "Brand",
-          name: BRAND.name,
-          image: BRAND.logo,
-        },
-        offers: {
-          "@type": "Offer",
-          url: "https://example.com/offer",
-          price: OFFER.price,
-          priceCurrency: OFFER.currency,
-          seller: {
-            "@type": "Organization",
-            name: OFFER.seller,
-          },
-        },
-      }),
-    )
+    await db.pages.create(pageWithSchema(FULL_SCHEMA))
 
     await import("../src/index.js")
 
@@ -162,30 +162,7 @@ describe("indexer", () => {
 
   it("handles duplicates", async () => {
     await db.sites.create(SITE)
-    await db.pages.create(
-      pageWithSchema({
-        "@context": "https://schema.org/",
-        "@type": "Product",
-        name: PRODUCT.title,
-        description: PRODUCT.description,
-        image: PRODUCT.image,
-        brand: {
-          "@type": "Brand",
-          name: BRAND.name,
-          image: BRAND.logo,
-        },
-        offers: {
-          "@type": "Offer",
-          url: "https://example.com/offer",
-          price: OFFER.price,
-          priceCurrency: OFFER.currency,
-          seller: {
-            "@type": "Organization",
-            name: OFFER.seller,
-          },
-        },
-      }),
-    )
+    await db.pages.create(pageWithSchema(FULL_SCHEMA))
     db.categories.create(PAGE.id, { name: DERIVED_DATA.category })
     db.tags.create(PAGE.id, { name: DERIVED_DATA.tags[0] })
     db.sellers.create(PAGE.id, { name: OFFER.seller })
