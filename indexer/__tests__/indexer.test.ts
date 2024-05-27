@@ -159,4 +159,47 @@ describe("indexer", () => {
       [TRACES.timestamp]: expect.any(Date),
     })
   })
+
+  it.only("stores multiples of each entity", async () => {
+    const seller2 = `${OFFER.seller} 2`
+    await db.sites.create(SITE)
+    await db.pages.create(
+      pageWithSchema({
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        name: PRODUCT.title,
+        offers: [
+          {
+            "@type": "Offer",
+            seller: {
+              "@type": "Organization",
+              name: OFFER.seller,
+            },
+          },
+          {
+            "@type": "Offer",
+            seller: {
+              "@type": "Organization",
+              name: seller2,
+            },
+          },
+        ],
+      }),
+    )
+
+    await import("../src/index.js")
+
+    const offers = await db.query(`SELECT * FROM ${OFFERS};`)
+    expect(offers).toStrictEqual([
+      expect.objectContaining({ seller: OFFER.seller }),
+      expect.objectContaining({ seller: seller2 }),
+    ])
+    const sellers = await db.query(`SELECT * FROM ${SELLERS};`)
+    expect(sellers).toStrictEqual([
+      { name: OFFER.seller },
+      { name: seller2 },
+    ])
+    // const tags = await db.query(`SELECT * FROM ${TAGS};`)
+    // expect(tags).toStrictEqual([{ name: DERIVED_DATA.tags[0] }])
+  })
 })

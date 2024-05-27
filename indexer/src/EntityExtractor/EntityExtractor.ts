@@ -11,6 +11,11 @@ type DerivedData = {
   category: string
   tags: string[]
 }
+type OfferStructuredInfo = {
+  price?: number
+  currency?: string
+  seller?: string
+}
 
 function extractOg(opengraph: StructuredData["opengraph"]) {
   if (opengraph["og:type"] !== "product") {
@@ -67,7 +72,7 @@ const EntityExtractor = () => {
     const tags = derivedInfo.tags.map((t) => ({ name: t }))
 
     const sellers =
-      structuredInfo.offers?.map((offer: any) => ({ name: offer.seller })) ?? []
+      (structuredInfo.offers as OfferStructuredInfo[])?.map((offer: any) => ({ name: offer.seller })) ?? []
     const brand = structuredInfo.brandName
       ? { name: structuredInfo.brandName, logo: structuredInfo.brandLogo }
       : undefined
@@ -83,7 +88,7 @@ const EntityExtractor = () => {
       embedding: derivedInfo.embedding,
     }
 
-    const offers = structuredInfo.offers?.map((offer: any) => ({
+    const offers = (structuredInfo.offers as OfferStructuredInfo[])?.map((offer) => ({
       id: randomUUID(),
       url: page.url,
       site: page.site,

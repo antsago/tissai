@@ -17,9 +17,7 @@ try {
     [
       db.categories.create(page.id, category.name),
       tags.map((tag) => db.tags.create(page.id, tag.name)),
-      sellers.length
-        ? db.sellers.create(page.id, sellers[0].name)
-        : Promise.resolve(),
+      sellers.map(seller => db.sellers.create(page.id, seller.name)),
       brand
         ? db.brands.create(page.id, brand.name, brand.logo)
         : Promise.resolve(),
@@ -37,16 +35,16 @@ try {
     product.images,
     product.brand,
   )
-  await db.offers.create(
+  await Promise.all(offers.map(offer => db.offers.create(
     page.id,
-    offers[0].id,
-    offers[0].url,
-    offers[0].site,
-    offers[0].product,
-    offers[0].seller,
-    offers[0].price,
-    offers[0].currency,
-  )
+    offer.id,
+    offer.url,
+    offer.site,
+    offer.product,
+    offer.seller,
+    offer.price,
+    offer.currency,
+  )))
 } catch (err) {
 } finally {
   await db.close()
