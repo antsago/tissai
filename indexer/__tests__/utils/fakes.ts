@@ -40,7 +40,7 @@ export const PRODUCT = {
 export const OFFER = {
   seller: "test seller",
   price: 70,
-  curency: "EUR",
+  currency: "EUR",
 }
 
 export const BRAND = {

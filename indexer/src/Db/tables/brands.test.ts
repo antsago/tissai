@@ -13,7 +13,7 @@ describe("brands", () => {
   })
 
   it("inserts new row", async () => {
-    await create(connection)(PAGE.id, BRAND.name, BRAND.logo)
+    await create(connection)(PAGE.id, BRAND)
 
     expect(pg).toHaveInserted(BRANDS, [BRAND.name, BRAND.logo])
     expect(pg).toHaveInserted(TRACES, [PAGE.id, BRANDS.toString(), BRAND.name])

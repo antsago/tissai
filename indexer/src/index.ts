@@ -15,37 +15,23 @@ try {
 
   await Promise.all(
     [
-      db.categories.create(page.id, category.name),
-      tags.map((tag) => db.tags.create(page.id, tag.name)),
-      sellers.map((seller) => db.sellers.create(page.id, seller.name)),
+      db.categories.create(page.id, category),
+      tags.map((tag) => db.tags.create(page.id, tag)),
+      sellers.map((seller) => db.sellers.create(page.id, seller)),
       brand
-        ? db.brands.create(page.id, brand.name, brand.logo)
+        ? db.brands.create(page.id, brand)
         : Promise.resolve(),
     ].flat(),
   )
 
   await db.products.create(
     page.id,
-    product.id,
-    product.title,
-    product.embedding,
-    product.category,
-    product.tags,
-    product.description,
-    product.images,
-    product.brand,
-  )
+    product)
   await Promise.all(
     offers.map((offer) =>
       db.offers.create(
         page.id,
-        offer.id,
-        offer.url,
-        offer.site,
-        offer.product,
-        offer.seller,
-        offer.price,
-        offer.currency,
+        offer,
       ),
     ),
   )

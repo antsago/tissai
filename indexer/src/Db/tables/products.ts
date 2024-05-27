@@ -3,6 +3,16 @@ import { TABLE as BRANDS } from "./brands.js"
 import { TABLE as CATEGORIES } from "./categories.js"
 import * as traces from "./traces.js"
 
+export type Product = {
+  id: string,
+  title: string,
+  embedding: number[],
+  category: string,
+  tags: string[],
+  description?: string,
+  images?: string[],
+  brand?: string,
+}
 export const TABLE = Object.assign("products", {
   id: "id",
   title: "title",
@@ -22,14 +32,7 @@ export const create =
   (connection: Connection) =>
   (
     pageId: string,
-    id: string,
-    title: string,
-    embedding: number[],
-    category: string,
-    tags: string[],
-    description?: string,
-    images?: string[],
-    brand?: string,
+    product: Product,
   ) =>
     Promise.all([
       connection.query(
@@ -46,17 +49,17 @@ export const create =
           $1, $2, $3, $4, $5, $6, $7, $8
         );`,
         [
-          id,
-          title,
-          description,
-          images,
-          brand,
-          formatEmbedding(embedding),
-          category,
-          tags,
+          product.id,
+          product.title,
+          product.description,
+          product.images,
+          product.brand,
+          formatEmbedding(product.embedding),
+          product.category,
+          product.tags,
         ],
       ),
-      traces.create(connection)(pageId, TABLE.toString(), id),
+      traces.create(connection)(pageId, TABLE.toString(), product.id),
     ])
 
 export const initialize = (connection: Connection) =>

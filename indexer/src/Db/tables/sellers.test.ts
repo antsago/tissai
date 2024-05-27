@@ -13,9 +13,12 @@ describe("sellers", () => {
   })
 
   it("inserts new row", async () => {
-    await create(connection)(PAGE.id, OFFER.seller)
+    const seller = {
+      name: OFFER.seller
+    }
+    await create(connection)(PAGE.id, seller)
 
-    expect(pg).toHaveInserted(SELLERS, [OFFER.seller])
-    expect(pg).toHaveInserted(TRACES, [PAGE.id, SELLERS.toString(), OFFER.seller])
+    expect(pg).toHaveInserted(SELLERS, [seller.name])
+    expect(pg).toHaveInserted(TRACES, [PAGE.id, SELLERS.toString(), seller.name])
   })
 })

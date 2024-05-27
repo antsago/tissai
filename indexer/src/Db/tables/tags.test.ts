@@ -13,9 +13,12 @@ describe("tags", () => {
   })
 
   it("inserts new row", async () => {
-    await create(connection)(PAGE.id, DERIVED_DATA.tags[0])
+    const tag = {
+      name: DERIVED_DATA.tags[0],
+    }
+    await create(connection)(PAGE.id, tag)
 
-    expect(pg).toHaveInserted(TAGS, [DERIVED_DATA.tags[0]])
-    expect(pg).toHaveInserted(TRACES, [PAGE.id, TAGS.toString(), DERIVED_DATA.tags[0]])
+    expect(pg).toHaveInserted(TAGS, [tag.name])
+    expect(pg).toHaveInserted(TRACES, [PAGE.id, TAGS.toString(), tag.name])
   })
 })

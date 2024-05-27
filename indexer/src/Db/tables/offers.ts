@@ -4,6 +4,16 @@ import { TABLE as SELLERS } from "./sellers.js"
 import { TABLE as SITES } from "./sites.js"
 import * as traces from "./traces.js"
 
+export type Offer = {
+  id: string
+  url: string
+  site: string
+  product: string
+  seller?: string
+  price?: number
+  currency?: string
+}
+
 export const TABLE = Object.assign("offers", {
   id: "id",
   url: "url",
@@ -18,13 +28,7 @@ export const create =
   (connection: Connection) =>
   (
     pageId: string,
-    id: string,
-    url: string,
-    site: string,
-    product: string,
-    seller?: string,
-    price?: number,
-    currency?: string,
+    offer: Offer,
   ) =>
     Promise.all([
       connection.query(
@@ -39,9 +43,9 @@ export const create =
         ) VALUES (
           $1, $2, $3, $4, $5, $6, $7
         );`,
-        [id, url, site, product, seller, price, currency],
+        [offer.id, offer.url, offer.site, offer.product, offer.seller, offer.price, offer.currency],
       ),
-      traces.create(connection)(pageId, TABLE.toString(), id),
+      traces.create(connection)(pageId, TABLE.toString(), offer.id),
     ])
 
 export const initialize = (connection: Connection) =>

@@ -13,10 +13,19 @@ describe("products", () => {
   })
 
   it("inserts new row", async () => {
-    const productId = "1a13b49d-b43d-4eba-838d-a77c9d94f743"
-    await create(connection)(PAGE.id, productId, PRODUCT.title, DERIVED_DATA.embedding, DERIVED_DATA.category, DERIVED_DATA.tags, PRODUCT.description, [PRODUCT.image], BRAND.name)
+    const product = {
+      id: "1a13b49d-b43d-4eba-838d-a77c9d94f743",
+      title: PRODUCT.title,
+      description: PRODUCT.description,
+      images: [PRODUCT.image],
+      brand: BRAND.name,
+      embedding: DERIVED_DATA.embedding,
+      category: DERIVED_DATA.category,
+      tags: DERIVED_DATA.tags,
+    }
+    await create(connection)(PAGE.id, product)
 
-    expect(pg).toHaveInserted(PRODUCTS, [productId, PRODUCT.title, JSON.stringify(DERIVED_DATA.embedding), DERIVED_DATA.category, DERIVED_DATA.tags, PRODUCT.description, [PRODUCT.image], BRAND.name])
-    expect(pg).toHaveInserted(TRACES, [PAGE.id, PRODUCTS.toString(), productId])
+    expect(pg).toHaveInserted(PRODUCTS, [product.id, product.title, JSON.stringify(product.embedding), product.category, product.tags, product.description, product.images, product.brand])
+    expect(pg).toHaveInserted(TRACES, [PAGE.id, PRODUCTS.toString(), product.id])
   })
 })

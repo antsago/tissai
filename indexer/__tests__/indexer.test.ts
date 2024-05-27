@@ -71,7 +71,7 @@ describe("indexer", () => {
           "@type": "Offer",
           url: "https://example.com/offer",
           price: OFFER.price,
-          priceCurrency: OFFER.curency,
+          priceCurrency: OFFER.currency,
           seller: {
             "@type": "Organization",
             name: OFFER.seller,
@@ -104,7 +104,7 @@ describe("indexer", () => {
         url: PAGE.url,
         seller: OFFER.seller,
         price: String(OFFER.price),
-        currency: OFFER.curency,
+        currency: OFFER.currency,
       },
     ])
     const categories = await db.query(`SELECT * FROM ${CATEGORIES};`)
