@@ -65,26 +65,26 @@ describe("index", () => {
     const seller2 = `${OFFER.seller} 2`
     const tags = ["tag1", "tag2"]
     const page = pageWithSchema({
-        "@context": "https://schema.org/",
-        "@type": "Product",
-        name: PRODUCT.title,
-        offers: [
-          {
-            "@type": "Offer",
-            seller: {
-              "@type": "Organization",
-              name: OFFER.seller,
-            },
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      name: PRODUCT.title,
+      offers: [
+        {
+          "@type": "Offer",
+          seller: {
+            "@type": "Organization",
+            name: OFFER.seller,
           },
-          {
-            "@type": "Offer",
-            seller: {
-              "@type": "Organization",
-              name: seller2,
-            },
+        },
+        {
+          "@type": "Offer",
+          seller: {
+            "@type": "Organization",
+            name: seller2,
           },
-        ],
-      })
+        },
+      ],
+    })
     pg.query.mockResolvedValueOnce({ rows: [page] })
     python.mockReturnValue({ ...DERIVED_DATA, tags })
 

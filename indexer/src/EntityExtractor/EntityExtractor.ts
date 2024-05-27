@@ -61,7 +61,7 @@ const EntityExtractor = () => {
     const structuredInfo = defaults({}, jsonLdInfo, opengraphInfo, headingInfo)
 
     if (!structuredInfo.title) {
-      throw new Error('Product without title!')
+      throw new Error("Product without title!")
     }
 
     const derivedInfo = await parseTitle(structuredInfo.title)
@@ -72,7 +72,9 @@ const EntityExtractor = () => {
     const tags = derivedInfo.tags.map((t) => ({ name: t }))
 
     const sellers =
-      (structuredInfo.offers as OfferStructuredInfo[])?.map((offer: any) => ({ name: offer.seller })) ?? []
+      (structuredInfo.offers as OfferStructuredInfo[])?.map((offer: any) => ({
+        name: offer.seller,
+      })) ?? []
     const brand = structuredInfo.brandName
       ? { name: structuredInfo.brandName, logo: structuredInfo.brandLogo }
       : undefined
@@ -88,15 +90,17 @@ const EntityExtractor = () => {
       embedding: derivedInfo.embedding,
     }
 
-    const offers = (structuredInfo.offers as OfferStructuredInfo[])?.map((offer) => ({
-      id: randomUUID(),
-      url: page.url,
-      site: page.site,
-      product: product.id,
-      price: offer.price,
-      currency: offer.currency,
-      seller: offer.seller,
-    })) ?? [
+    const offers = (structuredInfo.offers as OfferStructuredInfo[])?.map(
+      (offer) => ({
+        id: randomUUID(),
+        url: page.url,
+        site: page.site,
+        product: product.id,
+        price: offer.price,
+        currency: offer.currency,
+        seller: offer.seller,
+      }),
+    ) ?? [
       {
         id: randomUUID(),
         url: page.url,

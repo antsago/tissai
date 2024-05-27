@@ -226,7 +226,7 @@ describe("parsePage", () => {
         author: undefined,
         robots: undefined,
         canonical: undefined,
-      }
+      },
     })
   })
 })
