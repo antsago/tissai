@@ -44,4 +44,20 @@ describe("index", () => {
     expect(pg).not.toHaveInserted(SELLERS)
     expect(pg).not.toHaveInserted(BRANDS)
   })
+
+  it("handles empty pages", async () => {
+    const page = pageWithSchema()
+    pg.query.mockResolvedValueOnce({ rows: [page] })
+    python.mockImplementation(() => DERIVED_DATA)
+
+    await import("./index.js")
+
+    expect(pg).not.toHaveInserted(PRODUCTS)
+    expect(pg).not.toHaveInserted(OFFERS)
+    expect(pg).not.toHaveInserted(CATEGORIES)
+    expect(pg).not.toHaveInserted(TAGS)
+    expect(pg).not.toHaveInserted(SELLERS)
+    expect(pg).not.toHaveInserted(BRANDS)
+    expect(pg.end).toHaveBeenCalled()
+  })
 })
