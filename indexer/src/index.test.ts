@@ -97,4 +97,28 @@ describe("index", () => {
     expect(pg).toHaveInserted(TAGS, [tags[0]])
     expect(pg).toHaveInserted(TAGS, [tags[1]])
   })
+
+  it("processes multiple pages", async () => {
+    const page = pageWithSchema({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: PRODUCT.title,
+    })
+    const title2 = "Another product"
+    const page2 = {
+      ...pageWithSchema({
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: title2,
+      }),
+      id: "d861c3c5-5206-4347-b2ec-6f1ca94fca2f",
+      url: "page/2",
+    }
+    pg.query.mockResolvedValueOnce({ rows: [page, page2] })
+
+    await import("./index.js")
+
+    expect(pg).toHaveInserted(PRODUCTS, [PRODUCT.title])
+    expect(pg).toHaveInserted(PRODUCTS, [title2])
+  })
 })
