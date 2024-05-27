@@ -24,6 +24,7 @@ describe("index", () => {
     const { MockPg, MockPython } = await import("#mocks")
     pg = MockPg()
     python = MockPython()
+    python.mockReturnValue(DERIVED_DATA)
   })
 
   it("handles title-only products", async () => {
@@ -33,7 +34,6 @@ describe("index", () => {
       name: PRODUCT.title,
     })
     pg.query.mockResolvedValueOnce({ rows: [page] })
-    python.mockImplementation(() => DERIVED_DATA)
 
     await import("./index.js")
 
@@ -48,7 +48,6 @@ describe("index", () => {
   it("handles empty pages", async () => {
     const page = pageWithSchema()
     pg.query.mockResolvedValueOnce({ rows: [page] })
-    python.mockImplementation(() => DERIVED_DATA)
 
     await import("./index.js")
 

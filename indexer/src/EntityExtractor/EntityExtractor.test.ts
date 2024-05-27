@@ -53,7 +53,7 @@ describe("EntityExtractor", () => {
   beforeEach(async () => {
     python = MockPython()
     extract = EntityExtractor()
-    python.mockImplementation(() => DERIVED_DATA)
+    python.mockReturnValue(DERIVED_DATA)
   })
 
   it("handles empty pages", async () => {
@@ -95,10 +95,10 @@ describe("EntityExtractor", () => {
 
     it("extracts multiple tags", async () => {
       const foundTags = ["two", "tags"]
-      python.mockImplementation(() => ({
+      python.mockReturnValue({
         ...DERIVED_DATA,
         tags: foundTags,
-      }))
+      })
 
       const { tags } = await extract(
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
