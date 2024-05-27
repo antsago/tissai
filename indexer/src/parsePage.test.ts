@@ -202,4 +202,31 @@ describe("parsePage", () => {
 
     expect(result).toStrictEqual(expect.objectContaining({ opengraph }))
   })
+
+  it("handles empty pages", () => {
+    const page = {
+      ...PAGE,
+      body: `
+        <html>
+          <head>
+          </head>
+        </html>
+      `,
+    }
+
+    const result = parsePage(page)
+
+    expect(result).toStrictEqual({
+      jsonLd: [],
+      opengraph: {},
+      headings: {
+        title: undefined,
+        description: undefined,
+        keywords: undefined,
+        author: undefined,
+        robots: undefined,
+        canonical: undefined,
+      }
+    })
+  })
 })

@@ -48,12 +48,22 @@ const headings = {
 }
 
 describe("EntityExtractor", () => {
-  let extract
+  let extract: ReturnType<typeof EntityExtractor>
   let python: MockPython
   beforeEach(async () => {
     python = MockPython()
     extract = EntityExtractor()
     python.mockImplementation(() => DERIVED_DATA)
+  })
+
+  it("handles empty pages", async () => {
+    const act = extract(
+      { jsonLd: [], opengraph: {}, headings: {} },
+      PAGE,
+    )
+
+    await expect(act).rejects.toThrow("Product without title")
+    expect(python.worker.send).not.toHaveBeenCalled()
   })
 
   describe("categories", () => {

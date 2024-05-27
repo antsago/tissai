@@ -54,6 +54,11 @@ const EntityExtractor = () => {
       description: headings.description,
     }
     const structuredInfo = defaults({}, jsonLdInfo, opengraphInfo, headingInfo)
+
+    if (!structuredInfo.title) {
+      throw new Error('Product without title!')
+    }
+
     const derivedInfo = await parseTitle(structuredInfo.title)
 
     const category = {

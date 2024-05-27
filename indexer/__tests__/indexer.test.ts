@@ -29,7 +29,7 @@ import {
 } from "../src/Db/index.js"
 
 const TEST_TABLE = "test"
-describe("DB", () => {
+describe("indexer", () => {
   const masterDb = Db()
   vi.stubEnv("PG_DATABASE", TEST_TABLE)
 
@@ -158,5 +158,29 @@ describe("DB", () => {
       [TRACES.objectId]: sellers[0].name,
       [TRACES.timestamp]: expect.any(Date),
     })
+  })
+
+  it("handles empty pages", async () => {
+    await db.sites.create(SITE)
+    await db.pages.create(
+      pageWithSchema(),
+    )
+
+    await import("../src/index.js")
+
+    const products = await db.query(`SELECT * FROM ${PRODUCTS};`)
+    expect(products.length).toBe(0)
+    const offers = await db.query(`SELECT * FROM ${OFFERS};`)
+    expect(offers.length).toBe(0)
+    const categories = await db.query(`SELECT * FROM ${CATEGORIES};`)
+    expect(categories.length).toBe(0)
+    const tags = await db.query(`SELECT * FROM ${TAGS};`)
+    expect(tags.length).toBe(0)
+    const brands = await db.query(`SELECT * FROM ${BRANDS};`)
+    expect(brands.length).toBe(0)
+    const sellers = await db.query(`SELECT * FROM ${SELLERS};`)
+    expect(sellers.length).toBe(0)
+    const traces = await db.query(`SELECT * FROM ${TRACES};`)
+    expect(traces.length).toBe(0)
   })
 })
