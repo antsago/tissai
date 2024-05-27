@@ -5,6 +5,7 @@ import {
   PRODUCT,
   DERIVED_DATA,
   pageWithSchema,
+  OFFER,
 } from "#mocks"
 import {
   BRANDS,
@@ -58,5 +59,42 @@ describe("index", () => {
     expect(pg).not.toHaveInserted(SELLERS)
     expect(pg).not.toHaveInserted(BRANDS)
     expect(pg.end).toHaveBeenCalled()
+  })
+
+  it("stores multiple offers, sellers, and tags", async () => {
+    const seller2 = `${OFFER.seller} 2`
+    const tags = ["tag1", "tag2"]
+    const page = pageWithSchema({
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        name: PRODUCT.title,
+        offers: [
+          {
+            "@type": "Offer",
+            seller: {
+              "@type": "Organization",
+              name: OFFER.seller,
+            },
+          },
+          {
+            "@type": "Offer",
+            seller: {
+              "@type": "Organization",
+              name: seller2,
+            },
+          },
+        ],
+      })
+    pg.query.mockResolvedValueOnce({ rows: [page] })
+    python.mockReturnValue({ ...DERIVED_DATA, tags })
+
+    await import("./index.js")
+
+    expect(pg).toHaveInserted(OFFERS, [OFFER.seller])
+    expect(pg).toHaveInserted(OFFERS, [seller2])
+    expect(pg).toHaveInserted(SELLERS, [OFFER.seller])
+    expect(pg).toHaveInserted(SELLERS, [seller2])
+    expect(pg).toHaveInserted(TAGS, [tags[0]])
+    expect(pg).toHaveInserted(TAGS, [tags[1]])
   })
 })
