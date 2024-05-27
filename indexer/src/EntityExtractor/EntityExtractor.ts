@@ -1,3 +1,4 @@
+import type { Brand, Category, Product, Tag, Offer, Seller } from '../Db/index.js'
 import type { StructuredData } from "../parsePage.js"
 import { dirname } from "node:path"
 import { randomUUID } from "node:crypto"
@@ -29,6 +30,14 @@ function extractOg(opengraph: StructuredData["opengraph"]) {
   }
 }
 
+type Entities = {
+  product: Product
+  category: Category
+  brand?: Brand
+  tags: Tag[]
+  offers: Offer[]
+  sellers: Seller[]
+}
 const EntityExtractor = () => {
   const currentDirectory = dirname(fileURLToPath(import.meta.url))
   const parseTitle = PythonPool<string, DerivedData>(
@@ -38,7 +47,7 @@ const EntityExtractor = () => {
   return async (
     { jsonLd, opengraph, headings }: StructuredData,
     page: Page,
-  ) => {
+  ): Promise<Entities> => {
     const productTag = jsonLd.filter((t) => t["@type"].includes("Product"))[0]
 
     const jsonLdInfo = {
