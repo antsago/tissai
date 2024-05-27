@@ -11,7 +11,6 @@ export const TABLE = Object.assign("brands", {
   logo: "logo",
 })
 
-
 export const create =
   (connection: Connection) => (pageId: string, brand: Brand) =>
     Promise.all([

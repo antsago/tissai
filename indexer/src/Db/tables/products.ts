@@ -4,14 +4,14 @@ import { TABLE as CATEGORIES } from "./categories.js"
 import * as traces from "./traces.js"
 
 export type Product = {
-  id: string,
-  title: string,
-  embedding: number[],
-  category: string,
-  tags: string[],
-  description?: string,
-  images?: string[],
-  brand?: string,
+  id: string
+  title: string
+  embedding: number[]
+  category: string
+  tags: string[]
+  description?: string
+  images?: string[]
+  brand?: string
 }
 export const TABLE = Object.assign("products", {
   id: "id",
@@ -29,11 +29,7 @@ function formatEmbedding(embedding: number[]) {
 }
 
 export const create =
-  (connection: Connection) =>
-  (
-    pageId: string,
-    product: Product,
-  ) =>
+  (connection: Connection) => (pageId: string, product: Product) =>
     Promise.all([
       connection.query(
         `INSERT INTO ${TABLE} (

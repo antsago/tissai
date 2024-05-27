@@ -25,7 +25,20 @@ describe("products", () => {
     }
     await create(connection)(PAGE.id, product)
 
-    expect(pg).toHaveInserted(PRODUCTS, [product.id, product.title, JSON.stringify(product.embedding), product.category, product.tags, product.description, product.images, product.brand])
-    expect(pg).toHaveInserted(TRACES, [PAGE.id, PRODUCTS.toString(), product.id])
+    expect(pg).toHaveInserted(PRODUCTS, [
+      product.id,
+      product.title,
+      JSON.stringify(product.embedding),
+      product.category,
+      product.tags,
+      product.description,
+      product.images,
+      product.brand,
+    ])
+    expect(pg).toHaveInserted(TRACES, [
+      PAGE.id,
+      PRODUCTS.toString(),
+      product.id,
+    ])
   })
 })

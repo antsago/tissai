@@ -25,11 +25,7 @@ export const TABLE = Object.assign("offers", {
 })
 
 export const create =
-  (connection: Connection) =>
-  (
-    pageId: string,
-    offer: Offer,
-  ) =>
+  (connection: Connection) => (pageId: string, offer: Offer) =>
     Promise.all([
       connection.query(
         `INSERT INTO ${TABLE} (
@@ -43,7 +39,15 @@ export const create =
         ) VALUES (
           $1, $2, $3, $4, $5, $6, $7
         );`,
-        [offer.id, offer.url, offer.site, offer.product, offer.seller, offer.price, offer.currency],
+        [
+          offer.id,
+          offer.url,
+          offer.site,
+          offer.product,
+          offer.seller,
+          offer.price,
+          offer.currency,
+        ],
       ),
       traces.create(connection)(pageId, TABLE.toString(), offer.id),
     ])

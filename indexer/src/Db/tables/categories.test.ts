@@ -14,12 +14,16 @@ describe("categories", () => {
 
   it("inserts new row", async () => {
     const category = {
-      name: DERIVED_DATA.category
+      name: DERIVED_DATA.category,
     }
 
     await create(connection)(PAGE.id, category)
 
     expect(pg).toHaveInserted(CATEGORIES, [category.name])
-    expect(pg).toHaveInserted(TRACES, [PAGE.id, CATEGORIES.toString(), category.name])
+    expect(pg).toHaveInserted(TRACES, [
+      PAGE.id,
+      CATEGORIES.toString(),
+      category.name,
+    ])
   })
 })

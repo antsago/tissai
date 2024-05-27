@@ -18,23 +18,12 @@ try {
       db.categories.create(page.id, category),
       tags.map((tag) => db.tags.create(page.id, tag)),
       sellers.map((seller) => db.sellers.create(page.id, seller)),
-      brand
-        ? db.brands.create(page.id, brand)
-        : Promise.resolve(),
+      brand ? db.brands.create(page.id, brand) : Promise.resolve(),
     ].flat(),
   )
 
-  await db.products.create(
-    page.id,
-    product)
-  await Promise.all(
-    offers.map((offer) =>
-      db.offers.create(
-        page.id,
-        offer,
-      ),
-    ),
-  )
+  await db.products.create(page.id, product)
+  await Promise.all(offers.map((offer) => db.offers.create(page.id, offer)))
 } catch (err) {
 } finally {
   await db.close()

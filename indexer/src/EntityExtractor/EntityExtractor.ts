@@ -1,4 +1,11 @@
-import type { Brand, Category, Product, Tag, Offer, Seller } from '../Db/index.js'
+import type {
+  Brand,
+  Category,
+  Product,
+  Tag,
+  Offer,
+  Seller,
+} from "../Db/index.js"
 import type { StructuredData } from "../parsePage.js"
 import { dirname } from "node:path"
 import { randomUUID } from "node:crypto"

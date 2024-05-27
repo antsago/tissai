@@ -25,8 +25,15 @@ describe("offers", () => {
 
     await create(connection)(PAGE.id, offer)
 
-    expect(pg).toHaveInserted(OFFERS, [offer.id, offer.url, offer.site,
-offer.product, offer.seller, offer.price, offer.currency])
+    expect(pg).toHaveInserted(OFFERS, [
+      offer.id,
+      offer.url,
+      offer.site,
+      offer.product,
+      offer.seller,
+      offer.price,
+      offer.currency,
+    ])
     expect(pg).toHaveInserted(TRACES, [PAGE.id, OFFERS.toString(), offer.id])
   })
 })
