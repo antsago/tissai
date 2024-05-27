@@ -159,4 +159,53 @@ describe("indexer", () => {
       [TRACES.timestamp]: expect.any(Date),
     })
   })
+
+  it("handles duplicates", async () => {
+    await db.sites.create(SITE)
+    await db.pages.create(
+      pageWithSchema({
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        name: PRODUCT.title,
+        description: PRODUCT.description,
+        image: PRODUCT.image,
+        brand: {
+          "@type": "Brand",
+          name: BRAND.name,
+          image: BRAND.logo,
+        },
+        offers: {
+          "@type": "Offer",
+          url: "https://example.com/offer",
+          price: OFFER.price,
+          priceCurrency: OFFER.currency,
+          seller: {
+            "@type": "Organization",
+            name: OFFER.seller,
+          },
+        },
+      }),
+    )
+    db.categories.create(PAGE.id, { name: DERIVED_DATA.category })
+    db.tags.create(PAGE.id, { name: DERIVED_DATA.tags[0] })
+    db.sellers.create(PAGE.id, { name: OFFER.seller })
+    db.brands.create(PAGE.id, { name: BRAND.name })
+
+    await import("../src/index.js")
+
+    const products = await db.query(`SELECT * FROM ${PRODUCTS};`)
+    expect(products.length).toBe(1)
+    const offers = await db.query(`SELECT * FROM ${OFFERS};`)
+    expect(offers.length).toBe(1)
+    const categories = await db.query(`SELECT * FROM ${CATEGORIES};`)
+    expect(categories.length).toBe(1)
+    const tags = await db.query(`SELECT * FROM ${TAGS};`)
+    expect(tags.length).toBe(1)
+    const brands = await db.query(`SELECT * FROM ${BRANDS};`)
+    expect(brands.length).toBe(1)
+    const sellers = await db.query(`SELECT * FROM ${SELLERS};`)
+    expect(sellers.length).toBe(1)
+    const traces = await db.query(`SELECT * FROM ${TRACES};`)
+    expect(traces.length).toBe(4 + 6)
+  })
 })

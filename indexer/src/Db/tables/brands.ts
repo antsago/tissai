@@ -17,7 +17,7 @@ export const create =
       connection.query(
         `INSERT INTO ${TABLE} (
           ${TABLE.name}, ${TABLE.logo}
-        ) VALUES ($1, $2);`,
+        ) VALUES ($1, $2) ON CONFLICT DO NOTHING;`,
         [brand.name, brand.logo],
       ),
       traces.create(connection)(pageId, TABLE.toString(), brand.name),

@@ -12,9 +12,10 @@ export const TABLE = Object.assign("categories", {
 export const create =
   (connection: Connection) => (pageId: string, category: Category) =>
     Promise.all([
-      connection.query(`INSERT INTO ${TABLE} (${TABLE.name}) VALUES ($1);`, [
-        category.name,
-      ]),
+      connection.query(
+        `INSERT INTO ${TABLE} (${TABLE.name}) VALUES ($1) ON CONFLICT DO NOTHING;`,
+        [category.name],
+      ),
       traces.create(connection)(pageId, TABLE.toString(), category.name),
     ])
 
