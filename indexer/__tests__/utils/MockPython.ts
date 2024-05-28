@@ -7,8 +7,8 @@ export function MockPython<Input extends string | Object, Output>() {
   const send = vi.fn<[Input], void>()
   const worker = Object.assign(eventEmitter, { send })
 
-  const pythonShell = vi.fn().mockReturnValue(worker)
-  setPShell(pythonShell as any)
+  const PythonShell = vi.fn().mockReturnValue(worker)
+  setPShell(PythonShell as any)
 
   const mockImplementation = (mock: (message: Input) => Output) => {
     worker.send.mockImplementation((message: Input) => {
@@ -19,7 +19,7 @@ export function MockPython<Input extends string | Object, Output>() {
     mockImplementation(() => value)
   }
 
-  return { worker, mockImplementation, mockReturnValue }
+  return { PythonShell, worker, mockImplementation, mockReturnValue }
 }
 
 export type MockPython = ReturnType<typeof MockPython>

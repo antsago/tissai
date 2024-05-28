@@ -148,4 +148,14 @@ describe("index", () => {
     expect(pg).toHaveInserted(PRODUCTS, [title2])
     expect(console.error).toHaveBeenCalledWith(expect.stringContaining(error.message))
   })
+
+  it("handles fatal errors", async () => {
+    const error = new Error('Booh!')
+    python.PythonShell.mockImplementation(() => { throw error })
+
+    const act = import("./index.js")
+
+    await expect(act).rejects.toThrow(error)
+    expect(pg.pool.end).toHaveBeenCalled()
+  })
 })
