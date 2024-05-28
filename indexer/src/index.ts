@@ -3,11 +3,11 @@ import parsePage from "./parsePage.js"
 import EntityExtractor from "./EntityExtractor/index.js"
 
 const db = Db()
+const extractEntities = EntityExtractor()
 
 try {
-  const extractEntities = EntityExtractor()
-  const pages = await db.query<Page>(`SELECT * FROM ${PAGES}`)
-  for (let page of pages) {
+  const pages = db.stream<Page>(`SELECT * FROM ${PAGES}`)
+  for await (let page of pages) {
     const structuredData = parsePage(page)
   
     const { product, offers, category, tags, sellers, brand } =

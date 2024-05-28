@@ -34,7 +34,7 @@ describe("index", () => {
       "@type": "Product",
       name: PRODUCT.title,
     })
-    pg.query.mockResolvedValueOnce({ rows: [page] })
+    pg.cursor.read.mockResolvedValueOnce([page])
 
     await import("./index.js")
 
@@ -48,7 +48,7 @@ describe("index", () => {
 
   it("handles empty pages", async () => {
     const page = pageWithSchema()
-    pg.query.mockResolvedValueOnce({ rows: [page] })
+    pg.cursor.read.mockResolvedValueOnce([page])
 
     await import("./index.js")
 
@@ -85,7 +85,7 @@ describe("index", () => {
         },
       ],
     })
-    pg.query.mockResolvedValueOnce({ rows: [page] })
+    pg.cursor.read.mockResolvedValueOnce([page])
     python.mockReturnValue({ ...DERIVED_DATA, tags })
 
     await import("./index.js")
@@ -114,7 +114,8 @@ describe("index", () => {
       id: "d861c3c5-5206-4347-b2ec-6f1ca94fca2f",
       url: "page/2",
     }
-    pg.query.mockResolvedValueOnce({ rows: [page, page2] })
+    pg.cursor.read.mockResolvedValueOnce([page])
+    pg.cursor.read.mockResolvedValueOnce([page2])
 
     await import("./index.js")
 
