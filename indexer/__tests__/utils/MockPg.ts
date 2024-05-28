@@ -7,6 +7,7 @@ function mockedClient() {
 
   return { release, query }
 }
+
 function mockedPool(client: ReturnType<typeof mockedClient>) {
   const Pool = vi.fn()
   const connect = vi.fn().mockReturnValue(client)
@@ -24,11 +25,16 @@ function mockedPool(client: ReturnType<typeof mockedClient>) {
 
 export function MockPg() {
   const Cursor = vi.fn()
+  const close = vi.fn()
+  const read = vi.fn().mockResolvedValue([])
+  const cursor = { close, read }
+
   const client = mockedClient()
+  client.query.mockResolvedValue(cursor)
   const poolMock = mockedPool(client)
 
   setPg(poolMock.Pool as any, Cursor as any)
 
-  return { ...poolMock, Cursor, client }
+  return { ...poolMock, Cursor, client, cursor }
 }
 export type MockPg = ReturnType<typeof MockPg>

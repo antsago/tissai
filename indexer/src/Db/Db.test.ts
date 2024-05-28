@@ -30,13 +30,8 @@ describe("Db", () => {
     const expected = [{ row: 1 }, { row: 2 }]
     const query = "A sql STATEMENT"
     const parameters = [1, 2]
-    const close = vi.fn()
-    const read = vi.fn()
-    const cursor = { close, read }
-    pg.client.query.mockResolvedValueOnce(cursor)
-    cursor.read.mockResolvedValueOnce([expected[0]])
-    cursor.read.mockResolvedValueOnce([expected[1]])
-    cursor.read.mockResolvedValueOnce([])
+    pg.cursor.read.mockResolvedValueOnce([expected[0]])
+    pg.cursor.read.mockResolvedValueOnce([expected[1]])
 
     const result: any[] = []
     const rows = db.stream<{ order: number }>(query, parameters)
@@ -46,7 +41,7 @@ describe("Db", () => {
     
     expect(result).toStrictEqual(expected)
     expect(pg.Cursor).toHaveBeenCalledWith(query, parameters)
-    expect(cursor.close).toHaveBeenCalled()
+    expect(pg.cursor.close).toHaveBeenCalled()
     expect(pg.client.release).toHaveBeenCalled()
   })
 })
