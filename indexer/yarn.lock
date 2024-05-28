@@ -392,7 +392,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pg@npm:^8":
+"@types/pg-cursor@npm:^2":
+  version: 2.7.2
+  resolution: "@types/pg-cursor@npm:2.7.2"
+  dependencies:
+    "@types/node": "npm:*"
+    "@types/pg": "npm:*"
+  checksum: 10c0/16ed70a86ff67823a2cfdddfe5cc1a8109abdafc671209e9da093c2c24aa523d61fc05cbad1ea23636af38d7815e702bb8b0967512c7a8cb249d030cefcaf3f4
+  languageName: node
+  linkType: hard
+
+"@types/pg@npm:*, @types/pg@npm:^8":
   version: 8.11.6
   resolution: "@types/pg@npm:8.11.6"
   dependencies:
@@ -1072,9 +1082,11 @@ __metadata:
     "@types/lodash.defaults": "npm:^4"
     "@types/node": "npm:20.12.7"
     "@types/pg": "npm:^8"
+    "@types/pg-cursor": "npm:^2"
     lodash.defaults: "npm:4.2.0"
     node-html-parser: "npm:6.1.13"
     pg: "npm:8.11.5"
+    pg-cursor: "npm:2.10.5"
     prettier: "npm:3.2.5"
     python-shell: "npm:5.0.0"
     typescript: "npm:5.4.5"
@@ -1509,6 +1521,15 @@ __metadata:
   version: 2.6.4
   resolution: "pg-connection-string@npm:2.6.4"
   checksum: 10c0/0d0b617df0fc6507bf6a94bdcd56c7a305788a1402d69bff9773350947c8f525d6d8136128065370749a3325e99658ae40fbdcce620fb8e60126181f0591a6a6
+  languageName: node
+  linkType: hard
+
+"pg-cursor@npm:2.10.5":
+  version: 2.10.5
+  resolution: "pg-cursor@npm:2.10.5"
+  peerDependencies:
+    pg: ^8
+  checksum: 10c0/75390c49b1f59317481dc9a392a1aa746884ee4b185e6b3415e11b3d0dc82eb120e34642ae023fbf36ee28c74c2afbf96803d0fcd446b3ff8389297e4e0a53ba
   languageName: node
   linkType: hard
 

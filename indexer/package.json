@@ -21,6 +21,7 @@
     "@types/lodash.defaults": "^4",
     "@types/node": "20.12.7",
     "@types/pg": "^8",
+    "@types/pg-cursor": "^2",
     "prettier": "3.2.5",
     "typescript": "5.4.5",
     "vitest": "1.5.0"
@@ -29,6 +30,7 @@
     "lodash.defaults": "4.2.0",
     "node-html-parser": "6.1.13",
     "pg": "8.11.5",
+    "pg-cursor": "2.10.5",
     "python-shell": "5.0.0"
   }
 }
