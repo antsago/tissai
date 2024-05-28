@@ -58,7 +58,7 @@ describe("index", () => {
     expect(pg).not.toHaveInserted(TAGS)
     expect(pg).not.toHaveInserted(SELLERS)
     expect(pg).not.toHaveInserted(BRANDS)
-    expect(pg.end).toHaveBeenCalled()
+    expect(pg.pool.end).toHaveBeenCalled()
   })
 
   it("stores multiple offers, sellers, and tags", async () => {

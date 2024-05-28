@@ -18,7 +18,7 @@ expect.extend({
         expect.arrayContaining(values),
       ],
     ])
-    const actual = pg.query.mock.calls
+    const actual = pg.pool.query.mock.calls
     return {
       pass: equals(actual, expected),
       message: () =>

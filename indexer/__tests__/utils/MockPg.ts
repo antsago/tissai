@@ -1,40 +1,38 @@
 import { vi } from "vitest"
 import { setPg } from "../../src/Db/index.js"
 
-function mockedClient() {
+function mockedCursor() {
+  const close = vi.fn()
+  const read = vi.fn().mockResolvedValue([])
+
+  return { close, read }
+}
+
+function mockedClient(cursor: ReturnType<typeof mockedCursor>) {
   const release = vi.fn()
-  const query = vi.fn()
+  const query = vi.fn().mockResolvedValue(cursor)
 
   return { release, query }
 }
 
 function mockedPool(client: ReturnType<typeof mockedClient>) {
-  const Pool = vi.fn()
   const connect = vi.fn().mockReturnValue(client)
   const query = vi.fn().mockResolvedValue({ rows: [] })
   const end = vi.fn()
 
-  Pool.mockReturnValue({
-    connect,
-    query,
-    end,
-  })
-
-  return { Pool, connect, query, end }
+  return { connect, query, end }
 }
 
 export function MockPg() {
+  const cursor = mockedCursor()
+  const client = mockedClient(cursor)
+  const pool = mockedPool(client)
+  
   const Cursor = vi.fn()
-  const close = vi.fn()
-  const read = vi.fn().mockResolvedValue([])
-  const cursor = { close, read }
+  const Pool = vi.fn().mockReturnValue(pool)
+  
+  setPg(Pool as any, Cursor as any)
 
-  const client = mockedClient()
-  client.query.mockResolvedValue(cursor)
-  const poolMock = mockedPool(client)
-
-  setPg(poolMock.Pool as any, Cursor as any)
-
-  return { ...poolMock, Cursor, client, cursor }
+  return { Pool, Cursor, pool, client, cursor }
 }
 export type MockPg = ReturnType<typeof MockPg>

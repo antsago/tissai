@@ -18,12 +18,12 @@ describe("Db", () => {
     const expected = [{ a: "row" }]
     const query = "A sql STATEMENT"
     const parameters = [1, 2]
-    pg.query.mockResolvedValueOnce({ rows: expected })
+    pg.pool.query.mockResolvedValueOnce({ rows: expected })
 
     const result = await db.query(query, parameters)
 
     expect(result).toStrictEqual(expected)
-    expect(pg.query).toHaveBeenCalledWith(query, parameters)
+    expect(pg.pool.query).toHaveBeenCalledWith(query, parameters)
   })
 
   it("streams results", async () => {
