@@ -16,6 +16,8 @@ import {
   TAGS,
 } from "./Db/index.js"
 
+vi.spyOn(global.console, "error").mockImplementation(() => {})
+
 describe("index", () => {
   let pg: MockPg
   let python: MockPython
@@ -121,5 +123,29 @@ describe("index", () => {
 
     expect(pg).toHaveInserted(PRODUCTS, [PRODUCT.title])
     expect(pg).toHaveInserted(PRODUCTS, [title2])
+  })
+
+  it("handles processsing errors", async () => {
+    const error = new Error('Booh!')
+    const title2 = "Another product"
+    const page = pageWithSchema({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: PRODUCT.title,
+    })
+    const page2 = pageWithSchema({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: title2,
+    })
+    pg.cursor.read.mockResolvedValueOnce([page])
+    pg.cursor.read.mockResolvedValueOnce([page2])
+    pg.pool.query.mockRejectedValueOnce(error)
+
+    await import("./index.js")
+
+    expect(pg).not.toHaveInserted(PRODUCTS, [PRODUCT.title])
+    expect(pg).toHaveInserted(PRODUCTS, [title2])
+    expect(console.error).toHaveBeenCalledWith(expect.stringContaining(error.message))
   })
 })
