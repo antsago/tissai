@@ -10,10 +10,10 @@ try {
   for await (let page of pages) {
     try {
       const structuredData = parsePage(page)
-    
+
       const { product, offers, category, tags, sellers, brand } =
         await extractEntities(structuredData, page)
-    
+
       await Promise.all(
         [
           db.categories.create(page.id, category),
@@ -22,7 +22,7 @@ try {
           brand ? db.brands.create(page.id, brand) : Promise.resolve(),
         ].flat(),
       )
-    
+
       await db.products.create(page.id, product)
       await Promise.all(offers.map((offer) => db.offers.create(page.id, offer)))
     } catch (err) {

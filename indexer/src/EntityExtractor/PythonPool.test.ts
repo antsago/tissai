@@ -20,11 +20,16 @@ describe("PythonPool", () => {
   })
 
   it("starts script on initialization", async () => {
-    expect(python.PythonShell).toHaveBeenCalledWith(SCRIPT_PATH, expect.anything())
+    expect(python.PythonShell).toHaveBeenCalledWith(
+      SCRIPT_PATH,
+      expect.anything(),
+    )
   })
 
   it("forwards responses to requests", async () => {
-    python.worker.send.mockImplementation(() => python.worker.emit("message", RESPONSE))
+    python.worker.send.mockImplementation(() =>
+      python.worker.emit("message", RESPONSE),
+    )
 
     const result = await request(QUERY)
 
@@ -35,10 +40,17 @@ describe("PythonPool", () => {
   it("supports simultaneous queries", async () => {
     const FIRST_RESPONSE = { first: "reponse" }
     const FIRST_QUERY = "Another query"
-    python.worker.send.mockImplementationOnce(() => python.worker.emit("message", FIRST_RESPONSE))
-    python.worker.send.mockImplementation(() => python.worker.emit("message", RESPONSE))
+    python.worker.send.mockImplementationOnce(() =>
+      python.worker.emit("message", FIRST_RESPONSE),
+    )
+    python.worker.send.mockImplementation(() =>
+      python.worker.emit("message", RESPONSE),
+    )
 
-    const [result1, result2] = await Promise.all([request(FIRST_QUERY), request(QUERY)])
+    const [result1, result2] = await Promise.all([
+      request(FIRST_QUERY),
+      request(QUERY),
+    ])
 
     expect(result1).toStrictEqual(FIRST_RESPONSE)
     expect(result2).toStrictEqual(RESPONSE)

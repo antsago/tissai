@@ -27,10 +27,10 @@ export function MockPg() {
   const cursor = mockedCursor()
   const client = mockedClient(cursor)
   const pool = mockedPool(client)
-  
+
   const Cursor = vi.fn()
   const Pool = vi.fn().mockReturnValue(pool)
-  
+
   setPg(Pool as any, Cursor as any)
 
   return { Pool, Cursor, pool, client, cursor }

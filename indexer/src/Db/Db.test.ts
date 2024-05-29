@@ -38,7 +38,7 @@ describe("Db", () => {
     for await (let row of rows) {
       result.push(row)
     }
-    
+
     expect(result).toStrictEqual(expected)
     expect(pg.Cursor).toHaveBeenCalledWith(query, parameters)
     expect(pg.cursor.close).toHaveBeenCalled()

@@ -126,7 +126,7 @@ describe("index", () => {
   })
 
   it("handles processsing errors", async () => {
-    const error = new Error('Booh!')
+    const error = new Error("Booh!")
     const title2 = "Another product"
     const page = pageWithSchema({
       "@context": "https://schema.org",
@@ -146,12 +146,16 @@ describe("index", () => {
 
     expect(pg).not.toHaveInserted(PRODUCTS, [PRODUCT.title])
     expect(pg).toHaveInserted(PRODUCTS, [title2])
-    expect(console.error).toHaveBeenCalledWith(expect.stringContaining(error.message))
+    expect(console.error).toHaveBeenCalledWith(
+      expect.stringContaining(error.message),
+    )
   })
 
   it("handles fatal errors", async () => {
-    const error = new Error('Booh!')
-    python.PythonShell.mockImplementation(() => { throw error })
+    const error = new Error("Booh!")
+    python.PythonShell.mockImplementation(() => {
+      throw error
+    })
 
     const act = import("./index.js")
 

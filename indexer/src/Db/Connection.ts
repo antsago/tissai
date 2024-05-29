@@ -26,7 +26,9 @@ export const Connection = (database?: string) => {
     values?: any[],
   ) {
     const client = await pool.connect()
-    const cursor = await client.query<PgCursor<T>>(new Cursor(queryString, values))
+    const cursor = await client.query<PgCursor<T>>(
+      new Cursor(queryString, values),
+    )
 
     let rows = await cursor.read(ONE_ROW)
     while (rows.length >= 1) {
