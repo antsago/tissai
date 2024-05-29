@@ -1,9 +1,9 @@
-import { Pool as PgPool, QueryResultRow } from "pg"
+import { default as pg, QueryResultRow } from "pg"
 import PgCursor from "pg-cursor"
 
-let Pool = PgPool
+let { Pool } = pg
 let Cursor = PgCursor
-export function setPg(pool: typeof PgPool, cursor: typeof PgCursor) {
+export function setPg(pool: typeof pg.Pool, cursor: typeof PgCursor) {
   Pool = pool
   Cursor = cursor
 }
