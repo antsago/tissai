@@ -40,7 +40,7 @@ export const create =
 
 export const initialize = (connection: Connection) =>
   connection.query(`
-    CREATE TABLE ${TABLE} (
+    CREATE TABLE IF NOT EXISTS ${TABLE} (
       ${TABLE.id}                   uuid PRIMARY KEY,
       ${TABLE.name}                 text NOT NULL,
       ${TABLE.icon}                 text NOT NULL,

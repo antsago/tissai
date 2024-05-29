@@ -20,6 +20,6 @@ export const create = (connection: Connection) => (pageId: string, tag: Tag) =>
 
 export const initialize = (connection: Connection) =>
   connection.query(`
-    CREATE TABLE ${TABLE} (
+    CREATE TABLE IF NOT EXISTS ${TABLE} (
       ${TABLE.name}   text PRIMARY KEY
     );`)

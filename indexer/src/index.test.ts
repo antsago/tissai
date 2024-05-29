@@ -142,7 +142,14 @@ describe("index", () => {
     })
     pg.cursor.read.mockResolvedValueOnce([page])
     pg.cursor.read.mockResolvedValueOnce([page2])
-    pg.pool.query.mockRejectedValueOnce(error)
+    let hasThrown = false
+    pg.pool.query.mockImplementation((query) => {
+      if (query.includes("INSERT") && !hasThrown) {
+        hasThrown = true
+        throw error
+      }
+      return Promise.resolve({ rows: [] })
+    })
 
     await import("./index.js")
 
@@ -176,5 +183,13 @@ describe("index", () => {
     await import("./index.js")
 
     expect(console.log).toHaveBeenCalledWith(expect.stringContaining(page.id))
+  })
+
+  it("initializes db", async () => {
+    pg.cursor.read.mockResolvedValueOnce([])
+
+    await import("./index.js")
+
+    expect(pg.pool.query).toHaveBeenCalledWith(expect.stringContaining("CREATE TABLE"), undefined)
   })
 })

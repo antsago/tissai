@@ -24,7 +24,7 @@ export const create =
 
 export const initialize = (connection: Connection) =>
   connection.query(`
-    CREATE TABLE ${TABLE} (
+    CREATE TABLE IF NOT EXISTS ${TABLE} (
       ${TABLE.id}             uuid PRIMARY KEY,
       ${TABLE.timestamp}      timestamp with time zone NOT NULL,
       ${TABLE.pageId}         uuid NOT NULL REFERENCES ${PAGES},

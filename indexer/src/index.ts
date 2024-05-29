@@ -6,7 +6,7 @@ const db = Db()
 try {
   const extractEntities = EntityExtractor()
 
-  // await db.initialize()
+  await db.initialize()
 
   const pages = db.stream<Page>(`SELECT * FROM ${PAGES}`)
   for await (let page of pages) {

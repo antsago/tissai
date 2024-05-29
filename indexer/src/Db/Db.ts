@@ -6,7 +6,7 @@ export const Db = (database?: string) => {
   const tables = Tables(connection)
 
   const initialize = async () => {
-    await connection.query("CREATE EXTENSION vector;")
+    await connection.query("CREATE EXTENSION IF NOT EXISTS vector;")
     await tables.initialize()
   }
 

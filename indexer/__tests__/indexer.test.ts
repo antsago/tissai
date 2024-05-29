@@ -52,6 +52,10 @@ const FULL_SCHEMA = {
   },
 }
 
+// Silence console
+vi.spyOn(console, 'log').mockImplementation(() => undefined)
+vi.spyOn(console, 'error').mockImplementation(() => undefined)
+
 describe("indexer", () => {
   const masterDb = Db()
   vi.stubEnv("PG_DATABASE", TEST_TABLE)
