@@ -1,4 +1,5 @@
 import { expect, describe, it, beforeEach, vi } from "vitest"
+import { PythonShellError } from "python-shell"
 import { MockPython } from "#mocks"
 import PythonPool from "./PythonPool.js"
 
@@ -12,6 +13,8 @@ describe("PythonPool", () => {
   let python: MockPython
   let request: ReturnType<typeof PythonPool>
   beforeEach(async () => {
+    vi.resetAllMocks()
+
     python = MockPython()
     request = PythonPool(SCRIPT_PATH)
   })
@@ -41,5 +44,35 @@ describe("PythonPool", () => {
     expect(result2).toStrictEqual(RESPONSE)
     expect(python.worker.send).toHaveBeenNthCalledWith(1, FIRST_QUERY)
     expect(python.worker.send).toHaveBeenNthCalledWith(2, QUERY)
+  })
+
+  it("prints unexpected messages to stderr", async () => {
+    const message = "Hello world"
+
+    python.worker.emit("message", message)
+
+    expect(console.error).toHaveBeenCalledWith(message)
+  })
+
+  it("prints error messages to stderr", async () => {
+    const message = "Something went wrong"
+
+    python.worker.emit("stderr", message)
+
+    expect(console.error).toHaveBeenCalledWith(message)
+  })
+
+  it("throws on exit with error", async () => {
+    const error = new PythonShellError("Booh!")
+
+    const act = () => python.worker.emit("pythonError", error)
+
+    expect(act).toThrow(error)
+  })
+
+  it("throws on exit without error", async () => {
+    const act = () => python.worker.emit("close")
+
+    expect(act).toThrow()
   })
 })

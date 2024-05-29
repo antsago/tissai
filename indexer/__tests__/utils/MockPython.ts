@@ -1,9 +1,17 @@
 import { EventEmitter } from "node:stream"
 import { vi } from "vitest"
 import { setPShell } from "../../src/EntityExtractor/index.js"
+import type { PythonShellError } from "python-shell"
+
+type WorkerEvents = {
+  message: [unknown]
+  stderr: [string]
+  pythonError: [PythonShellError]
+  close: []
+}
 
 export function MockPython<Input extends string | Object, Output>() {
-  const eventEmitter = new EventEmitter<{ message: [unknown] }>()
+  const eventEmitter = new EventEmitter<WorkerEvents>()
   const send = vi.fn<[Input], void>()
   const worker = Object.assign(eventEmitter, { send })
 
