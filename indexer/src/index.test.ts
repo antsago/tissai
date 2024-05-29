@@ -17,12 +17,14 @@ import {
 } from "./Db/index.js"
 
 vi.spyOn(global.console, "error").mockImplementation(() => {})
+vi.spyOn(global.console, "log").mockImplementation(() => {})
 
 describe("index", () => {
   let pg: MockPg
   let python: MockPython
   beforeEach(async () => {
     vi.resetModules()
+    vi.resetAllMocks()
 
     const { MockPg, MockPython } = await import("#mocks")
     pg = MockPg()
@@ -161,5 +163,18 @@ describe("index", () => {
 
     await expect(act).rejects.toThrow(error)
     expect(pg.pool.end).toHaveBeenCalled()
+  })
+
+  it("reports processed pages", async () => {
+    const page = pageWithSchema({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: PRODUCT.title,
+    })
+    pg.cursor.read.mockResolvedValueOnce([page])
+
+    await import("./index.js")
+
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining(page.id))
   })
 })

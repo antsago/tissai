@@ -6,6 +6,8 @@ const db = Db()
 try {
   const extractEntities = EntityExtractor()
 
+  // await db.initialize()
+
   const pages = db.stream<Page>(`SELECT * FROM ${PAGES}`)
   for await (let page of pages) {
     try {
@@ -25,8 +27,10 @@ try {
 
       await db.products.create(page.id, product)
       await Promise.all(offers.map((offer) => db.offers.create(page.id, offer)))
+
+      console.log(`[${page.id} | ${page.url}] Processed`)
     } catch (err) {
-      console.error(`[${page.id}] ${err}`)
+      console.error(`[${page.id} | ${page.url}] ${err}`)
     }
   }
 } finally {
