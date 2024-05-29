@@ -19,6 +19,19 @@ function PythonPool<Input extends string | Object, Output>(scriptPath: string) {
     resolvers.shift()?.(message)
   })
 
+  // worker.on("close", (...args) => {
+  //   console.log(...args)
+  // })
+  // worker.on("error", (...args) => {
+  //   console.log(...args)
+  // })
+  // worker.on("pythonError", (...args) => {
+  //   console.log(...args)
+  // })
+  // worker.on("stderr", (...args) => {
+  //   console.log(...args)
+  // })
+
   return async (query: Input) => {
     const promise = new Promise<Output>((res) => resolvers.push(res))
 
