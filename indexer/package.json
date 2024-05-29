@@ -4,7 +4,7 @@
   "packageManager": "yarn@4.1.1",
   "type": "module",
   "scripts": {
-    "start": "yarn build && node build/index.js",
+    "start": "poetry run node build/index.js",
     "build": "rm -rf ./build && tsc && cd ./src && cp --parents **/*.py ../build/",
     "typecheck": "tsc --noEmit",
     "test": "poetry run vitest run",
