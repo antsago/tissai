@@ -32,7 +32,7 @@ function PythonPool<Input extends string | Object, Output>(scriptPath: string) {
     throw error
   })
   worker.on("stderr", (errorMessage) => {
-    reporter.error(errorMessage)
+    reporter.log(errorMessage)
   })
 
   return async (query: Input) => {

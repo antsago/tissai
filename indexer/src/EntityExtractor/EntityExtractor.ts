@@ -90,7 +90,7 @@ const EntityExtractor = () => {
     const sellers =
       (structuredInfo.offers as OfferStructuredInfo[])?.map((offer: any) => ({
         name: offer.seller,
-      })) ?? []
+      })).filter(({ name }) => !!name) ?? []
     const brand = structuredInfo.brandName
       ? { name: structuredInfo.brandName, logo: structuredInfo.brandLogo }
       : undefined

@@ -381,6 +381,24 @@ describe("EntityExtractor", () => {
         },
       ])
     })
+
+    it("handles offers without sellers", async () => {
+      const { sellers } = await extract(
+        {
+          jsonLd: [
+            {
+              ...jsonLd,
+              offers: [{ "@type": ["Offer"] }],
+            },
+          ],
+          opengraph: {},
+          headings: {},
+        },
+        PAGE,
+      )
+
+      expect(sellers).toStrictEqual([])
+    })
   })
 
   describe("brands", () => {
