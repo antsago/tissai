@@ -1,11 +1,13 @@
 import { reporter } from "./Reporter.js"
 import { Db, Page, PAGES } from "./Db/index.js"
 import parsePage from "./parsePage.js"
-import EntityExtractor from "./EntityExtractor/index.js"
+import { EntityExtractor } from "./EntityExtractor/index.js"
 
-const db = Db()
+let db!: Db
+let extractor!: EntityExtractor
 try {
-  const extractEntities = EntityExtractor()
+  db = Db()
+  extractor = EntityExtractor()
 
   reporter.progress('Initializing database')
   await db.initialize()
@@ -20,7 +22,7 @@ try {
       const structuredData = parsePage(page)
 
       const { product, offers, category, tags, sellers, brand } =
-        await extractEntities(structuredData, page)
+        await extractor.extract(structuredData, page)
 
       await Promise.all(
         [
@@ -46,5 +48,5 @@ try {
   const message = err instanceof Error ? err.message : String(err)
   reporter.fail(`Fatal error: ${message}`)
 } finally {
-  await db.close()
+  await Promise.all([db?.close(), extractor?.close()])
 }

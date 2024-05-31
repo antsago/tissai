@@ -10,6 +10,7 @@ type Resolver<T> = (value: T | PromiseLike<T>) => void
 
 function PythonPool<Input extends string | Object, Output>(scriptPath: string) {
   const resolvers: Resolver<Output>[] = []
+  let expectExit = false
 
   const worker = new PythonShell(scriptPath, {
     mode: "json",
@@ -26,7 +27,9 @@ function PythonPool<Input extends string | Object, Output>(scriptPath: string) {
   })
 
   worker.on("close", () => {
-    throw new Error("Python process exit unexpectedly")
+    if (!expectExit) {
+      throw new Error("Python process exit unexpectedly")
+    }
   })
   worker.on("pythonError", (error) => {
     throw error
@@ -35,11 +38,23 @@ function PythonPool<Input extends string | Object, Output>(scriptPath: string) {
     reporter.log(errorMessage)
   })
 
-  return async (query: Input) => {
-    const promise = new Promise<Output>((res) => resolvers.push(res))
+  return {
+    send: async (query: Input) => {
+      const promise = new Promise<Output>((res) => resolvers.push(res))
 
-    worker.send(query)
-    return promise
+      worker.send(query)
+      return promise
+    },
+    close: async () => {
+      expectExit = true
+      return new Promise<void>((res, rej) => worker.end((err) => {
+        if (err) {
+          rej(err)
+        } else {
+          res()
+        }
+      }))
+    },
   }
 }
 

@@ -1,6 +1,6 @@
 import { expect, describe, it, beforeEach, vi } from "vitest"
 import { MockPython, DERIVED_DATA, PAGE } from "#mocks"
-import EntityExtractor from "./EntityExtractor.js"
+import { EntityExtractor } from "./EntityExtractor.js"
 
 const jsonLd = {
   "@context": ["https://schema.org/"],
@@ -48,16 +48,22 @@ const headings = {
 }
 
 describe("EntityExtractor", () => {
-  let extract: ReturnType<typeof EntityExtractor>
+  let extractor: EntityExtractor
   let python: MockPython
   beforeEach(async () => {
     python = MockPython()
-    extract = EntityExtractor()
+    extractor = EntityExtractor()
     python.mockReturnValue(DERIVED_DATA)
   })
 
+  it("closes python on close", async () => {
+    await extractor.close()
+
+    expect(python.worker.end).toHaveBeenCalled()
+  })
+
   it("handles empty pages", async () => {
-    const act = extract({ jsonLd: [], opengraph: {}, headings: {} }, PAGE)
+    const act = extractor.extract({ jsonLd: [], opengraph: {}, headings: {} }, PAGE)
 
     await expect(act).rejects.toThrow("Product without title")
     expect(python.worker.send).not.toHaveBeenCalled()
@@ -65,7 +71,7 @@ describe("EntityExtractor", () => {
 
   describe("categories", () => {
     it("extracts category", async () => {
-      const { category } = await extract(
+      const { category } = await extractor.extract(
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
         PAGE,
       )
@@ -78,7 +84,7 @@ describe("EntityExtractor", () => {
 
   describe("tags", () => {
     it("extracts tag", async () => {
-      const { tags } = await extract(
+      const { tags } = await extractor.extract(
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
         PAGE,
       )
@@ -97,7 +103,7 @@ describe("EntityExtractor", () => {
         tags: foundTags,
       })
 
-      const { tags } = await extract(
+      const { tags } = await extractor.extract(
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
         PAGE,
       )
@@ -111,7 +117,7 @@ describe("EntityExtractor", () => {
 
   describe("products", () => {
     it("extracts product", async () => {
-      const { product } = await extract(
+      const { product } = await extractor.extract(
         { jsonLd: [jsonLd], opengraph, headings },
         PAGE,
       )
@@ -129,7 +135,7 @@ describe("EntityExtractor", () => {
     })
 
     it("handles title-only product", async () => {
-      const { product } = await extract(
+      const { product } = await extractor.extract(
         {
           jsonLd: [
             {
@@ -157,7 +163,7 @@ describe("EntityExtractor", () => {
     })
 
     it("defaults to opengraph", async () => {
-      const { product } = await extract(
+      const { product } = await extractor.extract(
         { jsonLd: [], opengraph, headings },
         PAGE,
       )
@@ -175,7 +181,7 @@ describe("EntityExtractor", () => {
     })
 
     it("defaults to headings", async () => {
-      const { product } = await extract(
+      const { product } = await extractor.extract(
         { jsonLd: [], opengraph: {}, headings },
         PAGE,
       )
@@ -193,7 +199,7 @@ describe("EntityExtractor", () => {
     })
 
     it("ignores non-product opengraph", async () => {
-      const { product } = await extract(
+      const { product } = await extractor.extract(
         { jsonLd: [], opengraph: { ...opengraph, "og:type": "foo" }, headings },
         PAGE,
       )
@@ -208,7 +214,7 @@ describe("EntityExtractor", () => {
 
   describe("offers", () => {
     it("extracts offer", async () => {
-      const { offers, product } = await extract(
+      const { offers, product } = await extractor.extract(
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
         PAGE,
       )
@@ -227,7 +233,7 @@ describe("EntityExtractor", () => {
     })
 
     it("extracts implicit offer", async () => {
-      const { offers, product } = await extract(
+      const { offers, product } = await extractor.extract(
         {
           jsonLd: [
             {
@@ -269,7 +275,7 @@ describe("EntityExtractor", () => {
         ],
       }
 
-      const { offers, product } = await extract(
+      const { offers, product } = await extractor.extract(
         {
           jsonLd: [
             {
@@ -308,7 +314,7 @@ describe("EntityExtractor", () => {
 
   describe("sellers", () => {
     it("extracts seller", async () => {
-      const { sellers } = await extract(
+      const { sellers } = await extractor.extract(
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
         PAGE,
       )
@@ -331,7 +337,7 @@ describe("EntityExtractor", () => {
         ],
       }
 
-      const { sellers } = await extract(
+      const { sellers } = await extractor.extract(
         {
           jsonLd: [{ ...jsonLd, offers: [offer] }],
           opengraph: {},
@@ -358,7 +364,7 @@ describe("EntityExtractor", () => {
         ],
       }
 
-      const { sellers } = await extract(
+      const { sellers } = await extractor.extract(
         {
           jsonLd: [
             {
@@ -383,7 +389,7 @@ describe("EntityExtractor", () => {
     })
 
     it("handles offers without sellers", async () => {
-      const { sellers } = await extract(
+      const { sellers } = await extractor.extract(
         {
           jsonLd: [
             {
@@ -403,7 +409,7 @@ describe("EntityExtractor", () => {
 
   describe("brands", () => {
     it("extracts brand", async () => {
-      const { brand } = await extract(
+      const { brand } = await extractor.extract(
         { jsonLd: [jsonLd], opengraph: {}, headings: {} },
         PAGE,
       )
@@ -419,7 +425,7 @@ describe("EntityExtractor", () => {
         "@type": ["Brand"],
         name: ["wedze"],
       }
-      const { brand } = await extract(
+      const { brand } = await extractor.extract(
         {
           jsonLd: [
             {
@@ -444,7 +450,7 @@ describe("EntityExtractor", () => {
         "@type": ["Brand"],
         name: ["WEDZE"],
       }
-      const { brand } = await extract(
+      const { brand } = await extractor.extract(
         {
           jsonLd: [
             {

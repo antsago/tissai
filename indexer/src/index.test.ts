@@ -49,7 +49,6 @@ describe("index", () => {
     expect(pg).toHaveInserted(TAGS)
     expect(pg).not.toHaveInserted(SELLERS)
     expect(pg).not.toHaveInserted(BRANDS)
-    expect(ora.spinner.succeed).toHaveBeenCalled()
   })
 
   it("handles empty pages", async () => {
@@ -65,6 +64,8 @@ describe("index", () => {
     expect(pg).not.toHaveInserted(SELLERS)
     expect(pg).not.toHaveInserted(BRANDS)
     expect(pg.pool.end).toHaveBeenCalled()
+    expect(python.worker.end).toHaveBeenCalled()
+    expect(ora.spinner.succeed).toHaveBeenCalled()
   })
 
   it("stores multiple offers, sellers, and tags", async () => {
@@ -162,14 +163,13 @@ describe("index", () => {
 
   it("handles fatal errors", async () => {
     const error = new Error("Booh!")
-    python.PythonShell.mockImplementation(() => {
-      throw error
-    })
+    pg.pool.query.mockRejectedValue(error)
 
     await import("./index.js")
 
     expect(ora.spinner.fail).toHaveBeenCalledWith(expect.stringContaining(error.message))
     expect(pg.pool.end).toHaveBeenCalled()
+    expect(python.worker.end).toHaveBeenCalled()
   })
 
   it("reports processed pages", async () => {

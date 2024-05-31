@@ -10,13 +10,13 @@ describe("PythonPool", () => {
 
   let ora: MockOra
   let python: MockPython
-  let request: ReturnType<typeof PythonPool>
+  let pool: ReturnType<typeof PythonPool>
   beforeEach(async () => {
     vi.resetAllMocks()
 
     ora = MockOra()
     python = MockPython()
-    request = PythonPool(SCRIPT_PATH)
+    pool = PythonPool(SCRIPT_PATH)
   })
 
   it("starts script on initialization", async () => {
@@ -31,7 +31,7 @@ describe("PythonPool", () => {
       python.worker.emit("message", RESPONSE),
     )
 
-    const result = await request(QUERY)
+    const result = await pool.send(QUERY)
 
     expect(result).toStrictEqual(RESPONSE)
     expect(python.worker.send).toHaveBeenCalledWith(QUERY)
@@ -48,8 +48,8 @@ describe("PythonPool", () => {
     )
 
     const [result1, result2] = await Promise.all([
-      request(FIRST_QUERY),
-      request(QUERY),
+      pool.send(FIRST_QUERY),
+      pool.send(QUERY),
     ])
 
     expect(result1).toStrictEqual(FIRST_RESPONSE)
@@ -82,9 +82,15 @@ describe("PythonPool", () => {
     expect(act).toThrow(error)
   })
 
-  it("throws on exit without error", async () => {
+  it("throws on unexpected exit without error", async () => {
     const act = () => python.worker.emit("close")
 
     expect(act).toThrow()
+  })
+
+  it("kills process on close", async () => {
+    await pool.close()
+
+    expect(python.worker.end).toHaveBeenCalled()
   })
 })
