@@ -10,21 +10,21 @@ describe("parsePage", () => {
       ["booleans", true],
       ["objects", {}],
     ]
+    const productSchema = {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      name: "The name of the product",
+      productID: "121230",
+      brand: {
+        "@type": "Brand",
+        name: "WEDZE",
+        image: ["https://brand.com/image.jpg"],
+      },
+      description: "The description",
+      image: "https://example.com/image.jpg",
+    }
 
     it("processes all tags", () => {
-      const productSchema = {
-        "@context": "https://schema.org/",
-        "@type": "Product",
-        name: "The name of the product",
-        productID: "121230",
-        brand: {
-          "@type": "Brand",
-          name: "WEDZE",
-          image: ["https://brand.com/image.jpg"],
-        },
-        description: "The description",
-        image: "https://example.com/image.jpg",
-      }
       const breadcrumbSchema = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
@@ -46,6 +46,23 @@ describe("parsePage", () => {
           jsonLd: [
             expect.objectContaining({ "@type": [productSchema["@type"]] }),
             expect.objectContaining({ "@type": [breadcrumbSchema["@type"]] }),
+          ],
+        }),
+      )
+    })
+
+    it("hoists @graph tags", () => {
+      const page = pageWithSchema({
+        "@context": "https://schema.org",
+        "@graph": [productSchema]
+      })
+
+      const result = parsePage(page)
+
+      expect(result).toStrictEqual(
+        expect.objectContaining({
+          jsonLd: [
+            expect.objectContaining({ "@type": [productSchema["@type"]] }),
           ],
         }),
       )

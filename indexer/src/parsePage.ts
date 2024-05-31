@@ -51,6 +51,8 @@ function parsePage(page: Page): StructuredData {
     .map((t) => t.textContent)
     .map((t) => JSON.parse(t))
     .map(expandJsonLd)
+    .map(t => t["@graph"] ? t["@graph"] : t)
+    .flat()
 
   const headings = {
     title: root?.querySelector("title")?.textContent,
