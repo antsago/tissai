@@ -1,4 +1,5 @@
 import { parse } from "node-html-parser"
+import he from 'he'
 import { Page } from "./Db/index.js"
 
 export type StructuredData = {
@@ -39,6 +40,11 @@ function expandJsonLd(linkedData: any): any {
         return [key, [expandJsonLd(value)]]
       }
 
+      if (typeof value === "string") {
+        // Escapes from self-storage + original escapes
+        return [key, [he.decode(he.decode(value))]]
+      }
+
       return [key, [value]]
     })
   return Object.fromEntries(properties)
@@ -48,7 +54,7 @@ function parsePage(page: Page): StructuredData {
   const root = parse(page.body)
   const jsonLd = root
     .querySelectorAll('script[type="application/ld+json"]')
-    .map((t) => t.textContent)
+    .map((t) => t.rawText)
     .map((t) => JSON.parse(t))
     .map(expandJsonLd)
     .map(t => t["@graph"] ? t["@graph"] : t)

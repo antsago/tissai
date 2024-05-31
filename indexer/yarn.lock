@@ -358,6 +358,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/he@npm:^1":
+  version: 1.2.3
+  resolution: "@types/he@npm:1.2.3"
+  checksum: 10c0/562e4ec00e31e3d464e79e6da4b8a5c21999d38ceca6a8facaa96e89c2d646f410bb58bb81f48a7472aeb4655ce40d27b7d77e5a4fa5a2d9caa0f3037caab5b7
+  languageName: node
+  linkType: hard
+
 "@types/lodash.defaults@npm:^4":
   version: 4.2.9
   resolution: "@types/lodash.defaults@npm:4.2.9"
@@ -1116,10 +1123,12 @@ __metadata:
   resolution: "indexer@workspace:."
   dependencies:
     "@tsconfig/node20": "npm:20.1.4"
+    "@types/he": "npm:^1"
     "@types/lodash.defaults": "npm:^4"
     "@types/node": "npm:20.12.7"
     "@types/pg": "npm:^8"
     "@types/pg-cursor": "npm:^2"
+    he: "npm:1.2.0"
     lodash.defaults: "npm:4.2.0"
     node-html-parser: "npm:6.1.13"
     ora: "npm:8.0.1"

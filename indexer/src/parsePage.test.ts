@@ -51,6 +51,23 @@ describe("parsePage", () => {
       )
     })
 
+    it("handles escaped quotes", () => {
+      const page = pageWithSchema({
+        "@context": "https://schema.org",
+        "description": "Nuestro modelo mide 6&amp;#39;2&quot;",
+      })
+
+      const result = parsePage(page)
+
+      expect(result).toStrictEqual(
+        expect.objectContaining({
+          jsonLd: [
+            expect.objectContaining({ "description": ['Nuestro modelo mide 6\'2"'] }),
+          ],
+        }),
+      )
+    })
+
     it("hoists @graph tags", () => {
       const page = pageWithSchema({
         "@context": "https://schema.org",
