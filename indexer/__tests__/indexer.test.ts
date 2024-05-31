@@ -53,8 +53,22 @@ const FULL_SCHEMA = {
 }
 
 // Silence console
-vi.spyOn(console, 'log').mockImplementation(() => undefined)
-vi.spyOn(console, 'error').mockImplementation(() => undefined)
+vi.mock('ora', async () => {
+  const spinner = {
+    start: vi.fn(),
+    succeed: vi.fn(),
+    fail: vi.fn(),
+    text: '',
+    prefixText: '',
+  }
+  spinner.start.mockReturnValue(spinner)
+  spinner.succeed.mockReturnValue(spinner)
+  spinner.fail.mockReturnValue(spinner)
+  const ora = vi.fn().mockReturnValue(spinner)
+  const realOra = await vi.importActual('ora')
+
+  return { ...realOra, default: ora }
+})
 
 describe("indexer", () => {
   const masterDb = Db()

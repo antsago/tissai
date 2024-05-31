@@ -1,20 +1,20 @@
 import { expect, describe, it, beforeEach, vi } from "vitest"
 import { PythonShellError } from "python-shell"
-import { MockPython } from "#mocks"
+import { MockPython, MockOra } from "#mocks"
 import PythonPool from "./PythonPool.js"
-
-vi.spyOn(global.console, "error").mockImplementation(() => {})
 
 describe("PythonPool", () => {
   const SCRIPT_PATH = "/foo/bar.py"
   const QUERY = "A query"
   const RESPONSE = { the: "response" }
 
+  let ora: MockOra
   let python: MockPython
   let request: ReturnType<typeof PythonPool>
   beforeEach(async () => {
     vi.resetAllMocks()
 
+    ora = MockOra()
     python = MockPython()
     request = PythonPool(SCRIPT_PATH)
   })
@@ -63,7 +63,7 @@ describe("PythonPool", () => {
 
     python.worker.emit("message", message)
 
-    expect(console.error).toHaveBeenCalledWith(message)
+    expect(ora.spinner.prefixText).toContain(message)
   })
 
   it("prints error messages to stderr", async () => {
@@ -71,7 +71,7 @@ describe("PythonPool", () => {
 
     python.worker.emit("stderr", message)
 
-    expect(console.error).toHaveBeenCalledWith(message)
+    expect(ora.spinner.prefixText).toContain(message)
   })
 
   it("throws on exit with error", async () => {

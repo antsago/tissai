@@ -9,7 +9,6 @@ export function Reporter(isSilent = false) {
   const errors: string[] = []
   const logs: string[] = []
   const spinner = ora({
-    text: 'Starting',
     spinner: spinners.sand,
     isSilent,
   }).start()
@@ -37,6 +36,6 @@ export function Reporter(isSilent = false) {
 export type Reporter = ReturnType<typeof Reporter>
 
 export let reporter = Reporter()
-export function setReporter(newInstance: Reporter) {
-  reporter = newInstance
+export function resetReporter() {
+  reporter = Reporter()
 }

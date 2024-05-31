@@ -2,6 +2,7 @@ import { expect, describe, it, beforeEach, vi } from "vitest"
 import {
   MockPg,
   MockPython,
+  MockOra,
   PRODUCT,
   DERIVED_DATA,
   pageWithSchema,
@@ -16,20 +17,20 @@ import {
   TAGS,
 } from "./Db/index.js"
 
-vi.spyOn(global.console, "error").mockImplementation(() => {})
-vi.spyOn(global.console, "log").mockImplementation(() => {})
-
 describe("index", () => {
   let pg: MockPg
+  let ora: MockOra
   let python: MockPython
   beforeEach(async () => {
     vi.resetModules()
     vi.resetAllMocks()
 
-    const { MockPg, MockPython } = await import("#mocks")
+    const { MockPg, MockPython, MockOra } = await import("#mocks")
     pg = MockPg()
+    ora = MockOra()
     python = MockPython()
     python.mockReturnValue(DERIVED_DATA)
+    pg.pool.query.mockResolvedValue({ rows: [{ count: 1 }]})
   })
 
   it("handles title-only products", async () => {
@@ -48,6 +49,7 @@ describe("index", () => {
     expect(pg).toHaveInserted(TAGS)
     expect(pg).not.toHaveInserted(SELLERS)
     expect(pg).not.toHaveInserted(BRANDS)
+    expect(ora.spinner.succeed).toHaveBeenCalled()
   })
 
   it("handles empty pages", async () => {
@@ -148,16 +150,14 @@ describe("index", () => {
         hasThrown = true
         throw error
       }
-      return Promise.resolve({ rows: [] })
+      return Promise.resolve({ rows: [{ count: 2 }] })
     })
 
     await import("./index.js")
 
     expect(pg).not.toHaveInserted(PRODUCTS, [PRODUCT.title])
     expect(pg).toHaveInserted(PRODUCTS, [title2])
-    expect(console.error).toHaveBeenCalledWith(
-      expect.stringContaining(error.message),
-    )
+    expect(ora.spinner.prefixText).toContain(error.message)
   })
 
   it("handles fatal errors", async () => {
@@ -166,9 +166,9 @@ describe("index", () => {
       throw error
     })
 
-    const act = import("./index.js")
+    await import("./index.js")
 
-    await expect(act).rejects.toThrow(error)
+    expect(ora.spinner.fail).toHaveBeenCalledWith(expect.stringContaining(error.message))
     expect(pg.pool.end).toHaveBeenCalled()
   })
 
@@ -182,7 +182,7 @@ describe("index", () => {
 
     await import("./index.js")
 
-    expect(console.log).toHaveBeenCalledWith(expect.stringContaining(page.id))
+    expect(ora.spinner.text).toContain(page.id)
   })
 
   it("initializes db", async () => {

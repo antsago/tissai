@@ -1,4 +1,5 @@
 import { PythonShell as PShell } from "python-shell"
+import { reporter } from '../Reporter.js'
 
 let PythonShell = PShell
 export function setPShell(mock: typeof PShell) {
@@ -20,7 +21,7 @@ function PythonPool<Input extends string | Object, Output>(scriptPath: string) {
     if (resolver) {
       resolver(message)
     } else {
-      console.error(message)
+      reporter.log(String(message))
     }
   })
 
@@ -31,7 +32,7 @@ function PythonPool<Input extends string | Object, Output>(scriptPath: string) {
     throw error
   })
   worker.on("stderr", (errorMessage) => {
-    console.error(errorMessage)
+    reporter.error(errorMessage)
   })
 
   return async (query: Input) => {
