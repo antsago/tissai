@@ -28,7 +28,7 @@
     "vitest": "1.5.0"
   },
   "dependencies": {
-    "@tissai/db": "../db",
+    "@tissai/db": "workspace:*",
     "he": "1.2.0",
     "lodash.defaults": "4.2.0",
     "node-html-parser": "6.1.13",

@@ -360,6 +360,23 @@ files = [
 ]
 
 [[package]]
+name = "es-core-news-sm"
+version = "3.7.0"
+description = "Spanish pipeline optimized for CPU. Components: tok2vec, morphologizer, parser, senter, ner, attribute_ruler, lemmatizer."
+optional = false
+python-versions = "*"
+files = [
+    {file = "es_core_news_sm-3.7.0-py3-none-any.whl", hash = "sha256:61e6e5530941f5880166855f09f60d7e6ba79ec1e8e45f96244bdb1eb169eb1d"},
+]
+
+[package.dependencies]
+spacy = ">=3.7.0,<3.8.0"
+
+[package.source]
+type = "url"
+url = "https://github.com/explosion/spacy-models/releases/download/es_core_news_sm-3.7.0/es_core_news_sm-3.7.0-py3-none-any.whl"
+
+[[package]]
 name = "fastrlock"
 version = "0.8.2"
 description = "Fast, re-entrant optimistic lock implemented in Cython"
@@ -2459,4 +2476,4 @@ wasabi = ">=0.9.1,<1.2.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9.2"
-content-hash = "68f6e346ba8a949e9f9f3dabd60859db3fe1c00b9935e97455f4e9ebb166c1e5"
+content-hash = "a07b231fdea596e5060991dc5f7f9271fe13f5f09a71d0abbe838cfe6de17a1d"

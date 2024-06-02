@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "workspaces": [
+    "db",
+    "indexer",
+    "site"
+  ],
+  "packageManager": "yarn@4.1.1"
+}

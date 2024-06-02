@@ -5,6 +5,7 @@ package-mode = false
 python = "^3.9.2"
 sentence-transformers = "^2.5.1"
 spacy = {extras = ["cuda11x"], version = "^3.7.4"}
+es-core-news-sm = {url = "https://github.com/explosion/spacy-models/releases/download/es_core_news_sm-3.7.0/es_core_news_sm-3.7.0-py3-none-any.whl"}
 
 
 [tool.poetry.group.dev.dependencies]
