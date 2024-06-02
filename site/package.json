@@ -4,7 +4,7 @@
 	"private": true,
 	"packageManager": "yarn@4.1.1",
 	"scripts": {
-		"dev": "poetry run vite dev",
+		"dev": "poetry run vite dev --host",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",

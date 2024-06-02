@@ -20,7 +20,7 @@
 				"extensions": [
 					"svelte.svelte-vscode",
 					"ms-python.python",
-					"azuretools.vscode-docker"
+					"ms-azuretools.vscode-docker"
 				]
 			}
 	}

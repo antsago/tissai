@@ -12,7 +12,9 @@ services:
       - PG_CONNECTION_STRING=postgres://postgres:postgres@postgres:5432
       - PG_DATABASE=uranus
       - POETRY_VIRTUALENVS_IN_PROJECT=true
-    network_mode: service:postgres
+    ports:
+      - "3000:3000"
+      - "5173:5173"
     command: sleep infinity
 
   postgres:
