@@ -15,7 +15,7 @@ import {
   PRODUCTS,
   SELLERS,
   TAGS,
-} from "./Db/index.js"
+} from "@tissai/db"
 
 describe("index", () => {
   let pg: MockPg

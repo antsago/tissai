@@ -8,6 +8,16 @@ import {
   afterAll,
 } from "vitest"
 import {
+  Db,
+  TRACES,
+  PRODUCTS,
+  OFFERS,
+  CATEGORIES,
+  TAGS,
+  SELLERS,
+  BRANDS,
+} from "@tissai/db"
+import {
   PRODUCT,
   DERIVED_DATA,
   SITE,
@@ -17,16 +27,6 @@ import {
   BRAND,
   EMBEDDING_FROM_PG,
 } from "#mocks"
-import {
-  Db,
-  TRACES,
-  PRODUCTS,
-  OFFERS,
-  CATEGORIES,
-  TAGS,
-  SELLERS,
-  BRANDS,
-} from "../src/Db/index.js"
 
 const TEST_TABLE = "test"
 const FULL_SCHEMA = {

@@ -8,6 +8,10 @@
     "test": "vitest run",
     "format": "prettier . --write"
   },
+  "exports": {
+    ".": "./src/index.js",
+    "./mocks": "./__tests__/utils/index.js"
+  },
   "imports": {
     "#mocks": "./__tests__/utils/index.ts"
   },

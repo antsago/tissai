@@ -1,5 +1,5 @@
+import { Db, Page, PAGES } from "@tissai/db"
 import { reporter } from "./Reporter.js"
-import { Db, Page, PAGES } from "./Db/index.js"
 import parsePage from "./parsePage.js"
 import { EntityExtractor } from "./EntityExtractor/index.js"
 

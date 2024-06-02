@@ -1,6 +1,6 @@
 import { parse } from "node-html-parser"
 import he from 'he'
-import { Page } from "./Db/index.js"
+import type { Page } from "@tissai/db"
 
 export type StructuredData = {
   jsonLd: any[]

@@ -344,6 +344,40 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tissai/db@file:../db::locator=%40tissai%2Findexer%40workspace%3A.":
+  version: 0.0.1
+  resolution: "@tissai/db@file:../db#../db::hash=ccd15e&locator=%40tissai%2Findexer%40workspace%3A."
+  dependencies:
+    pg: "npm:8.11.5"
+    pg-cursor: "npm:2.10.5"
+  checksum: 10c0/3e6e5de9954af12edf030e84a54e2ad0b705c9c5dc7e1b03634605f92b0b36881348ec35a9e19da8e15b29e28edf23af39c71efeb38eb4e67aab624442f8185d
+  languageName: node
+  linkType: hard
+
+"@tissai/indexer@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@tissai/indexer@workspace:."
+  dependencies:
+    "@tissai/db": ../db
+    "@tsconfig/node20": "npm:20.1.4"
+    "@types/he": "npm:^1"
+    "@types/lodash.defaults": "npm:^4"
+    "@types/node": "npm:20.12.7"
+    "@types/pg": "npm:^8"
+    "@types/pg-cursor": "npm:^2"
+    he: "npm:1.2.0"
+    lodash.defaults: "npm:4.2.0"
+    node-html-parser: "npm:6.1.13"
+    ora: "npm:8.0.1"
+    pg: "npm:8.11.5"
+    pg-cursor: "npm:2.10.5"
+    prettier: "npm:3.2.5"
+    python-shell: "npm:5.0.0"
+    typescript: "npm:5.4.5"
+    vitest: "npm:1.5.0"
+  languageName: unknown
+  linkType: soft
+
 "@tsconfig/node20@npm:20.1.4":
   version: 20.1.4
   resolution: "@tsconfig/node20@npm:20.1.4"
@@ -1117,29 +1151,6 @@ __metadata:
   checksum: 10c0/1e1904ddb0cb3d6cce7cd09e27a90184908b7a5d5c21b92e232c93579d314f0b83c246ffb035493d0504b1e9147ba2c9b21df0030f48673fba0496ecd698161f
   languageName: node
   linkType: hard
-
-"indexer@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "indexer@workspace:."
-  dependencies:
-    "@tsconfig/node20": "npm:20.1.4"
-    "@types/he": "npm:^1"
-    "@types/lodash.defaults": "npm:^4"
-    "@types/node": "npm:20.12.7"
-    "@types/pg": "npm:^8"
-    "@types/pg-cursor": "npm:^2"
-    he: "npm:1.2.0"
-    lodash.defaults: "npm:4.2.0"
-    node-html-parser: "npm:6.1.13"
-    ora: "npm:8.0.1"
-    pg: "npm:8.11.5"
-    pg-cursor: "npm:2.10.5"
-    prettier: "npm:3.2.5"
-    python-shell: "npm:5.0.0"
-    typescript: "npm:5.4.5"
-    vitest: "npm:1.5.0"
-  languageName: unknown
-  linkType: soft
 
 "ip-address@npm:^9.0.5":
   version: 9.0.5

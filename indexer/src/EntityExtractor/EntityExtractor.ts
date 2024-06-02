@@ -5,13 +5,13 @@ import type {
   Tag,
   Offer,
   Seller,
-} from "../Db/index.js"
+  Page,
+} from "@tissai/db"
 import type { StructuredData } from "../parsePage.js"
 import { dirname } from "node:path"
 import { randomUUID } from "node:crypto"
 import { fileURLToPath } from "node:url"
 import defaults from "lodash.defaults"
-import { Page } from "../Db/index.js"
 import PythonPool from "./PythonPool.js"
 
 type DerivedData = {
