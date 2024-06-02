@@ -13,27 +13,17 @@ describe("offers", () => {
   })
 
   it("inserts new row", async () => {
-    const offer = {
-      id: "a7a9160a-b3fd-4fed-97fe-7032322da08c",
-      product: "1a13b49d-b43d-4eba-838d-a77c9d94f743",
-      url: PAGE.url,
-      site: PAGE.site,
-      seller: OFFER.seller,
-      price: OFFER.price,
-      currency: OFFER.currency,
-    }
-
-    await create(connection)(PAGE.id, offer)
+    await create(connection)(PAGE.id, OFFER)
 
     expect(pg).toHaveInserted(OFFERS, [
-      offer.id,
-      offer.url,
-      offer.site,
-      offer.product,
-      offer.seller,
-      offer.price,
-      offer.currency,
+      OFFER.id,
+      OFFER.url,
+      OFFER.site,
+      OFFER.product,
+      OFFER.seller,
+      OFFER.price,
+      OFFER.currency,
     ])
-    expect(pg).toHaveInserted(TRACES, [PAGE.id, OFFERS.toString(), offer.id])
+    expect(pg).toHaveInserted(TRACES, [PAGE.id, OFFERS.toString(), OFFER.id])
   })
 })

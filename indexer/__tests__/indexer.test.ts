@@ -34,7 +34,7 @@ const FULL_SCHEMA = {
   "@type": "Product",
   name: PRODUCT.title,
   description: PRODUCT.description,
-  image: PRODUCT.image,
+  image: PRODUCT.images[0],
   brand: {
     "@type": "Brand",
     name: BRAND.name,
@@ -106,7 +106,7 @@ describe("indexer", () => {
         id: expect.any(String),
         title: PRODUCT.title,
         description: PRODUCT.description,
-        images: [PRODUCT.image],
+        images: [PRODUCT.images[0]],
         embedding: EMBEDDING_FROM_PG,
         category: DERIVED_DATA.category,
         tags: DERIVED_DATA.tags,

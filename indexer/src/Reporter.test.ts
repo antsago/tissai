@@ -1,4 +1,4 @@
-import { expect, describe, it, beforeEach, vi } from "vitest"
+import { expect, describe, it, beforeEach } from "vitest"
 import { MockOra } from '#mocks'
 import { Reporter } from "./Reporter.js"
 

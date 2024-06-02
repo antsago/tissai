@@ -346,11 +346,11 @@ __metadata:
 
 "@tissai/db@file:../db::locator=%40tissai%2Findexer%40workspace%3A.":
   version: 0.0.1
-  resolution: "@tissai/db@file:../db#../db::hash=ccd15e&locator=%40tissai%2Findexer%40workspace%3A."
+  resolution: "@tissai/db@file:../db#../db::hash=7e124d&locator=%40tissai%2Findexer%40workspace%3A."
   dependencies:
     pg: "npm:8.11.5"
     pg-cursor: "npm:2.10.5"
-  checksum: 10c0/3e6e5de9954af12edf030e84a54e2ad0b705c9c5dc7e1b03634605f92b0b36881348ec35a9e19da8e15b29e28edf23af39c71efeb38eb4e67aab624442f8185d
+  checksum: 10c0/681a5354b8332b58b63e2fabfa304ae4f02bd281661b8ff829df9c9d58d3d4b1de30f2c4a060b97cf2dd7b3febced7d1c5cb0979c70f3cbf39ebd3bb9654b806
   languageName: node
   linkType: hard
 

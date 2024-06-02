@@ -1,5 +1,5 @@
 import { expect, describe, it, beforeEach } from "vitest"
-import { MockPg, PAGE, OFFER } from "#mocks"
+import { MockPg, PAGE, SELLER } from "#mocks"
 import { Connection } from "../Connection"
 import { TABLE as TRACES } from "./traces"
 import { TABLE as SELLERS, create } from "./sellers"
@@ -13,16 +13,13 @@ describe("sellers", () => {
   })
 
   it("inserts new row", async () => {
-    const seller = {
-      name: OFFER.seller,
-    }
-    await create(connection)(PAGE.id, seller)
+    await create(connection)(PAGE.id, SELLER)
 
-    expect(pg).toHaveInserted(SELLERS, [seller.name])
+    expect(pg).toHaveInserted(SELLERS, [SELLER.name])
     expect(pg).toHaveInserted(TRACES, [
       PAGE.id,
       SELLERS.toString(),
-      seller.name,
+      SELLER.name,
     ])
   })
 })

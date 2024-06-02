@@ -1,5 +1,5 @@
 import { expect, describe, it, beforeEach } from "vitest"
-import { MockPg, PAGE, DERIVED_DATA } from "#mocks"
+import { MockPg, PAGE, TAG } from "#mocks"
 import { Connection } from "../Connection"
 import { TABLE as TRACES } from "./traces"
 import { TABLE as TAGS, create } from "./tags"
@@ -13,12 +13,9 @@ describe("tags", () => {
   })
 
   it("inserts new row", async () => {
-    const tag = {
-      name: DERIVED_DATA.tags[0],
-    }
-    await create(connection)(PAGE.id, tag)
+    await create(connection)(PAGE.id, TAG)
 
-    expect(pg).toHaveInserted(TAGS, [tag.name])
-    expect(pg).toHaveInserted(TRACES, [PAGE.id, TAGS.toString(), tag.name])
+    expect(pg).toHaveInserted(TAGS, [TAG.name])
+    expect(pg).toHaveInserted(TRACES, [PAGE.id, TAGS.toString(), TAG.name])
   })
 })

@@ -1,4 +1,4 @@
-import { expect, describe, it, beforeEach, vi } from "vitest"
+import { expect, describe, it, beforeEach } from "vitest"
 import { MockPython, DERIVED_DATA, PAGE } from "#mocks"
 import { EntityExtractor } from "./EntityExtractor.js"
 
