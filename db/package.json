@@ -1,0 +1,27 @@
+{
+  "name": "@tissai/db",
+  "version": "0.0.1",
+  "packageManager": "yarn@4.1.1",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "format": "prettier . --write"
+  },
+  "imports": {
+    "#mocks": "./__tests__/utils/index.ts"
+  },
+  "devDependencies": {
+    "@tsconfig/node20": "20.1.4",
+    "@types/node": "20.12.7",
+    "@types/pg": "^8",
+    "@types/pg-cursor": "^2",
+    "prettier": "3.2.5",
+    "typescript": "5.4.5",
+    "vitest": "1.5.0"
+  },
+  "dependencies": {
+    "pg": "8.11.5",
+    "pg-cursor": "2.10.5"
+  }
+}
