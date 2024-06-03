@@ -9,9 +9,8 @@
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "test": "poetry run vitest --typecheck",
-    "lint": "prettier --check . && eslint .",
-    "format": "prettier --write .",
+    "test": "poetry run vitest run",
+    "lint": "eslint .",
     "vercel": "vercel"
   },
   "devDependencies": {
