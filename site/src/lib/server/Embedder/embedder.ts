@@ -9,7 +9,10 @@ type Embedder = {
 
 function Embedder(): Embedder {
   const currentDirectory = dirname(fileURLToPath(import.meta.url))
-  const python = PythonPool<string, number[]>(`${currentDirectory}/embedder.py`, console)
+  const python = PythonPool<string, number[]>(
+    `${currentDirectory}/embedder.py`,
+    console,
+  )
 
   return {
     embed: (query) => {

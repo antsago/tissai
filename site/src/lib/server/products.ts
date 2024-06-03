@@ -24,7 +24,11 @@ export function Products(): Products {
   const db = Db()
 
   async function getDetails(id: string) {
-    const response = await db.query<Pick<Product, 'title'|'description'|'images'> & { similar: (Pick<Product, 'id'|'title'> & { image: string })[] }>(
+    const response = await db.query<
+      Pick<Product, "title" | "description" | "images"> & {
+        similar: (Pick<Product, "id" | "title"> & { image: string })[]
+      }
+    >(
       `
         SELECT
           p.${PRODUCTS.title},
@@ -51,18 +55,18 @@ export function Products(): Products {
 
     return {
       name: response[0].title,
-      description: response[0].description ?? '',
+      description: response[0].description ?? "",
       images: response[0].images ?? [],
-      similar: response[0].similar.map((s) => ({...s, name: s.title})),
-      productUri: 'https://example.com',
-      shopName: 'FooBar'
+      similar: response[0].similar.map((s) => ({ ...s, name: s.title })),
+      productUri: "https://example.com",
+      shopName: "FooBar",
     }
   }
 
   async function search(searchQuery: string) {
     const embedding = await embedder.embed(searchQuery)
 
-    type SearchResult = Pick<Product, 'id'|'title'> & { image: string }
+    type SearchResult = Pick<Product, "id" | "title"> & { image: string }
     const result = await db.query<SearchResult>(
       `
         SELECT
@@ -76,7 +80,7 @@ export function Products(): Products {
       [`[${embedding.join(",")}]`],
     )
 
-    return result.map(p => ({
+    return result.map((p) => ({
       id: p.id,
       image: p.image,
       name: p.title,
