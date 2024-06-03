@@ -1,22 +1,21 @@
 import { expect, describe, it, beforeEach, vi } from "vitest"
 import { PythonShellError } from "python-shell"
-import { MockPython, MockOra } from "#mocks"
-import PythonPool from "./PythonPool.js"
+import { MockPython } from "#mocks"
+import { PythonPool } from "./PythonPool.js"
 
 describe("PythonPool", () => {
   const SCRIPT_PATH = "/foo/bar.py"
   const QUERY = "A query"
   const RESPONSE = { the: "response" }
 
-  let ora: MockOra
+  const log = vi.fn()
   let python: MockPython
-  let pool: ReturnType<typeof PythonPool>
+  let pool: PythonPool
   beforeEach(async () => {
     vi.resetAllMocks()
 
-    ora = MockOra()
     python = MockPython()
-    pool = PythonPool(SCRIPT_PATH)
+    pool = PythonPool(SCRIPT_PATH, { log })
   })
 
   it("starts script on initialization", async () => {
@@ -63,7 +62,7 @@ describe("PythonPool", () => {
 
     python.worker.emit("message", message)
 
-    expect(ora.spinner.prefixText).toContain(message)
+    expect(log).toHaveBeenCalledWith(message)
   })
 
   it("prints error messages to stderr", async () => {
@@ -71,7 +70,7 @@ describe("PythonPool", () => {
 
     python.worker.emit("stderr", message)
 
-    expect(ora.spinner.prefixText).toContain(message)
+    expect(log).toHaveBeenCalledWith(message)
   })
 
   it("throws on exit with error", async () => {
@@ -92,5 +91,6 @@ describe("PythonPool", () => {
     await pool.close()
 
     expect(python.worker.end).toHaveBeenCalled()
+    expect(log).not.toHaveBeenCalled()
   })
 })

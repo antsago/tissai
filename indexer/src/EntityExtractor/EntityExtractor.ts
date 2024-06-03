@@ -12,7 +12,8 @@ import { dirname } from "node:path"
 import { randomUUID } from "node:crypto"
 import { fileURLToPath } from "node:url"
 import defaults from "lodash.defaults"
-import PythonPool from "./PythonPool.js"
+import { PythonPool } from "@tissai/python-pool"
+import { reporter } from "../Reporter.js"
 
 type DerivedData = {
   embedding: number[]
@@ -49,6 +50,7 @@ export const EntityExtractor = () => {
   const currentDirectory = dirname(fileURLToPath(import.meta.url))
   const python = PythonPool<string, DerivedData>(
     `${currentDirectory}/parseTitle.py`,
+    reporter,
   )
 
   return {

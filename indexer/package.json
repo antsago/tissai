@@ -6,7 +6,6 @@
   "scripts": {
     "start": "poetry run node build/index.js",
     "build": "rm -rf ./build && tsc && cd ./src && cp --parents **/*.py ../build/",
-    "typecheck": "tsc --noEmit",
     "test": "poetry run vitest run",
     "test:integration": "poetry run vitest run __tests__"
   },
@@ -25,10 +24,10 @@
   },
   "dependencies": {
     "@tissai/db": "workspace:*",
+    "@tissai/python-pool": "workspace:*",
     "he": "1.2.0",
     "lodash.defaults": "4.2.0",
     "node-html-parser": "6.1.13",
-    "ora": "8.0.1",
-    "python-shell": "5.0.0"
+    "ora": "8.0.1"
   }
 }

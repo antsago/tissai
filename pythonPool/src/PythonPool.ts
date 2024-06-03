@@ -1,5 +1,4 @@
 import { PythonShell as PShell } from "python-shell"
-import { reporter } from "../Reporter.js"
 
 let PythonShell = PShell
 export function setPShell(mock: typeof PShell) {
@@ -8,7 +7,7 @@ export function setPShell(mock: typeof PShell) {
 
 type Resolver<T> = (value: T | PromiseLike<T>) => void
 
-function PythonPool<Input extends string | Object, Output>(scriptPath: string) {
+export function PythonPool<Input extends string | Object, Output>(scriptPath: string, reporter: { log: (message: string) => void}) {
   const resolvers: Resolver<Output>[] = []
   let expectExit = false
 
@@ -60,4 +59,4 @@ function PythonPool<Input extends string | Object, Output>(scriptPath: string) {
   }
 }
 
-export default PythonPool
+export type PythonPool = ReturnType<typeof PythonPool>

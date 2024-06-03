@@ -6,12 +6,9 @@
   "scripts": {
     "dev": "poetry run vite dev --host",
     "build": "vite build",
-    "preview": "vite preview",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "start": "poetry run node build",
     "test": "poetry run vitest run",
-    "lint": "eslint .",
-    "vercel": "vercel"
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@sveltejs/adapter-node": "5.0.1",

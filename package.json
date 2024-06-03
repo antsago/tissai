@@ -3,7 +3,8 @@
   "workspaces": [
     "db",
     "indexer",
-    "site"
+    "site",
+    "pythonPool"
   ],
   "packageManager": "yarn@4.1.1",
   "scripts": {

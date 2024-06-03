@@ -1,8 +1,7 @@
-import { EventEmitter } from "node:stream"
-import { setImmediate } from "node:timers/promises"
-import { vi } from "vitest"
-import { setPShell } from "../../src/EntityExtractor/index.js"
 import type { PythonShellError } from "python-shell"
+import { EventEmitter } from "node:stream"
+import { vi } from "vitest"
+import { setPShell } from "../../src/PythonPool.js"
 
 type WorkerEvents = {
   message: [unknown]
