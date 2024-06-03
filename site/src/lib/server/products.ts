@@ -1,4 +1,4 @@
-import { Db } from "@tissai/db"
+import { Db, PRODUCTS, type Product } from "@tissai/db"
 import Embedder from "./Embedder"
 
 type Similar = {
@@ -46,14 +46,24 @@ export function Products(): Products {
 
   async function search(searchQuery: string) {
     const embedding = await embedder.embed(searchQuery)
-    const sqlQuery = `
-			SELECT
-				id, name, images[1] AS image
-			FROM products
-			ORDER BY embedding <-> '[${embedding}]'
-			LIMIT 24
-		`
-    return db.query<Similar>(sqlQuery)
+
+    type SearchResult = Pick<Product, 'id'|'title'> & { image: string }
+    const result = await db.query<SearchResult>(
+      `
+        SELECT
+          ${PRODUCTS.id}, ${PRODUCTS.title}, ${PRODUCTS.images}[1] AS image
+        FROM ${PRODUCTS}
+        ORDER BY ${PRODUCTS.embedding} <-> $1
+        LIMIT 24
+      `,
+      [`[${embedding.join(",")}]`],
+    )
+
+    return result.map(p => ({
+      id: p.id,
+      image: p.image,
+      name: p.title,
+    }))
   }
 
   return {

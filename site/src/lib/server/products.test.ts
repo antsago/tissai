@@ -14,7 +14,11 @@ describe("Products", () => {
   })
 
   it("returns searched products", async () => {
-    pg.pool.query.mockResolvedValueOnce({ rows: [SIMILAR] })
+    pg.pool.query.mockResolvedValueOnce({ rows: [{
+      id: SIMILAR.id,
+      title: SIMILAR.name,
+      image: SIMILAR.image,
+    }] })
     python.mockReturnValue(EMBEDDING)
 
     const result = await products.search(QUERY)
@@ -22,8 +26,8 @@ describe("Products", () => {
     expect(result).toStrictEqual([SIMILAR])
     expect(python.worker.send).toHaveBeenCalledWith(QUERY)
     expect(pg.pool.query).toHaveBeenCalledWith(
-      expect.stringContaining(`ORDER BY embedding <-> '[${EMBEDDING}]`),
-      undefined,
+      expect.stringContaining('ORDER BY embedding <-> $1'),
+      [expect.stringContaining(EMBEDDING.join(','))],
     )
   })
 
