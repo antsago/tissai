@@ -7,7 +7,10 @@ export function setPShell(mock: typeof PShell) {
 
 type Resolver<T> = (value: T | PromiseLike<T>) => void
 
-export function PythonPool<Input extends string | Object, Output>(scriptPath: string, reporter: { log: (message: string) => void}) {
+export function PythonPool<Input extends string | Object, Output>(
+  scriptPath: string,
+  reporter: { log: (message: string) => void },
+) {
   const resolvers: Resolver<Output>[] = []
   let expectExit = false
 

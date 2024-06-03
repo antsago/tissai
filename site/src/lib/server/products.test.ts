@@ -33,7 +33,10 @@ describe("Products", () => {
     const result = await products.getDetails(PRODUCT.id)
 
     expect(result).toStrictEqual(expected)
-    expect(pg.pool.query).toHaveBeenCalledWith(expect.stringContaining(PRODUCT.id), undefined)
+    expect(pg.pool.query).toHaveBeenCalledWith(
+      expect.stringContaining(PRODUCT.id),
+      undefined,
+    )
     expect(pg.pool.query).toHaveBeenCalledWith(
       expect.stringContaining("ORDER BY p2.embedding"),
       undefined,

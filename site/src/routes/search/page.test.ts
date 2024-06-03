@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, beforeEach } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
-import { QUERY, SIMILAR,  MockPg } from "mocks"
+import { QUERY, SIMILAR, MockPg } from "mocks"
 import { Products } from "$lib/server"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
