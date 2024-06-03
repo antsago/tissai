@@ -29,8 +29,6 @@
     "lodash.defaults": "4.2.0",
     "node-html-parser": "6.1.13",
     "ora": "8.0.1",
-    "pg": "8.11.5",
-    "pg-cursor": "2.10.5",
     "python-shell": "5.0.0"
   }
 }
