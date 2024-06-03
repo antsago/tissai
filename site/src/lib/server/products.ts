@@ -24,24 +24,39 @@ export function Products(): Products {
   const db = Db()
 
   async function getDetails(id: string) {
-    const query = `
-			SELECT p.name, p.description, p.images, p.product_uri, p.shop_name, JSON_AGG(s.*) AS similar
-			FROM 
-				products AS p,
-				LATERAL (
-					SELECT
-						id, name, images[1] AS image
-					FROM products as p2
-					WHERE p.id != p2.id
-					ORDER BY p2.embedding <-> p.embedding
-					LIMIT 4
-				) AS s
-			WHERE p.id='${id}'
-			GROUP BY p.id;
-		`
-    const response = await db.query<ProductDetails>(query)
+    const response = await db.query<Pick<Product, 'title'|'description'|'images'> & { similar: (Pick<Product, 'id'|'title'> & { image: string })[] }>(
+      `
+        SELECT
+          p.${PRODUCTS.title},
+          p.${PRODUCTS.description},
+          p.${PRODUCTS.images},
+          JSON_AGG(s.*) AS similar
+        FROM 
+          ${PRODUCTS} AS p,
+          LATERAL (
+            SELECT
+              ${PRODUCTS.id},
+              ${PRODUCTS.title},
+              ${PRODUCTS.images}[1] AS image
+            FROM ${PRODUCTS} as p2
+            WHERE p.${PRODUCTS.id} != p2.${PRODUCTS.id}
+            ORDER BY p2.${PRODUCTS.embedding} <-> p.${PRODUCTS.embedding}
+            LIMIT 4
+          ) AS s
+        WHERE p.${PRODUCTS.id}=$1
+        GROUP BY p.${PRODUCTS.id};
+      `,
+      [id],
+    )
 
-    return response[0]
+    return {
+      name: response[0].title,
+      description: response[0].description ?? '',
+      images: response[0].images ?? [],
+      similar: response[0].similar.map((s) => ({...s, name: s.title})),
+      productUri: 'https://example.com',
+      shopName: 'FooBar'
+    }
   }
 
   async function search(searchQuery: string) {
@@ -51,10 +66,12 @@ export function Products(): Products {
     const result = await db.query<SearchResult>(
       `
         SELECT
-          ${PRODUCTS.id}, ${PRODUCTS.title}, ${PRODUCTS.images}[1] AS image
+          ${PRODUCTS.id},
+          ${PRODUCTS.title},
+          ${PRODUCTS.images}[1] AS image
         FROM ${PRODUCTS}
         ORDER BY ${PRODUCTS.embedding} <-> $1
-        LIMIT 24
+        LIMIT 24;
       `,
       [`[${embedding.join(",")}]`],
     )
