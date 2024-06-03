@@ -40,6 +40,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@tissai/db": "workspace:*",
     "pg": "8.11.5",
     "python-shell": "5.0.0"
   }

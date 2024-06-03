@@ -1,4 +1,4 @@
-import { DB } from "./db"
+import { Db } from "@tissai/db"
 import Embedder from "./Embedder"
 
 type Similar = {
@@ -21,7 +21,7 @@ export type Products = {
 
 export function Products(): Products {
   const embedder = Embedder()
-  const db = DB()
+  const db = Db()
 
   async function getDetails(id: string) {
     const query = `

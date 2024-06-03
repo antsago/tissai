@@ -1,24 +1,25 @@
 import { describe, it, expect, beforeEach } from "vitest"
-import { PRODUCT, SIMILAR, QUERY, EMBEDDING, Fake } from "mocks"
+import { PRODUCT, SIMILAR, QUERY, EMBEDDING, MockPg } from "mocks"
 import { Products } from "./products"
 
 describe("Products", () => {
-  let fake: Fake
+  let pg: MockPg
   let products: Products
   beforeEach(() => {
-    fake = Fake()
+    pg = MockPg()
 
     products = Products()
   })
 
   it("returns searched products", async () => {
-    fake.query.mockResolvedValueOnce({ rows: [SIMILAR] })
+    pg.pool.query.mockResolvedValueOnce({ rows: [SIMILAR] })
 
     const result = await products.search(QUERY)
 
     expect(result).toStrictEqual([SIMILAR])
-    expect(fake.query).toHaveBeenCalledWith(
+    expect(pg.pool.query).toHaveBeenCalledWith(
       expect.stringContaining(`ORDER BY embedding <-> '[${EMBEDDING}]`),
+      undefined,
     )
   })
 
@@ -27,14 +28,15 @@ describe("Products", () => {
       ...PRODUCT,
       similar: [SIMILAR],
     }
-    fake.query.mockResolvedValueOnce({ rows: [expected] })
+    pg.pool.query.mockResolvedValueOnce({ rows: [expected] })
 
     const result = await products.getDetails(PRODUCT.id)
 
     expect(result).toStrictEqual(expected)
-    expect(fake.query).toHaveBeenCalledWith(expect.stringContaining(PRODUCT.id))
-    expect(fake.query).toHaveBeenCalledWith(
+    expect(pg.pool.query).toHaveBeenCalledWith(expect.stringContaining(PRODUCT.id), undefined)
+    expect(pg.pool.query).toHaveBeenCalledWith(
       expect.stringContaining("ORDER BY p2.embedding"),
+      undefined,
     )
   })
 })
