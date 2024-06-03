@@ -1,21 +1,24 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, beforeEach } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
-import { QUERY, SIMILAR, MockPg } from "mocks"
+import { QUERY, SIMILAR, MockPg, MockPython, EMBEDDING } from "mocks"
 import { Products } from "$lib/server"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
 
 describe("Search page", () => {
   let pg: MockPg
+  let python: MockPython
   beforeEach(() => {
     cleanup()
 
     pg = MockPg()
+    python = MockPython()
   })
 
   it("shows search results", async () => {
     pg.pool.query.mockResolvedValueOnce({ rows: [SIMILAR] })
+    python.mockReturnValue(EMBEDDING)
 
     render(page, {
       data: await load({
