@@ -7,36 +7,36 @@ import { load } from "./+page.server"
 import page from "./+page.svelte"
 
 describe("Search page", () => {
-	let fake: Fake
-	beforeEach(() => {
-		cleanup()
+  let fake: Fake
+  beforeEach(() => {
+    cleanup()
 
-		fake = Fake()
-	})
+    fake = Fake()
+  })
 
-	it("shows search results", async () => {
-		fake.query.mockResolvedValueOnce({ rows: [SIMILAR] })
+  it("shows search results", async () => {
+    fake.query.mockResolvedValueOnce({ rows: [SIMILAR] })
 
-		render(page, {
-			data: await load({
-				url: new URL(`http://localhost:3000/search?q=${QUERY}`),
-				locals: { products: Products() },
-			} as any),
-		} as any)
+    render(page, {
+      data: await load({
+        url: new URL(`http://localhost:3000/search?q=${QUERY}`),
+        locals: { products: Products() },
+      } as any),
+    } as any)
 
-		const results = screen.getByRole("region", {
-			name: "Resultados de la búsqueda",
-		})
-		const title = within(results).getByRole("heading", { level: 3 })
-		const image = within(results).getByRole("img")
-		const detailLink = within(results).getByRole("link")
+    const results = screen.getByRole("region", {
+      name: "Resultados de la búsqueda",
+    })
+    const title = within(results).getByRole("heading", { level: 3 })
+    const image = within(results).getByRole("img")
+    const detailLink = within(results).getByRole("link")
 
-		expect(image).toHaveAttribute("src", SIMILAR.image)
-		expect(image).toHaveAccessibleName(SIMILAR.name)
-		expect(title).toHaveTextContent(SIMILAR.name)
-		expect(detailLink).toHaveAttribute(
-			"href",
-			expect.stringContaining(SIMILAR.id),
-		)
-	})
+    expect(image).toHaveAttribute("src", SIMILAR.image)
+    expect(image).toHaveAccessibleName(SIMILAR.name)
+    expect(title).toHaveTextContent(SIMILAR.name)
+    expect(detailLink).toHaveAttribute(
+      "href",
+      expect.stringContaining(SIMILAR.id),
+    )
+  })
 })

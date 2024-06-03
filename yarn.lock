@@ -815,7 +815,6 @@ __metadata:
     "@types/pg-cursor": "npm:^2"
     pg: "npm:8.11.5"
     pg-cursor: "npm:2.10.5"
-    prettier: "npm:3.2.5"
     typescript: "npm:5.4.5"
     vitest: "npm:1.5.0"
   languageName: unknown
@@ -838,7 +837,6 @@ __metadata:
     ora: "npm:8.0.1"
     pg: "npm:8.11.5"
     pg-cursor: "npm:2.10.5"
-    prettier: "npm:3.2.5"
     python-shell: "npm:5.0.0"
     typescript: "npm:5.4.5"
     vitest: "npm:1.5.0"
@@ -866,8 +864,6 @@ __metadata:
     jsdom: "npm:24.1.0"
     pg: "npm:8.11.5"
     postcss: "npm:8.4.38"
-    prettier: "npm:3.3.0"
-    prettier-plugin-svelte: "npm:3.2.3"
     python-shell: "npm:5.0.0"
     svelte: "npm:4.2.17"
     svelte-check: "npm:3.8.0"
@@ -4627,15 +4623,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:3.2.5":
-  version: 3.2.5
-  resolution: "prettier@npm:3.2.5"
-  bin:
-    prettier: bin/prettier.cjs
-  checksum: 10c0/ea327f37a7d46f2324a34ad35292af2ad4c4c3c3355da07313339d7e554320f66f65f91e856add8530157a733c6c4a897dc41b577056be5c24c40f739f5ee8c6
-  languageName: node
-  linkType: hard
-
 "prettier@npm:3.3.0":
   version: 3.3.0
   resolution: "prettier@npm:3.3.0"
@@ -4928,6 +4915,10 @@ __metadata:
 "root-workspace-0b6124@workspace:.":
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
+  dependencies:
+    prettier: "npm:3.3.0"
+    prettier-plugin-svelte: "npm:3.2.3"
+    svelte: "npm:4.2.17"
   languageName: unknown
   linkType: soft
 

@@ -76,7 +76,12 @@ export const EntityExtractor = () => {
         title: headings.title,
         description: headings.description,
       }
-      const structuredInfo = defaults({}, jsonLdInfo, opengraphInfo, headingInfo)
+      const structuredInfo = defaults(
+        {},
+        jsonLdInfo,
+        opengraphInfo,
+        headingInfo,
+      )
 
       if (!structuredInfo.title) {
         throw new Error("Product without title!")
@@ -90,9 +95,11 @@ export const EntityExtractor = () => {
       const tags = derivedInfo.tags.map((t) => ({ name: t }))
 
       const sellers =
-        (structuredInfo.offers as OfferStructuredInfo[])?.map((offer: any) => ({
-          name: offer.seller,
-        })).filter(({ name }) => !!name) ?? []
+        (structuredInfo.offers as OfferStructuredInfo[])
+          ?.map((offer: any) => ({
+            name: offer.seller,
+          }))
+          .filter(({ name }) => !!name) ?? []
       const brand = structuredInfo.brandName
         ? { name: structuredInfo.brandName, logo: structuredInfo.brandLogo }
         : undefined
@@ -138,7 +145,7 @@ export const EntityExtractor = () => {
         offers,
         sellers,
       }
-    }
+    },
   }
 }
 

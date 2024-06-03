@@ -1,5 +1,5 @@
 import { parse } from "node-html-parser"
-import he from 'he'
+import he from "he"
 import type { Page } from "@tissai/db"
 
 export type StructuredData = {
@@ -57,7 +57,7 @@ function parsePage(page: Page): StructuredData {
     .map((t) => t.rawText)
     .map((t) => JSON.parse(t))
     .map(expandJsonLd)
-    .map(t => t["@graph"] ? t["@graph"] : t)
+    .map((t) => (t["@graph"] ? t["@graph"] : t))
     .flat()
 
   const headings = {

@@ -9,16 +9,20 @@ try {
   db = Db()
   extractor = EntityExtractor()
 
-  reporter.progress('Initializing database')
+  reporter.progress("Initializing database")
   await db.initialize()
 
-  reporter.progress('Setting up page stream')
-  const [{ count: totalPageCount }] = await db.query<{ count: number }>(`SELECT COUNT(id) FROM ${PAGES}`)
+  reporter.progress("Setting up page stream")
+  const [{ count: totalPageCount }] = await db.query<{ count: number }>(
+    `SELECT COUNT(id) FROM ${PAGES}`,
+  )
   const pages = db.stream<Page>(`SELECT * FROM ${PAGES}`)
   let index = 1
   for await (let page of pages) {
     try {
-      reporter.progress(`Processing page ${index}/${totalPageCount}: ${page.id} (${page.url})`)
+      reporter.progress(
+        `Processing page ${index}/${totalPageCount}: ${page.id} (${page.url})`,
+      )
       const structuredData = parsePage(page)
 
       const { product, offers, category, tags, sellers, brand } =

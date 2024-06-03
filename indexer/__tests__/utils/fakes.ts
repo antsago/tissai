@@ -1,7 +1,16 @@
 import { PAGE, CATEGORY, TAG, PRODUCT } from "@tissai/db/mocks"
 
-export { SITE, PAGE, BRAND, CATEGORY, TAG, PRODUCT, SELLER, OFFER, EMBEDDING_FROM_PG, } from "@tissai/db/mocks"
-
+export {
+  SITE,
+  PAGE,
+  BRAND,
+  CATEGORY,
+  TAG,
+  PRODUCT,
+  SELLER,
+  OFFER,
+  EMBEDDING_FROM_PG,
+} from "@tissai/db/mocks"
 
 export const pageWithSchema = (...schemas: object[]) => ({
   ...PAGE,

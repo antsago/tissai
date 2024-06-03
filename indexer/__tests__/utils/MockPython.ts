@@ -14,8 +14,8 @@ type WorkerEvents = {
 export function MockPython<Input extends string | Object, Output>() {
   const eventEmitter = new EventEmitter<WorkerEvents>()
   const send = vi.fn<[Input], void>()
-  const end = vi.fn().mockImplementation(cb => {
-    worker.emit('close')
+  const end = vi.fn().mockImplementation((cb) => {
+    worker.emit("close")
     cb()
   })
   const worker = Object.assign(eventEmitter, { send, end })

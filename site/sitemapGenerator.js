@@ -11,15 +11,15 @@ console.log(`<?xml version="1.0" encoding="UTF-8"?>
     <priority>0.8</priority>
   </url>
 ${Object.keys(books)
-	.map(
-		(isbn) =>
-			`  <url>
+  .map(
+    (isbn) =>
+      `  <url>
     <loc>${domain}/${isbn}</loc>
     <lastmod>2023-11-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>`,
-	)
-	.join("\n")}
+  )
+  .join("\n")}
 </urlset>
 `)

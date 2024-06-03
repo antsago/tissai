@@ -6,8 +6,8 @@ export function MockOra() {
     start: vi.fn(),
     succeed: vi.fn(),
     fail: vi.fn(),
-    text: '',
-    prefixText: '',
+    text: "",
+    prefixText: "",
   }
   spinner.start.mockReturnValue(spinner)
   spinner.succeed.mockReturnValue(spinner)
@@ -17,23 +17,23 @@ export function MockOra() {
   setOra(ora)
   resetReporter()
 
-  return { spinner, ora}
+  return { spinner, ora }
 }
 
 // Silence console
-vi.mock('ora', async () => {
+vi.mock("ora", async () => {
   const spinner = {
     start: vi.fn(),
     succeed: vi.fn(),
     fail: vi.fn(),
-    text: '',
-    prefixText: '',
+    text: "",
+    prefixText: "",
   }
   spinner.start.mockReturnValue(spinner)
   spinner.succeed.mockReturnValue(spinner)
   spinner.fail.mockReturnValue(spinner)
   const ora = vi.fn().mockReturnValue(spinner)
-  const realOra = await vi.importActual('ora')
+  const realOra = await vi.importActual("ora")
 
   return { ...realOra, default: ora }
 })

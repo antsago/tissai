@@ -1,5 +1,5 @@
 import { PythonShell as PShell } from "python-shell"
-import { reporter } from '../Reporter.js'
+import { reporter } from "../Reporter.js"
 
 let PythonShell = PShell
 export function setPShell(mock: typeof PShell) {
@@ -47,13 +47,15 @@ function PythonPool<Input extends string | Object, Output>(scriptPath: string) {
     },
     close: async () => {
       expectExit = true
-      return new Promise<void>((res, rej) => worker.end((err) => {
-        if (err) {
-          rej(err)
-        } else {
-          res()
-        }
-      }))
+      return new Promise<void>((res, rej) =>
+        worker.end((err) => {
+          if (err) {
+            rej(err)
+          } else {
+            res()
+          }
+        }),
+      )
     },
   }
 }

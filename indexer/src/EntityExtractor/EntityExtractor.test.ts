@@ -63,7 +63,10 @@ describe("EntityExtractor", () => {
   })
 
   it("handles empty pages", async () => {
-    const act = extractor.extract({ jsonLd: [], opengraph: {}, headings: {} }, PAGE)
+    const act = extractor.extract(
+      { jsonLd: [], opengraph: {}, headings: {} },
+      PAGE,
+    )
 
     await expect(act).rejects.toThrow("Product without title")
     expect(python.worker.send).not.toHaveBeenCalled()

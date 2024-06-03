@@ -6,52 +6,52 @@ import { QUERY } from "mocks"
 import SearchForm from "./SearchForm.svelte"
 
 describe("SearchForm", () => {
-	beforeEach(() => {
-		cleanup()
-	})
+  beforeEach(() => {
+    cleanup()
+  })
 
-	it("handles search submissions", async () => {
-		const user = userEvent.setup()
-		let submission
-		const onSubmit = vi.fn((e) => {
-			e.preventDefault()
-			submission = {
-				values: [...new FormData(e.target).entries()].reduce(
-					(o, [k, v]) => ({ ...o, [k]: v }),
-					{},
-				),
-				method: e.target.method,
-				action: e.target.action.replace("http://localhost:3000", ""),
-			}
-		})
-		render(SearchForm, { props: { onSubmit } })
-		const searchForm = screen.getByRole("search")
-		const searchInput = within(searchForm).getByRole("searchbox")
-		const submitButton = within(searchForm).getByRole("button")
+  it("handles search submissions", async () => {
+    const user = userEvent.setup()
+    let submission
+    const onSubmit = vi.fn((e) => {
+      e.preventDefault()
+      submission = {
+        values: [...new FormData(e.target).entries()].reduce(
+          (o, [k, v]) => ({ ...o, [k]: v }),
+          {},
+        ),
+        method: e.target.method,
+        action: e.target.action.replace("http://localhost:3000", ""),
+      }
+    })
+    render(SearchForm, { props: { onSubmit } })
+    const searchForm = screen.getByRole("search")
+    const searchInput = within(searchForm).getByRole("searchbox")
+    const submitButton = within(searchForm).getByRole("button")
 
-		await user.type(searchInput, "A query")
-		await user.click(submitButton)
+    await user.type(searchInput, "A query")
+    await user.click(submitButton)
 
-		expect(submission).toStrictEqual({
-			values: { q: "A query" },
-			method: "get",
-			action: "/search",
-		})
-	})
+    expect(submission).toStrictEqual({
+      values: { q: "A query" },
+      method: "get",
+      action: "/search",
+    })
+  })
 
-	it("defaults to empty initial value", async () => {
-		render(SearchForm)
-		const searchForm = screen.getByRole("search")
-		const searchInput = within(searchForm).getByRole("searchbox")
+  it("defaults to empty initial value", async () => {
+    render(SearchForm)
+    const searchForm = screen.getByRole("search")
+    const searchInput = within(searchForm).getByRole("searchbox")
 
-		expect(searchInput).toHaveValue("")
-	})
+    expect(searchInput).toHaveValue("")
+  })
 
-	it("displays initial value if passed", async () => {
-		render(SearchForm, { initialValue: QUERY })
-		const searchForm = screen.getByRole("search")
-		const searchInput = within(searchForm).getByRole("searchbox")
+  it("displays initial value if passed", async () => {
+    render(SearchForm, { initialValue: QUERY })
+    const searchForm = screen.getByRole("search")
+    const searchInput = within(searchForm).getByRole("searchbox")
 
-		expect(searchInput).toHaveValue(QUERY)
-	})
+    expect(searchInput).toHaveValue(QUERY)
+  })
 })

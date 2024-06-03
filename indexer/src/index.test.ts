@@ -8,14 +8,7 @@ import {
   pageWithSchema,
   OFFER,
 } from "#mocks"
-import {
-  BRANDS,
-  CATEGORIES,
-  OFFERS,
-  PRODUCTS,
-  SELLERS,
-  TAGS,
-} from "@tissai/db"
+import { BRANDS, CATEGORIES, OFFERS, PRODUCTS, SELLERS, TAGS } from "@tissai/db"
 
 describe("index", () => {
   let pg: MockPg
@@ -30,7 +23,7 @@ describe("index", () => {
     ora = MockOra()
     python = MockPython()
     python.mockReturnValue(DERIVED_DATA)
-    pg.pool.query.mockResolvedValue({ rows: [{ count: 1 }]})
+    pg.pool.query.mockResolvedValue({ rows: [{ count: 1 }] })
   })
 
   it("handles title-only products", async () => {
@@ -167,7 +160,9 @@ describe("index", () => {
 
     await import("./index.js")
 
-    expect(ora.spinner.fail).toHaveBeenCalledWith(expect.stringContaining(error.message))
+    expect(ora.spinner.fail).toHaveBeenCalledWith(
+      expect.stringContaining(error.message),
+    )
     expect(pg.pool.end).toHaveBeenCalled()
     expect(python.worker.end).toHaveBeenCalled()
   })
@@ -190,6 +185,9 @@ describe("index", () => {
 
     await import("./index.js")
 
-    expect(pg.pool.query).toHaveBeenCalledWith(expect.stringContaining("CREATE TABLE"), undefined)
+    expect(pg.pool.query).toHaveBeenCalledWith(
+      expect.stringContaining("CREATE TABLE"),
+      undefined,
+    )
   })
 })

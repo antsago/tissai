@@ -1,7 +1,0 @@
-*.lock
-*.pnp.*
-.venv
-.yarn
-build
-node_modules
-coverage

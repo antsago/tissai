@@ -1,5 +1,5 @@
 import { expect, describe, it, beforeEach } from "vitest"
-import { MockOra } from '#mocks'
+import { MockOra } from "#mocks"
 import { Reporter } from "./Reporter.js"
 
 describe("Reporter", () => {

@@ -1,4 +1,4 @@
-import originalOra, { spinners } from 'ora'
+import originalOra, { spinners } from "ora"
 
 let ora = originalOra
 export function setOra(mock: typeof originalOra) {
@@ -25,11 +25,11 @@ export function Reporter(isSilent = false) {
     },
     error: (errorMessage: string) => {
       errors.push(`  • ${errorMessage}`)
-      spinner.prefixText = `Errors:\n${errors.join('\n')}\n\n`
+      spinner.prefixText = `Errors:\n${errors.join("\n")}\n\n`
     },
     log: (message: string) => {
       logs.push(message)
-      spinner.prefixText = `Logs:\n${logs.join('\n')}\n\n`
+      spinner.prefixText = `Logs:\n${logs.join("\n")}\n\n`
     },
   }
 }

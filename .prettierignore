@@ -1,17 +1,19 @@
 .DS_Store
 node_modules
-/build
+build
 /.svelte-kit
 /package
 .env
 .env.*
-/coverage
+coverage
 !.env.example
 
 # Ignore files for PNPM, NPM and YARN
 pnpm-lock.yaml
 package-lock.json
-yarn.lock
+*.lock
+*.pnp.*
+.yarn
 
 # Ignore files for python
 .venv
