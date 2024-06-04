@@ -1,25 +1,7 @@
-import { Db, OFFERS, PRODUCTS, SITES, type Product } from "@tissai/db"
+import { Db } from "@tissai/db"
 import Embedder from "./Embedder"
 
-type Similar = {
-  id: string
-  name: string
-  image?: string
-}
-export type ProductDetails = {
-  name: string
-  description: string
-  images?: string[]
-  product_uri: string
-  shop_name: string
-  similar: Similar[]
-}
-export type Products = {
-  getDetails: (id: string) => Promise<ProductDetails>
-  search: (query: string) => Promise<Similar[]>
-}
-
-export function Products(): Products {
+export function Products() {
   const embedder = Embedder()
   const db = Db()
 
@@ -37,3 +19,4 @@ export function Products(): Products {
     search,
   }
 }
+export type Products = ReturnType<typeof Products>

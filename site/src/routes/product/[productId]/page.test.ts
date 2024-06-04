@@ -23,7 +23,7 @@ describe("Product details page", () => {
           images: PRODUCT.images,
           similar: [
             {
-              name: SIMILAR.name,
+              title: SIMILAR.name,
               id: SIMILAR.id,
               image: SIMILAR.image,
             },

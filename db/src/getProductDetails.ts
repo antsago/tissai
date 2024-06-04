@@ -14,7 +14,7 @@ type ProductDetails = {
   images: Product["images"]
   similar: {
     id: Product["id"]
-    name: Product["title"]
+    title: Product["title"]
     image?: string
   }[]
   offers: {
@@ -53,7 +53,7 @@ const getProductDetails =
         LATERAL (
           SELECT
             ${PRODUCTS.id},
-            ${PRODUCTS.title} AS name,
+            ${PRODUCTS.title},
             ${PRODUCTS.images}[1] AS image
           FROM ${PRODUCTS} AS p2
           WHERE p.${PRODUCTS.id} != p2.${PRODUCTS.id}
@@ -67,8 +67,8 @@ const getProductDetails =
     )
 
     return {
-      name: response.title,
-      description: response.description ?? "",
+      title: response.title,
+      description: response.description,
       images: response.images,
       similar: response.similar,
       product_uri: response.offers[0]?.url,

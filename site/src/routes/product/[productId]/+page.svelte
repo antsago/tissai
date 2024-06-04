@@ -11,7 +11,7 @@
   <div class="bg-stone-100 relative">
     <img
       class="sticky top-0 w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover"
-      alt={data.name}
+      alt={data.title}
       src={data.images[0]}
     />
   </div>
@@ -21,7 +21,7 @@
         id="product-details"
         class="text-stone-900 uppercase text-lg font-medium"
       >
-        {data.name}
+        {data.title}
       </h1>
       <p class="mt-4 text-stone-700 text-base">
         {data.description}
@@ -52,12 +52,12 @@
           <img
             class="w-full aspect-square object-cover mx-auto rounded border-stone-200/50 border"
             src={recommendation.image}
-            alt={recommendation.name}
+            alt={recommendation.title}
           />
           <h3
             class="block w-full h-10 text-sm text-center uppercase text-stone-700 line-clamp-2"
           >
-            {recommendation.name}
+            {recommendation.title}
           </h3>
         </a>
       </li>

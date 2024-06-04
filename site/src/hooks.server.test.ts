@@ -1,6 +1,5 @@
 import type { Handle } from "./$types"
-import type { Products } from "$lib/server"
-import { describe, it, expect, vi, expectTypeOf, beforeEach } from "vitest"
+import { describe, it, expect, vi, beforeEach } from "vitest"
 
 describe("Server hooks", () => {
   const resolve = vi.fn()
@@ -22,7 +21,7 @@ describe("Server hooks", () => {
 
     expect(result).toStrictEqual(expected)
     expect(resolve).toHaveBeenCalledWith(event)
-    expectTypeOf(event.locals.products).toEqualTypeOf<Products>()
+    expect(event.locals.products).not.toBe(undefined)
   })
 
   it("reuses initialized products", async () => {
