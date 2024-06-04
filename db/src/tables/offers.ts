@@ -2,7 +2,6 @@ import { Connection } from "../Connection.js"
 import { TABLE as PRODUCTS } from "./products.js"
 import { TABLE as SELLERS } from "./sellers.js"
 import { TABLE as SITES } from "./sites.js"
-import * as traces from "./traces.js"
 
 export type Offer = {
   id: string
@@ -25,8 +24,7 @@ export const TABLE = Object.assign("offers", {
 })
 
 export const create =
-  (connection: Connection) => (pageId: string, offer: Offer) =>
-    Promise.all([
+  (connection: Connection) => (offer: Offer) =>
       connection.query(
         `INSERT INTO ${TABLE} (
           ${TABLE.id},
@@ -48,9 +46,7 @@ export const create =
           offer.price,
           offer.currency,
         ],
-      ),
-      traces.create(connection)(pageId, TABLE.toString(), offer.id),
-    ])
+      )
 
 export const initialize = (connection: Connection) =>
   connection.query(`

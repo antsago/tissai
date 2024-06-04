@@ -1,7 +1,6 @@
 import { expect, describe, it, beforeEach } from "vitest"
-import { OFFER, MockPg, PAGE } from "#mocks"
+import { OFFER, MockPg } from "#mocks"
 import { Connection } from "../Connection"
-import { TABLE as TRACES } from "./traces"
 import { TABLE as OFFERS, create } from "./offers"
 
 describe("offers", () => {
@@ -13,7 +12,7 @@ describe("offers", () => {
   })
 
   it("inserts new row", async () => {
-    await create(connection)(PAGE.id, OFFER)
+    await create(connection)(OFFER)
 
     expect(pg).toHaveInserted(OFFERS, [
       OFFER.id,
@@ -24,6 +23,5 @@ describe("offers", () => {
       OFFER.price,
       OFFER.currency,
     ])
-    expect(pg).toHaveInserted(TRACES, [PAGE.id, OFFERS.toString(), OFFER.id])
   })
 })

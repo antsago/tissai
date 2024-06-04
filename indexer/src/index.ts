@@ -1,4 +1,4 @@
-import { BRANDS, CATEGORIES, Db, Page, PAGES, PRODUCTS, SELLERS, TAGS } from "@tissai/db"
+import { BRANDS, CATEGORIES, Db, OFFERS, Page, PAGES, PRODUCTS, SELLERS, TAGS } from "@tissai/db"
 import { reporter } from "./Reporter.js"
 import parsePage from "./parsePage.js"
 import { EntityExtractor } from "./EntityExtractor/index.js"
@@ -53,7 +53,10 @@ try {
         db.products.create(product),
         db.traces.create(page.id, PRODUCTS.toString(), product.id),
       ])
-      await Promise.all(offers.map((offer) => db.offers.create(page.id, offer)))
+      await Promise.all(offers.map((offer) => [
+        db.offers.create(offer),
+        db.traces.create(page.id, OFFERS.toString(), offer.id),
+      ]).flat())
 
       index += 1
     } catch (err) {
