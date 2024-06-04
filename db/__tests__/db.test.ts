@@ -109,4 +109,44 @@ describe("db", () => {
       },
     ])
   })
+
+  it("gets product details", async ({ expect }) => {
+    await Promise.all([
+      db.categories.create(CATEGORY),
+      db.tags.create(TAG),
+      db.brands.create(BRAND),
+      db.sites.create(SITE),
+      db.sellers.create(SELLER),
+    ])
+    const SIMILAR = {
+      id: "92b15b90-3673-4a0e-b57c-8f9835a4f4d9",
+      title: PRODUCT.title,
+      images: PRODUCT.images,
+      category: PRODUCT.category,
+      tags: PRODUCT.tags,
+      embedding: [0, ...PRODUCT.embedding.slice(1)],
+    }
+    await Promise.all([
+      db.products.create(SIMILAR),
+      db.products.create(PRODUCT),
+    ])
+    await db.offers.create(OFFER)
+
+    const result = await db.getProductDetails(PRODUCT.id)
+
+    expect(result).toStrictEqual({
+      name: PRODUCT.title,
+      description: PRODUCT.description,
+      images: PRODUCT.images,
+      similar: [
+        {
+          id: SIMILAR.id,
+          name: SIMILAR.title,
+          image: SIMILAR.images[0],
+        },
+      ],
+      product_uri: OFFER.url,
+      shop_name: SITE.name,
+    })
+  })
 })
