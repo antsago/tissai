@@ -17,6 +17,8 @@
   </div>
   <div class="flex flex-col md:max-w-sm bg-stone-200 md:rounded">
     <div class="max-w-prose m-auto p-8">
+      <img alt={data.brand?.name} src={data.brand?.logo}/>
+      <p>{data.brand?.name}</p>
       <h1
         id="product-details"
         class="text-stone-900 uppercase text-lg font-medium"

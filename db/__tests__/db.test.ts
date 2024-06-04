@@ -135,13 +135,14 @@ describe("db", () => {
     const result = await db.getProductDetails(PRODUCT.id)
 
     expect(result).toStrictEqual({
-      name: PRODUCT.title,
+      title: PRODUCT.title,
       description: PRODUCT.description,
       images: PRODUCT.images,
+      brand: BRAND,
       similar: [
         {
           id: SIMILAR.id,
-          name: SIMILAR.title,
+          title: SIMILAR.title,
           image: SIMILAR.images[0],
         },
       ],

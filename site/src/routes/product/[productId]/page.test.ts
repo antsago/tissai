@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, beforeEach } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
-import { PRODUCT, SIMILAR, MockPg } from "mocks"
+import { PRODUCT, SIMILAR, MockPg, BRAND } from "mocks"
 import { Products } from "$lib/server"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
@@ -21,6 +21,7 @@ describe("Product details page", () => {
           title: PRODUCT.name,
           description: PRODUCT.description,
           images: PRODUCT.images,
+          brand: [BRAND],
           similar: [
             {
               title: SIMILAR.name,
@@ -56,15 +57,18 @@ describe("Product details page", () => {
   it("shows product's details", async () => {
     const section = await loadAndRender(PRODUCT.name)
 
-    const image = section.getByRole("img")
+    const image = section.getByRole("img", { name: PRODUCT.name })
     const heading = section.getByRole("heading")
     const description = section.getByText(PRODUCT.description)
+    const brandName = section.getByText(BRAND.name)
+    const brandLogo = section.getByRole("img", { name: BRAND.name })
     const buyLink = section.getByRole("link")
 
     expect(image).toHaveAttribute("src", PRODUCT.images[0])
-    expect(image).toHaveAccessibleName(PRODUCT.name)
     expect(heading).toHaveTextContent(PRODUCT.name)
     expect(description).toBeInTheDocument()
+    expect(brandName).toBeInTheDocument()
+    expect(brandLogo).toHaveAttribute("src", BRAND.logo)
     expect(buyLink).toHaveAttribute("href", PRODUCT.product_uri)
     expect(buyLink).toHaveAccessibleName(
       expect.stringContaining(PRODUCT.shop_name),

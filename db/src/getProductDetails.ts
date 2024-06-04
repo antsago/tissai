@@ -1,5 +1,7 @@
 import { Connection } from "./Connection.js"
 import {
+  BRANDS,
+  Brand,
   OFFERS,
   Offer,
   PRODUCTS,
@@ -12,6 +14,7 @@ type ProductDetails = {
   title: Product["title"]
   description: Product["description"]
   images: Product["images"]
+  brand: (Brand|undefined)[]
   similar: {
     id: Product["id"]
     title: Product["title"]
@@ -35,6 +38,7 @@ const getProductDetails =
         p.${PRODUCTS.title},
         p.${PRODUCTS.description},
         p.${PRODUCTS.images},
+        JSON_AGG(b.*) AS brand,
         JSON_AGG(sim.*) AS similar,
         JSON_AGG(
           json_build_object(
@@ -49,7 +53,8 @@ const getProductDetails =
       FROM 
         ${PRODUCTS} AS p
         LEFT JOIN ${OFFERS} AS o ON o.${OFFERS.product} = p.${PRODUCTS.id}
-        INNER JOIN ${SITES} AS s ON o.${OFFERS.site} = s.${SITES.id},
+        INNER JOIN ${SITES} AS s ON o.${OFFERS.site} = s.${SITES.id}
+        LEFT JOIN ${BRANDS} AS b ON b.${BRANDS.name} = p.${PRODUCTS.brand},
         LATERAL (
           SELECT
             ${PRODUCTS.id},
@@ -69,6 +74,7 @@ const getProductDetails =
     return {
       title: response.title,
       description: response.description,
+      brand: response.brand[0],
       images: response.images,
       similar: response.similar,
       product_uri: response.offers[0]?.url,
