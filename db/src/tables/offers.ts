@@ -23,6 +23,18 @@ export const TABLE = Object.assign("offers", {
   currency: "currency",
 })
 
+export const initialize = (connection: Connection) =>
+  connection.query(`
+    CREATE TABLE IF NOT EXISTS ${TABLE} (
+      ${TABLE.id}             uuid PRIMARY KEY,
+      ${TABLE.url}            text NOT NULL,
+      ${TABLE.site}           uuid NOT NULL REFERENCES ${SITES},
+      ${TABLE.product}        uuid NOT NULL REFERENCES ${PRODUCTS},
+      ${TABLE.seller}         text REFERENCES ${SELLERS},
+      ${TABLE.price}          numeric,
+      ${TABLE.currency}       text
+    );`)
+
 export const create =
   (connection: Connection) => (offer: Offer) =>
       connection.query(
@@ -48,14 +60,12 @@ export const create =
         ],
       )
 
-export const initialize = (connection: Connection) =>
-  connection.query(`
-    CREATE TABLE IF NOT EXISTS ${TABLE} (
-      ${TABLE.id}             uuid PRIMARY KEY,
-      ${TABLE.url}            text NOT NULL,
-      ${TABLE.site}           uuid NOT NULL REFERENCES ${SITES},
-      ${TABLE.product}        uuid NOT NULL REFERENCES ${PRODUCTS},
-      ${TABLE.seller}         text REFERENCES ${SELLERS},
-      ${TABLE.price}          numeric,
-      ${TABLE.currency}       text
-    );`)
+export const getAll =
+  (connection: Connection) => async (): Promise<Offer[]> => {
+    const offers = await connection.query<Omit<Offer, 'price'> & { price: string }>(`SELECT * FROM ${TABLE};`)
+
+    return offers.map(o => ({
+      ...o,
+      price: parseInt(o.price, 10)
+    }))
+  }

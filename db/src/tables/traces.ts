@@ -2,6 +2,14 @@ import { randomUUID } from "node:crypto"
 import { Connection } from "../Connection.js"
 import { TABLE as PAGES } from "./pages.js"
 
+type Trace = {
+  id: string,
+  timestamp: Date,
+  pageId: string,
+  objectTable: string,
+  objectId: string,
+}
+
 export const TABLE = Object.assign("traces", {
   id: "id",
   timestamp: "timestamp",
@@ -9,6 +17,14 @@ export const TABLE = Object.assign("traces", {
   objectTable: "object_table",
   objectId: "object_id",
 })
+
+type Db_Trace = {
+  id: string
+  timestamp: Date
+  page_of_origin: string
+  object_table: string
+  object_id: string
+}
 
 export const create =
   (connection: Connection) =>
@@ -31,3 +47,16 @@ export const initialize = (connection: Connection) =>
       ${TABLE.objectTable}    text NOT NULL,
       ${TABLE.objectId}       text NOT NULL
     );`)
+
+export const getAll =
+  (connection: Connection) => async (): Promise<Trace[]> => {
+    const traces = await connection.query<Db_Trace>(`SELECT * FROM ${TABLE};`)
+
+    return traces.map(t => ({
+      id: t.id,
+      objectId: t.object_id,
+      timestamp: t.timestamp,
+      objectTable: t.object_table,
+      pageId: t.page_of_origin,
+    }))
+  }

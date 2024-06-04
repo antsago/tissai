@@ -50,3 +50,6 @@ export const initialize = (connection: Connection) =>
       ${TABLE.urlKeywords}          text[]
     );
   `)
+
+export const getAll =
+  (connection: Connection) => async () => connection.query<Site>(`SELECT * FROM ${TABLE};`)

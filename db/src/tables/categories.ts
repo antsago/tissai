@@ -20,3 +20,6 @@ export const initialize = (connection: Connection) =>
     CREATE TABLE IF NOT EXISTS ${TABLE} (
       ${TABLE.name}   text PRIMARY KEY
     );`)
+
+export const getAll =
+  (connection: Connection) => async () => connection.query<Category>(`SELECT * FROM ${TABLE};`)

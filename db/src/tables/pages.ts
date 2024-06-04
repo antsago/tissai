@@ -36,3 +36,6 @@ export const initialize = (connection: Connection) =>
       ${TABLE.site}     uuid NOT NULL REFERENCES ${SITES}
     );
   `)
+
+export const getAll =
+  (connection: Connection) => async () => connection.query<Page>(`SELECT * FROM ${TABLE};`)

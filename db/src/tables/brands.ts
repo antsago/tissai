@@ -25,3 +25,6 @@ export const initialize = (connection: Connection) =>
       ${TABLE.name}   text PRIMARY KEY,
       ${TABLE.logo}   text
     );`)
+
+export const getAll =
+  (connection: Connection) => async () => connection.query<Brand>(`SELECT * FROM ${TABLE};`)

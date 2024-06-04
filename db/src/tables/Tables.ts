@@ -25,6 +25,7 @@ type TABLE_MODULES = typeof TABLE_MODULES
 type CRUD_METHODS = {
   [T in keyof TABLE_MODULES]: {
     create: ReturnType<TABLE_MODULES[T]["create"]>
+    getAll: ReturnType<TABLE_MODULES[T]["getAll"]>
   }
 }
 
@@ -45,7 +46,10 @@ const Tables = (connection: Connection) => ({
   crud: Object.values(TABLE_MODULES).reduce(
     (aggregate, table) => ({
       ...aggregate,
-      [table.TABLE]: { create: table.create(connection) },
+      [table.TABLE]: {
+        create: table.create(connection),
+        getAll: table.getAll(connection),
+      },
     }),
     {} as CRUD_METHODS,
   ),

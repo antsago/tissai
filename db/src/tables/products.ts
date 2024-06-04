@@ -66,3 +66,13 @@ export const initialize = (connection: Connection) =>
       ${TABLE.images}         text[],
       ${TABLE.brand}          text REFERENCES ${BRANDS}
     );`)
+
+export const getAll =
+  (connection: Connection) => async (): Promise<Product[]> => {
+    const products = await connection.query<Omit<Product, 'embedding'> & { embedding: string }>(`SELECT * FROM ${TABLE};`)
+
+    return products.map(p => ({
+      ...p,
+      embedding: JSON.parse(p.embedding),
+    }))
+  }
