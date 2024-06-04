@@ -10,14 +10,11 @@ export const TABLE = Object.assign("sellers", {
 })
 
 export const create =
-  (connection: Connection) => (pageId: string, seller: Seller) =>
-    Promise.all([
-      connection.query(
-        `INSERT INTO ${TABLE} (${TABLE.name}) VALUES ($1) ON CONFLICT DO NOTHING;`,
-        [seller.name],
-      ),
-      traces.create(connection)(pageId, TABLE.toString(), seller.name),
-    ])
+  (connection: Connection) => (seller: Seller) =>
+    connection.query(
+      `INSERT INTO ${TABLE} (${TABLE.name}) VALUES ($1) ON CONFLICT DO NOTHING;`,
+      [seller.name],
+    )
 
 export const initialize = (connection: Connection) =>
   connection.query(`
