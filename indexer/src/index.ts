@@ -1,4 +1,4 @@
-import { CATEGORIES, Db, Page, PAGES, SELLERS, TAGS } from "@tissai/db"
+import { BRANDS, CATEGORIES, Db, Page, PAGES, SELLERS, TAGS } from "@tissai/db"
 import { reporter } from "./Reporter.js"
 import parsePage from "./parsePage.js"
 import { EntityExtractor } from "./EntityExtractor/index.js"
@@ -42,7 +42,10 @@ try {
             db.sellers.create(seller),
             db.traces.create(page.id, SELLERS.toString(), seller.name),
           ]),
-          brand ? db.brands.create(page.id, brand) : Promise.resolve(),
+          brand ? [
+            db.brands.create(brand),
+            db.traces.create(page.id, BRANDS.toString(), brand.name),
+          ] : Promise.resolve(),
         ].flat(Infinity),
       )
 

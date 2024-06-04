@@ -184,7 +184,7 @@ describe("indexer", () => {
     db.categories.create({ name: DERIVED_DATA.category })
     db.tags.create({ name: DERIVED_DATA.tags[0] })
     db.sellers.create({ name: OFFER.seller })
-    db.brands.create(PAGE.id, { name: BRAND.name })
+    db.brands.create({ name: BRAND.name })
 
     await import("../src/index.js")
 
@@ -201,6 +201,6 @@ describe("indexer", () => {
     const sellers = await db.query(`SELECT * FROM ${SELLERS};`)
     expect(sellers.length).toBe(1)
     const traces = await db.query(`SELECT * FROM ${TRACES};`)
-    expect(traces.length).toBe(1 + 6)
+    expect(traces.length).toBe(6)
   })
 })
