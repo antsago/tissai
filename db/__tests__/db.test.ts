@@ -78,18 +78,21 @@ describe("db", () => {
       images: PRODUCT.images,
       category: PRODUCT.category,
       tags: PRODUCT.tags,
-    } 
+    }
     const product1 = {
       ...baseProduct,
       id: randomUUID(),
-      embedding: (PRODUCT.embedding as any).toSpliced(0,1,0),
+      embedding: (PRODUCT.embedding as any).toSpliced(0, 1, 0),
     }
     const product2 = {
       ...baseProduct,
       id: randomUUID(),
-      embedding: (PRODUCT.embedding as any).toSpliced(0,1,1),
+      embedding: (PRODUCT.embedding as any).toSpliced(0, 1, 1),
     }
-    await Promise.all([db.products.create(product1), db.products.create(product2)])
+    await Promise.all([
+      db.products.create(product1),
+      db.products.create(product2),
+    ])
 
     const result = await db.searchProducts(product2.embedding)
 
@@ -105,6 +108,5 @@ describe("db", () => {
         image: product1.images[0],
       },
     ])
-
   })
 })
