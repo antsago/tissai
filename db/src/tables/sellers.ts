@@ -1,5 +1,4 @@
 import { Connection } from "../Connection.js"
-import * as traces from "./traces.js"
 
 export type Seller = {
   name: string

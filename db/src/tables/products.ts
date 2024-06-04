@@ -1,7 +1,6 @@
 import { Connection } from "../Connection.js"
 import { TABLE as BRANDS } from "./brands.js"
 import { TABLE as CATEGORIES } from "./categories.js"
-import * as traces from "./traces.js"
 
 export type Product = {
   id: string
@@ -29,8 +28,7 @@ function formatEmbedding(embedding: number[]) {
 }
 
 export const create =
-  (connection: Connection) => (pageId: string, product: Product) =>
-    Promise.all([
+  (connection: Connection) => (product: Product) =>
       connection.query(
         `INSERT INTO ${TABLE} (
           ${TABLE.id},
@@ -54,9 +52,7 @@ export const create =
           product.category,
           product.tags,
         ],
-      ),
-      traces.create(connection)(pageId, TABLE.toString(), product.id),
-    ])
+      )
 
 export const initialize = (connection: Connection) =>
   connection.query(`
