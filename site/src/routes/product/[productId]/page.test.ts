@@ -6,7 +6,7 @@ import { Products } from "$lib/server"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
 
-describe("Product Detail page", () => {
+describe("Product details page", () => {
   let pg: MockPg
   beforeEach(() => {
     cleanup()
@@ -14,8 +14,27 @@ describe("Product Detail page", () => {
     pg = MockPg()
   })
 
-  async function loadAndRender(data: any, sectionName: string) {
-    pg.pool.query.mockResolvedValueOnce({ rows: [data] })
+  async function loadAndRender(sectionName: string) {
+    pg.pool.query.mockResolvedValueOnce({ rows: [{
+      title: PRODUCT.name,
+      description: PRODUCT.description,
+      images: PRODUCT.images,
+      similar: [{
+        title: SIMILAR.name,
+        id: SIMILAR.id,
+        image: SIMILAR.image,
+      }],
+      offers: [
+        {
+          url: PRODUCT.product_uri,
+          price: 10,
+          currency: 'EUR',
+          seller: 'The seller',
+          site_name: PRODUCT.shop_name,
+          icon: 'https://example.com/icon',
+        }
+      ]
+    }] })
 
     render(page, {
       data: await load({
@@ -29,7 +48,7 @@ describe("Product Detail page", () => {
   }
 
   it("shows product's details", async () => {
-    const section = await loadAndRender(PRODUCT, PRODUCT.name)
+    const section = await loadAndRender(PRODUCT.name)
 
     const image = section.getByRole("img")
     const heading = section.getByRole("heading")
@@ -48,10 +67,6 @@ describe("Product Detail page", () => {
 
   it("shows similar products", async () => {
     const section = await loadAndRender(
-      {
-        ...PRODUCT,
-        similar: [SIMILAR],
-      },
       "Similares",
     )
 
