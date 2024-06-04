@@ -181,7 +181,7 @@ describe("indexer", () => {
   it("handles duplicates", async () => {
     await db.sites.create(SITE)
     await db.pages.create(pageWithSchema(FULL_SCHEMA))
-    db.categories.create(PAGE.id, { name: DERIVED_DATA.category })
+    db.categories.create({ name: DERIVED_DATA.category })
     db.tags.create(PAGE.id, { name: DERIVED_DATA.tags[0] })
     db.sellers.create(PAGE.id, { name: OFFER.seller })
     db.brands.create(PAGE.id, { name: BRAND.name })
@@ -201,6 +201,6 @@ describe("indexer", () => {
     const sellers = await db.query(`SELECT * FROM ${SELLERS};`)
     expect(sellers.length).toBe(1)
     const traces = await db.query(`SELECT * FROM ${TRACES};`)
-    expect(traces.length).toBe(4 + 6)
+    expect(traces.length).toBe(3 + 6)
   })
 })
