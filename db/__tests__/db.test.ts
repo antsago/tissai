@@ -70,4 +70,41 @@ describe("db", () => {
       },
     ])
   })
+
+  it("searches products", async ({ expect }) => {
+    await Promise.all([db.categories.create(CATEGORY), db.tags.create(TAG)])
+    const baseProduct = {
+      title: PRODUCT.title,
+      images: PRODUCT.images,
+      category: PRODUCT.category,
+      tags: PRODUCT.tags,
+    } 
+    const product1 = {
+      ...baseProduct,
+      id: randomUUID(),
+      embedding: (PRODUCT.embedding as any).toSpliced(0,1,0),
+    }
+    const product2 = {
+      ...baseProduct,
+      id: randomUUID(),
+      embedding: (PRODUCT.embedding as any).toSpliced(0,1,1),
+    }
+    await Promise.all([db.products.create(product1), db.products.create(product2)])
+
+    const result = await db.searchProducts(product2.embedding)
+
+    expect(result).toStrictEqual([
+      {
+        id: product2.id,
+        title: product2.title,
+        image: product2.images[0],
+      },
+      {
+        id: product1.id,
+        title: product1.title,
+        image: product1.images[0],
+      },
+    ])
+
+  })
 })

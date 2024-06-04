@@ -77,21 +77,7 @@ export function Products(): Products {
 
   async function search(searchQuery: string) {
     const embedding = await embedder.embed(searchQuery)
-
-    type SearchResult = Pick<Product, "id" | "title"> & { image: string }
-    const result = await db.query<SearchResult>(
-      `
-        SELECT
-          ${PRODUCTS.id},
-          ${PRODUCTS.title},
-          ${PRODUCTS.images}[1] AS image
-        FROM ${PRODUCTS}
-        ORDER BY ${PRODUCTS.embedding} <-> $1
-        LIMIT 24;
-      `,
-      [`[${embedding.join(",")}]`],
-    )
-
+    const result = await db.searchProducts(embedding)
     return result.map((p) => ({
       id: p.id,
       image: p.image,

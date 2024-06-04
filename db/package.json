@@ -16,11 +16,11 @@
   },
   "devDependencies": {
     "@tsconfig/node20": "20.1.4",
-    "@types/node": "20.12.7",
+    "@types/node": "20.14.1",
     "@types/pg": "^8",
     "@types/pg-cursor": "^2",
     "typescript": "5.4.5",
-    "vitest": "1.5.0"
+    "vitest": "1.6.0"
   },
   "dependencies": {
     "pg": "8.11.5",
