@@ -8,12 +8,13 @@ export const TABLE = Object.assign("sellers", {
   name: "name",
 })
 
-export const create =
-  (connection: Connection) => (seller: Seller) =>
-    connection.query(
-      `INSERT INTO ${TABLE} (${TABLE.name}) VALUES ($1) ON CONFLICT DO NOTHING;`,
-      [seller.name],
-    )
+export const create = (connection: Connection) => (seller: Seller) =>
+  connection.query(
+    `INSERT INTO ${TABLE}
+      (${TABLE.name}) VALUES ($1)
+    ON CONFLICT DO NOTHING;`,
+    [seller.name],
+  )
 
 export const initialize = (connection: Connection) =>
   connection.query(`
@@ -21,5 +22,5 @@ export const initialize = (connection: Connection) =>
       ${TABLE.name}   text PRIMARY KEY
     );`)
 
-export const getAll =
-  (connection: Connection) => async () => connection.query<Seller>(`SELECT * FROM ${TABLE};`)
+export const getAll = (connection: Connection) => async () =>
+  connection.query<Seller>(`SELECT * FROM ${TABLE};`)

@@ -3,11 +3,11 @@ import { Connection } from "../Connection.js"
 import { TABLE as PAGES } from "./pages.js"
 
 type Trace = {
-  id: string,
-  timestamp: Date,
-  pageId: string,
-  objectTable: string,
-  objectId: string,
+  id: string
+  timestamp: Date
+  pageId: string
+  objectTable: string
+  objectId: string
 }
 
 export const TABLE = Object.assign("traces", {
@@ -52,7 +52,7 @@ export const getAll =
   (connection: Connection) => async (): Promise<Trace[]> => {
     const traces = await connection.query<Db_Trace>(`SELECT * FROM ${TABLE};`)
 
-    return traces.map(t => ({
+    return traces.map((t) => ({
       id: t.id,
       objectId: t.object_id,
       timestamp: t.timestamp,

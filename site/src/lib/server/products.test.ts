@@ -36,26 +36,32 @@ describe("Products", () => {
   })
 
   it("returns product details", async () => {
-    pg.pool.query.mockResolvedValueOnce({ rows: [{
-      title: PRODUCT.name,
-      description: PRODUCT.description,
-      images: PRODUCT.images,
-      similar: [{
-        title: SIMILAR.name,
-        id: SIMILAR.id,
-        image: SIMILAR.image,
-      }],
-      offers: [
+    pg.pool.query.mockResolvedValueOnce({
+      rows: [
         {
-          url: PRODUCT.product_uri,
-          price: 10,
-          currency: 'EUR',
-          seller: 'The seller',
-          site_name: PRODUCT.shop_name,
-          icon: 'https://example.com/icon',
-        }
-      ]
-    }] })
+          title: PRODUCT.name,
+          description: PRODUCT.description,
+          images: PRODUCT.images,
+          similar: [
+            {
+              title: SIMILAR.name,
+              id: SIMILAR.id,
+              image: SIMILAR.image,
+            },
+          ],
+          offers: [
+            {
+              url: PRODUCT.product_uri,
+              price: 10,
+              currency: "EUR",
+              seller: "The seller",
+              site_name: PRODUCT.shop_name,
+              icon: "https://example.com/icon",
+            },
+          ],
+        },
+      ],
+    })
 
     const result = await products.getDetails(PRODUCT.id)
 
@@ -67,9 +73,6 @@ describe("Products", () => {
       product_uri: PRODUCT.product_uri,
       shop_name: PRODUCT.shop_name,
     })
-    expect(pg.pool.query).toHaveBeenCalledWith(
-      expect.any(String),
-      [PRODUCT.id],
-    )
+    expect(pg.pool.query).toHaveBeenCalledWith(expect.any(String), [PRODUCT.id])
   })
 })

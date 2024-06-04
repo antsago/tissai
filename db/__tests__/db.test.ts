@@ -1,11 +1,5 @@
 import { randomUUID } from "node:crypto"
-import {
-  describe,
-  it,
-  beforeEach,
-  afterEach,
-  afterAll,
-} from "vitest"
+import { describe, it, beforeEach, afterEach, afterAll } from "vitest"
 import {
   PRODUCT,
   SITE,
@@ -16,21 +10,11 @@ import {
   TAG,
   SELLER,
 } from "#mocks"
-import {
-  Db,
-  TRACES,
-  PRODUCTS,
-  OFFERS,
-  CATEGORIES,
-  TAGS,
-  SELLERS,
-  BRANDS,
-} from "../src"
-
+import { Db, PRODUCTS } from "../src"
 
 describe("db", () => {
   const masterDb = Db()
-  
+
   let db: Db
   let TEST_TABLE: string
   beforeEach(async () => {
@@ -76,12 +60,14 @@ describe("db", () => {
     expect(tags).toStrictEqual([TAG])
     expect(brands).toStrictEqual([BRAND])
     expect(sellers).toStrictEqual([SELLER])
-    expect(traces).toStrictEqual([{
-      id: expect.any(String),
-      timestamp: expect.any(Date),
-      pageId: PAGE.id,
-      objectTable: PRODUCTS.toString(),
-      objectId: PRODUCT.id,
-    }])
+    expect(traces).toStrictEqual([
+      {
+        id: expect.any(String),
+        timestamp: expect.any(Date),
+        pageId: PAGE.id,
+        objectTable: PRODUCTS.toString(),
+        objectId: PRODUCT.id,
+      },
+    ])
   })
 })

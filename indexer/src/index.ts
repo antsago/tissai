@@ -1,4 +1,14 @@
-import { BRANDS, CATEGORIES, Db, OFFERS, Page, PAGES, PRODUCTS, SELLERS, TAGS } from "@tissai/db"
+import {
+  BRANDS,
+  CATEGORIES,
+  Db,
+  OFFERS,
+  Page,
+  PAGES,
+  PRODUCTS,
+  SELLERS,
+  TAGS,
+} from "@tissai/db"
 import { reporter } from "./Reporter.js"
 import parsePage from "./parsePage.js"
 import { EntityExtractor } from "./EntityExtractor/index.js"
@@ -32,7 +42,7 @@ try {
         [
           [
             db.categories.create(category),
-            db.traces.create(page.id, CATEGORIES.toString(), category.name)
+            db.traces.create(page.id, CATEGORIES.toString(), category.name),
           ],
           tags.map((tag) => [
             db.tags.create(tag),
@@ -42,10 +52,12 @@ try {
             db.sellers.create(seller),
             db.traces.create(page.id, SELLERS.toString(), seller.name),
           ]),
-          brand ? [
-            db.brands.create(brand),
-            db.traces.create(page.id, BRANDS.toString(), brand.name),
-          ] : Promise.resolve(),
+          brand
+            ? [
+                db.brands.create(brand),
+                db.traces.create(page.id, BRANDS.toString(), brand.name),
+              ]
+            : Promise.resolve(),
         ].flat(Infinity),
       )
 
@@ -53,10 +65,14 @@ try {
         db.products.create(product),
         db.traces.create(page.id, PRODUCTS.toString(), product.id),
       ])
-      await Promise.all(offers.map((offer) => [
-        db.offers.create(offer),
-        db.traces.create(page.id, OFFERS.toString(), offer.id),
-      ]).flat())
+      await Promise.all(
+        offers
+          .map((offer) => [
+            db.offers.create(offer),
+            db.traces.create(page.id, OFFERS.toString(), offer.id),
+          ])
+          .flat(),
+      )
 
       index += 1
     } catch (err) {

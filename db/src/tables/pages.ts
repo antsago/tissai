@@ -37,5 +37,5 @@ export const initialize = (connection: Connection) =>
     );
   `)
 
-export const getAll =
-  (connection: Connection) => async () => connection.query<Page>(`SELECT * FROM ${TABLE};`)
+export const getAll = (connection: Connection) => async () =>
+  connection.query<Page>(`SELECT * FROM ${TABLE};`)

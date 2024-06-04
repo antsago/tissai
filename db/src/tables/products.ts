@@ -27,32 +27,31 @@ function formatEmbedding(embedding: number[]) {
   return `[${embedding.join(",")}]`
 }
 
-export const create =
-  (connection: Connection) => (product: Product) =>
-      connection.query(
-        `INSERT INTO ${TABLE} (
-          ${TABLE.id},
-          ${TABLE.title},
-          ${TABLE.description},
-          ${TABLE.images},
-          ${TABLE.brand},
-          ${TABLE.embedding},
-          ${TABLE.category},
-          ${TABLE.tags}
-        ) VALUES (
-          $1, $2, $3, $4, $5, $6, $7, $8
-        );`,
-        [
-          product.id,
-          product.title,
-          product.description,
-          product.images,
-          product.brand,
-          formatEmbedding(product.embedding),
-          product.category,
-          product.tags,
-        ],
-      )
+export const create = (connection: Connection) => (product: Product) =>
+  connection.query(
+    `INSERT INTO ${TABLE} (
+      ${TABLE.id},
+      ${TABLE.title},
+      ${TABLE.description},
+      ${TABLE.images},
+      ${TABLE.brand},
+      ${TABLE.embedding},
+      ${TABLE.category},
+      ${TABLE.tags}
+    ) VALUES (
+      $1, $2, $3, $4, $5, $6, $7, $8
+    );`,
+    [
+      product.id,
+      product.title,
+      product.description,
+      product.images,
+      product.brand,
+      formatEmbedding(product.embedding),
+      product.category,
+      product.tags,
+    ],
+  )
 
 export const initialize = (connection: Connection) =>
   connection.query(`
@@ -69,9 +68,11 @@ export const initialize = (connection: Connection) =>
 
 export const getAll =
   (connection: Connection) => async (): Promise<Product[]> => {
-    const products = await connection.query<Omit<Product, 'embedding'> & { embedding: string }>(`SELECT * FROM ${TABLE};`)
+    const products = await connection.query<
+      Omit<Product, "embedding"> & { embedding: string }
+    >(`SELECT * FROM ${TABLE};`)
 
-    return products.map(p => ({
+    return products.map((p) => ({
       ...p,
       embedding: JSON.parse(p.embedding),
     }))

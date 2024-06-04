@@ -15,26 +15,32 @@ describe("Product details page", () => {
   })
 
   async function loadAndRender(sectionName: string) {
-    pg.pool.query.mockResolvedValueOnce({ rows: [{
-      title: PRODUCT.name,
-      description: PRODUCT.description,
-      images: PRODUCT.images,
-      similar: [{
-        title: SIMILAR.name,
-        id: SIMILAR.id,
-        image: SIMILAR.image,
-      }],
-      offers: [
+    pg.pool.query.mockResolvedValueOnce({
+      rows: [
         {
-          url: PRODUCT.product_uri,
-          price: 10,
-          currency: 'EUR',
-          seller: 'The seller',
-          site_name: PRODUCT.shop_name,
-          icon: 'https://example.com/icon',
-        }
-      ]
-    }] })
+          title: PRODUCT.name,
+          description: PRODUCT.description,
+          images: PRODUCT.images,
+          similar: [
+            {
+              title: SIMILAR.name,
+              id: SIMILAR.id,
+              image: SIMILAR.image,
+            },
+          ],
+          offers: [
+            {
+              url: PRODUCT.product_uri,
+              price: 10,
+              currency: "EUR",
+              seller: "The seller",
+              site_name: PRODUCT.shop_name,
+              icon: "https://example.com/icon",
+            },
+          ],
+        },
+      ],
+    })
 
     render(page, {
       data: await load({
@@ -66,9 +72,7 @@ describe("Product details page", () => {
   })
 
   it("shows similar products", async () => {
-    const section = await loadAndRender(
-      "Similares",
-    )
+    const section = await loadAndRender("Similares")
 
     const heading = section.getByRole("heading", { level: 2 })
     const title = section.getByRole("heading", { level: 3 })

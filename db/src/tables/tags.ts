@@ -20,5 +20,5 @@ export const initialize = (connection: Connection) =>
       ${TABLE.name}   text PRIMARY KEY
     );`)
 
-export const getAll =
-  (connection: Connection) => async () => connection.query<Tag>(`SELECT * FROM ${TABLE};`)
+export const getAll = (connection: Connection) => async () =>
+  connection.query<Tag>(`SELECT * FROM ${TABLE};`)

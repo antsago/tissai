@@ -9,7 +9,6 @@ import {
 } from "vitest"
 import {
   Db,
-  TRACES,
   PRODUCTS,
   OFFERS,
   CATEGORIES,
@@ -133,49 +132,52 @@ describe("indexer", () => {
     const sellers = await db.sellers.getAll()
     expect(sellers).toStrictEqual([{ name: OFFER.seller }])
     const traces = await db.traces.getAll()
-    expect(traces).toStrictEqual(expect.arrayContaining([{
-      id: expect.any(String),
-      pageId: PAGE.id,
-      objectTable: PRODUCTS.toString(),
-      objectId: products[0].id,
-      timestamp: expect.any(Date),
-    },
-    {
-      id: expect.any(String),
-      pageId: PAGE.id,
-      objectTable: OFFERS.toString(),
-      objectId: offers[0].id,
-      timestamp: expect.any(Date),
-    },
-    {
-      id: expect.any(String),
-      pageId: PAGE.id,
-      objectTable: CATEGORIES.toString(),
-      objectId: categories[0].name,
-      timestamp: expect.any(Date),
-    },
-    {
-      id: expect.any(String),
-      pageId: PAGE.id,
-      objectTable: TAGS.toString(),
-      objectId: tags[0].name,
-      timestamp: expect.any(Date),
-    },
-    {
-      id: expect.any(String),
-      pageId: PAGE.id,
-      objectTable: BRANDS.toString(),
-      objectId: brands[0].name,
-      timestamp: expect.any(Date),
-    },
-    {
-      id: expect.any(String),
-      pageId: PAGE.id,
-      objectTable: SELLERS.toString(),
-      objectId: sellers[0].name,
-      timestamp: expect.any(Date),
-    },
-  ]))
+    expect(traces).toStrictEqual(
+      expect.arrayContaining([
+        {
+          id: expect.any(String),
+          pageId: PAGE.id,
+          objectTable: PRODUCTS.toString(),
+          objectId: products[0].id,
+          timestamp: expect.any(Date),
+        },
+        {
+          id: expect.any(String),
+          pageId: PAGE.id,
+          objectTable: OFFERS.toString(),
+          objectId: offers[0].id,
+          timestamp: expect.any(Date),
+        },
+        {
+          id: expect.any(String),
+          pageId: PAGE.id,
+          objectTable: CATEGORIES.toString(),
+          objectId: categories[0].name,
+          timestamp: expect.any(Date),
+        },
+        {
+          id: expect.any(String),
+          pageId: PAGE.id,
+          objectTable: TAGS.toString(),
+          objectId: tags[0].name,
+          timestamp: expect.any(Date),
+        },
+        {
+          id: expect.any(String),
+          pageId: PAGE.id,
+          objectTable: BRANDS.toString(),
+          objectId: brands[0].name,
+          timestamp: expect.any(Date),
+        },
+        {
+          id: expect.any(String),
+          pageId: PAGE.id,
+          objectTable: SELLERS.toString(),
+          objectId: sellers[0].name,
+          timestamp: expect.any(Date),
+        },
+      ]),
+    )
   })
 
   it("handles duplicates", async () => {
