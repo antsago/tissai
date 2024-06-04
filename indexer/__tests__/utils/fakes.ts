@@ -9,7 +9,6 @@ export {
   PRODUCT,
   SELLER,
   OFFER,
-  EMBEDDING_FROM_PG,
 } from "@tissai/db/mocks"
 
 export const pageWithSchema = (...schemas: object[]) => ({

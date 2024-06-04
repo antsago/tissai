@@ -25,7 +25,6 @@ import {
   pageWithSchema,
   OFFER,
   BRAND,
-  EMBEDDING_FROM_PG,
 } from "#mocks"
 
 const TEST_TABLE = "test"
@@ -100,20 +99,20 @@ describe("indexer", () => {
 
     await import("../src/index.js")
 
-    const products = await db.query(`SELECT * FROM ${PRODUCTS};`)
+    const products = await db.products.getAll()
     expect(products).toStrictEqual([
       {
         id: expect.any(String),
         title: PRODUCT.title,
         description: PRODUCT.description,
         images: [PRODUCT.images[0]],
-        embedding: EMBEDDING_FROM_PG,
+        embedding: PRODUCT.embedding,
         category: DERIVED_DATA.category,
         tags: DERIVED_DATA.tags,
         brand: BRAND.name,
       },
     ])
-    const offers = await db.query(`SELECT * FROM ${OFFERS};`)
+    const offers = await db.offers.getAll()
     expect(offers).toStrictEqual([
       {
         id: expect.any(String),
@@ -121,61 +120,62 @@ describe("indexer", () => {
         site: PAGE.site,
         url: PAGE.url,
         seller: OFFER.seller,
-        price: String(OFFER.price),
+        price: OFFER.price,
         currency: OFFER.currency,
       },
     ])
-    const categories = await db.query(`SELECT * FROM ${CATEGORIES};`)
+    const categories = await db.categories.getAll()
     expect(categories).toStrictEqual([{ name: DERIVED_DATA.category }])
-    const tags = await db.query(`SELECT * FROM ${TAGS};`)
+    const tags = await db.tags.getAll()
     expect(tags).toStrictEqual([{ name: DERIVED_DATA.tags[0] }])
-    const brands = await db.query(`SELECT * FROM ${BRANDS};`)
+    const brands = await db.brands.getAll()
     expect(brands).toStrictEqual([{ name: BRAND.name, logo: BRAND.logo }])
-    const sellers = await db.query(`SELECT * FROM ${SELLERS};`)
+    const sellers = await db.sellers.getAll()
     expect(sellers).toStrictEqual([{ name: OFFER.seller }])
-    const traces = await db.query(`SELECT * FROM ${TRACES};`)
-    expect(traces).toContainEqual({
+    const traces = await db.traces.getAll()
+    expect(traces).toStrictEqual(expect.arrayContaining([{
       id: expect.any(String),
-      [TRACES.pageId]: PAGE.id,
-      [TRACES.objectTable]: PRODUCTS.toString(),
-      [TRACES.objectId]: products[0].id,
-      [TRACES.timestamp]: expect.any(Date),
-    })
-    expect(traces).toContainEqual({
+      pageId: PAGE.id,
+      objectTable: PRODUCTS.toString(),
+      objectId: products[0].id,
+      timestamp: expect.any(Date),
+    },
+    {
       id: expect.any(String),
-      [TRACES.pageId]: PAGE.id,
-      [TRACES.objectTable]: OFFERS.toString(),
-      [TRACES.objectId]: offers[0].id,
-      [TRACES.timestamp]: expect.any(Date),
-    })
-    expect(traces).toContainEqual({
+      pageId: PAGE.id,
+      objectTable: OFFERS.toString(),
+      objectId: offers[0].id,
+      timestamp: expect.any(Date),
+    },
+    {
       id: expect.any(String),
-      [TRACES.pageId]: PAGE.id,
-      [TRACES.objectTable]: CATEGORIES.toString(),
-      [TRACES.objectId]: categories[0].name,
-      [TRACES.timestamp]: expect.any(Date),
-    })
-    expect(traces).toContainEqual({
+      pageId: PAGE.id,
+      objectTable: CATEGORIES.toString(),
+      objectId: categories[0].name,
+      timestamp: expect.any(Date),
+    },
+    {
       id: expect.any(String),
-      [TRACES.pageId]: PAGE.id,
-      [TRACES.objectTable]: TAGS.toString(),
-      [TRACES.objectId]: tags[0].name,
-      [TRACES.timestamp]: expect.any(Date),
-    })
-    expect(traces).toContainEqual({
+      pageId: PAGE.id,
+      objectTable: TAGS.toString(),
+      objectId: tags[0].name,
+      timestamp: expect.any(Date),
+    },
+    {
       id: expect.any(String),
-      [TRACES.pageId]: PAGE.id,
-      [TRACES.objectTable]: BRANDS.toString(),
-      [TRACES.objectId]: brands[0].name,
-      [TRACES.timestamp]: expect.any(Date),
-    })
-    expect(traces).toContainEqual({
+      pageId: PAGE.id,
+      objectTable: BRANDS.toString(),
+      objectId: brands[0].name,
+      timestamp: expect.any(Date),
+    },
+    {
       id: expect.any(String),
-      [TRACES.pageId]: PAGE.id,
-      [TRACES.objectTable]: SELLERS.toString(),
-      [TRACES.objectId]: sellers[0].name,
-      [TRACES.timestamp]: expect.any(Date),
-    })
+      pageId: PAGE.id,
+      objectTable: SELLERS.toString(),
+      objectId: sellers[0].name,
+      timestamp: expect.any(Date),
+    },
+  ]))
   })
 
   it("handles duplicates", async () => {
@@ -188,19 +188,19 @@ describe("indexer", () => {
 
     await import("../src/index.js")
 
-    const products = await db.query(`SELECT * FROM ${PRODUCTS};`)
+    const products = await db.products.getAll()
     expect(products.length).toBe(1)
-    const offers = await db.query(`SELECT * FROM ${OFFERS};`)
+    const offers = await db.offers.getAll()
     expect(offers.length).toBe(1)
-    const categories = await db.query(`SELECT * FROM ${CATEGORIES};`)
+    const categories = await db.categories.getAll()
     expect(categories.length).toBe(1)
-    const tags = await db.query(`SELECT * FROM ${TAGS};`)
+    const tags = await db.tags.getAll()
     expect(tags.length).toBe(1)
-    const brands = await db.query(`SELECT * FROM ${BRANDS};`)
+    const brands = await db.brands.getAll()
     expect(brands.length).toBe(1)
-    const sellers = await db.query(`SELECT * FROM ${SELLERS};`)
+    const sellers = await db.sellers.getAll()
     expect(sellers.length).toBe(1)
-    const traces = await db.query(`SELECT * FROM ${TRACES};`)
+    const traces = await db.traces.getAll()
     expect(traces.length).toBe(6)
   })
 })

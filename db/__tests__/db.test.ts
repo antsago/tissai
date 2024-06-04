@@ -12,7 +12,6 @@ import {
   PAGE,
   OFFER,
   BRAND,
-  EMBEDDING_FROM_PG,
   CATEGORY,
   TAG,
   SELLER,
