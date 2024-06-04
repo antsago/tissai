@@ -4,7 +4,7 @@ import Embedder from "./Embedder"
 type Similar = {
   id: string
   name: string
-  image: string
+  image?: string
 }
 export type ProductDetails = {
   name: string
@@ -77,12 +77,7 @@ export function Products(): Products {
 
   async function search(searchQuery: string) {
     const embedding = await embedder.embed(searchQuery)
-    const result = await db.searchProducts(embedding)
-    return result.map((p) => ({
-      id: p.id,
-      image: p.image,
-      name: p.title,
-    }))
+    return db.searchProducts(embedding)
   }
 
   return {

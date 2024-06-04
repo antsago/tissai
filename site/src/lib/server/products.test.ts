@@ -14,15 +14,7 @@ describe("Products", () => {
   })
 
   it("returns searched products", async () => {
-    pg.pool.query.mockResolvedValueOnce({
-      rows: [
-        {
-          id: SIMILAR.id,
-          title: SIMILAR.name,
-          image: SIMILAR.image,
-        },
-      ],
-    })
+    pg.pool.query.mockResolvedValueOnce({ rows: [SIMILAR] })
     python.mockReturnValue(EMBEDDING)
 
     const result = await products.search(QUERY)

@@ -82,12 +82,12 @@ describe("db", () => {
     const product1 = {
       ...baseProduct,
       id: randomUUID(),
-      embedding: (PRODUCT.embedding as any).toSpliced(0, 1, 0),
+      embedding: [0, ...PRODUCT.embedding.slice(1)],
     }
     const product2 = {
       ...baseProduct,
       id: randomUUID(),
-      embedding: (PRODUCT.embedding as any).toSpliced(0, 1, 1),
+      embedding: [1, ...PRODUCT.embedding.slice(1)],
     }
     await Promise.all([
       db.products.create(product1),
@@ -99,12 +99,12 @@ describe("db", () => {
     expect(result).toStrictEqual([
       {
         id: product2.id,
-        title: product2.title,
+        name: product2.title,
         image: product2.images[0],
       },
       {
         id: product1.id,
-        title: product1.title,
+        name: product1.title,
         image: product1.images[0],
       },
     ])
