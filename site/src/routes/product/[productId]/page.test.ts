@@ -104,6 +104,14 @@ describe("Product details page", () => {
       expect(noImages).toBeInTheDocument()
     })
 
+    it("handles products without description", async () => {
+      const section = await loadAndRender(PRODUCT.title, { description: undefined })
+  
+      const undef = section.queryByText('undefined')
+  
+      expect(undef).not.toBeInTheDocument()
+    })
+
     it("handles products without brand", async () => {
       const section = await loadAndRender(PRODUCT.title, { brand: [] })
   

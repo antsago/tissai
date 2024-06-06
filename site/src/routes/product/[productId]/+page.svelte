@@ -39,9 +39,11 @@
       {#each data.tags as tag}
         <span>{tag}</span>
       {/each}
-      <p class="mt-4 text-stone-700 text-base">
-        {data.description}
-      </p>
+      {#if data.description}
+        <p class="mt-4 text-stone-700 text-base">
+          {data.description}
+        </p>
+      {/if}
     </div>
   </div>
 </Section>
