@@ -36,13 +36,17 @@
       <h2 id="compra-en" class="mx-8 text-stone-700 text-xl font-medium">
         Compra en
       </h2>
-      <a
-        class="sticky bottom-0 py-6 px-10 md:rounded-b bg-orange-500 text-orange-100 text-center"
-        href={data.offers[0].url}
-      >
-        <span class="font-semibold">{data.offers[0].site.name}</span>
-        <OutlinkIcon class="inline-block ml-1 align-text-bottom w-5 h-5" />
-      </a>
+      {#each data.offers as offer}
+        <li>
+          <h3 class="font-semibold">{offer.site.name}</h3>
+          <a href={offer.url}>
+            <OutlinkIcon class="inline-block ml-1 align-text-bottom w-5 h-5" />
+          </a>
+          <p>{offer.seller}</p>
+          <p>{offer.price}</p>
+          <p>{offer.currency}</p>
+        </li>
+      {/each}
 </Section>
 
 <Section labelledBy="similar-products" class="mt-12 py-8 space-y-5">

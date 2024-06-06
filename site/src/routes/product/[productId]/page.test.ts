@@ -14,6 +14,12 @@ describe("Product details page", () => {
     pg = MockPg()
   })
 
+  const OFFER2 = {
+    url: "www.example.com/offer2.html",
+    site: {
+      name: "Site 2"
+    }
+  }
   async function loadAndRender(sectionName: string) {
     pg.pool.query.mockResolvedValueOnce({
       rows: [
@@ -40,6 +46,7 @@ describe("Product details page", () => {
                 icon: SITE.icon,
               },
             },
+            OFFER2,
           ],
         },
       ],
@@ -75,12 +82,22 @@ describe("Product details page", () => {
   it("shows offers", async () => {
     const section = await loadAndRender("Compra en")
 
-    const buyLink = section.getByRole("link")
+    const heading = section.getByRole("heading", { level: 2 })
+    const title = section.getByRole("heading", { level: 3, name: SITE.name })
+    const title2 = section.getByRole("heading", { level: 3, name: OFFER2.site.name })
+    const seller = section.getByText(OFFER.seller)
+    const price = section.getByText(OFFER.price)
+    const currency = section.getByText(OFFER.currency)
+    const [offer1, offer2] = section.getAllByRole("link")
 
-    expect(buyLink).toHaveAttribute("href", OFFER.url)
-    expect(buyLink).toHaveAccessibleName(
-      expect.stringContaining(SITE.name),
-    )
+    expect(heading).toHaveTextContent("Compra en")
+    expect(offer1).toHaveAttribute("href", OFFER.url)
+    expect(offer2).toHaveAttribute("href", OFFER2.url)
+    expect(title).toBeInTheDocument()
+    expect(title2).toBeInTheDocument()
+    expect(seller).toBeInTheDocument()
+    expect(price).toBeInTheDocument()
+    expect(currency).toBeInTheDocument()
   })
 
   it("shows similar products", async () => {
