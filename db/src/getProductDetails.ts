@@ -25,8 +25,10 @@ type ProductDetails = {
     price: Offer["price"]
     currency: Offer["currency"]
     seller: Offer["seller"]
-    site_name: Site["name"]
-    site_icon: Site["icon"]
+    site: {
+      name: Site["name"]
+      icon: Site["icon"]
+    }
   }[]
 }
 
@@ -41,13 +43,15 @@ const getProductDetails =
         JSON_AGG(b.*) AS brand,
         JSON_AGG(sim.*) AS similar,
         JSON_AGG(
-          json_build_object(
+          JSON_BUILD_OBJECT(
             'url', o.${OFFERS.url},
             'price', o.${OFFERS.price},
             'currency', o.${OFFERS.currency},
             'seller', o.${OFFERS.seller},
-            'site_name', s.${SITES.name},
-            'site_icon', s.${SITES.icon}
+            'site', JSON_BUILD_OBJECT(
+              'name', s.${SITES.name},
+              'icon', s.${SITES.icon}
+            )
           )
         ) AS offers
       FROM 
@@ -72,13 +76,8 @@ const getProductDetails =
     )
 
     return {
-      title: response.title,
-      description: response.description,
+      ...response,
       brand: response.brand[0],
-      images: response.images,
-      similar: response.similar,
-      product_uri: response.offers[0]?.url,
-      shop_name: response.offers[0]?.site_name,
     }
   }
 

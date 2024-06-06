@@ -146,8 +146,16 @@ describe("db", () => {
           image: SIMILAR.images[0],
         },
       ],
-      product_uri: OFFER.url,
-      shop_name: SITE.name,
+      offers: [{
+        url: OFFER.url,
+        price: OFFER.price,
+        currency: OFFER.currency,
+        seller: OFFER.seller,
+        site: {
+          name: SITE.name,
+          icon: SITE.icon,
+        }
+      }],
     })
   })
 })

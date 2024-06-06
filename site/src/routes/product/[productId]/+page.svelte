@@ -38,9 +38,9 @@
       </h2>
       <a
         class="sticky bottom-0 py-6 px-10 md:rounded-b bg-orange-500 text-orange-100 text-center"
-        href={data.product_uri}
+        href={data.offers[0].url}
       >
-        <span class="font-semibold">{data.shop_name}</span>
+        <span class="font-semibold">{data.offers[0].site.name}</span>
         <OutlinkIcon class="inline-block ml-1 align-text-bottom w-5 h-5" />
       </a>
 </Section>
