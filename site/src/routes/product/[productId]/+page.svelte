@@ -67,7 +67,7 @@
       {#if offer.seller}
         <p>{offer.seller}</p>
       {/if}
-      {#if offer.price !== undefined}
+      {#if ![null, undefined].includes(offer.price)}
         <p>{offer.price}</p>
         {#if offer.currency}
           <p>{offer.currency}</p>

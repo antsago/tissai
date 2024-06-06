@@ -203,14 +203,14 @@ describe("Product details page", () => {
       expect(noOffers).toBeInTheDocument()
     })
 
-    it("handles offers without price", async () => {
+    it.each([null, undefined])("handles offers without price (%s)", async (value) => {
       const section = await loadAndRender("Compra en", {
-        offers: [{ ...PRODUCT_DETAILS.offers[0], price: undefined }],
+        offers: [{ ...PRODUCT_DETAILS.offers[0], price: value }],
       })
 
       const price = section.queryByText(OFFER.price)
       const currency = section.queryByText(OFFER.currency)
-      const undef = section.queryByText("undefined")
+      const undef = section.queryByText(String(value))
 
       expect(price).not.toBeInTheDocument()
       expect(currency).not.toBeInTheDocument()
