@@ -29,15 +29,20 @@
         {data.description}
       </p>
     </div>
-    <a
-      class="sticky bottom-0 py-6 px-10 md:rounded-b bg-orange-500 text-orange-100 text-center"
-      href={data.product_uri}
-    >
-      Crompra en
-      <span class="font-semibold">{data.shop_name}</span>
-      <OutlinkIcon class="inline-block ml-1 align-text-bottom w-5 h-5" />
-    </a>
-  </div>
+    </div>
+    </Section>
+    
+    <Section labelledBy="compra-en">
+      <h2 id="compra-en" class="mx-8 text-stone-700 text-xl font-medium">
+        Compra en
+      </h2>
+      <a
+        class="sticky bottom-0 py-6 px-10 md:rounded-b bg-orange-500 text-orange-100 text-center"
+        href={data.product_uri}
+      >
+        <span class="font-semibold">{data.shop_name}</span>
+        <OutlinkIcon class="inline-block ml-1 align-text-bottom w-5 h-5" />
+      </a>
 </Section>
 
 <Section labelledBy="similar-products" class="mt-12 py-8 space-y-5">

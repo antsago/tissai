@@ -62,13 +62,19 @@ describe("Product details page", () => {
     const description = section.getByText(PRODUCT.description)
     const brandName = section.getByText(BRAND.name)
     const brandLogo = section.getByRole("img", { name: BRAND.name })
-    const buyLink = section.getByRole("link")
 
     expect(image).toHaveAttribute("src", PRODUCT.images[0])
     expect(heading).toHaveTextContent(PRODUCT.name)
     expect(description).toBeInTheDocument()
     expect(brandName).toBeInTheDocument()
     expect(brandLogo).toHaveAttribute("src", BRAND.logo)
+  })
+
+  it("shows offers", async () => {
+    const section = await loadAndRender("Compra en")
+
+    const buyLink = section.getByRole("link")
+
     expect(buyLink).toHaveAttribute("href", PRODUCT.product_uri)
     expect(buyLink).toHaveAccessibleName(
       expect.stringContaining(PRODUCT.shop_name),
