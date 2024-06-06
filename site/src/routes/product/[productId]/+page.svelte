@@ -1,6 +1,7 @@
 <script>
   import {
     ArrowTopRightOnSquare as OutlinkIcon,
+    Photo as MissingImage,
     Section,
   } from "$lib/components"
 
@@ -9,6 +10,9 @@
 
 <Section labelledBy="product-details" class="md:flex-row">
   <div class="bg-stone-100 relative">
+    {#if data.images.length === 0}
+      <MissingImage title="Sin imagenes" />
+    {/if}
     {#each data.images as image}
       <img
         class="sticky top-0 w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover"
@@ -21,7 +25,7 @@
     <div class="max-w-prose m-auto p-8">
       {#if data.brand}
         {#if data.brand.logo}
-          <img alt={data.brand.name} src={data.brand.logo} />
+          <img alt="Logo de {data.brand.name}" src={data.brand.logo} />
         {/if}
         <p>{data.brand.name}</p>
       {/if}

@@ -79,11 +79,13 @@ describe("Product details page", () => {
       )
       const category = section.getByText(PRODUCT.category)
       const brandName = section.getByText(BRAND.name)
-      const brandLogo = section.getByRole("img", { name: BRAND.name })
+      const brandLogo = section.getByRole("img", { name: `Logo de ${BRAND.name}` })
+      const noImages = section.queryByRole("img", { name: "Sin imagenes" })
   
       expect(images.map((i) => i.getAttribute("src"))).toStrictEqual(
         PRODUCT.images,
       )
+      expect(noImages).not.toBeInTheDocument()
       expect(heading).toHaveTextContent(PRODUCT.title)
       expect(description).toBeInTheDocument()
       expect(category).toBeInTheDocument()
@@ -92,11 +94,21 @@ describe("Product details page", () => {
       expect(brandLogo).toHaveAttribute("src", BRAND.logo)
     })
 
+    it("handles products without images", async () => {
+      const section = await loadAndRender(PRODUCT.title, { images: [] })
+  
+      const images = section.queryAllByRole("img", { name: PRODUCT.title })
+      const noImages = section.getByRole("img", { name: "Sin imagenes" })
+  
+      expect(images).toStrictEqual([])
+      expect(noImages).toBeInTheDocument()
+    })
+
     it("handles products without brand", async () => {
       const section = await loadAndRender(PRODUCT.title, { brand: [] })
   
       const brandName = section.queryByText(BRAND.name)
-      const brandLogo = section.queryByRole("img", { name: "" })
+      const brandLogo = section.queryByRole("img", { name: "Logo de undefined" })
       const undef = section.queryByText('undefined')
   
       expect(brandName).not.toBeInTheDocument()
@@ -108,7 +120,7 @@ describe("Product details page", () => {
       const section = await loadAndRender(PRODUCT.title, { brand: [{ name: BRAND.name }] })
   
       const brandName = section.queryByText(BRAND.name)
-      const brandLogo = section.queryByRole("img", { name: BRAND.name })
+      const brandLogo = section.queryByRole("img", { name: `Logo de ${BRAND.name}` })
   
       expect(brandName).toBeInTheDocument()
       expect(brandLogo).not.toBeInTheDocument()

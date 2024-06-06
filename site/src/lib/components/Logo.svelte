@@ -10,7 +10,9 @@
   stroke-width="175px"
   stroke="currentColor"
   class={classes}
+  role="img"
 >
+  <title>Logo de tissai</title>
   <g transform="matrix(0.1, 0, 0, -0.1, -2.220192, 920.812873)">
     <path
       stroke-width="225px"
