@@ -16,7 +16,7 @@ type ProductDetails = {
   images: Product["images"]
   category: Product["category"]
   tags: Product["tags"]
-  brand: (Brand|undefined)[]
+  brand: (Brand | undefined)[]
   similar: {
     id: Product["id"]
     title: Product["title"]

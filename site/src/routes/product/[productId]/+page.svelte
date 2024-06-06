@@ -19,7 +19,7 @@
   </div>
   <div class="flex flex-col md:max-w-sm bg-stone-200 md:rounded">
     <div class="max-w-prose m-auto p-8">
-      <img alt={data.brand?.name} src={data.brand?.logo}/>
+      <img alt={data.brand?.name} src={data.brand?.logo} />
       <p>{data.brand?.name}</p>
       <h1
         id="product-details"
@@ -35,24 +35,24 @@
         {data.description}
       </p>
     </div>
-    </div>
-    </Section>
-    
-    <Section labelledBy="compra-en">
-      <h2 id="compra-en" class="mx-8 text-stone-700 text-xl font-medium">
-        Compra en
-      </h2>
-      {#each data.offers as offer}
-        <li>
-          <h3 class="font-semibold">{offer.site.name}</h3>
-          <a href={offer.url}>
-            <OutlinkIcon class="inline-block ml-1 align-text-bottom w-5 h-5" />
-          </a>
-          <p>{offer.seller}</p>
-          <p>{offer.price}</p>
-          <p>{offer.currency}</p>
-        </li>
-      {/each}
+  </div>
+</Section>
+
+<Section labelledBy="compra-en">
+  <h2 id="compra-en" class="mx-8 text-stone-700 text-xl font-medium">
+    Compra en
+  </h2>
+  {#each data.offers as offer}
+    <li>
+      <h3 class="font-semibold">{offer.site.name}</h3>
+      <a href={offer.url}>
+        <OutlinkIcon class="inline-block ml-1 align-text-bottom w-5 h-5" />
+      </a>
+      <p>{offer.seller}</p>
+      <p>{offer.price}</p>
+      <p>{offer.currency}</p>
+    </li>
+  {/each}
 </Section>
 
 <Section labelledBy="similar-products" class="mt-12 py-8 space-y-5">

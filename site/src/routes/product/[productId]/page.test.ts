@@ -17,42 +17,40 @@ describe("Product details page", () => {
   const OFFER2 = {
     url: "www.example.com/offer2.html",
     site: {
-      name: "Site 2"
-    }
+      name: "Site 2",
+    },
   }
   const PRODUCT_DETAILS = {
-          title: PRODUCT.title,
-          description: PRODUCT.description,
-          images: PRODUCT.images,
-          brand: [BRAND],
-          category: PRODUCT.category,
-          tags: [...PRODUCT.tags, "muy"],
-          similar: [
-            {
-              title: SIMILAR.name,
-              id: SIMILAR.id,
-              image: SIMILAR.image,
-            },
-          ],
-          offers: [
-            {
-              url: OFFER.url,
-              price: OFFER.price,
-              currency: OFFER.currency,
-              seller: OFFER.seller,
-              site: {
-                name: SITE.name,
-                icon: SITE.icon,
-              },
-            },
-            OFFER2,
-          ],
-        }
+    title: PRODUCT.title,
+    description: PRODUCT.description,
+    images: PRODUCT.images,
+    brand: [BRAND],
+    category: PRODUCT.category,
+    tags: [...PRODUCT.tags, "muy"],
+    similar: [
+      {
+        title: SIMILAR.name,
+        id: SIMILAR.id,
+        image: SIMILAR.image,
+      },
+    ],
+    offers: [
+      {
+        url: OFFER.url,
+        price: OFFER.price,
+        currency: OFFER.currency,
+        seller: OFFER.seller,
+        site: {
+          name: SITE.name,
+          icon: SITE.icon,
+        },
+      },
+      OFFER2,
+    ],
+  }
   async function loadAndRender(sectionName: string) {
     pg.pool.query.mockResolvedValueOnce({
-      rows: [
-        PRODUCT_DETAILS,
-      ],
+      rows: [PRODUCT_DETAILS],
     })
 
     render(page, {
@@ -72,12 +70,16 @@ describe("Product details page", () => {
     const images = section.getAllByRole("img", { name: PRODUCT.title })
     const heading = section.getByRole("heading")
     const description = section.getByText(PRODUCT.description)
-    const tags = section.getAllByText(new RegExp(`^(${PRODUCT_DETAILS.tags.join(')|(')})$`))
+    const tags = section.getAllByText(
+      new RegExp(`^(${PRODUCT_DETAILS.tags.join(")|(")})$`),
+    )
     const category = section.getByText(PRODUCT.category)
     const brandName = section.getByText(BRAND.name)
     const brandLogo = section.getByRole("img", { name: BRAND.name })
 
-    expect(images.map(i => i.getAttribute("src"))).toStrictEqual(PRODUCT.images)
+    expect(images.map((i) => i.getAttribute("src"))).toStrictEqual(
+      PRODUCT.images,
+    )
     expect(heading).toHaveTextContent(PRODUCT.title)
     expect(description).toBeInTheDocument()
     expect(category).toBeInTheDocument()
@@ -91,14 +93,20 @@ describe("Product details page", () => {
 
     const heading = section.getByRole("heading", { level: 2 })
     const title = section.getByRole("heading", { level: 3, name: SITE.name })
-    const title2 = section.getByRole("heading", { level: 3, name: OFFER2.site.name })
+    const title2 = section.getByRole("heading", {
+      level: 3,
+      name: OFFER2.site.name,
+    })
     const seller = section.getByText(OFFER.seller)
     const price = section.getByText(OFFER.price)
     const currency = section.getByText(OFFER.currency)
     const urls = section.getAllByRole("link")
 
     expect(heading).toHaveTextContent("Compra en")
-    expect(urls.map(u => u.getAttribute("href"))).toStrictEqual([OFFER.url, OFFER2.url])
+    expect(urls.map((u) => u.getAttribute("href"))).toStrictEqual([
+      OFFER.url,
+      OFFER2.url,
+    ])
     expect(title).toBeInTheDocument()
     expect(title2).toBeInTheDocument()
     expect(seller).toBeInTheDocument()
