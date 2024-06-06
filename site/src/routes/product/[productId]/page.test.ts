@@ -183,6 +183,30 @@ describe("Product details page", () => {
       expect(undef).not.toBeInTheDocument()
       expect(noOffers).toBeInTheDocument()
     })
+
+    it("handles offers without price", async () => {
+      const section = await loadAndRender("Compra en", { offers: [{ ...PRODUCT_DETAILS.offers[0], price: undefined }] })
+  
+      const price = section.queryByText(OFFER.price)
+      const currency = section.queryByText(OFFER.currency)
+      const undef = section.queryByText('undefined')
+  
+      expect(price).not.toBeInTheDocument()
+      expect(currency).not.toBeInTheDocument()
+      expect(undef).not.toBeInTheDocument()
+    })
+
+    it("handles offers without currency", async () => {
+      const section = await loadAndRender("Compra en", { offers: [{ ...PRODUCT_DETAILS.offers[0], currency: undefined }] })
+  
+      const price = section.getByText(OFFER.price)
+      const currency = section.queryByText(OFFER.currency)
+      const undef = section.queryByText('undefined')
+  
+      expect(price).toBeInTheDocument()
+      expect(currency).not.toBeInTheDocument()
+      expect(undef).not.toBeInTheDocument()
+    })
   })
 
   it("shows similar products", async () => {

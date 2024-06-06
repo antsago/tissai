@@ -62,8 +62,12 @@
         <OutlinkIcon class="inline-block ml-1 align-text-bottom w-5 h-5" />
       </a>
       <p>{offer.seller}</p>
-      <p>{offer.price}</p>
-      <p>{offer.currency}</p>
+      {#if offer.price !== undefined}
+        <p>{offer.price}</p>
+        {#if offer.currency !== undefined}
+          <p>{offer.currency}</p>
+        {/if}
+      {/if}
     </li>
   {/each}
 </Section>
