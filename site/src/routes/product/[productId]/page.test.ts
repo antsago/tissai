@@ -148,7 +148,7 @@ describe("Product details page", () => {
       const seller = section.getByText(OFFER.seller)
       const price = section.getByText(OFFER.price)
       const currency = section.getByText(OFFER.currency)
-      const urls = section.getAllByRole("link")
+      const urls = section.getAllByRole("link", { name: "Link de compra"})
       const noOffers = section.queryByText("No hemos encontrado este producto en ningún lado")
   
       expect(heading).toHaveTextContent("Compra en")

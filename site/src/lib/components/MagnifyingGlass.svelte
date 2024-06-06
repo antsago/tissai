@@ -1,7 +1,8 @@
 <!-- From https://heroicons.com/ (magnifying-glass)-->
-<script>
+<script lang="ts">
   let classes = ""
-  export { classes as class }
+  let title: string|undefined = undefined
+  export { classes as class, title }
 </script>
 
 <svg
@@ -10,7 +11,11 @@
   viewBox="0 0 24 24"
   stroke="currentColor"
   class={classes}
+  role="img"
 >
+  {#if title}
+    <title>{title}</title>
+  {/if}
   <path
     stroke-linecap="round"
     stroke-linejoin="round"

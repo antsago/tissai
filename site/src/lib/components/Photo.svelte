@@ -1,7 +1,7 @@
 <!-- From https://heroicons.com/ (photo)-->
 <script lang="ts">
-  let title: string|undefined = undefined
   let classes = ""
+  let title: string|undefined = undefined
   export { classes as class, title }
 </script>
 

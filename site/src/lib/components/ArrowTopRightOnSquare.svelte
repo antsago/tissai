@@ -1,17 +1,21 @@
 <!-- From https://heroicons.com/ (arrow-top-right-on-square)-->
-<script>
+<script lang="ts">
   let classes = ""
-  export { classes as class }
+  let title: string|undefined = undefined
+  export { classes as class, title }
 </script>
 
 <svg
   xmlns="http://www.w3.org/2000/svg"
   fill="none"
   viewBox="0 0 24 24"
-  stroke-width="1.5"
   stroke="currentColor"
   class={classes}
+  role="img"
 >
+  {#if title}
+    <title>{title}</title>
+  {/if}
   <path
     stroke-linecap="round"
     stroke-linejoin="round"
