@@ -52,6 +52,9 @@
   <h2 id="compra-en" class="mx-8 text-stone-700 text-xl font-medium">
     Compra en
   </h2>
+  {#if data.offers.length === 0}
+    <p>No hemos encontrado este producto en ningún lado</p>
+  {/if}
   {#each data.offers as offer}
     <li>
       <h3 class="font-semibold">{offer.site.name}</h3>

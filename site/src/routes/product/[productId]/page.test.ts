@@ -68,7 +68,7 @@ describe("Product details page", () => {
   }
 
   describe("details section", () => {
-    it("shows details", async () => {
+    it("shows product details", async () => {
       const section = await loadAndRender(PRODUCT.title)
   
       const images = section.getAllByRole("img", { name: PRODUCT.title })
@@ -135,30 +135,54 @@ describe("Product details page", () => {
     })
   })
 
-  it("shows offers", async () => {
-    const section = await loadAndRender("Compra en")
-
-    const heading = section.getByRole("heading", { level: 2 })
-    const title = section.getByRole("heading", { level: 3, name: SITE.name })
-    const title2 = section.getByRole("heading", {
-      level: 3,
-      name: OFFER2.site.name,
+  describe("offers section", async () => {
+    it("shows offer details", async () => {
+      const section = await loadAndRender("Compra en")
+  
+      const heading = section.getByRole("heading", { level: 2 })
+      const title = section.getByRole("heading", { level: 3, name: SITE.name })
+      const title2 = section.getByRole("heading", {
+        level: 3,
+        name: OFFER2.site.name,
+      })
+      const seller = section.getByText(OFFER.seller)
+      const price = section.getByText(OFFER.price)
+      const currency = section.getByText(OFFER.currency)
+      const urls = section.getAllByRole("link")
+      const noOffers = section.queryByText("No hemos encontrado este producto en ningún lado")
+  
+      expect(heading).toHaveTextContent("Compra en")
+      expect(urls.map((u) => u.getAttribute("href"))).toStrictEqual([
+        OFFER.url,
+        OFFER2.url,
+      ])
+      expect(title).toBeInTheDocument()
+      expect(title2).toBeInTheDocument()
+      expect(seller).toBeInTheDocument()
+      expect(price).toBeInTheDocument()
+      expect(currency).toBeInTheDocument()
+      expect(noOffers).not.toBeInTheDocument()
     })
-    const seller = section.getByText(OFFER.seller)
-    const price = section.getByText(OFFER.price)
-    const currency = section.getByText(OFFER.currency)
-    const urls = section.getAllByRole("link")
 
-    expect(heading).toHaveTextContent("Compra en")
-    expect(urls.map((u) => u.getAttribute("href"))).toStrictEqual([
-      OFFER.url,
-      OFFER2.url,
-    ])
-    expect(title).toBeInTheDocument()
-    expect(title2).toBeInTheDocument()
-    expect(seller).toBeInTheDocument()
-    expect(price).toBeInTheDocument()
-    expect(currency).toBeInTheDocument()
+    it("handles products without offers", async () => {
+      const section = await loadAndRender("Compra en", { offers: [] })
+  
+      const title = section.queryByRole("heading", { level: 3, name: SITE.name })
+      const seller = section.queryByText(OFFER.seller)
+      const price = section.queryByText(OFFER.price)
+      const currency = section.queryByText(OFFER.currency)
+      const url = section.queryByRole("link")
+      const noOffers = section.getByText("No hemos encontrado este producto en ningún lado")
+      const undef = section.queryByText('undefined')
+  
+      expect(url).not.toBeInTheDocument()
+      expect(title).not.toBeInTheDocument()
+      expect(seller).not.toBeInTheDocument()
+      expect(price).not.toBeInTheDocument()
+      expect(currency).not.toBeInTheDocument()
+      expect(undef).not.toBeInTheDocument()
+      expect(noOffers).toBeInTheDocument()
+    })
   })
 
   it("shows similar products", async () => {
