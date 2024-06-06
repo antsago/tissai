@@ -48,9 +48,12 @@ describe("Product details page", () => {
       OFFER2,
     ],
   }
-  async function loadAndRender(sectionName: string) {
+  async function loadAndRender(sectionName: string, details = {}) {
     pg.pool.query.mockResolvedValueOnce({
-      rows: [PRODUCT_DETAILS],
+      rows: [{
+        ...PRODUCT_DETAILS,
+        ...details,
+      }],
     })
 
     render(page, {
@@ -64,28 +67,52 @@ describe("Product details page", () => {
     return within(section)
   }
 
-  it("shows product's details", async () => {
-    const section = await loadAndRender(PRODUCT.title)
+  describe("details section", () => {
+    it("shows details", async () => {
+      const section = await loadAndRender(PRODUCT.title)
+  
+      const images = section.getAllByRole("img", { name: PRODUCT.title })
+      const heading = section.getByRole("heading")
+      const description = section.getByText(PRODUCT.description)
+      const tags = section.getAllByText(
+        new RegExp(`^(${PRODUCT_DETAILS.tags.join(")|(")})$`),
+      )
+      const category = section.getByText(PRODUCT.category)
+      const brandName = section.getByText(BRAND.name)
+      const brandLogo = section.getByRole("img", { name: BRAND.name })
+  
+      expect(images.map((i) => i.getAttribute("src"))).toStrictEqual(
+        PRODUCT.images,
+      )
+      expect(heading).toHaveTextContent(PRODUCT.title)
+      expect(description).toBeInTheDocument()
+      expect(category).toBeInTheDocument()
+      expect(tags.length).toBe(PRODUCT_DETAILS.tags.length)
+      expect(brandName).toBeInTheDocument()
+      expect(brandLogo).toHaveAttribute("src", BRAND.logo)
+    })
 
-    const images = section.getAllByRole("img", { name: PRODUCT.title })
-    const heading = section.getByRole("heading")
-    const description = section.getByText(PRODUCT.description)
-    const tags = section.getAllByText(
-      new RegExp(`^(${PRODUCT_DETAILS.tags.join(")|(")})$`),
-    )
-    const category = section.getByText(PRODUCT.category)
-    const brandName = section.getByText(BRAND.name)
-    const brandLogo = section.getByRole("img", { name: BRAND.name })
+    it("handles products without brand", async () => {
+      const section = await loadAndRender(PRODUCT.title, { brand: [] })
+  
+      const brandName = section.queryByText(BRAND.name)
+      const brandLogo = section.queryByRole("img", { name: "" })
+      const undef = section.queryByText('undefined')
+  
+      expect(brandName).not.toBeInTheDocument()
+      expect(brandLogo).not.toBeInTheDocument()
+      expect(undef).not.toBeInTheDocument()
+    })
 
-    expect(images.map((i) => i.getAttribute("src"))).toStrictEqual(
-      PRODUCT.images,
-    )
-    expect(heading).toHaveTextContent(PRODUCT.title)
-    expect(description).toBeInTheDocument()
-    expect(category).toBeInTheDocument()
-    expect(tags.length).toBe(PRODUCT_DETAILS.tags.length)
-    expect(brandName).toBeInTheDocument()
-    expect(brandLogo).toHaveAttribute("src", BRAND.logo)
+    it("handles brands without logo", async () => {
+      const section = await loadAndRender(PRODUCT.title, { brand: [{ name: BRAND.name }] })
+  
+      const brandName = section.queryByText(BRAND.name)
+      const brandLogo = section.queryByRole("img", { name: BRAND.name })
+  
+      expect(brandName).toBeInTheDocument()
+      expect(brandLogo).not.toBeInTheDocument()
+    })
   })
 
   it("shows offers", async () => {
