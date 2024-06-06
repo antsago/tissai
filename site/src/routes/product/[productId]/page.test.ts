@@ -207,6 +207,16 @@ describe("Product details page", () => {
       expect(currency).not.toBeInTheDocument()
       expect(undef).not.toBeInTheDocument()
     })
+
+    it("handles offers without seller", async () => {
+      const section = await loadAndRender("Compra en", { offers: [{ ...PRODUCT_DETAILS.offers[0], seller: undefined }] })
+  
+      const seller = section.queryByText(OFFER.seller)
+      const undef = section.queryByText('undefined')
+  
+      expect(seller).not.toBeInTheDocument()
+      expect(undef).not.toBeInTheDocument()
+    })
   })
 
   it("shows similar products", async () => {

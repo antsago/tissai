@@ -61,10 +61,12 @@
       <a href={offer.url}>
         <OutlinkIcon class="inline-block ml-1 align-text-bottom w-5 h-5" />
       </a>
-      <p>{offer.seller}</p>
+      {#if offer.seller}
+        <p>{offer.seller}</p>
+      {/if}
       {#if offer.price !== undefined}
         <p>{offer.price}</p>
-        {#if offer.currency !== undefined}
+        {#if offer.currency}
           <p>{offer.currency}</p>
         {/if}
       {/if}
