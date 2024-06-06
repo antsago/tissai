@@ -27,6 +27,10 @@
       >
         {data.title}
       </h1>
+      <span>{data.category}</span>
+      {#each data.tags as tag}
+        <span>{tag}</span>
+      {/each}
       <p class="mt-4 text-stone-700 text-base">
         {data.description}
       </p>

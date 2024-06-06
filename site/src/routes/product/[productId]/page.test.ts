@@ -20,14 +20,13 @@ describe("Product details page", () => {
       name: "Site 2"
     }
   }
-  async function loadAndRender(sectionName: string) {
-    pg.pool.query.mockResolvedValueOnce({
-      rows: [
-        {
+  const PRODUCT_DETAILS = {
           title: PRODUCT.title,
           description: PRODUCT.description,
           images: PRODUCT.images,
           brand: [BRAND],
+          category: PRODUCT.category,
+          tags: [...PRODUCT.tags, "muy"],
           similar: [
             {
               title: SIMILAR.name,
@@ -48,7 +47,11 @@ describe("Product details page", () => {
             },
             OFFER2,
           ],
-        },
+        }
+  async function loadAndRender(sectionName: string) {
+    pg.pool.query.mockResolvedValueOnce({
+      rows: [
+        PRODUCT_DETAILS,
       ],
     })
 
@@ -69,12 +72,16 @@ describe("Product details page", () => {
     const images = section.getAllByRole("img", { name: PRODUCT.title })
     const heading = section.getByRole("heading")
     const description = section.getByText(PRODUCT.description)
+    const tags = section.getAllByText(new RegExp(`^(${PRODUCT_DETAILS.tags.join(')|(')})$`))
+    const category = section.getByText(PRODUCT.category)
     const brandName = section.getByText(BRAND.name)
     const brandLogo = section.getByRole("img", { name: BRAND.name })
 
     expect(images.map(i => i.getAttribute("src"))).toStrictEqual(PRODUCT.images)
     expect(heading).toHaveTextContent(PRODUCT.title)
     expect(description).toBeInTheDocument()
+    expect(category).toBeInTheDocument()
+    expect(tags.length).toBe(PRODUCT_DETAILS.tags.length)
     expect(brandName).toBeInTheDocument()
     expect(brandLogo).toHaveAttribute("src", BRAND.logo)
   })

@@ -14,6 +14,8 @@ type ProductDetails = {
   title: Product["title"]
   description: Product["description"]
   images: Product["images"]
+  category: Product["category"]
+  tags: Product["tags"]
   brand: (Brand|undefined)[]
   similar: {
     id: Product["id"]
@@ -40,6 +42,8 @@ const getProductDetails =
         p.${PRODUCTS.title},
         p.${PRODUCTS.description},
         p.${PRODUCTS.images},
+        p.${PRODUCTS.category},
+        p.${PRODUCTS.tags},
         JSON_AGG(b.*) AS brand,
         JSON_AGG(sim.*) AS similar,
         JSON_AGG(

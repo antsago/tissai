@@ -138,6 +138,8 @@ describe("db", () => {
       title: PRODUCT.title,
       description: PRODUCT.description,
       images: PRODUCT.images,
+      category: PRODUCT.category,
+      tags: PRODUCT.tags,
       brand: BRAND,
       similar: [
         {
