@@ -66,13 +66,13 @@ describe("Product details page", () => {
   it("shows product's details", async () => {
     const section = await loadAndRender(PRODUCT.title)
 
-    const image = section.getByRole("img", { name: PRODUCT.title })
+    const images = section.getAllByRole("img", { name: PRODUCT.title })
     const heading = section.getByRole("heading")
     const description = section.getByText(PRODUCT.description)
     const brandName = section.getByText(BRAND.name)
     const brandLogo = section.getByRole("img", { name: BRAND.name })
 
-    expect(image).toHaveAttribute("src", PRODUCT.images[0])
+    expect(images.map(i => i.getAttribute("src"))).toStrictEqual(PRODUCT.images)
     expect(heading).toHaveTextContent(PRODUCT.title)
     expect(description).toBeInTheDocument()
     expect(brandName).toBeInTheDocument()
@@ -88,11 +88,10 @@ describe("Product details page", () => {
     const seller = section.getByText(OFFER.seller)
     const price = section.getByText(OFFER.price)
     const currency = section.getByText(OFFER.currency)
-    const [offer1, offer2] = section.getAllByRole("link")
+    const urls = section.getAllByRole("link")
 
     expect(heading).toHaveTextContent("Compra en")
-    expect(offer1).toHaveAttribute("href", OFFER.url)
-    expect(offer2).toHaveAttribute("href", OFFER2.url)
+    expect(urls.map(u => u.getAttribute("href"))).toStrictEqual([OFFER.url, OFFER2.url])
     expect(title).toBeInTheDocument()
     expect(title2).toBeInTheDocument()
     expect(seller).toBeInTheDocument()

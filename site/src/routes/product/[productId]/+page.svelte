@@ -9,11 +9,13 @@
 
 <Section labelledBy="product-details" class="md:flex-row">
   <div class="bg-stone-100 relative">
-    <img
-      class="sticky top-0 w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover"
-      alt={data.title}
-      src={data.images[0]}
-    />
+    {#each data.images as image}
+      <img
+        class="sticky top-0 w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover"
+        alt={data.title}
+        src={image}
+      />
+    {/each}
   </div>
   <div class="flex flex-col md:max-w-sm bg-stone-200 md:rounded">
     <div class="max-w-prose m-auto p-8">

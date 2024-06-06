@@ -29,7 +29,10 @@ export const PRODUCT = {
   id: "1a13b49d-b43d-4eba-838d-a77c9d94f743",
   title: "Test product",
   description: "Product description",
-  images: ["https://example.com/product-image.jpg"],
+  images: [
+    "https://example.com/product-image.jpg",
+    "https://example.com/product-image-2.jpg",
+  ],
   brand: BRAND.name,
   embedding: [
     -0.036469363, 0.0050473986, -0.024768546, -0.022758009, 0.048654705,
