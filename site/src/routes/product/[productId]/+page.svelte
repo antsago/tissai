@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { ProductDetails } from "@tissai/db"
   import {
-    ArrowTopRightOnSquare as OutlinkIcon,
     Photo as MissingImage,
     Section,
   } from "$lib/components"
   import ProductSnippet from "./ProductSnippet.svelte"
+  import Offer from "./Offer.svelte"
 
   export let data: ProductDetails
 </script>
@@ -58,27 +58,13 @@
   {#if data.offers.length === 0}
     <p>No hemos encontrado este producto en ningún lado</p>
   {/if}
-  {#each data.offers as offer}
-    <li>
-      <img src={offer.site.icon} alt="Icono de {offer.site.name}">
-      <h3 class="font-semibold">{offer.site.name}</h3>
-      <a href={offer.url}>
-        <OutlinkIcon
-          class="inline-block ml-1 align-text-bottom w-5 h-5"
-          title="Link de compra"
-        />
-      </a>
-      {#if offer.seller}
-        <p>{offer.seller}</p>
-      {/if}
-      {#if offer.price !== null && offer.price !== undefined}
-        <p>{offer.price}</p>
-        {#if offer.currency}
-          <p>{offer.currency}</p>
-        {/if}
-      {/if}
-    </li>
-  {/each}
+  <ul>
+    {#each data.offers as offer}
+      <li>
+        <Offer {offer}/>
+      </li>
+    {/each}
+  </ul>
 </Section>
 
 <Section labelledBy="similar-products" class="mt-12 py-8 space-y-5">
