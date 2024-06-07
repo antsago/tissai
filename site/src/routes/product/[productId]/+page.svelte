@@ -49,7 +49,7 @@
   </div>
 </Section>
 
-<Section labelledBy="compra-en">
+<Section labelledBy="compra-en" class="mt-12 py-8">
   <h2 id="compra-en" class="mx-8 text-stone-700 text-xl font-medium">
     Compra en
   </h2>
