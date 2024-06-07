@@ -5,7 +5,7 @@
     Photo as MissingImage,
     Section,
   } from "$lib/components"
-  import Recommendations from "./Recommendations.svelte"
+  import ProductSnippet from "./ProductSnippet.svelte"
 
   export let data: ProductDetails
 </script>
@@ -81,4 +81,15 @@
   {/each}
 </Section>
 
-<Recommendations recommendations={data.similar} class="mt-12" />
+<Section labelledBy="similar-products" class="mt-12 py-8 space-y-5">
+  <h2 id="similar-products" class="mx-8 text-stone-700 text-xl font-medium">
+    Similares
+  </h2>
+  <ul class="flex flex-row overflow-x-scroll space-x-8 px-8">
+    {#each data.similar as similar}
+      <li class="min-w-56 max-w-56">
+        <ProductSnippet product={similar} />
+      </li>
+    {/each}
+  </ul>
+</Section>
