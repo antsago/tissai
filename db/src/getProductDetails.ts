@@ -10,7 +10,7 @@ import {
   Site,
 } from "./tables/index.js"
 
-type ProductDetails = {
+export type ProductDetails = {
   title: Product["title"]
   description: Product["description"]
   images: Product["images"]
