@@ -1,4 +1,5 @@
-<script>
+<script lang="ts">
+  import type { ProductDetails } from "@tissai/db"
   import {
     ArrowTopRightOnSquare as OutlinkIcon,
     Photo as MissingImage,
@@ -6,21 +7,22 @@
   } from "$lib/components"
   import Recommendations from "./Recommendations.svelte"
 
-  export let data
+  export let data: ProductDetails
 </script>
 
 <Section labelledBy="product-details" class="md:flex-row">
   <div class="bg-stone-100 relative">
-    {#if data.images.length === 0}
+    {#if !data.images || data.images.length === 0}
       <MissingImage title="Sin imagenes" />
+    {:else}
+      {#each data.images as image}
+        <img
+          class="sticky top-0 w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover"
+          alt={data.title}
+          src={image}
+        />
+      {/each}
     {/if}
-    {#each data.images as image}
-      <img
-        class="sticky top-0 w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover"
-        alt={data.title}
-        src={image}
-      />
-    {/each}
   </div>
   <div class="flex flex-col md:max-w-sm bg-stone-200 md:rounded">
     <div class="max-w-prose m-auto p-8">
@@ -58,6 +60,7 @@
   {/if}
   {#each data.offers as offer}
     <li>
+      <img src={offer.site.icon} alt="Icono de {offer.site.name}">
       <h3 class="font-semibold">{offer.site.name}</h3>
       <a href={offer.url}>
         <OutlinkIcon
@@ -68,7 +71,7 @@
       {#if offer.seller}
         <p>{offer.seller}</p>
       {/if}
-      {#if ![null, undefined].includes(offer.price)}
+      {#if offer.price !== null && offer.price !== undefined}
         <p>{offer.price}</p>
         {#if offer.currency}
           <p>{offer.currency}</p>

@@ -153,6 +153,7 @@ describe("Product details page", () => {
 
       const heading = section.getByRole("heading", { level: 2 })
       const title = section.getByRole("heading", { level: 3, name: SITE.name })
+      const icon = section.getByRole("img", { name: `Icono de ${SITE.name}` })
       const title2 = section.getByRole("heading", {
         level: 3,
         name: OFFER2.site.name,
@@ -165,6 +166,8 @@ describe("Product details page", () => {
         "No hemos encontrado este producto en ningún lado",
       )
 
+      expect(heading).toHaveTextContent("Compra en")
+      expect(icon).toBeInTheDocument()
       expect(heading).toHaveTextContent("Compra en")
       expect(urls.map((u) => u.getAttribute("href"))).toStrictEqual([
         OFFER.url,

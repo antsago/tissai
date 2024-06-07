@@ -10,7 +10,7 @@ import {
   Site,
 } from "./tables/index.js"
 
-export type ProductDetails = {
+type ProductDetailsResponse = {
   title: Product["title"]
   description: Product["description"]
   images: Product["images"]
@@ -36,7 +36,7 @@ export type ProductDetails = {
 
 const getProductDetails =
   (connection: Connection) => async (productId: Product["id"]) => {
-    const [response] = await connection.query<ProductDetails>(
+    const [response] = await connection.query<ProductDetailsResponse>(
       `
       SELECT
         p.${PRODUCTS.title},
@@ -85,4 +85,5 @@ const getProductDetails =
     }
   }
 
+export type ProductDetails = Awaited<ReturnType<ReturnType<typeof getProductDetails>>>
 export default getProductDetails

@@ -9,7 +9,7 @@ export type Offer = {
   site: string
   product: string
   seller?: string
-  price?: number
+  price?: number | null
   currency?: string
 }
 
