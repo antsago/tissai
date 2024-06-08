@@ -7,10 +7,10 @@
 
 <a
   href={offer.url}
-  class="flex flex-col items-center py-6 bg-stone-50 border-stone-300 border rounded-lg"
+  class="flex flex-col items-center py-4 bg-stone-50 border-stone-300 border rounded-lg"
 >
   <div
-    class="w-full flex flex-row border-b border-stone-200 pb-6 px-8 items-end"
+    class="w-full flex flex-row border-b border-stone-200 pb-4 px-8 items-end"
   >
     <div class="flex flex-row items-baseline text-stone-700">
       <span
@@ -28,11 +28,11 @@
       {/if}
     </div>
     <OutlinkIcon
-      class="ml-auto mb-px rounded-lg text-orange-400 stroke-2 w-7 h-7"
+      class="ml-auto mb-[3px] rounded-lg text-orange-500 stroke-2 w-6 h-6"
       title="Link de compra"
     />
   </div>
-  <div class="mt-6 flex flex-row items-center">
+  <div class="mt-4 flex flex-row items-center">
     <img
       class="mr-2 h-5"
       src={offer.site.icon}
@@ -41,7 +41,7 @@
     <h3 class="font-medium text-stone-900 text-lg">{offer.site.name}</h3>
   </div>
   {#if offer.seller}
-    <p class="mt-4 text-stone-500 text-xs">
+    <p class="mt-2 text-stone-500 text-xs">
       Vendido por <span class="italic">{offer.seller}</span>
     </p>
   {/if}
