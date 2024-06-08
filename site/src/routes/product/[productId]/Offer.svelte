@@ -8,8 +8,8 @@
 </script>
 
 
-<a href={offer.url} class="flex flex-col items-center py-4 bg-stone-50 border-stone-300 border rounded-lg">
-  <div class="w-full flex flex-row border-b border-stone-200 pb-4 px-8 items-end">
+<a href={offer.url} class="flex flex-col items-center py-6 bg-stone-50 border-stone-300 border rounded-lg">
+  <div class="w-full flex flex-row border-b border-stone-200 pb-6 px-8 items-end">
     <div class="flex flex-row items-baseline text-stone-700">
       <span class="font-medium text-lg {offer.price === null || offer.price === undefined ? "line-through" : ""}">
         {offer.price ?? "00.00"}
@@ -23,11 +23,11 @@
       title="Link de compra"
     />
   </div>
-  <div class="mt-4 flex flex-row items-center">
+  <div class="mt-6 flex flex-row items-center">
     <img class="mr-2 h-5" src={offer.site.icon} alt="Icono de {offer.site.name}">
     <h3 class="font-medium text-stone-900 text-lg">{offer.site.name}</h3>
   </div>
   {#if offer.seller}
-    <p class="mt-2 text-stone-500 text-xs">Vendido por <span class="italic">{offer.seller}</span></p>
+    <p class="mt-4 text-stone-500 text-xs">Vendido por <span class="italic">{offer.seller}</span></p>
   {/if}
 </a>
