@@ -6,7 +6,31 @@
   import Chip from "./Chip.svelte"
 
   export let data: ProductDetails
+  const rng = function(seed: number) {
+    const max = data.tags.length + 1
+    const min = 0
+
+    const rnd = Math.abs(Math.cos(seed))
+    return Math.floor(rnd * (max - min) + min)
+  }
 </script>
+
+<div class="flex flex-wrap justify-center py-6 px-4">
+  <Chip
+    style="order:{rng(data.tags.length)}; z-index: {rng(0)};"
+    orange
+  >
+    {data.category}
+  </Chip>
+
+  {#each data.tags as tag, index}
+    <Chip
+      style="order:{rng(data.tags.length-index)}; z-index: {rng(index+1)};"
+    >
+      {tag}
+    </Chip>
+  {/each}
+</div>
 
 <Section labelledBy="product-details" class="md:flex-row">
   <div class="bg-stone-100 relative">
@@ -21,12 +45,6 @@
   </div>
   <div class="flex flex-col md:max-w-sm bg-stone-200 md:rounded">
     <div class="max-w-prose m-auto p-8">
-      <div class="flex flex-wrap gap-2 justify-center align-center py-6 px-4">
-        <Chip color="orange">{data.category}</Chip>
-        {#each data.tags as tag}
-          <Chip>{tag}</Chip>
-        {/each}
-      </div>
       {#if data.brand}
         {#if data.brand.logo}
           <img alt="Logo de {data.brand.name}" src={data.brand.logo} />
