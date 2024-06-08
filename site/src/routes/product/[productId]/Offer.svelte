@@ -12,7 +12,7 @@
   <div
     class="w-full flex flex-row border-b border-stone-200 pb-4 px-8 items-end"
   >
-    <div class="flex flex-row items-baseline text-stone-700">
+    <div class="flex flex-row items-baseline text-stone-900">
       <span
         class="font-medium text-lg {offer.price === null ||
         offer.price === undefined
