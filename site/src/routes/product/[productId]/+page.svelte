@@ -57,14 +57,15 @@
   </h2>
   {#if data.offers.length === 0}
     <p>No hemos encontrado este producto en ningún lado</p>
+  {:else}
+    <ul class="mx-8 my-16 space-y-16">
+      {#each data.offers as offer}
+        <li>
+          <Offer {offer} />
+        </li>
+      {/each}
+    </ul>
   {/if}
-  <ul class="mx-8 my-16 space-y-16">
-    {#each data.offers as offer}
-      <li>
-        <Offer {offer} />
-      </li>
-    {/each}
-  </ul>
 </Section>
 
 <Section labelledBy="similar-products" class="mt-12 py-8 space-y-5">

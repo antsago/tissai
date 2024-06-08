@@ -10,14 +10,14 @@
 
 <a href={offer.url} class="flex flex-col items-center py-4 bg-stone-50 border-stone-300 border rounded-lg">
   <div class="w-full flex flex-row border-b border-stone-200 pb-4 px-8 items-end">
-    {#if offer.price !== null && offer.price !== undefined}
-      <div class="flex flex-row items-baseline text-stone-700">
-        <span class="font-medium text-lg">{offer.price}</span>
-        {#if offer.currency}
-          <span class="ml-[2px] font-light text-xs lowercase">{offer.currency}</span>
-        {/if}
-      </div>
-    {/if}
+    <div class="flex flex-row items-baseline text-stone-700">
+      <span class="font-medium text-lg {offer.price === null || offer.price === undefined ? "line-through" : ""}">
+        {offer.price ?? "00.00"}
+      </span>
+      {#if offer.currency}
+        <span class="ml-[2px] font-light text-xs lowercase">{offer.currency}</span>
+      {/if}
+    </div>
     <OutlinkIcon
       class="ml-auto mb-px rounded-lg text-orange-400 stroke-2 w-7 h-7"
       title="Link de compra"

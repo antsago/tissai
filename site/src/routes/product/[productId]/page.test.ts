@@ -212,11 +212,9 @@ describe("Product details page", () => {
       })
 
       const price = section.queryByText(OFFER.price)
-      const currency = section.queryByText(OFFER.currency)
       const undef = section.queryByText(String(value))
 
       expect(price).not.toBeInTheDocument()
-      expect(currency).not.toBeInTheDocument()
       expect(undef).not.toBeInTheDocument()
     })
 
