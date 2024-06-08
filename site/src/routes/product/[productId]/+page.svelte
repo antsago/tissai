@@ -51,14 +51,14 @@
   </div>
 </Section>
 
-<Section labelledBy="compra-en" class="mt-12 py-8">
-  <h2 id="compra-en" class="mx-8 text-stone-700 text-xl font-medium">
+<Section labelledBy="compra-en" class="mt-12 p-8">
+  <h2 id="compra-en" class="text-stone-700 text-xl font-medium">
     Compra en
   </h2>
   {#if data.offers.length === 0}
-    <p>No hemos encontrado este producto en ningún lado</p>
+    <p class="mt-6 w-full text-center text-stone-500">Producto descatalogado o sin ofertas</p>
   {:else}
-    <ul class="mx-8 my-16 space-y-16">
+    <ul class="my-16 space-y-16">
       {#each data.offers as offer}
         <li>
           <Offer {offer} />

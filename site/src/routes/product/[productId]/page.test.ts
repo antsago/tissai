@@ -193,7 +193,7 @@ describe("Product details page", () => {
       const currency = section.queryByText(OFFER.currency)
       const url = section.queryByRole("link")
       const noOffers = section.getByText(
-        "No hemos encontrado este producto en ningún lado",
+        "Producto descatalogado o sin ofertas",
       )
       const undef = section.queryByText("undefined")
 
