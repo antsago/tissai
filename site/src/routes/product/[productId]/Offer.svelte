@@ -7,20 +7,27 @@
   export let offer: ProductDetails["offers"][0]
 </script>
 
-<img src={offer.site.icon} alt="Icono de {offer.site.name}">
-<h3 class="font-semibold">{offer.site.name}</h3>
-<a href={offer.url}>
-  <OutlinkIcon
-    class="inline-block ml-1 align-text-bottom w-5 h-5"
-    title="Link de compra"
-  />
-</a>
-{#if offer.seller}
-  <p>{offer.seller}</p>
-{/if}
-{#if offer.price !== null && offer.price !== undefined}
-  <p>{offer.price}</p>
-  {#if offer.currency}
-    <p>{offer.currency}</p>
+
+<a href={offer.url} class="flex flex-col items-center py-4 bg-stone-50 border-stone-300 border rounded-lg">
+  <div class="w-full flex flex-row border-b border-stone-200 pb-4 px-8 items-end">
+    {#if offer.price !== null && offer.price !== undefined}
+      <div class="flex flex-row items-baseline text-stone-700">
+        <span class="font-medium text-lg">{offer.price}</span>
+        {#if offer.currency}
+          <span class="ml-[2px] font-light text-xs lowercase">{offer.currency}</span>
+        {/if}
+      </div>
+    {/if}
+    <OutlinkIcon
+      class="ml-auto mb-px rounded-lg text-orange-400 stroke-2 w-7 h-7"
+      title="Link de compra"
+    />
+  </div>
+  <div class="mt-4 flex flex-row items-center">
+    <img class="mr-2 h-5" src={offer.site.icon} alt="Icono de {offer.site.name}">
+    <h3 class="font-medium text-stone-900 text-lg">{offer.site.name}</h3>
+  </div>
+  {#if offer.seller}
+    <p class="mt-2 text-stone-500 text-xs">Vendido por <span class="italic">{offer.seller}</span></p>
   {/if}
-{/if}
+</a>

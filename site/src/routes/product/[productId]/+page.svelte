@@ -16,8 +16,8 @@
       <MissingImage title="Sin imagenes" />
     {:else}
       {#each data.images as image}
+      <!-- class="sticky top-0 w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover" -->
         <img
-          class="sticky top-0 w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover"
           alt={data.title}
           src={image}
         />
@@ -38,9 +38,9 @@
       >
         {data.title}
       </h1>
-      <span>{data.category}</span>
+      <p>{data.category}</p>
       {#each data.tags as tag}
-        <span>{tag}</span>
+        <p>{tag}</p>
       {/each}
       {#if data.description}
         <p class="mt-4 text-stone-700 text-base">
@@ -58,10 +58,10 @@
   {#if data.offers.length === 0}
     <p>No hemos encontrado este producto en ningún lado</p>
   {/if}
-  <ul>
+  <ul class="mx-8 my-16 space-y-16">
     {#each data.offers as offer}
       <li>
-        <Offer {offer}/>
+        <Offer {offer} />
       </li>
     {/each}
   </ul>
