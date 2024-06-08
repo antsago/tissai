@@ -1,9 +1,6 @@
 <script lang="ts">
   import type { ProductDetails } from "@tissai/db"
-  import {
-    Photo as MissingImage,
-    Section,
-  } from "$lib/components"
+  import { Photo as MissingImage, Section } from "$lib/components"
   import ProductSnippet from "./ProductSnippet.svelte"
   import Offer from "./Offer.svelte"
 
@@ -16,11 +13,8 @@
       <MissingImage title="Sin imagenes" />
     {:else}
       {#each data.images as image}
-      <!-- class="sticky top-0 w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover" -->
-        <img
-          alt={data.title}
-          src={image}
-        />
+        <!-- class="sticky top-0 w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover" -->
+        <img alt={data.title} src={image} />
       {/each}
     {/if}
   </div>
@@ -52,11 +46,11 @@
 </Section>
 
 <Section labelledBy="compra-en" class="mt-12 p-8">
-  <h2 id="compra-en" class="text-stone-700 text-xl font-medium">
-    Compra en
-  </h2>
+  <h2 id="compra-en" class="text-stone-700 text-xl font-medium">Compra en</h2>
   {#if data.offers.length === 0}
-    <p class="mt-6 w-full text-center text-stone-500">Producto descatalogado o sin ofertas</p>
+    <p class="mt-6 w-full text-center text-stone-500">
+      Producto descatalogado o sin ofertas
+    </p>
   {:else}
     <ul class="my-16 space-y-16">
       {#each data.offers as offer}

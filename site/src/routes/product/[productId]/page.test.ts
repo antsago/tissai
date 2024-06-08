@@ -192,9 +192,7 @@ describe("Product details page", () => {
       const price = section.queryByText(OFFER.price)
       const currency = section.queryByText(OFFER.currency)
       const url = section.queryByRole("link")
-      const noOffers = section.getByText(
-        "Producto descatalogado o sin ofertas",
-      )
+      const noOffers = section.getByText("Producto descatalogado o sin ofertas")
       const undef = section.queryByText("undefined")
 
       expect(url).not.toBeInTheDocument()
@@ -206,17 +204,20 @@ describe("Product details page", () => {
       expect(noOffers).toBeInTheDocument()
     })
 
-    it.each([null, undefined])("handles offers without price (%s)", async (value) => {
-      const section = await loadAndRender("Compra en", {
-        offers: [{ ...PRODUCT_DETAILS.offers[0], price: value }],
-      })
+    it.each([null, undefined])(
+      "handles offers without price (%s)",
+      async (value) => {
+        const section = await loadAndRender("Compra en", {
+          offers: [{ ...PRODUCT_DETAILS.offers[0], price: value }],
+        })
 
-      const price = section.queryByText(OFFER.price)
-      const undef = section.queryByText(String(value))
+        const price = section.queryByText(OFFER.price)
+        const undef = section.queryByText(String(value))
 
-      expect(price).not.toBeInTheDocument()
-      expect(undef).not.toBeInTheDocument()
-    })
+        expect(price).not.toBeInTheDocument()
+        expect(undef).not.toBeInTheDocument()
+      },
+    )
 
     it("handles offers without currency", async () => {
       const section = await loadAndRender("Compra en", {

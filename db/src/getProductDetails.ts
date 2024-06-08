@@ -85,5 +85,7 @@ const getProductDetails =
     }
   }
 
-export type ProductDetails = Awaited<ReturnType<ReturnType<typeof getProductDetails>>>
+export type ProductDetails = Awaited<
+  ReturnType<ReturnType<typeof getProductDetails>>
+>
 export default getProductDetails

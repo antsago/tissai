@@ -1,4 +1,4 @@
-export type { ProductDetails } from './getProductDetails.js'
+export type { ProductDetails } from "./getProductDetails.js"
 
 export { setPg } from "./Connection.js"
 export { Db } from "./Db.js"
