@@ -3,6 +3,7 @@
   import { Photo as MissingImage, Section } from "$lib/components"
   import ProductSnippet from "./ProductSnippet.svelte"
   import Offer from "./Offer.svelte"
+  import Chip from "./Chip.svelte"
 
   export let data: ProductDetails
 </script>
@@ -20,6 +21,12 @@
   </div>
   <div class="flex flex-col md:max-w-sm bg-stone-200 md:rounded">
     <div class="max-w-prose m-auto p-8">
+      <div class="flex flex-wrap gap-2 justify-center align-center py-6 px-4">
+        <Chip color="orange">{data.category}</Chip>
+        {#each data.tags as tag}
+          <Chip>{tag}</Chip>
+        {/each}
+      </div>
       {#if data.brand}
         {#if data.brand.logo}
           <img alt="Logo de {data.brand.name}" src={data.brand.logo} />
@@ -32,10 +39,6 @@
       >
         {data.title}
       </h1>
-      <p>{data.category}</p>
-      {#each data.tags as tag}
-        <p>{tag}</p>
-      {/each}
       {#if data.description}
         <p class="mt-4 text-stone-700 text-base">
           {data.description}
