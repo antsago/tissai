@@ -7,7 +7,7 @@
   import Chip from "./Chip.svelte"
 
   export let data: ProductDetails
-  const rng = function(seed: number) {
+  const rng = function (seed: number) {
     const max = data.tags.length + 1
     const min = 0
 
@@ -16,17 +16,17 @@
   }
 </script>
 
-<section aria-label="Etiquetas y categoría" class="flex flex-wrap justify-center py-6 px-4">
-  <Chip
-    style="order:{rng(data.tags.length)}; z-index: {rng(0)};"
-    orange
-  >
+<section
+  aria-label="Etiquetas y categoría"
+  class="flex flex-wrap justify-center py-6 px-4"
+>
+  <Chip style="order:{rng(data.tags.length)}; z-index: {rng(0)};" orange>
     {data.category}
   </Chip>
 
   {#each data.tags as tag, index}
     <Chip
-      style="order:{rng(data.tags.length-index)}; z-index: {rng(index+1)};"
+      style="order:{rng(data.tags.length - index)}; z-index: {rng(index + 1)};"
     >
       {tag}
     </Chip>

@@ -82,7 +82,6 @@ describe("Product details page", () => {
   })
 
   describe("details section", () => {
-
     it("shows product details", async () => {
       const section = await loadAndRender(PRODUCT.title)
 
