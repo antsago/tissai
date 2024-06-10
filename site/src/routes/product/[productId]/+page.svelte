@@ -1,10 +1,11 @@
 <script lang="ts">
   import type { ProductDetails } from "@tissai/db"
-  import { Photo as MissingImage, Section } from "$lib/components"
+  import { Section } from "$lib/components"
   import TextInfo from "./TextInfo.svelte"
   import ProductSnippet from "./ProductSnippet.svelte"
   import Offer from "./Offer.svelte"
   import Chip from "./Chip.svelte"
+  import ImageCarousel from "./ImageCarousel.svelte"
 
   export let data: ProductDetails
   const rng = function (seed: number) {
@@ -35,14 +36,8 @@
 
 <Section labelledBy="product-details" class="md:flex-row">
   <div class="bg-stone-100 relative">
-    {#if !data.images || data.images.length === 0}
-      <MissingImage title="Sin imagenes" />
-    {:else}
-      {#each data.images as image}
-        <!-- class="sticky top-0 w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover" -->
-        <img alt={data.title} src={image} />
-      {/each}
-    {/if}
+    <!-- class="sticky top-0 w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover" -->
+    <ImageCarousel images={data.images} alt={data.title} />
   </div>
   <div class="flex flex-col md:max-w-sm bg-stone-200 md:rounded">
     <TextInfo
