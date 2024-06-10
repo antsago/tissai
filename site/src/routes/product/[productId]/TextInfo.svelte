@@ -14,7 +14,7 @@
       {#if brand.logo}
         <img class="mr-2 h-4" src={brand.logo} alt="Logo de {brand.name}" />
       {/if}
-      <span class="font-light text-stone-600 italic text-lg">{brand.name}</span>
+      <span class="font-light text-stone-600 uppercase text-sm">{brand.name}</span>
     </div>
   {/if}
   <h1 id="product-details" class="text-stone-900 uppercase text-lg font-medium">
