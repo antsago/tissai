@@ -69,18 +69,6 @@ describe("Product details page", () => {
     return within(section)
   }
 
-  it("shows chips", async () => {
-    const section = await loadAndRender("Etiquetas y categoría")
-
-    const category = section.getByText(PRODUCT.category)
-    const tags = section.getAllByText(
-      new RegExp(`^(${PRODUCT_DETAILS.tags.join(")|(")})$`),
-    )
-
-    expect(category).toBeInTheDocument()
-    expect(tags.length).toBe(PRODUCT_DETAILS.tags.length)
-  })
-
   describe("details section", () => {
     it("shows product details", async () => {
       const section = await loadAndRender(PRODUCT.title)
@@ -88,6 +76,10 @@ describe("Product details page", () => {
       const images = section.getAllByRole("img", { name: PRODUCT.title })
       const heading = section.getByRole("heading")
       const description = section.getByText(PRODUCT.description)
+      const tags = section.getAllByText(
+        new RegExp(`^(${PRODUCT_DETAILS.tags.join(")|(")})$`),
+      )
+      const category = section.getByText(PRODUCT.category)
       const brandName = section.getByText(BRAND.name)
       const brandLogo = section.getByRole("img", {
         name: `Logo de ${BRAND.name}`,
@@ -100,6 +92,8 @@ describe("Product details page", () => {
       expect(noImages).not.toBeInTheDocument()
       expect(heading).toHaveTextContent(PRODUCT.title)
       expect(description).toBeInTheDocument()
+      expect(category).toBeInTheDocument()
+      expect(tags.length).toBe(PRODUCT_DETAILS.tags.length)
       expect(brandName).toBeInTheDocument()
       expect(brandLogo).toHaveAttribute("src", BRAND.logo)
     })

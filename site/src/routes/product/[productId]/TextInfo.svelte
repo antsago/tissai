@@ -8,7 +8,7 @@
   export { classes as class }
 </script>
 
-<div class="{classes} p-8">
+<div class={classes}>
   {#if brand}
     <div class="mb-2 flex flex-row items-center">
       {#if brand.logo}

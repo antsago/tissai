@@ -5,10 +5,12 @@
   export let alt:string
 </script>
 
-{#if !images || images.length === 0}
-  <MissingImage title="Sin imagenes" />
-{:else}
-  {#each images as image}
-    <img {alt} src={image} />
-  {/each}
-{/if}
+<ul class="flex flex-row overflow-x-scroll">
+  {#if !images || images.length === 0}
+    <MissingImage title="Sin imagenes" />
+  {:else}
+    {#each images as image}
+      <img {alt} src={image} />
+    {/each}
+  {/if}
+</ul>

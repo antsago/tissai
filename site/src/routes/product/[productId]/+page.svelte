@@ -17,35 +17,33 @@
   }
 </script>
 
-<section
-  aria-label="Etiquetas y categoría"
-  class="flex flex-wrap justify-center py-6 px-4"
->
-  <Chip style="order:{rng(data.tags.length)}; z-index: {rng(0)};" orange>
-    {data.category}
-  </Chip>
-
-  {#each data.tags as tag, index}
-    <Chip
-      style="order:{rng(data.tags.length - index)}; z-index: {rng(index + 1)};"
-    >
-      {tag}
-    </Chip>
-  {/each}
-</section>
-
 <Section labelledBy="product-details" class="md:flex-row">
   <div class="bg-stone-100 relative">
     <!-- class="sticky top-0 w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover" -->
     <ImageCarousel images={data.images} alt={data.title} />
   </div>
-  <div class="flex flex-col md:max-w-sm bg-stone-200 md:rounded">
+  <div class="flex flex-col md:max-w-sm p-8 bg-stone-200 md:rounded">
     <TextInfo
       class="max-w-prose m-auto"
       brand={data.brand}
       title={data.title}
       description={data.description}
     />
+    <div
+      class="flex flex-wrap justify-left mt-4 px-1"
+    >
+      <Chip style="order:{rng(data.tags.length)}; z-index: {rng(0)};" orange>
+        {data.category}
+      </Chip>
+
+      {#each data.tags as tag, index}
+        <Chip
+          style="order:{rng(data.tags.length - index)}; z-index: {rng(index + 1)};"
+        >
+          {tag}
+        </Chip>
+      {/each}
+    </div>
   </div>
 </Section>
 

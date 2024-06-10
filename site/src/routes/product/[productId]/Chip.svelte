@@ -5,9 +5,9 @@
 
 <span
   {style}
-  class="before:content-[''] rounded-3xl -m-1 px-5 py-1 {orange
-    ? 'border border-orange-700 text-orange-700 bg-orange-50'
-    : 'border border-stone-700 text-stone-700 bg-stone-50'}"
+  class="rounded-full -mx-1 -my-px px-4 py-1 text-xs bg-stone-200 border {orange
+    ? 'border-orange-700 text-orange-600'
+    : 'border-stone-500 text-stone-600'}"
 >
   <slot />
 </span>
