@@ -4,46 +4,20 @@
   import TextInfo from "./TextInfo.svelte"
   import ProductSnippet from "./ProductSnippet.svelte"
   import Offer from "./Offer.svelte"
-  import Chip from "./Chip.svelte"
   import ImageCarousel from "./ImageCarousel.svelte"
 
   export let data: ProductDetails
-  const rng = function (seed: number) {
-    const max = data.tags.length + 1
-    const min = 0
-
-    const rnd = Math.abs(Math.cos(seed))
-    return Math.floor(rnd * (max - min) + min)
-  }
 </script>
 
 <Section labelledBy="product-details" class="md:flex-row">
-  <div class="bg-stone-100 relative">
-    <!-- class="sticky top-0 w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover" -->
+  <div class="bg-stone-100">
     <ImageCarousel images={data.images} alt={data.title} />
   </div>
   <div class="flex flex-col md:max-w-sm p-8 bg-stone-200 md:rounded">
     <TextInfo
       class="max-w-prose m-auto"
-      brand={data.brand}
-      title={data.title}
-      description={data.description}
+      details={data}
     />
-    <div class="flex flex-wrap justify-left mt-4 px-1">
-      <Chip style="order:{rng(data.tags.length)}; z-index: {rng(0)};" orange>
-        {data.category}
-      </Chip>
-
-      {#each data.tags as tag, index}
-        <Chip
-          style="order:{rng(data.tags.length - index)}; z-index: {rng(
-            index + 1,
-          )};"
-        >
-          {tag}
-        </Chip>
-      {/each}
-    </div>
   </div>
 </Section>
 
@@ -51,7 +25,7 @@
   <h2 id="compra-en" class="text-stone-700 text-xl font-medium">Compra en</h2>
   {#if data.offers.length === 0}
     <p class="mt-6 w-full text-center text-stone-500">
-      Producto descatalogado o sin ofertas
+      producto descatalogado o sin ofertas
     </p>
   {:else}
     <ul class="mt-8 flex flex-row flex-wrap justify-center gap-8">
