@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ProductDetails } from "@tissai/db"
   import { Photo as MissingImage, Section } from "$lib/components"
+  import TextInfo from "./TextInfo.svelte"
   import ProductSnippet from "./ProductSnippet.svelte"
   import Offer from "./Offer.svelte"
   import Chip from "./Chip.svelte"
@@ -44,31 +45,12 @@
     {/if}
   </div>
   <div class="flex flex-col md:max-w-sm bg-stone-200 md:rounded">
-    <div class="max-w-prose m-auto p-8">
-      {#if data.brand}
-        <div class="mb-2 flex flex-row items-center">
-          {#if data.brand.logo}
-            <img
-              class="mr-2 h-4"
-              src={data.brand.logo}
-              alt="Logo de {data.brand.name}" 
-            />
-          {/if}
-          <span class="font-light text-stone-600 italic text-lg">{data.brand.name}</span>
-        </div>
-      {/if}
-      <h1
-        id="product-details"
-        class="text-stone-900 uppercase text-lg font-medium"
-      >
-        {data.title}
-      </h1>
-      {#if data.description}
-        <p class="mt-4 text-stone-700 text-base">
-          {data.description}
-        </p>
-      {/if}
-    </div>
+    <TextInfo
+      class="max-w-prose m-auto"
+      brand={data.brand}
+      title={data.title}
+      description={data.description}
+    />
   </div>
 </Section>
 
