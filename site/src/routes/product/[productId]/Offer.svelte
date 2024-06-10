@@ -34,7 +34,7 @@
   </div>
   <div class="mt-4 flex flex-row items-center">
     <img
-      class="mr-2 h-5"
+      class="mr-2 h-5 border border-stone-200/50"
       src={offer.site.icon}
       alt="Icono de {offer.site.name}"
     />
