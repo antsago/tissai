@@ -54,7 +54,7 @@
       Producto descatalogado o sin ofertas
     </p>
   {:else}
-    <ul class="mt-8 space-y-8">
+    <ul class="mt-8 flex flex-row flex-wrap justify-center gap-8">
       {#each data.offers as offer}
         <li>
           <Offer {offer} />

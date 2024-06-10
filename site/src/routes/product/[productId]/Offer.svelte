@@ -7,7 +7,7 @@
 
 <a
   href={offer.url}
-  class="flex flex-col items-center py-4 bg-stone-50 border-stone-300 border rounded-lg"
+  class="flex flex-col items-center w-52 py-4 bg-stone-50 border-stone-300 border rounded-lg"
 >
   <div
     class="w-full flex flex-row border-b border-stone-200 pb-4 px-8 items-end"
@@ -34,7 +34,7 @@
   </div>
   <div class="mt-4 flex flex-row items-center">
     <img
-      class="mr-2 h-5 border border-stone-200/50"
+      class="mr-2 h-5 border border-stone-200/50 rounded-sm"
       src={offer.site.icon}
       alt="Icono de {offer.site.name}"
     />

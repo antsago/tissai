@@ -12,7 +12,7 @@
   {#if brand}
     <div class="mb-2 flex flex-row items-center">
       {#if brand.logo}
-        <img class="mr-2 h-4 border border-stone-300" src={brand.logo} alt="Logo de {brand.name}" />
+        <img class="mr-2 h-4 border border-stone-300 rounded-sm" src={brand.logo} alt="Logo de {brand.name}" />
       {/if}
       <span class="font-light text-stone-600 uppercase text-sm">
         {brand.name}
