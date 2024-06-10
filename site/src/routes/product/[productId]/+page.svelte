@@ -46,10 +46,16 @@
   <div class="flex flex-col md:max-w-sm bg-stone-200 md:rounded">
     <div class="max-w-prose m-auto p-8">
       {#if data.brand}
-        {#if data.brand.logo}
-          <img alt="Logo de {data.brand.name}" src={data.brand.logo} />
-        {/if}
-        <p>{data.brand.name}</p>
+        <div class="mb-2 flex flex-row items-center">
+          {#if data.brand.logo}
+            <img
+              class="mr-2 h-4"
+              src={data.brand.logo}
+              alt="Logo de {data.brand.name}" 
+            />
+          {/if}
+          <span class="font-light text-stone-600 italic text-lg">{data.brand.name}</span>
+        </div>
       {/if}
       <h1
         id="product-details"
