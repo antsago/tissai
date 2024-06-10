@@ -29,16 +29,16 @@
       title={data.title}
       description={data.description}
     />
-    <div
-      class="flex flex-wrap justify-left mt-4 px-1"
-    >
+    <div class="flex flex-wrap justify-left mt-4 px-1">
       <Chip style="order:{rng(data.tags.length)}; z-index: {rng(0)};" orange>
         {data.category}
       </Chip>
 
       {#each data.tags as tag, index}
         <Chip
-          style="order:{rng(data.tags.length - index)}; z-index: {rng(index + 1)};"
+          style="order:{rng(data.tags.length - index)}; z-index: {rng(
+            index + 1,
+          )};"
         >
           {tag}
         </Chip>
