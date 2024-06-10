@@ -15,7 +15,7 @@
   }
 </script>
 
-<div class="flex flex-wrap justify-center py-6 px-4">
+<section aria-label="Etiquetas y categoría" class="flex flex-wrap justify-center py-6 px-4">
   <Chip
     style="order:{rng(data.tags.length)}; z-index: {rng(0)};"
     orange
@@ -30,7 +30,7 @@
       {tag}
     </Chip>
   {/each}
-</div>
+</section>
 
 <Section labelledBy="product-details" class="md:flex-row">
   <div class="bg-stone-100 relative">
