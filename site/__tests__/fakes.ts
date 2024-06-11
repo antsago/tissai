@@ -8,7 +8,7 @@ export const PRODUCT = {
 
 export const SIMILAR = {
   id: "000",
-  name: "Similar product",
+  title: "Similar product",
   image: "https://example.com/related_product.jpg",
 }
 export const QUERY = PRODUCT.title

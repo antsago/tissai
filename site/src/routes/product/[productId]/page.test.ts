@@ -27,13 +27,6 @@ describe("Product details page", () => {
     brand: [BRAND],
     category: PRODUCT.category,
     tags: [...PRODUCT.tags, "muy"],
-    similar: [
-      {
-        title: SIMILAR.name,
-        id: SIMILAR.id,
-        image: SIMILAR.image,
-      },
-    ],
     offers: [
       {
         url: OFFER.url,
@@ -56,6 +49,9 @@ describe("Product details page", () => {
           ...details,
         },
       ],
+    })
+    pg.pool.query.mockResolvedValueOnce({
+      rows: [SIMILAR],
     })
 
     render(page, {
@@ -192,7 +188,7 @@ describe("Product details page", () => {
       const price = section.queryByText(OFFER.price)
       const currency = section.queryByText(OFFER.currency)
       const url = section.queryByRole("link")
-      const noOffers = section.getByText("Producto descatalogado o sin ofertas")
+      const noOffers = section.getByText("producto descatalogado o sin ofertas")
       const undef = section.queryByText("undefined")
 
       expect(url).not.toBeInTheDocument()
@@ -255,7 +251,7 @@ describe("Product details page", () => {
     const buyLink = section.getByRole("link")
 
     expect(heading).toHaveTextContent("Similares")
-    expect(title).toHaveTextContent(SIMILAR.name)
+    expect(title).toHaveTextContent(SIMILAR.title)
     expect(image).toHaveAttribute("src", SIMILAR.image)
     expect(buyLink).toHaveAttribute("href", expect.stringContaining(SIMILAR.id))
   })

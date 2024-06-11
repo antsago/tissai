@@ -130,7 +130,13 @@ describe("db", () => {
       db.products.create(SIMILAR),
       db.products.create(PRODUCT),
     ])
-    await db.offers.create(OFFER)
+    await Promise.all([
+      db.offers.create(OFFER),
+      db.offers.create({
+        ...OFFER,
+        id: "3931b158-a7d2-41d5-9b13-7266fe976a2a",
+      }),
+    ])
 
     const result = await db.getProductDetails(PRODUCT.id)
 
@@ -149,6 +155,16 @@ describe("db", () => {
         },
       ],
       offers: [
+        {
+          url: OFFER.url,
+          price: OFFER.price,
+          currency: OFFER.currency,
+          seller: OFFER.seller,
+          site: {
+            name: SITE.name,
+            icon: SITE.icon,
+          },
+        },
         {
           url: OFFER.url,
           price: OFFER.price,

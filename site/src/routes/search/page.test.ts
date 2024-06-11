@@ -17,7 +17,11 @@ describe("Search page", () => {
   })
 
   it("shows search results", async () => {
-    pg.pool.query.mockResolvedValueOnce({ rows: [SIMILAR] })
+    pg.pool.query.mockResolvedValueOnce({ rows: [{
+      id: SIMILAR.id,
+      name: SIMILAR.title,
+      image: SIMILAR.image,
+    }] })
     python.mockReturnValue(EMBEDDING)
 
     render(page, {
@@ -35,8 +39,8 @@ describe("Search page", () => {
     const detailLink = within(results).getByRole("link")
 
     expect(image).toHaveAttribute("src", SIMILAR.image)
-    expect(image).toHaveAccessibleName(SIMILAR.name)
-    expect(title).toHaveTextContent(SIMILAR.name)
+    expect(image).toHaveAccessibleName(SIMILAR.title)
+    expect(title).toHaveTextContent(SIMILAR.title)
     expect(detailLink).toHaveAttribute(
       "href",
       expect.stringContaining(SIMILAR.id),

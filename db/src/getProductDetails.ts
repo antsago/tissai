@@ -10,18 +10,13 @@ import {
   Site,
 } from "./tables/index.js"
 
-type ProductDetailsResponse = {
+type DetailsResponse = {
   title: Product["title"]
   description: Product["description"]
   images: Product["images"]
   category: Product["category"]
   tags: Product["tags"]
   brand: (Brand | undefined)[]
-  similar: {
-    id: Product["id"]
-    title: Product["title"]
-    image?: string
-  }[]
   offers: {
     url: Offer["url"]
     price: Offer["price"]
@@ -33,55 +28,69 @@ type ProductDetailsResponse = {
     }
   }[]
 }
+type SimilarResponse = {
+  id: Product["id"]
+  title: Product["title"]
+  image?: string
+}
 
 const getProductDetails =
   (connection: Connection) => async (productId: Product["id"]) => {
-    const [response] = await connection.query<ProductDetailsResponse>(
+    const [details] = await connection.query<DetailsResponse>(
       `
-      SELECT
-        p.${PRODUCTS.title},
-        p.${PRODUCTS.description},
-        p.${PRODUCTS.images},
-        p.${PRODUCTS.category},
-        p.${PRODUCTS.tags},
-        JSON_AGG(b.*) AS brand,
-        JSON_AGG(sim.*) AS similar,
-        JSON_AGG(
-          JSON_BUILD_OBJECT(
-            'url', o.${OFFERS.url},
-            'price', o.${OFFERS.price},
-            'currency', o.${OFFERS.currency},
-            'seller', o.${OFFERS.seller},
-            'site', JSON_BUILD_OBJECT(
-              'name', s.${SITES.name},
-              'icon', s.${SITES.icon}
+        SELECT
+          p.${PRODUCTS.title},
+          p.${PRODUCTS.description},
+          p.${PRODUCTS.images},
+          p.${PRODUCTS.category},
+          p.${PRODUCTS.tags},
+          JSON_AGG(b.*) AS brand,
+          JSON_AGG(
+            JSON_BUILD_OBJECT(
+              'url', o.${OFFERS.url},
+              'price', o.${OFFERS.price},
+              'currency', o.${OFFERS.currency},
+              'seller', o.${OFFERS.seller},
+              'site', JSON_BUILD_OBJECT(
+                'name', s.${SITES.name},
+                'icon', s.${SITES.icon}
+              )
             )
-          )
-        ) AS offers
-      FROM 
-        ${PRODUCTS} AS p
-        LEFT JOIN ${OFFERS} AS o ON o.${OFFERS.product} = p.${PRODUCTS.id}
-        INNER JOIN ${SITES} AS s ON o.${OFFERS.site} = s.${SITES.id}
-        LEFT JOIN ${BRANDS} AS b ON b.${BRANDS.name} = p.${PRODUCTS.brand},
-        LATERAL (
+          ) AS offers
+        FROM 
+          ${PRODUCTS} AS p
+          LEFT JOIN ${OFFERS} AS o ON o.${OFFERS.product} = p.${PRODUCTS.id}
+          INNER JOIN ${SITES} AS s ON o.${OFFERS.site} = s.${SITES.id}
+          LEFT JOIN ${BRANDS} AS b ON b.${BRANDS.name} = p.${PRODUCTS.brand}
+        WHERE p.${PRODUCTS.id} = $1
+        GROUP BY p.${PRODUCTS.id};
+      `,
+      [productId],
+    )
+    
+    const similar = await connection.query<SimilarResponse>(
+      `
+        SELECT
+          ${PRODUCTS.id},
+          ${PRODUCTS.title},
+          ${PRODUCTS.images}[1] AS image
+        FROM ${PRODUCTS}
+        WHERE ${PRODUCTS.id} != $1
+        ORDER BY ${PRODUCTS.embedding} <-> (
           SELECT
-            ${PRODUCTS.id},
-            ${PRODUCTS.title},
-            ${PRODUCTS.images}[1] AS image
-          FROM ${PRODUCTS} AS p2
-          WHERE p.${PRODUCTS.id} != p2.${PRODUCTS.id}
-          ORDER BY p2.${PRODUCTS.embedding} <-> p.${PRODUCTS.embedding}
-          LIMIT 4
-        ) AS sim
-      WHERE p.${PRODUCTS.id} = $1
-      GROUP BY p.${PRODUCTS.id};
-    `,
+            ${PRODUCTS.embedding}
+          FROM ${PRODUCTS}
+          WHERE ${PRODUCTS.id} = $1
+        )
+        LIMIT 4
+      `,
       [productId],
     )
 
     return {
-      ...response,
-      brand: response.brand[0],
+      ...details,
+      brand: details.brand[0],
+      similar,
     }
   }
 
