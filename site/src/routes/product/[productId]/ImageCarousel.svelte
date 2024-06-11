@@ -9,7 +9,7 @@
   <ul class="flex flex-row space-x-4 px-12 py-4 w-max min-w-full h-full justify-center items-center">
     {#if !images || images.length === 0}
       <li
-        class="flex w-44 h-28 m-auto bg-stone-200/50 rounded border border-stone-300"
+        class="flex m-auto w-44 h-28 md:w-80 md:h-56 bg-stone-200/50 rounded border border-stone-300"
       >
         <MissingImage
           class="m-auto stroke-[0.5] text-stone-500/25 h-10"
