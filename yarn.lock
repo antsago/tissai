@@ -828,12 +828,12 @@ __metadata:
     "@tissai/python-pool": "workspace:*"
     "@tsconfig/node20": "npm:20.1.4"
     "@types/he": "npm:^1"
-    "@types/lodash.defaults": "npm:^4"
+    "@types/lodash": "npm:4.17.5"
     "@types/node": "npm:20.12.7"
     "@types/pg": "npm:^8"
     "@types/pg-cursor": "npm:^2"
     he: "npm:1.2.0"
-    lodash.defaults: "npm:4.2.0"
+    lodash: "npm:4.17.21"
     node-html-parser: "npm:6.1.13"
     ora: "npm:8.0.1"
     typescript: "npm:5.4.5"
@@ -922,19 +922,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash.defaults@npm:^4":
-  version: 4.2.9
-  resolution: "@types/lodash.defaults@npm:4.2.9"
-  dependencies:
-    "@types/lodash": "npm:*"
-  checksum: 10c0/cf5c0318b67161e0cf40e6a124ad19fa102aa6b9b7c997d8f0f2609f725e5bd9b549bb0786369b22fc3983312f707673322cc04934b1f848ad935328758a3dfb
-  languageName: node
-  linkType: hard
-
-"@types/lodash@npm:*":
-  version: 4.17.4
-  resolution: "@types/lodash@npm:4.17.4"
-  checksum: 10c0/0124c64cb9fe7a0f78b6777955abd05ef0d97844d49118652eae45f8fa57bfb7f5a7a9bccc0b5a84c0a6dc09631042e4590cb665acb9d58dfd5e6543c75341ec
+"@types/lodash@npm:4.17.5":
+  version: 4.17.5
+  resolution: "@types/lodash@npm:4.17.5"
+  checksum: 10c0/55924803ed853e72261512bd3eaf2c5b16558c3817feb0a3125ef757afe46e54b86f33d1960e40b7606c0ddab91a96f47966bf5e6006b7abfd8994c13b04b19b
   languageName: node
   linkType: hard
 
@@ -3574,13 +3565,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.defaults@npm:4.2.0":
-  version: 4.2.0
-  resolution: "lodash.defaults@npm:4.2.0"
-  checksum: 10c0/d5b77aeb702caa69b17be1358faece33a84497bcca814897383c58b28a2f8dfc381b1d9edbec239f8b425126a3bbe4916223da2a576bb0411c2cefd67df80707
-  languageName: node
-  linkType: hard
-
 "lodash.merge@npm:^4.6.2":
   version: 4.6.2
   resolution: "lodash.merge@npm:4.6.2"
@@ -3588,7 +3572,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.17.21":
+"lodash@npm:4.17.21, lodash@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: 10c0/d8cbea072bb08655bb4c989da418994b073a608dffa608b09ac04b43a791b12aeae7cd7ad919aa4c925f33b48490b5cfe6c1f71d827956071dae2e7bb3a6b74c

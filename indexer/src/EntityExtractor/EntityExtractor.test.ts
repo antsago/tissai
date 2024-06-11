@@ -313,6 +313,29 @@ describe("EntityExtractor", () => {
         },
       ])
     })
+
+    it("ignores duplicated offers", async () => {
+      const offer2 = {
+        id: "something-different",
+        ...jsonLd.offers[0],
+      }
+
+      const { offers } = await extractor.extract(
+        {
+          jsonLd: [
+            {
+              ...jsonLd,
+              offers: [jsonLd.offers[0], offer2],
+            },
+          ],
+          opengraph: {},
+          headings: {},
+        },
+        PAGE,
+      )
+
+      expect(offers.length).toStrictEqual(1)
+    })
   })
 
   describe("sellers", () => {

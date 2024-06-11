@@ -11,7 +11,7 @@ import type { StructuredData } from "../parsePage.js"
 import { dirname } from "node:path"
 import { randomUUID } from "node:crypto"
 import { fileURLToPath } from "node:url"
-import defaults from "lodash.defaults"
+import _ from "lodash"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
 
@@ -78,7 +78,7 @@ export const EntityExtractor = () => {
         title: headings.title,
         description: headings.description,
       }
-      const structuredInfo = defaults(
+      const structuredInfo = _.defaults(
         {},
         jsonLdInfo,
         opengraphInfo,
@@ -117,9 +117,8 @@ export const EntityExtractor = () => {
         embedding: derivedInfo.embedding,
       }
 
-      const offers = (structuredInfo.offers as OfferStructuredInfo[])?.map(
+      const rawOffers = (structuredInfo.offers as OfferStructuredInfo[])?.map(
         (offer) => ({
-          id: randomUUID(),
           url: page.url,
           site: page.site,
           product: product.id,
@@ -129,7 +128,6 @@ export const EntityExtractor = () => {
         }),
       ) ?? [
         {
-          id: randomUUID(),
           url: page.url,
           site: page.site,
           product: product.id,
@@ -138,6 +136,11 @@ export const EntityExtractor = () => {
           seller: undefined,
         },
       ]
+
+      const offers = _.uniqWith(rawOffers, _.isEqual).map((o) => ({
+        ...o,
+        id: randomUUID(),
+      }))
 
       return {
         category,
