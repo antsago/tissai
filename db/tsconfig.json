@@ -1,11 +1,11 @@
 {
   "extends": "@tsconfig/node20/tsconfig.json",
   "compilerOptions": {
-    "rootDir": "./src",
+    "rootDir": ".",
     "outDir": "build",
     "composite": true,
     "declarationMap": true
   },
-  "include": ["./src/**/*", "db"],
+  "include": ["./src/**/*", "./__tests__/**/*"],
   "exclude": ["**/*.test.ts"]
 }

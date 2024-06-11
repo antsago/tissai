@@ -10,7 +10,12 @@
   "scripts": {
     "format": "yarn format:js & yarn format:py",
     "format:js": "prettier --write .",
-    "format:py": "poetry run black ."
+    "format:py": "poetry run black .",
+    "db": "yarn workspace @tissai/db",
+    "site": "yarn workspace @tissai/site",
+    "indexer": "yarn workspace @tissai/indexer",
+    "pp": "yarn workspace @tissai/python-pool",
+    "test": "yarn db test && yarn pp test && yarn indexer test && yarn site test"
   },
   "devDependencies": {
     "prettier": "3.3.0",

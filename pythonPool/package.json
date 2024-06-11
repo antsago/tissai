@@ -9,8 +9,8 @@
     "test": "vitest run"
   },
   "exports": {
-    ".": "./build/index.js",
-    "./mocks": "./__tests__/utils/index.js"
+    ".": "./build/src/index.js",
+    "./mocks": "./build/__tests__/utils/index.js"
   },
   "imports": {
     "#mocks": "./__tests__/utils/index.ts"
