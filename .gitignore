@@ -1,9 +1,11 @@
 # Mac
 .DS_Store
 
-# Node
+# Node & TS
 node_modules
 coverage
+build
+*.tsbuildinfo
 
 # Python
 __pycache__
@@ -25,13 +27,9 @@ __pycache__
 !.env.example
 
 # Site folder
-/site/build
 /site/.svelte-kit
 /site/vite.config.js.timestamp-*
 /site/vite.config.ts.timestamp-*
-
-# Indexer folder
-/indexer/build
 
 # Data folder
 /data

@@ -9,7 +9,7 @@
     "test": "vitest run"
   },
   "exports": {
-    ".": "./src/index.js",
+    ".": "./build/index.js",
     "./mocks": "./__tests__/utils/index.js"
   },
   "imports": {
