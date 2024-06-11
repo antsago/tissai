@@ -6,8 +6,7 @@
 </script>
 
 <div class="w-full overflow-x-scroll">
-  <ul class="flex flex-row space-x-4 px-12 py-4 w-max min-w-full justify-center">
-    <!-- class="sticky top-0 w-full max-w-sm md:max-w-md mx-auto md:rounded border border-stone-200/50 aspect-square object-cover" -->
+  <ul class="flex flex-row space-x-4 px-12 py-4 w-max min-w-full h-full justify-center items-center">
     {#if !images || images.length === 0}
       <li
         class="flex w-44 h-28 m-auto bg-stone-200/50 rounded border border-stone-300"
@@ -19,7 +18,7 @@
       </li>
     {:else}
       {#each images as image}
-        <li class="max-w-[calc(100vw-6rem)]">
+        <li class="max-w-[calc(100vw-6rem)] md:max-w-[calc(100vw-26rem)]">
           <img
             class="w-full max-h-96 rounded border border-stone-200/50 aspect-square object-cover"
             src={image}
