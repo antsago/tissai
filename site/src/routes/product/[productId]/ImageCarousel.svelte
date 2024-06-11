@@ -6,7 +6,9 @@
 </script>
 
 <div class="w-full overflow-x-scroll">
-  <ul class="flex flex-row space-x-4 px-12 py-4 w-max min-w-full h-full justify-center items-center">
+  <ul
+    class="flex flex-row space-x-4 px-12 py-4 w-max min-w-full h-full justify-center items-center"
+  >
     {#if !images || images.length === 0}
       <li
         class="flex m-auto w-44 h-28 md:w-80 md:h-56 bg-stone-200/50 rounded border border-stone-300"

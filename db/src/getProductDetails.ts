@@ -67,7 +67,7 @@ const getProductDetails =
       `,
       [productId],
     )
-    
+
     const similar = await connection.query<SimilarResponse>(
       `
         SELECT

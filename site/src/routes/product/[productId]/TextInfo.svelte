@@ -19,7 +19,11 @@
   {#if details.brand}
     <div class="mb-2 flex flex-row items-center">
       {#if details.brand.logo}
-        <img class="mr-2 h-4 border border-stone-300 rounded-sm" src={details.brand.logo} alt="Logo de {details.brand.name}" />
+        <img
+          class="mr-2 h-4 border border-stone-300 rounded-sm"
+          src={details.brand.logo}
+          alt="Logo de {details.brand.name}"
+        />
       {/if}
       <span class="font-light text-stone-600 uppercase text-sm">
         {details.brand.name}

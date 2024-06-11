@@ -11,11 +11,10 @@
 
 <Section labelledBy="product-details" class="md:flex-row">
   <ImageCarousel images={data.images} alt={data.title} />
-  <div class="flex flex-col md:max-w-80 lg:max-w-sm p-8 bg-stone-200 md:rounded-r">
-    <TextInfo
-      class="max-w-prose m-auto"
-      details={data}
-    />
+  <div
+    class="flex flex-col md:max-w-80 lg:max-w-sm p-8 bg-stone-200 md:rounded-r"
+  >
+    <TextInfo class="max-w-prose m-auto" details={data} />
   </div>
 </Section>
 

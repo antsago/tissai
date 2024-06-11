@@ -17,11 +17,15 @@ describe("Search page", () => {
   })
 
   it("shows search results", async () => {
-    pg.pool.query.mockResolvedValueOnce({ rows: [{
-      id: SIMILAR.id,
-      name: SIMILAR.title,
-      image: SIMILAR.image,
-    }] })
+    pg.pool.query.mockResolvedValueOnce({
+      rows: [
+        {
+          id: SIMILAR.id,
+          name: SIMILAR.title,
+          image: SIMILAR.image,
+        },
+      ],
+    })
     python.mockReturnValue(EMBEDDING)
 
     render(page, {
