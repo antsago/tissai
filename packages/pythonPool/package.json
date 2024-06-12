@@ -4,12 +4,11 @@
   "packageManager": "yarn@4.1.1",
   "type": "module",
   "scripts": {
-    "start": "poetry run node build/index.js",
     "test": "vitest run"
   },
   "exports": {
-    ".": "./build/src/index.js",
-    "./mocks": "./build/__tests__/utils/index.js"
+    ".": "./src/index.js",
+    "./mocks": "./__tests__/utils/index.js"
   },
   "imports": {
     "#mocks": "./__tests__/utils/index.ts"

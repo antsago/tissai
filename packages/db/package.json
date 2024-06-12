@@ -8,8 +8,8 @@
     "test:integration": "vitest run __tests__"
   },
   "exports": {
-    ".": "./build/src/index.js",
-    "./mocks": "./build/__tests__/utils/index.js"
+    ".": "./src/index.js",
+    "./mocks": "./__tests__/utils/index.js"
   },
   "imports": {
     "#mocks": "./__tests__/utils/index.ts"
