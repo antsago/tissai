@@ -3,7 +3,7 @@ import { PRODUCTS, Product } from "./tables/index.js"
 
 type SearchResult = {
   id: Product["id"]
-  name: Product["title"]
+  title: Product["title"]
   image?: string
 }
 
@@ -13,7 +13,7 @@ const searchProducts =
       `
         SELECT
           ${PRODUCTS.id},
-          ${PRODUCTS.title} AS name,
+          ${PRODUCTS.title},
           ${PRODUCTS.images}[1] AS image
         FROM ${PRODUCTS}
         ORDER BY ${PRODUCTS.embedding} <-> $1

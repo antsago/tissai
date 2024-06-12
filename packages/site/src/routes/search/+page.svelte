@@ -14,14 +14,14 @@
       <div class="w-full flex-basis-6 max-h-[25rem] rounded-t">
         <img
           src={product.image}
-          alt={product.name}
+          alt={product.title}
           class="h-full mx-auto rounded-t border border-b-0 border-stone-300/50"
         />
       </div>
       <h3
         class="block w-full px-4 py-3 border rounded-b border-stone-300/50 text-base text-center truncate text-stone-700"
       >
-        {product.name}
+        {product.title}
       </h3>
     </a>
   </Masonry>

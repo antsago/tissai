@@ -99,12 +99,12 @@ describe("db", () => {
     expect(result).toStrictEqual([
       {
         id: product2.id,
-        name: product2.title,
+        title: product2.title,
         image: product2.images[0],
       },
       {
         id: product1.id,
-        name: product1.title,
+        title: product1.title,
         image: product1.images[0],
       },
     ])
