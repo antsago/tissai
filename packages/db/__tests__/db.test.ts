@@ -72,7 +72,7 @@ describe("db", () => {
   })
 
   it("searches products", async ({ expect }) => {
-    await Promise.all([db.categories.create(CATEGORY), db.tags.create(TAG)])
+    await Promise.all([db.categories.create(CATEGORY), db.tags.create(TAG), db.brands.create(BRAND)])
     const baseProduct = {
       title: PRODUCT.title,
       images: PRODUCT.images,
@@ -83,6 +83,7 @@ describe("db", () => {
       ...baseProduct,
       id: randomUUID(),
       embedding: [0, ...PRODUCT.embedding.slice(1)],
+      brand: PRODUCT.brand,
     }
     const product2 = {
       ...baseProduct,
@@ -101,11 +102,13 @@ describe("db", () => {
         id: product2.id,
         title: product2.title,
         image: product2.images[0],
+        brand: undefined,
       },
       {
         id: product1.id,
         title: product1.title,
         image: product1.images[0],
+        brand: BRAND,
       },
     ])
   })

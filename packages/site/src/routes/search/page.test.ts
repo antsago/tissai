@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, beforeEach } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
-import { QUERY, SIMILAR, MockPg, MockPython, EMBEDDING } from "mocks"
+import { QUERY, SIMILAR, MockPg, MockPython, EMBEDDING, BRAND } from "mocks"
 import { Products } from "$lib/server"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
@@ -17,7 +17,10 @@ describe("Search page", () => {
   })
 
   it("shows search results", async () => {
-    pg.pool.query.mockResolvedValueOnce({ rows: [SIMILAR] })
+    pg.pool.query.mockResolvedValueOnce({ rows: [{
+      ...SIMILAR,
+      brand: [BRAND],
+    }] })
     python.mockReturnValue(EMBEDDING)
 
     render(page, {
@@ -31,12 +34,16 @@ describe("Search page", () => {
       name: "Resultados de la búsqueda",
     })
     const title = within(results).getByRole("heading", { level: 3 })
-    const image = within(results).getByRole("img")
+    const image = within(results).getByRole("img", { name: SIMILAR.title })
     const detailLink = within(results).getByRole("link")
+    // const brandName = within(results).getByText(BRAND.name)
+    const brand = within(results).getByRole("img", {
+      name: `Logo de ${BRAND.name}`,
+    })
 
     expect(image).toHaveAttribute("src", SIMILAR.image)
-    expect(image).toHaveAccessibleName(SIMILAR.title)
     expect(title).toHaveTextContent(SIMILAR.title)
+    expect(brand).toBeInTheDocument()
     expect(detailLink).toHaveAttribute(
       "href",
       expect.stringContaining(SIMILAR.id),
