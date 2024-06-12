@@ -20,10 +20,14 @@
         />
       </div>
       {#if product.brand}
-        <img
-          src={product.brand.logo}
-          alt="Logo de {product.brand.name}"
-        />
+        {#if product.brand.logo}
+          <img
+            src={product.brand.logo}
+            alt="Logo de {product.brand.name}"
+          />
+        {:else}
+          <span>{product.brand.name}</span>
+        {/if}
       {/if}
       <h3
         class="block w-full px-4 py-3 border rounded-b border-stone-300/50 text-base text-center truncate text-stone-700"
