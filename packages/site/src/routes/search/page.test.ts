@@ -16,10 +16,11 @@ describe("Search page", () => {
     python = MockPython()
   })
 
-  it("shows search results", async () => {
+  async function loadAndRender(overwrite = {}) {
     pg.pool.query.mockResolvedValueOnce({ rows: [{
       ...SIMILAR,
       brand: [BRAND],
+      ...overwrite,
     }] })
     python.mockReturnValue(EMBEDDING)
 
@@ -33,11 +34,18 @@ describe("Search page", () => {
     const results = screen.getByRole("region", {
       name: "Resultados de la búsqueda",
     })
-    const title = within(results).getByRole("heading", { level: 3 })
-    const image = within(results).getByRole("img", { name: SIMILAR.title })
-    const detailLink = within(results).getByRole("link")
-    const brandName = within(results).queryByText(BRAND.name)
-    const brandLogo = within(results).getByRole("img", {
+    
+    return within(results)
+  }
+
+  it("shows search results", async () => {
+    const results = await loadAndRender()
+
+    const title = results.getByRole("heading", { level: 3 })
+    const image = results.getByRole("img", { name: SIMILAR.title })
+    const detailLink = results.getByRole("link")
+    const brandName = results.queryByText(BRAND.name)
+    const brandLogo = results.getByRole("img", {
       name: `Logo de ${BRAND.name}`,
     })
 
@@ -52,26 +60,14 @@ describe("Search page", () => {
   })
 
   it("handles brands without logo", async () => {
-    pg.pool.query.mockResolvedValueOnce({ rows: [{
-      ...SIMILAR,
+    const results = await loadAndRender({
       brand: [{
         name: BRAND.name,
       }],
-    }] })
-    python.mockReturnValue(EMBEDDING)
-
-    render(page, {
-      data: await load({
-        url: new URL(`http://localhost:3000/search?q=${QUERY}`),
-        locals: { products: Products() },
-      } as any),
-    } as any)
-
-    const results = screen.getByRole("region", {
-      name: "Resultados de la búsqueda",
     })
-    const brandName = within(results).getByText(BRAND.name)
-    const brandLogo = within(results).queryByRole("img", {
+
+    const brandName = results.getByText(BRAND.name)
+    const brandLogo = results.queryByRole("img", {
       name: `Logo de ${BRAND.name}`,
     })
 
