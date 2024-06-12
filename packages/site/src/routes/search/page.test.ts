@@ -74,4 +74,20 @@ describe("Search page", () => {
     expect(brandName).toBeInTheDocument()
     expect(brandLogo).not.toBeInTheDocument()
   })
+
+  it("handles products without brand", async () => {
+    const results = await loadAndRender({
+      brand: [null],
+    })
+
+    const undef = results.queryByText('undefined')
+    const brandName = results.queryByText(BRAND.name)
+    const brandLogo = results.queryByRole("img", {
+      name: `Logo de ${BRAND.name}`,
+    })
+
+    expect(brandName).not.toBeInTheDocument()
+    expect(brandLogo).not.toBeInTheDocument()
+    expect(undef).not.toBeInTheDocument()
+  })
 })
