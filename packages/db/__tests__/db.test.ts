@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto"
-import { describe, test, beforeEach, afterEach, afterAll } from "vitest"
+import { describe, test } from "vitest"
 import {
   PRODUCT,
   SITE,
@@ -9,24 +9,11 @@ import {
   CATEGORY,
   TAG,
   SELLER,
+  dbFixture,
 } from "#mocks"
-import { Db, PRODUCTS } from "../src"
+import { PRODUCTS } from "../src/index.js"
 
-const dbFixture = async ({}, use) => {
-  const masterDb = Db()
-  const TEST_TABLE = randomUUID()
-  await masterDb.query(`CREATE DATABASE "${TEST_TABLE}";`)
-  const db = Db(TEST_TABLE)
-  await db.initialize()
-
-  await use(db)
-
-  await db.close()
-  await masterDb.query(`DROP DATABASE "${TEST_TABLE}";`)
-  await masterDb.close()
-}
-
-const it = test.extend<{ db: Db }>({
+const it = test.extend<{ db: dbFixture }>({
   db: dbFixture
 })
 
