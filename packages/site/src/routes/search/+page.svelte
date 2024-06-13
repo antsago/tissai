@@ -8,7 +8,9 @@
 </script>
 
 <Section label="Filtros">
-  <span>{$page.url.searchParams.get("brand")}</span>
+  {#if $page.url.searchParams.get("brand")}
+    <span>{$page.url.searchParams.get("brand")}</span>
+  {/if}
 </Section>
 
 <Section label="Resultados de la búsqueda">

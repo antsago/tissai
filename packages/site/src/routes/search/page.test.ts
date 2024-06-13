@@ -121,4 +121,14 @@ describe("Search page", () => {
 
     expect(brandName).toBeInTheDocument()
   })
+
+  it("handles filterless search", async () => {
+    const results = await loadAndRender({
+      sectionName: "Filtros",
+    })
+
+    const undef = results.queryByText(new RegExp('^undefined|null$'))
+
+    expect(undef).not.toBeInTheDocument()
+  })
 })
