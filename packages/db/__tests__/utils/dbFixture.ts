@@ -1,21 +1,20 @@
 import { randomUUID } from "node:crypto"
-import { test } from "vitest"
+import { TaskContext, TestContext } from "vitest"
 import { Db } from "../../src/index.js"
 
-type Fixture<T> = Parameters<typeof test.extend<{ db: T }>>[0]["db"]
+export type dbFixture = Db & { name: string } 
 
-export const dbFixture: Fixture<Db> = async ({}, use) => {
+export const dbFixture = async ({}: TaskContext & TestContext, use: (db: dbFixture) => any) => {
   const masterDb = Db()
-  const TEST_TABLE = randomUUID()
-  await masterDb.query(`CREATE DATABASE "${TEST_TABLE}";`)
-  const db = Db(TEST_TABLE)
+  const TEST_DB = randomUUID()
+  await masterDb.query(`CREATE DATABASE "${TEST_DB}";`)
+  const db = Db(TEST_DB)
   await db.initialize()
 
-  await use(db)
+  await use({ name: TEST_DB, ...db })
 
   await db.close()
-  await masterDb.query(`DROP DATABASE "${TEST_TABLE}";`)
+  await masterDb.query(`DROP DATABASE "${TEST_DB}";`)
   await masterDb.close()
 }
 
-export type dbFixture = Db

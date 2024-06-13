@@ -1,7 +1,6 @@
 import {
-  expect,
   describe,
-  it,
+  test,
   beforeEach,
   afterEach,
   vi,
@@ -16,6 +15,7 @@ import {
   SELLERS,
   BRANDS,
 } from "@tissai/db"
+import { dbFixture } from "@tissai/db/mocks"
 import {
   PRODUCT,
   DERIVED_DATA,
@@ -26,7 +26,10 @@ import {
   BRAND,
 } from "#mocks"
 
-const TEST_TABLE = "test"
+const it = test.extend<{ db: dbFixture }>({
+  db: dbFixture as any
+})
+
 const FULL_SCHEMA = {
   "@context": "https://schema.org/",
   "@type": "Product",
@@ -69,30 +72,15 @@ vi.mock("ora", async () => {
 })
 
 describe("indexer", () => {
-  const masterDb = Db()
-  vi.stubEnv("PG_DATABASE", TEST_TABLE)
-
-  let db: Db
-  beforeEach(async () => {
+  beforeEach<{ db: dbFixture }>(({ db }) => {
     vi.resetModules()
-
-    await masterDb.query(`CREATE DATABASE ${TEST_TABLE};`)
-
-    db = Db()
-    await db.initialize()
+    vi.stubEnv("PG_DATABASE", db.name)
   })
-
-  afterEach(async () => {
-    await db.close()
-
-    await masterDb.query(`DROP DATABASE ${TEST_TABLE};`)
+  afterEach(() => {
+    vi.unstubAllEnvs()
   })
-
-  afterAll(async () => {
-    await masterDb.close()
-  })
-
-  it("extracts and stores page entities", async () => {
+  
+  it("extracts and stores page entities", async ({ expect, db }) => {
     await db.sites.create(SITE)
     await db.pages.create(pageWithSchema(FULL_SCHEMA))
 
@@ -180,7 +168,7 @@ describe("indexer", () => {
     )
   })
 
-  it("handles duplicates", async () => {
+  it("handles duplicates", async ({ expect, db }) => {
     await db.sites.create(SITE)
     await db.pages.create(pageWithSchema(FULL_SCHEMA))
     db.categories.create({ name: DERIVED_DATA.category })
