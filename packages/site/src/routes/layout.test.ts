@@ -1,5 +1,3 @@
-import type { Page } from "@sveltejs/kit"
-import type { Readable, Subscriber } from "svelte/store"
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { render, screen, cleanup, within } from "@testing-library/svelte"
@@ -7,44 +5,7 @@ import * as stores from "$app/stores"
 import { QUERY } from "mocks"
 import page from "./+layout.svelte"
 
-vi.mock("$app/stores", () => {
-  let pageValue: Omit<Page, "state"> = {
-    url: new URL("http://localhost:3000"),
-    params: {},
-    status: 200,
-    error: null,
-    data: {},
-    route: {
-      id: null,
-    },
-    form: undefined,
-  }
-
-  let subscription: Subscriber<Omit<Page, "state">> | undefined
-  const setPage = (newValue: Partial<Page>) => {
-    pageValue = {
-      ...pageValue,
-      ...newValue,
-    }
-    subscription?.(pageValue)
-  }
-
-  const pageStore: Readable<Omit<Page, "state">> = {
-    subscribe: (subFn) => {
-      subscription = subFn
-      subscription(pageValue)
-
-      return () => {
-        subscription = undefined
-      }
-    },
-  }
-
-  return {
-    page: pageStore,
-    setPage,
-  }
-})
+vi.mock("$app/stores", async () => (await import('mocks')).storesMock())
 
 describe("Layout", () => {
   beforeEach(() => {
