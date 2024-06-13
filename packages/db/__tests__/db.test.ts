@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto"
-import { describe, it, beforeEach, afterEach, afterAll } from "vitest"
+import { describe, test, beforeEach, afterEach, afterAll } from "vitest"
 import {
   PRODUCT,
   SITE,
@@ -12,30 +12,26 @@ import {
 } from "#mocks"
 import { Db, PRODUCTS } from "../src"
 
-describe("db", () => {
+const dbFixture = async ({}, use) => {
   const masterDb = Db()
+  const TEST_TABLE = randomUUID()
+  await masterDb.query(`CREATE DATABASE "${TEST_TABLE}";`)
+  const db = Db(TEST_TABLE)
+  await db.initialize()
 
-  let db: Db
-  let TEST_TABLE: string
-  beforeEach(async () => {
-    TEST_TABLE = randomUUID()
-    await masterDb.query(`CREATE DATABASE "${TEST_TABLE}";`)
+  await use(db)
 
-    db = Db(TEST_TABLE)
-    await db.initialize()
-  })
+  await db.close()
+  await masterDb.query(`DROP DATABASE "${TEST_TABLE}";`)
+  await masterDb.close()
+}
 
-  afterEach(async () => {
-    await db.close()
+const it = test.extend<{ db: Db }>({
+  db: dbFixture
+})
 
-    await masterDb.query(`DROP DATABASE "${TEST_TABLE}";`)
-  })
-
-  afterAll(async () => {
-    await masterDb.close()
-  })
-
-  it("creates entities", async ({ expect }) => {
+describe.concurrent("db", () => {
+  it("creates entities", async ({ expect, db }) => {
     await db.sites.create(SITE)
     await db.pages.create(PAGE)
     await db.categories.create(CATEGORY)
@@ -71,7 +67,7 @@ describe("db", () => {
     ])
   })
 
-  it("searches products", async ({ expect }) => {
+  it("searches products", async ({ expect, db }) => {
     await Promise.all([db.categories.create(CATEGORY), db.tags.create(TAG), db.brands.create(BRAND)])
     const baseProduct = {
       title: PRODUCT.title,
@@ -113,7 +109,7 @@ describe("db", () => {
     ])
   })
 
-  it("gets product details", async ({ expect }) => {
+  it("gets product details", async ({ expect, db }) => {
     await Promise.all([
       db.categories.create(CATEGORY),
       db.tags.create(TAG),

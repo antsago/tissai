@@ -139,7 +139,7 @@ describe("Search page", () => {
     expect(undef).not.toBeInTheDocument()
   })
 
-  it("displays brand filters", async () => {
+  it("displays brands filter", async () => {
     const results = await loadAndRender({ queryParams: `brand=${BRAND.name}`, sectionName: "Filtros" })
 
     const brandName = results.getByText(BRAND.name)
