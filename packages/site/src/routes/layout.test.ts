@@ -5,7 +5,7 @@ import * as stores from "$app/stores"
 import { QUERY } from "mocks"
 import page from "./+layout.svelte"
 
-vi.mock("$app/stores", async () => (await import('mocks')).storesMock())
+vi.mock("$app/stores", async () => (await import("mocks")).storesMock())
 
 describe("Layout", () => {
   beforeEach(() => {

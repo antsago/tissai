@@ -1,6 +1,16 @@
 import { randomUUID } from "node:crypto"
 import { TaskContext, TestContext } from "vitest"
-import { Brand, Category, Db, Offer, Page, Product, Seller, Site, Tag } from "../../src/index.js"
+import {
+  Brand,
+  Category,
+  Db,
+  Offer,
+  Page,
+  Product,
+  Seller,
+  Site,
+  Tag,
+} from "../../src/index.js"
 
 type State = Partial<{
   sites: Site[]
@@ -14,25 +24,32 @@ type State = Partial<{
 }>
 
 const load = (db: Db) => async (state: State) => {
-  await Promise.all([
-    state.sites?.map(s => db.sites.create(s)),
-    state.categories?.map(c => db.categories.create(c)),
-    state.tags?.map(t => db.tags.create(t)),
-    state.sellers?.map(s => db.sellers.create(s)),
-    state.brands?.map(b => db.brands.create(b)),
-  ].flat())
+  await Promise.all(
+    [
+      state.sites?.map((s) => db.sites.create(s)),
+      state.categories?.map((c) => db.categories.create(c)),
+      state.tags?.map((t) => db.tags.create(t)),
+      state.sellers?.map((s) => db.sellers.create(s)),
+      state.brands?.map((b) => db.brands.create(b)),
+    ].flat(),
+  )
 
-  await Promise.all([
-    state.pages?.map(p => db.pages.create(p)),
-    state.products?.map(p => db.products.create(p)),
-  ].flat())
+  await Promise.all(
+    [
+      state.pages?.map((p) => db.pages.create(p)),
+      state.products?.map((p) => db.products.create(p)),
+    ].flat(),
+  )
 
-  await Promise.all(state.offers?.map(o => db.offers.create(o)) ?? [])
+  await Promise.all(state.offers?.map((o) => db.offers.create(o)) ?? [])
 }
 
-export type dbFixture = Db & { name: string, load: ReturnType<typeof load> } 
+export type dbFixture = Db & { name: string; load: ReturnType<typeof load> }
 
-export const dbFixture = async ({}: TaskContext & TestContext, use: (db: dbFixture) => any) => {
+export const dbFixture = async (
+  {}: TaskContext & TestContext,
+  use: (db: dbFixture) => any,
+) => {
   const masterDb = Db()
   const TEST_DB = randomUUID()
   await masterDb.query(`CREATE DATABASE "${TEST_DB}";`)
@@ -45,4 +62,3 @@ export const dbFixture = async ({}: TaskContext & TestContext, use: (db: dbFixtu
   await masterDb.query(`DROP DATABASE "${TEST_DB}";`)
   await masterDb.close()
 }
-

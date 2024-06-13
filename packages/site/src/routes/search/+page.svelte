@@ -26,10 +26,7 @@
       </div>
       {#if product.brand}
         {#if product.brand.logo}
-          <img
-            src={product.brand.logo}
-            alt="Logo de {product.brand.name}"
-          />
+          <img src={product.brand.logo} alt="Logo de {product.brand.name}" />
         {:else}
           <span>{product.brand.name}</span>
         {/if}

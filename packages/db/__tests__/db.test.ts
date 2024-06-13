@@ -14,7 +14,7 @@ import {
 import { PRODUCTS } from "../src/index.js"
 
 const it = test.extend<{ db: dbFixture }>({
-  db: dbFixture
+  db: dbFixture,
 })
 
 describe.concurrent("db", () => {
@@ -76,7 +76,7 @@ describe.concurrent("db", () => {
       categories: [CATEGORY],
       tags: [TAG],
       brands: [BRAND],
-      products: [product1, product2]
+      products: [product1, product2],
     })
 
     const result = await db.searchProducts(product2.embedding)
@@ -113,7 +113,7 @@ describe.concurrent("db", () => {
       sites: [SITE],
       sellers: [SELLER],
       products: [SIMILAR, PRODUCT],
-      offers: [OFFER, { ...OFFER, id: "3931b158-a7d2-41d5-9b13-7266fe976a2a" }]
+      offers: [OFFER, { ...OFFER, id: "3931b158-a7d2-41d5-9b13-7266fe976a2a" }],
     })
 
     const result = await db.getProductDetails(PRODUCT.id)

@@ -7,7 +7,7 @@ import { Products } from "$lib/server"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
 
-vi.mock("$app/stores", async () => (await import('mocks')).storesMock())
+vi.mock("$app/stores", async () => (await import("mocks")).storesMock())
 
 describe("Search page", () => {
   let pg: MockPg
@@ -19,19 +19,27 @@ describe("Search page", () => {
     python = MockPython()
   })
 
-  async function loadAndRender({
-    queryParams,
-    sectionName = "Resultados de la búsqueda",
-    ...overwrite
-  } = {} as any) {
-    pg.pool.query.mockResolvedValueOnce({ rows: [{
-      ...SIMILAR,
-      brand: [BRAND],
-      ...overwrite,
-    }] })
+  async function loadAndRender(
+    {
+      queryParams,
+      sectionName = "Resultados de la búsqueda",
+      ...overwrite
+    } = {} as any,
+  ) {
+    pg.pool.query.mockResolvedValueOnce({
+      rows: [
+        {
+          ...SIMILAR,
+          brand: [BRAND],
+          ...overwrite,
+        },
+      ],
+    })
     python.mockReturnValue(EMBEDDING)
 
-    const url = new URL(`http://localhost:3000/search?q=${QUERY}${queryParams ? `&${queryParams}` : ''}`)
+    const url = new URL(
+      `http://localhost:3000/search?q=${QUERY}${queryParams ? `&${queryParams}` : ""}`,
+    )
     ;(stores as any).setPage({
       url,
     })
@@ -43,9 +51,8 @@ describe("Search page", () => {
       } as any),
     } as any)
 
-    const results = screen.getByRole("region", {name: sectionName
-    })
-    
+    const results = screen.getByRole("region", { name: sectionName })
+
     return within(results)
   }
 
@@ -72,9 +79,11 @@ describe("Search page", () => {
 
   it("handles brands without logo", async () => {
     const results = await loadAndRender({
-      brand: [{
-        name: BRAND.name,
-      }],
+      brand: [
+        {
+          name: BRAND.name,
+        },
+      ],
     })
 
     const brandName = results.getByText(BRAND.name)
@@ -91,7 +100,7 @@ describe("Search page", () => {
       brand: [null],
     })
 
-    const undef = results.queryByText('undefined')
+    const undef = results.queryByText("undefined")
     const brandName = results.queryByText(BRAND.name)
     const brandLogo = results.queryByRole("img", {
       name: `Logo de ${BRAND.name}`,
@@ -103,7 +112,10 @@ describe("Search page", () => {
   })
 
   it("displays brands filter", async () => {
-    const results = await loadAndRender({ queryParams: `brand=${BRAND.name}`, sectionName: "Filtros" })
+    const results = await loadAndRender({
+      queryParams: `brand=${BRAND.name}`,
+      sectionName: "Filtros",
+    })
 
     const brandName = results.getByText(BRAND.name)
 

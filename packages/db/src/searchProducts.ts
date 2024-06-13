@@ -4,7 +4,7 @@ import { PRODUCTS, BRANDS, Product, Brand } from "./tables/index.js"
 type SearchResult = {
   id: Product["id"]
   title: Product["title"]
-  brand: [Brand|null]
+  brand: [Brand | null]
   image?: string
 }
 
@@ -27,7 +27,7 @@ const searchProducts =
       [`[${embedding.join(",")}]`],
     )
 
-    return response.map(p => ({
+    return response.map((p) => ({
       ...p,
       brand: p.brand[0] ?? undefined,
     }))

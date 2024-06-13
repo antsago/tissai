@@ -1,10 +1,4 @@
-import {
-  describe,
-  test,
-  beforeEach,
-  afterEach,
-  vi,
-} from "vitest"
+import { describe, test, beforeEach, afterEach, vi } from "vitest"
 import {
   Db,
   PRODUCTS,
@@ -26,7 +20,7 @@ import {
 } from "#mocks"
 
 const it = test.extend<{ db: dbFixture }>({
-  db: dbFixture as any
+  db: dbFixture as any,
 })
 
 const FULL_SCHEMA = {
@@ -78,7 +72,7 @@ describe("indexer", () => {
   afterEach(() => {
     vi.unstubAllEnvs()
   })
-  
+
   it("extracts and stores page entities", async ({ expect, db }) => {
     await db.load({
       sites: [SITE],
