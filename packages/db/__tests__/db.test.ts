@@ -55,7 +55,6 @@ describe.concurrent("db", () => {
   })
 
   it("searches products", async ({ expect, db }) => {
-    await Promise.all([db.categories.create(CATEGORY), db.tags.create(TAG), db.brands.create(BRAND)])
     const baseProduct = {
       title: PRODUCT.title,
       images: PRODUCT.images,
@@ -73,10 +72,12 @@ describe.concurrent("db", () => {
       id: randomUUID(),
       embedding: [1, ...PRODUCT.embedding.slice(1)],
     }
-    await Promise.all([
-      db.products.create(product1),
-      db.products.create(product2),
-    ])
+    await db.load({
+      categories: [CATEGORY],
+      tags: [TAG],
+      brands: [BRAND],
+      products: [product1, product2]
+    })
 
     const result = await db.searchProducts(product2.embedding)
 
@@ -97,13 +98,6 @@ describe.concurrent("db", () => {
   })
 
   it("gets product details", async ({ expect, db }) => {
-    await Promise.all([
-      db.categories.create(CATEGORY),
-      db.tags.create(TAG),
-      db.brands.create(BRAND),
-      db.sites.create(SITE),
-      db.sellers.create(SELLER),
-    ])
     const SIMILAR = {
       id: "92b15b90-3673-4a0e-b57c-8f9835a4f4d9",
       title: PRODUCT.title,
@@ -112,17 +106,15 @@ describe.concurrent("db", () => {
       tags: PRODUCT.tags,
       embedding: [0, ...PRODUCT.embedding.slice(1)],
     }
-    await Promise.all([
-      db.products.create(SIMILAR),
-      db.products.create(PRODUCT),
-    ])
-    await Promise.all([
-      db.offers.create(OFFER),
-      db.offers.create({
-        ...OFFER,
-        id: "3931b158-a7d2-41d5-9b13-7266fe976a2a",
-      }),
-    ])
+    await db.load({
+      categories: [CATEGORY],
+      tags: [TAG],
+      brands: [BRAND],
+      sites: [SITE],
+      sellers: [SELLER],
+      products: [SIMILAR, PRODUCT],
+      offers: [OFFER, { ...OFFER, id: "3931b158-a7d2-41d5-9b13-7266fe976a2a" }]
+    })
 
     const result = await db.getProductDetails(PRODUCT.id)
 

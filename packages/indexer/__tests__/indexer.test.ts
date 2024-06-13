@@ -4,7 +4,6 @@ import {
   beforeEach,
   afterEach,
   vi,
-  afterAll,
 } from "vitest"
 import {
   Db,
@@ -81,8 +80,10 @@ describe("indexer", () => {
   })
   
   it("extracts and stores page entities", async ({ expect, db }) => {
-    await db.sites.create(SITE)
-    await db.pages.create(pageWithSchema(FULL_SCHEMA))
+    await db.load({
+      sites: [SITE],
+      pages: [pageWithSchema(FULL_SCHEMA)],
+    })
 
     await import("../src/index.js")
 
@@ -169,12 +170,14 @@ describe("indexer", () => {
   })
 
   it("handles duplicates", async ({ expect, db }) => {
-    await db.sites.create(SITE)
-    await db.pages.create(pageWithSchema(FULL_SCHEMA))
-    db.categories.create({ name: DERIVED_DATA.category })
-    db.tags.create({ name: DERIVED_DATA.tags[0] })
-    db.sellers.create({ name: OFFER.seller })
-    db.brands.create({ name: BRAND.name })
+    await db.load({
+      sites: [SITE],
+      pages: [pageWithSchema(FULL_SCHEMA)],
+      categories: [{ name: DERIVED_DATA.category }],
+      tags: [{ name: DERIVED_DATA.tags[0] }],
+      sellers: [{ name: OFFER.seller }],
+      brands: [{ name: BRAND.name }],
+    })
 
     await import("../src/index.js")
 

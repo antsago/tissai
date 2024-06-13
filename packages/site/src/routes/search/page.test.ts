@@ -1,3 +1,5 @@
+import type { Page } from "@sveltejs/kit"
+import type { Readable, Subscriber } from "svelte/store"
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, beforeEach, vi } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
@@ -60,7 +62,7 @@ describe("Search page", () => {
     queryParams,
     sectionName = "Resultados de la búsqueda",
     ...overwrite
-  } = {}) {
+  } = {} as any) {
     pg.pool.query.mockResolvedValueOnce({ rows: [{
       ...SIMILAR,
       brand: [BRAND],
