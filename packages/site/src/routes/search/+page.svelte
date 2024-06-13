@@ -1,10 +1,15 @@
 <script lang="ts">
+  import { page } from "$app/stores"
   import type { Search } from "@tissai/db"
   import Masonry from "./Masonry.svelte"
   import { Section } from "$lib/components"
 
   export let data: { products: Search }
 </script>
+
+<Section label="Filtros">
+  <span>{$page.url.searchParams.get("brand")}</span>
+</Section>
 
 <Section label="Resultados de la búsqueda">
   <Masonry class="content-center" tiles={data.products} let:tile={product}>

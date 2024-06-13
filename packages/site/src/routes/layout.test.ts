@@ -91,7 +91,7 @@ describe("Layout", () => {
     expect(searchInput).toHaveValue(QUERY)
   })
 
-  it("hides header on when on homepage", async () => {
+  it("hides header when on homepage", async () => {
     ;(stores as any).setPage({
       url: new URL("http://localhost:3000"),
     })
