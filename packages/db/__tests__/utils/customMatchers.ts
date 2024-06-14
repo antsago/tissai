@@ -1,8 +1,15 @@
 import { expect } from "vitest"
 import type { MockPg } from "./MockPg.js"
+import { Product, PRODUCTS, formatEmbedding } from "../../src/index.js"
+
+type SearchParams = {
+  embedding: Product["embedding"]
+  brand?: Product["brand"]
+}
 
 interface CustomMatchers {
   toHaveInserted: (table: string, values?: any[]) => void
+  toHaveSearched: (searchParams: SearchParams) => void
 }
 
 declare module "vitest" {
@@ -25,6 +32,24 @@ expect.extend({
         isNot
           ? `Found insertion into "${table}"`
           : `Expected insertion into "${table}"`,
+      actual,
+      expected,
+    }
+  },
+  toHaveSearched(pg: MockPg, { embedding, brand }: SearchParams) {
+    const { isNot, equals } = this
+    const expected = expect.arrayContaining([
+      [
+        expect.stringMatching(
+          new RegExp(`SELECT[\\s\\S]*FROM[\\s\\S]*${PRODUCTS}`),
+        ),
+        [formatEmbedding(embedding), brand].filter((p) => !!p),
+      ],
+    ])
+    const actual = pg.pool.query.mock.calls
+    return {
+      pass: equals(actual, expected),
+      message: () => (isNot ? `Found search` : `Expected search`),
       actual,
       expected,
     }

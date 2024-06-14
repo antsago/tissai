@@ -8,42 +8,8 @@ import * as stores from "$app/stores"
 import { Products } from "$lib/server"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
-import { PRODUCTS, type Product } from "@tissai/db"
 
 vi.mock("$app/stores", async () => (await import("mocks")).storesMock())
-
-type SearchParams = {
-  embedding: Product["embedding"]
-  brand?: Product["brand"]
-}
-
-interface CustomMatchers {
-  toHaveSearched: (searchParams: SearchParams) => void
-}
-declare module "vitest" {
-  interface Assertion<T = any> extends CustomMatchers {}
-}
-
-expect.extend({
-  toHaveSearched(pg: MockPg, { embedding, brand }: SearchParams) {
-    const { isNot, equals } = this
-    const expected = expect.arrayContaining([
-      [
-        expect.stringMatching(
-          new RegExp(`SELECT[\\s\\S]*FROM[\\s\\S]*${PRODUCTS}`),
-        ),
-        [`[${embedding.join(",")}]`, brand].filter((p) => !!p),
-      ],
-    ])
-    const actual = pg.pool.query.mock.calls
-    return {
-      pass: equals(actual, expected),
-      message: () => (isNot ? `Found search` : `Expected search`),
-      actual,
-      expected,
-    }
-  },
-})
 
 const it = test.extend<{ db: mockDbFixture; python: mockPythonFixture }>({
   db: [mockDbFixture, { auto: true }],
