@@ -1,8 +1,13 @@
-import { PRODUCT } from "../__tests__/utils/fakes.js"
 import { Connection } from "./Connection.js"
-import { PRODUCTS, BRANDS, Product, Brand } from "./tables/index.js"
+import {
+  PRODUCTS,
+  BRANDS,
+  Product,
+  Brand,
+  formatEmbedding,
+} from "./tables/index.js"
 
-type Input = {
+type SearchParams = {
   embedding: Product["embedding"]
   brand?: Product["brand"]
 }
@@ -14,9 +19,13 @@ type SearchResult = {
 }
 
 const searchProducts =
-  (connection: Connection) => async ({ embedding, brand }: Input) => {
-    const inputs = brand ? [`[${embedding.join(",")}]`, brand] : [`[${embedding.join(",")}]`]
-    const filter =  brand ? `WHERE ${PRODUCTS.brand} = $2` : ""
+  (connection: Connection) =>
+  async ({ embedding, brand }: SearchParams) => {
+    const inputs = brand
+      ? [formatEmbedding(embedding), brand]
+      : [formatEmbedding(embedding)]
+    const filter = brand ? `WHERE ${PRODUCTS.brand} = $2` : ""
+
     const response = await connection.query<SearchResult>(
       `
         SELECT

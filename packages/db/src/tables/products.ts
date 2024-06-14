@@ -23,7 +23,7 @@ export const TABLE = Object.assign("products", {
   tags: "tags",
 })
 
-function formatEmbedding(embedding: number[]) {
+export function formatEmbedding(embedding: number[]) {
   return `[${embedding.join(",")}]`
 }
 

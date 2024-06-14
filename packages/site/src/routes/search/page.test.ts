@@ -75,7 +75,9 @@ describe("Search page", () => {
       "href",
       expect.stringContaining(SIMILAR.id),
     )
-    expect(pg.pool.query).toHaveBeenCalledWith(expect.anything(), [`[${EMBEDDING.join(",")}]`])
+    expect(pg.pool.query).toHaveBeenCalledWith(expect.anything(), [
+      `[${EMBEDDING.join(",")}]`,
+    ])
   })
 
   it("handles brands without logo", async () => {
@@ -121,7 +123,10 @@ describe("Search page", () => {
     const brandName = results.getByText(BRAND.name)
 
     expect(brandName).toBeInTheDocument()
-    expect(pg.pool.query).toHaveBeenCalledWith(expect.anything(), [`[${EMBEDDING.join(",")}]`, BRAND.name])
+    expect(pg.pool.query).toHaveBeenCalledWith(expect.anything(), [
+      `[${EMBEDDING.join(",")}]`,
+      BRAND.name,
+    ])
   })
 
   it("handles filterless search", async () => {
@@ -129,7 +134,7 @@ describe("Search page", () => {
       sectionName: "Filtros",
     })
 
-    const undef = results.queryByText(new RegExp('^undefined|null$'))
+    const undef = results.queryByText(new RegExp("^undefined|null$"))
 
     expect(undef).not.toBeInTheDocument()
   })

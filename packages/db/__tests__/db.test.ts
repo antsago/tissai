@@ -122,7 +122,10 @@ describe.concurrent("db", () => {
       products: [product1, product2],
     })
 
-    const result = await db.searchProducts({ embedding: product2.embedding, brand: BRAND.name })
+    const result = await db.searchProducts({
+      embedding: product2.embedding,
+      brand: BRAND.name,
+    })
 
     expect(result).toStrictEqual([
       {
