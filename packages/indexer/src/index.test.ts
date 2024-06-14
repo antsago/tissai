@@ -1,4 +1,4 @@
-import { expect, describe, it, beforeEach, vi } from "vitest"
+import { describe, it, beforeEach, vi } from "vitest"
 import {
   MockPg,
   MockPython,
@@ -26,7 +26,7 @@ describe("index", () => {
     pg.pool.query.mockResolvedValue({ rows: [{ count: 1 }] })
   })
 
-  it("handles title-only products", async () => {
+  it("handles title-only products", async ({ expect }) => {
     const page = pageWithSchema({
       "@context": "https://schema.org",
       "@type": "Product",
@@ -44,7 +44,7 @@ describe("index", () => {
     expect(pg).not.toHaveInserted(BRANDS)
   })
 
-  it("handles empty pages", async () => {
+  it("handles empty pages", async ({ expect }) => {
     const page = pageWithSchema()
     pg.cursor.read.mockResolvedValueOnce([page])
 
@@ -61,7 +61,7 @@ describe("index", () => {
     expect(ora.spinner.succeed).toHaveBeenCalled()
   })
 
-  it("stores multiple offers, sellers, and tags", async () => {
+  it("stores multiple offers, sellers, and tags", async ({ expect }) => {
     const seller2 = `${OFFER.seller} 2`
     const tags = ["tag1", "tag2"]
     const page = pageWithSchema({
@@ -98,7 +98,7 @@ describe("index", () => {
     expect(pg).toHaveInserted(TAGS, [tags[1]])
   })
 
-  it("processes multiple pages", async () => {
+  it("processes multiple pages", async ({ expect }) => {
     const page = pageWithSchema({
       "@context": "https://schema.org",
       "@type": "Product",
@@ -123,7 +123,7 @@ describe("index", () => {
     expect(pg).toHaveInserted(PRODUCTS, [title2])
   })
 
-  it("handles processsing errors", async () => {
+  it("handles processsing errors", async ({ expect }) => {
     const error = new Error("Booh!")
     const title2 = "Another product"
     const page = pageWithSchema({
@@ -154,7 +154,7 @@ describe("index", () => {
     expect(ora.spinner.prefixText).toContain(error.message)
   })
 
-  it("handles fatal errors", async () => {
+  it("handles fatal errors", async ({ expect }) => {
     const error = new Error("Booh!")
     pg.pool.query.mockRejectedValue(error)
 
@@ -167,7 +167,7 @@ describe("index", () => {
     expect(python.worker.end).toHaveBeenCalled()
   })
 
-  it("reports processed pages", async () => {
+  it("reports processed pages", async ({ expect }) => {
     const page = pageWithSchema({
       "@context": "https://schema.org",
       "@type": "Product",
@@ -180,7 +180,7 @@ describe("index", () => {
     expect(ora.spinner.text).toContain(page.id)
   })
 
-  it("initializes db", async () => {
+  it("initializes db", async ({ expect }) => {
     pg.cursor.read.mockResolvedValueOnce([])
 
     await import("./index.js")
