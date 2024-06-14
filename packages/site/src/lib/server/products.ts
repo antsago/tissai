@@ -1,3 +1,4 @@
+import type { SearchParams } from "@tissai/db"
 import { Db } from "@tissai/db"
 import Embedder from "./Embedder"
 
@@ -9,13 +10,10 @@ export function Products() {
     return db.getProductDetails(id)
   }
 
-  type SearchParam = {
-    query: string
-    brand?: string
-  }
-  async function search({ query, brand }: SearchParam) {
+  type Parameters = Omit<SearchParams, "embedding"> & { query: string }
+  async function search({ query, ...filters }: Parameters) {
     const embedding = await embedder.embed(query)
-    return db.searchProducts({ embedding, brand })
+    return db.searchProducts({ embedding, ...filters })
   }
 
   return {

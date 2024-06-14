@@ -11,6 +11,9 @@
   {#if $page.url.searchParams.get("brand")}
     <span>{$page.url.searchParams.get("brand")}</span>
   {/if}
+  {#if $page.url.searchParams.get("category")}
+    <span>{$page.url.searchParams.get("category")}</span>
+  {/if}
 </Section>
 
 <Section label="Resultados de la búsqueda">

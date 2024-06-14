@@ -7,9 +7,10 @@ import {
   formatEmbedding,
 } from "./tables/index.js"
 
-type SearchParams = {
+export type SearchParams = {
   embedding: Product["embedding"]
   brand?: Product["brand"]
+  category?: Product["category"]
 }
 type SearchResult = {
   id: Product["id"]
@@ -20,11 +21,19 @@ type SearchResult = {
 
 const searchProducts =
   (connection: Connection) =>
-  async ({ embedding, brand }: SearchParams) => {
-    const inputs = brand
-      ? [formatEmbedding(embedding), brand]
-      : [formatEmbedding(embedding)]
-    const filter = brand ? `WHERE ${PRODUCTS.brand} = $2` : ""
+  async ({ embedding, brand, category }: SearchParams) => {
+    const parameters = [formatEmbedding(embedding), brand, category].filter(
+      (p) => !!p,
+    )
+
+    const filter =
+      brand && category
+        ? `WHERE ${PRODUCTS.brand} = $2 AND ${PRODUCTS.category} = $3`
+        : brand
+          ? `WHERE ${PRODUCTS.brand} = $2`
+          : category
+            ? `WHERE ${PRODUCTS.category} = $2`
+            : ""
 
     const response = await connection.query<SearchResult>(
       `
@@ -41,7 +50,7 @@ const searchProducts =
         ORDER BY ${PRODUCTS.embedding} <-> $1
         LIMIT 24;
       `,
-      inputs,
+      parameters,
     )
 
     return response.map((p) => ({

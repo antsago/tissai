@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, test, expect, afterEach, vi } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
-import { MockPg, mockDbFixture } from "@tissai/db/mocks"
+import { CATEGORY, MockPg, mockDbFixture } from "@tissai/db/mocks"
 import { MockPython, mockPythonFixture } from "@tissai/python-pool/mocks"
 import { QUERY, SIMILAR, EMBEDDING, BRAND } from "mocks"
 import * as stores from "$app/stores"
@@ -126,6 +126,18 @@ describe("Search page", () => {
 
     expect(brandName).toBeInTheDocument()
     expect(db).toHaveSearched({ embedding: EMBEDDING, brand: BRAND.name })
+  })
+
+  it("displays categories filter", async ({ db, python }) => {
+    const results = await loadAndRender(db, python, {
+      queryParams: `category=${CATEGORY.name}`,
+      sectionName: "Filtros",
+    })
+
+    const categoryName = results.getByText(CATEGORY.name)
+
+    expect(categoryName).toBeInTheDocument()
+    expect(db).toHaveSearched({ embedding: EMBEDDING, category: CATEGORY.name })
   })
 
   it("handles filterless search", async ({ db, python }) => {
