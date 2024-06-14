@@ -1,7 +1,12 @@
-import { expect, describe, it, beforeEach, vi } from "vitest"
+import { expect, describe, test, beforeEach, afterEach, vi } from "vitest"
 import { PythonShellError } from "python-shell"
-import { MockPython } from "#mocks"
+import { mockPythonFixture } from "#mocks"
 import { PythonPool } from "./PythonPool.js"
+
+type Fixtures = { python: mockPythonFixture }
+const it = test.extend<Fixtures>({
+  python: [mockPythonFixture, { auto: true }],
+})
 
 describe("PythonPool", () => {
   const SCRIPT_PATH = "/foo/bar.py"
@@ -9,23 +14,22 @@ describe("PythonPool", () => {
   const RESPONSE = { the: "response" }
 
   const log = vi.fn()
-  let python: MockPython
   let pool: PythonPool
   beforeEach(async () => {
-    vi.resetAllMocks()
-
-    python = MockPython()
     pool = PythonPool(SCRIPT_PATH, { log })
   })
+  afterEach(() => {
+    vi.resetAllMocks()
+  })
 
-  it("starts script on initialization", async () => {
+  it("starts script on initialization", async ({ python }) => {
     expect(python.PythonShell).toHaveBeenCalledWith(
       SCRIPT_PATH,
       expect.anything(),
     )
   })
 
-  it("forwards responses to requests", async () => {
+  it("forwards responses to requests", async ({ python }) => {
     python.worker.send.mockImplementation(() =>
       python.worker.emit("message", RESPONSE),
     )
@@ -36,7 +40,7 @@ describe("PythonPool", () => {
     expect(python.worker.send).toHaveBeenCalledWith(QUERY)
   })
 
-  it("supports simultaneous queries", async () => {
+  it("supports simultaneous queries", async ({ python }) => {
     const FIRST_RESPONSE = { first: "reponse" }
     const FIRST_QUERY = "Another query"
     python.worker.send.mockImplementationOnce(() =>
@@ -57,7 +61,7 @@ describe("PythonPool", () => {
     expect(python.worker.send).toHaveBeenNthCalledWith(2, QUERY)
   })
 
-  it("prints unexpected messages to stderr", async () => {
+  it("prints unexpected messages to stderr", async ({ python }) => {
     const message = "Hello world"
 
     python.worker.emit("message", message)
@@ -65,7 +69,7 @@ describe("PythonPool", () => {
     expect(log).toHaveBeenCalledWith(message)
   })
 
-  it("prints error messages to stderr", async () => {
+  it("prints error messages to stderr", async ({ python }) => {
     const message = "Something went wrong"
 
     python.worker.emit("stderr", message)
@@ -73,7 +77,7 @@ describe("PythonPool", () => {
     expect(log).toHaveBeenCalledWith(message)
   })
 
-  it("throws on exit with error", async () => {
+  it("throws on exit with error", async ({ python }) => {
     const error = new PythonShellError("Booh!")
 
     const act = () => python.worker.emit("pythonError", error)
@@ -81,13 +85,13 @@ describe("PythonPool", () => {
     expect(act).toThrow(error)
   })
 
-  it("throws on unexpected exit without error", async () => {
+  it("throws on unexpected exit without error", async ({ python }) => {
     const act = () => python.worker.emit("close")
 
     expect(act).toThrow()
   })
 
-  it("kills process on close", async () => {
+  it("kills process on close", async ({ python }) => {
     await pool.close()
 
     expect(python.worker.end).toHaveBeenCalled()

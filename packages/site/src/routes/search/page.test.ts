@@ -1,7 +1,9 @@
 import "@testing-library/jest-dom/vitest"
-import { describe, it, expect, beforeEach, vi } from "vitest"
+import { describe, test, expect, afterEach, vi } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
-import { QUERY, SIMILAR, MockPg, MockPython, EMBEDDING, BRAND } from "mocks"
+import { MockPg, mockDbFixture } from "@tissai/db/mocks"
+import { MockPython, mockPythonFixture } from "@tissai/python-pool/mocks"
+import { QUERY, SIMILAR, EMBEDDING, BRAND } from "mocks"
 import * as stores from "$app/stores"
 import { Products } from "$lib/server"
 import { load } from "./+page.server"
@@ -9,24 +11,26 @@ import page from "./+page.svelte"
 
 vi.mock("$app/stores", async () => (await import("mocks")).storesMock())
 
-describe("Search page", () => {
-  let pg: MockPg
-  let python: MockPython
-  beforeEach(() => {
-    cleanup()
+const it = test.extend<{ db: mockDbFixture; python: mockPythonFixture }>({
+  db: [mockDbFixture, { auto: true }],
+  python: [mockPythonFixture as any, { auto: true }],
+})
 
-    pg = MockPg()
-    python = MockPython()
+describe("Search page", () => {
+  afterEach(() => {
+    cleanup()
   })
 
   async function loadAndRender(
+    db: MockPg,
+    python: MockPython,
     {
       queryParams,
       sectionName = "Resultados de la búsqueda",
       ...overwrite
     } = {} as any,
   ) {
-    pg.pool.query.mockResolvedValueOnce({
+    db.pool.query.mockResolvedValueOnce({
       rows: [
         {
           ...SIMILAR,
@@ -56,8 +60,8 @@ describe("Search page", () => {
     return within(results)
   }
 
-  it("shows search results", async () => {
-    const results = await loadAndRender()
+  it("shows search results", async ({ db, python }) => {
+    const results = await loadAndRender(db, python)
 
     const title = results.getByRole("heading", { level: 3 })
     const image = results.getByRole("img", { name: SIMILAR.title })
@@ -75,13 +79,13 @@ describe("Search page", () => {
       "href",
       expect.stringContaining(SIMILAR.id),
     )
-    expect(pg.pool.query).toHaveBeenCalledWith(expect.anything(), [
+    expect(db.pool.query).toHaveBeenCalledWith(expect.anything(), [
       `[${EMBEDDING.join(",")}]`,
     ])
   })
 
-  it("handles brands without logo", async () => {
-    const results = await loadAndRender({
+  it("handles brands without logo", async ({ db, python }) => {
+    const results = await loadAndRender(db, python, {
       brand: [
         {
           name: BRAND.name,
@@ -98,8 +102,8 @@ describe("Search page", () => {
     expect(brandLogo).not.toBeInTheDocument()
   })
 
-  it("handles products without brand", async () => {
-    const results = await loadAndRender({
+  it("handles products without brand", async ({ db, python }) => {
+    const results = await loadAndRender(db, python, {
       brand: [null],
     })
 
@@ -114,8 +118,8 @@ describe("Search page", () => {
     expect(undef).not.toBeInTheDocument()
   })
 
-  it("displays brands filter", async () => {
-    const results = await loadAndRender({
+  it("displays brands filter", async ({ db, python }) => {
+    const results = await loadAndRender(db, python, {
       queryParams: `brand=${BRAND.name}`,
       sectionName: "Filtros",
     })
@@ -123,14 +127,14 @@ describe("Search page", () => {
     const brandName = results.getByText(BRAND.name)
 
     expect(brandName).toBeInTheDocument()
-    expect(pg.pool.query).toHaveBeenCalledWith(expect.anything(), [
+    expect(db.pool.query).toHaveBeenCalledWith(expect.anything(), [
       `[${EMBEDDING.join(",")}]`,
       BRAND.name,
     ])
   })
 
-  it("handles filterless search", async () => {
-    const results = await loadAndRender({
+  it("handles filterless search", async ({ db, python }) => {
+    const results = await loadAndRender(db, python, {
       sectionName: "Filtros",
     })
 

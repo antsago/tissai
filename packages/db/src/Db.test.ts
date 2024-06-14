@@ -1,16 +1,18 @@
-import { expect, describe, it, beforeEach } from "vitest"
-import { MockPg } from "#mocks"
+import { expect, describe, test, beforeEach } from "vitest"
+import { mockDbFixture } from "#mocks"
 import { Db } from "./Db.js"
+
+const it = test.extend<{ pg: mockDbFixture }>({
+  pg: [mockDbFixture, { auto: true }],
+})
 
 describe("Db", () => {
   let db: Db
-  let pg: MockPg
   beforeEach(() => {
-    pg = MockPg()
     db = Db()
   })
 
-  it("streams results", async () => {
+  it("streams results", async ({ pg }) => {
     const expected = [{ row: 1 }, { row: 2 }]
     const query = "A sql STATEMENT"
     const parameters = [1, 2]

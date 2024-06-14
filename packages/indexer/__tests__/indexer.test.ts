@@ -1,13 +1,5 @@
 import { describe, test, beforeEach, afterEach, vi } from "vitest"
-import {
-  Db,
-  PRODUCTS,
-  OFFERS,
-  CATEGORIES,
-  TAGS,
-  SELLERS,
-  BRANDS,
-} from "@tissai/db"
+import { PRODUCTS, OFFERS, CATEGORIES, TAGS, SELLERS, BRANDS } from "@tissai/db"
 import { dbFixture } from "@tissai/db/mocks"
 import {
   PRODUCT,
@@ -17,10 +9,12 @@ import {
   pageWithSchema,
   OFFER,
   BRAND,
+  mockOraFixture,
 } from "#mocks"
 
-const it = test.extend<{ db: dbFixture }>({
+const it = test.extend<{ db: dbFixture; ora: mockOraFixture }>({
   db: dbFixture as any,
+  ora: [mockOraFixture, { auto: true }], // silence console
 })
 
 const FULL_SCHEMA = {
@@ -46,31 +40,13 @@ const FULL_SCHEMA = {
   },
 }
 
-// Silence console
-vi.mock("ora", async () => {
-  const spinner = {
-    start: vi.fn(),
-    succeed: vi.fn(),
-    fail: vi.fn(),
-    text: "",
-    prefixText: "",
-  }
-  spinner.start.mockReturnValue(spinner)
-  spinner.succeed.mockReturnValue(spinner)
-  spinner.fail.mockReturnValue(spinner)
-  const ora = vi.fn().mockReturnValue(spinner)
-  const realOra = await vi.importActual("ora")
-
-  return { ...realOra, default: ora }
-})
-
 describe("indexer", () => {
   beforeEach<{ db: dbFixture }>(({ db }) => {
-    vi.resetModules()
     vi.stubEnv("PG_DATABASE", db.name)
   })
   afterEach(() => {
     vi.unstubAllEnvs()
+    vi.resetModules()
   })
 
   it("extracts and stores page entities", async ({ expect, db }) => {

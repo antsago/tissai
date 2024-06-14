@@ -1,6 +1,15 @@
-import { expect, describe, it, beforeEach } from "vitest"
-import { MockPython, DERIVED_DATA, PAGE } from "#mocks"
+import { expect, describe, test, beforeEach } from "vitest"
+import { mockPythonFixture } from "@tissai/python-pool/mocks"
+import { DERIVED_DATA, PAGE } from "#mocks"
 import { EntityExtractor } from "./EntityExtractor.js"
+
+type Fixtures = {
+  mockPython: mockPythonFixture
+}
+
+const it = test.extend<Fixtures>({
+  mockPython: [mockPythonFixture, { auto: true }],
+})
 
 const jsonLd = {
   "@context": ["https://schema.org/"],
@@ -49,27 +58,25 @@ const headings = {
 
 describe("EntityExtractor", () => {
   let extractor: EntityExtractor
-  let python: MockPython
-  beforeEach(async () => {
-    python = MockPython()
+  beforeEach<Fixtures>(async ({ mockPython }) => {
     extractor = EntityExtractor()
-    python.mockReturnValue(DERIVED_DATA)
+    mockPython.mockReturnValue(DERIVED_DATA)
   })
 
-  it("closes python on close", async () => {
+  it("closes python on close", async ({ mockPython }) => {
     await extractor.close()
 
-    expect(python.worker.end).toHaveBeenCalled()
+    expect(mockPython.worker.end).toHaveBeenCalled()
   })
 
-  it("handles empty pages", async () => {
+  it("handles empty pages", async ({ mockPython }) => {
     const act = extractor.extract(
       { jsonLd: [], opengraph: {}, headings: {} },
       PAGE,
     )
 
     await expect(act).rejects.toThrow("Product without title")
-    expect(python.worker.send).not.toHaveBeenCalled()
+    expect(mockPython.worker.send).not.toHaveBeenCalled()
   })
 
   describe("categories", () => {
@@ -99,9 +106,9 @@ describe("EntityExtractor", () => {
       ])
     })
 
-    it("extracts multiple tags", async () => {
+    it("extracts multiple tags", async ({ mockPython }) => {
       const foundTags = ["two", "tags"]
-      python.mockReturnValue({
+      mockPython.mockReturnValue({
         ...DERIVED_DATA,
         tags: foundTags,
       })

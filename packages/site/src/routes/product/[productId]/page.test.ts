@@ -1,17 +1,19 @@
 import "@testing-library/jest-dom/vitest"
-import { describe, it, expect, beforeEach } from "vitest"
+import { describe, test, expect, beforeEach } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
-import { PRODUCT, SIMILAR, MockPg, BRAND, OFFER, SITE } from "mocks"
+import { mockDbFixture, MockPg } from "@tissai/db/mocks"
+import { PRODUCT, SIMILAR, BRAND, OFFER, SITE } from "mocks"
 import { Products } from "$lib/server"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
 
+const it = test.extend<{ db: mockDbFixture }>({
+  db: [mockDbFixture, { auto: true }],
+})
+
 describe("Product details page", () => {
-  let pg: MockPg
   beforeEach(() => {
     cleanup()
-
-    pg = MockPg()
   })
 
   const OFFER2 = {
@@ -41,8 +43,8 @@ describe("Product details page", () => {
       OFFER2,
     ],
   }
-  async function loadAndRender(sectionName: string, details = {}) {
-    pg.pool.query.mockResolvedValueOnce({
+  async function loadAndRender(db: MockPg, sectionName: string, details = {}) {
+    db.pool.query.mockResolvedValueOnce({
       rows: [
         {
           ...PRODUCT_DETAILS,
@@ -50,7 +52,7 @@ describe("Product details page", () => {
         },
       ],
     })
-    pg.pool.query.mockResolvedValueOnce({
+    db.pool.query.mockResolvedValueOnce({
       rows: [SIMILAR],
     })
 
@@ -66,8 +68,8 @@ describe("Product details page", () => {
   }
 
   describe("details section", () => {
-    it("shows product details", async () => {
-      const section = await loadAndRender(PRODUCT.title)
+    it("shows product details", async ({ db }) => {
+      const section = await loadAndRender(db, PRODUCT.title)
 
       const images = section.getAllByRole("img", { name: PRODUCT.title })
       const heading = section.getByRole("heading")
@@ -94,8 +96,8 @@ describe("Product details page", () => {
       expect(brandLogo).toHaveAttribute("src", BRAND.logo)
     })
 
-    it("handles products without images", async () => {
-      const section = await loadAndRender(PRODUCT.title, { images: [] })
+    it("handles products without images", async ({ db }) => {
+      const section = await loadAndRender(db, PRODUCT.title, { images: [] })
 
       const images = section.queryAllByRole("img", { name: PRODUCT.title })
       const noImages = section.getByRole("img", { name: "Sin imagenes" })
@@ -104,8 +106,8 @@ describe("Product details page", () => {
       expect(noImages).toBeInTheDocument()
     })
 
-    it("handles products without description", async () => {
-      const section = await loadAndRender(PRODUCT.title, {
+    it("handles products without description", async ({ db }) => {
+      const section = await loadAndRender(db, PRODUCT.title, {
         description: undefined,
       })
 
@@ -114,8 +116,8 @@ describe("Product details page", () => {
       expect(undef).not.toBeInTheDocument()
     })
 
-    it("handles products without brand", async () => {
-      const section = await loadAndRender(PRODUCT.title, { brand: [] })
+    it("handles products without brand", async ({ db }) => {
+      const section = await loadAndRender(db, PRODUCT.title, { brand: [] })
 
       const brandName = section.queryByText(BRAND.name)
       const brandLogo = section.queryByRole("img", {
@@ -128,8 +130,8 @@ describe("Product details page", () => {
       expect(undef).not.toBeInTheDocument()
     })
 
-    it("handles brands without logo", async () => {
-      const section = await loadAndRender(PRODUCT.title, {
+    it("handles brands without logo", async ({ db }) => {
+      const section = await loadAndRender(db, PRODUCT.title, {
         brand: [{ name: BRAND.name }],
       })
 
@@ -144,8 +146,8 @@ describe("Product details page", () => {
   })
 
   describe("offers section", async () => {
-    it("shows offer details", async () => {
-      const section = await loadAndRender("Compra en")
+    it("shows offer details", async ({ db }) => {
+      const section = await loadAndRender(db, "Compra en")
 
       const heading = section.getByRole("heading", { level: 2 })
       const title = section.getByRole("heading", { level: 3, name: SITE.name })
@@ -177,8 +179,8 @@ describe("Product details page", () => {
       expect(noOffers).not.toBeInTheDocument()
     })
 
-    it("handles products without offers", async () => {
-      const section = await loadAndRender("Compra en", { offers: [] })
+    it("handles products without offers", async ({ db }) => {
+      const section = await loadAndRender(db, "Compra en", { offers: [] })
 
       const title = section.queryByRole("heading", {
         level: 3,
@@ -200,10 +202,9 @@ describe("Product details page", () => {
       expect(noOffers).toBeInTheDocument()
     })
 
-    it.each([null, undefined])(
-      "handles offers without price (%s)",
-      async (value) => {
-        const section = await loadAndRender("Compra en", {
+    describe.each([null, undefined])("price (%s)", async (value) => {
+      it(`handles offers without price (${value})`, async ({ db }) => {
+        const section = await loadAndRender(db, "Compra en", {
           offers: [{ ...PRODUCT_DETAILS.offers[0], price: value }],
         })
 
@@ -212,11 +213,11 @@ describe("Product details page", () => {
 
         expect(price).not.toBeInTheDocument()
         expect(undef).not.toBeInTheDocument()
-      },
-    )
+      })
+    })
 
-    it("handles offers without currency", async () => {
-      const section = await loadAndRender("Compra en", {
+    it("handles offers without currency", async ({ db }) => {
+      const section = await loadAndRender(db, "Compra en", {
         offers: [{ ...PRODUCT_DETAILS.offers[0], currency: undefined }],
       })
 
@@ -229,8 +230,8 @@ describe("Product details page", () => {
       expect(undef).not.toBeInTheDocument()
     })
 
-    it("handles offers without seller", async () => {
-      const section = await loadAndRender("Compra en", {
+    it("handles offers without seller", async ({ db }) => {
+      const section = await loadAndRender(db, "Compra en", {
         offers: [{ ...PRODUCT_DETAILS.offers[0], seller: undefined }],
       })
 
@@ -242,8 +243,8 @@ describe("Product details page", () => {
     })
   })
 
-  it("shows similar products", async () => {
-    const section = await loadAndRender("Similares")
+  it("shows similar products", async ({ db }) => {
+    const section = await loadAndRender(db, "Similares")
 
     const heading = section.getByRole("heading", { level: 2 })
     const title = section.getByRole("heading", { level: 3 })
