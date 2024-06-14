@@ -1,4 +1,4 @@
-import { describe, it, beforeEach, vi } from "vitest"
+import { describe, test, beforeEach, vi, afterEach } from "vitest"
 import {
   MockPg,
   MockPython,
@@ -10,58 +10,92 @@ import {
 } from "#mocks"
 import { BRANDS, CATEGORIES, OFFERS, PRODUCTS, SELLERS, TAGS } from "@tissai/db"
 
-describe("index", () => {
-  let pg: MockPg
-  let ora: MockOra
-  let python: MockPython
-  beforeEach(async () => {
-    vi.resetModules()
-    vi.resetAllMocks()
+type Fixtures = {
+  mockDb: MockPg
+  mockPython: MockPython
+  mockOra: MockOra
+}
 
-    const { MockPg, MockPython, MockOra } = await import("#mocks")
-    pg = MockPg()
-    ora = MockOra()
-    python = MockPython()
-    python.mockReturnValue(DERIVED_DATA)
-    pg.pool.query.mockResolvedValue({ rows: [{ count: 1 }] })
+const it = test.extend<Fixtures>({
+  mockDb: [
+    async ({}, use) => {
+      const { MockPg } = await import("#mocks")
+      const pg = MockPg()
+      pg.pool.query.mockResolvedValue({ rows: [] })
+
+      use(pg)
+    },
+    { auto: true },
+  ],
+  mockPython: [
+    async ({}, use) => {
+      const { MockPython } = await import("#mocks")
+      const python = MockPython()
+
+      use(python)
+    },
+    { auto: true },
+  ],
+  mockOra: [
+    async ({}, use) => {
+      const { MockOra } = await import("#mocks")
+      const ora = MockOra()
+
+      use(ora)
+    },
+    { auto: true },
+  ],
+})
+
+describe("index", () => {
+  beforeEach<Fixtures>(async ({ mockDb, mockPython }) => {
+    mockPython.mockReturnValue(DERIVED_DATA)
+    mockDb.pool.query.mockResolvedValue({ rows: [{ count: 1 }] })
+  })
+  afterEach(() => {
+    vi.resetModules()
   })
 
-  it("handles title-only products", async ({ expect }) => {
+  it("handles title-only products", async ({ expect, mockDb }) => {
     const page = pageWithSchema({
       "@context": "https://schema.org",
       "@type": "Product",
       name: PRODUCT.title,
     })
-    pg.cursor.read.mockResolvedValueOnce([page])
+    mockDb.cursor.read.mockResolvedValueOnce([page])
 
     await import("./index.js")
 
-    expect(pg).toHaveInserted(PRODUCTS)
-    expect(pg).toHaveInserted(OFFERS)
-    expect(pg).toHaveInserted(CATEGORIES)
-    expect(pg).toHaveInserted(TAGS)
-    expect(pg).not.toHaveInserted(SELLERS)
-    expect(pg).not.toHaveInserted(BRANDS)
+    expect(mockDb).toHaveInserted(PRODUCTS)
+    expect(mockDb).toHaveInserted(OFFERS)
+    expect(mockDb).toHaveInserted(CATEGORIES)
+    expect(mockDb).toHaveInserted(TAGS)
+    expect(mockDb).not.toHaveInserted(SELLERS)
+    expect(mockDb).not.toHaveInserted(BRANDS)
   })
 
-  it("handles empty pages", async ({ expect }) => {
+  it("handles empty pages", async ({ expect, mockDb, mockPython, mockOra }) => {
     const page = pageWithSchema()
-    pg.cursor.read.mockResolvedValueOnce([page])
+    mockDb.cursor.read.mockResolvedValueOnce([page])
 
     await import("./index.js")
 
-    expect(pg).not.toHaveInserted(PRODUCTS)
-    expect(pg).not.toHaveInserted(OFFERS)
-    expect(pg).not.toHaveInserted(CATEGORIES)
-    expect(pg).not.toHaveInserted(TAGS)
-    expect(pg).not.toHaveInserted(SELLERS)
-    expect(pg).not.toHaveInserted(BRANDS)
-    expect(pg.pool.end).toHaveBeenCalled()
-    expect(python.worker.end).toHaveBeenCalled()
-    expect(ora.spinner.succeed).toHaveBeenCalled()
+    expect(mockDb).not.toHaveInserted(PRODUCTS)
+    expect(mockDb).not.toHaveInserted(OFFERS)
+    expect(mockDb).not.toHaveInserted(CATEGORIES)
+    expect(mockDb).not.toHaveInserted(TAGS)
+    expect(mockDb).not.toHaveInserted(SELLERS)
+    expect(mockDb).not.toHaveInserted(BRANDS)
+    expect(mockDb.pool.end).toHaveBeenCalled()
+    expect(mockPython.worker.end).toHaveBeenCalled()
+    expect(mockOra.spinner.succeed).toHaveBeenCalled()
   })
 
-  it("stores multiple offers, sellers, and tags", async ({ expect }) => {
+  it("stores multiple offers, sellers, and tags", async ({
+    expect,
+    mockDb,
+    mockPython,
+  }) => {
     const seller2 = `${OFFER.seller} 2`
     const tags = ["tag1", "tag2"]
     const page = pageWithSchema({
@@ -85,20 +119,20 @@ describe("index", () => {
         },
       ],
     })
-    pg.cursor.read.mockResolvedValueOnce([page])
-    python.mockReturnValue({ ...DERIVED_DATA, tags })
+    mockDb.cursor.read.mockResolvedValueOnce([page])
+    mockPython.mockReturnValue({ ...DERIVED_DATA, tags })
 
     await import("./index.js")
 
-    expect(pg).toHaveInserted(OFFERS, [OFFER.seller])
-    expect(pg).toHaveInserted(OFFERS, [seller2])
-    expect(pg).toHaveInserted(SELLERS, [OFFER.seller])
-    expect(pg).toHaveInserted(SELLERS, [seller2])
-    expect(pg).toHaveInserted(TAGS, [tags[0]])
-    expect(pg).toHaveInserted(TAGS, [tags[1]])
+    expect(mockDb).toHaveInserted(OFFERS, [OFFER.seller])
+    expect(mockDb).toHaveInserted(OFFERS, [seller2])
+    expect(mockDb).toHaveInserted(SELLERS, [OFFER.seller])
+    expect(mockDb).toHaveInserted(SELLERS, [seller2])
+    expect(mockDb).toHaveInserted(TAGS, [tags[0]])
+    expect(mockDb).toHaveInserted(TAGS, [tags[1]])
   })
 
-  it("processes multiple pages", async ({ expect }) => {
+  it("processes multiple pages", async ({ expect, mockDb }) => {
     const page = pageWithSchema({
       "@context": "https://schema.org",
       "@type": "Product",
@@ -114,16 +148,16 @@ describe("index", () => {
       id: "d861c3c5-5206-4347-b2ec-6f1ca94fca2f",
       url: "page/2",
     }
-    pg.cursor.read.mockResolvedValueOnce([page])
-    pg.cursor.read.mockResolvedValueOnce([page2])
+    mockDb.cursor.read.mockResolvedValueOnce([page])
+    mockDb.cursor.read.mockResolvedValueOnce([page2])
 
     await import("./index.js")
 
-    expect(pg).toHaveInserted(PRODUCTS, [PRODUCT.title])
-    expect(pg).toHaveInserted(PRODUCTS, [title2])
+    expect(mockDb).toHaveInserted(PRODUCTS, [PRODUCT.title])
+    expect(mockDb).toHaveInserted(PRODUCTS, [title2])
   })
 
-  it("handles processsing errors", async ({ expect }) => {
+  it("handles processsing errors", async ({ expect, mockDb, mockOra }) => {
     const error = new Error("Booh!")
     const title2 = "Another product"
     const page = pageWithSchema({
@@ -136,10 +170,10 @@ describe("index", () => {
       "@type": "Product",
       name: title2,
     })
-    pg.cursor.read.mockResolvedValueOnce([page])
-    pg.cursor.read.mockResolvedValueOnce([page2])
+    mockDb.cursor.read.mockResolvedValueOnce([page])
+    mockDb.cursor.read.mockResolvedValueOnce([page2])
     let hasThrown = false
-    pg.pool.query.mockImplementation((query) => {
+    mockDb.pool.query.mockImplementation((query) => {
       if (query.includes("INSERT") && !hasThrown) {
         hasThrown = true
         throw error
@@ -149,43 +183,48 @@ describe("index", () => {
 
     await import("./index.js")
 
-    expect(pg).not.toHaveInserted(PRODUCTS, [PRODUCT.title])
-    expect(pg).toHaveInserted(PRODUCTS, [title2])
-    expect(ora.spinner.prefixText).toContain(error.message)
+    expect(mockDb).not.toHaveInserted(PRODUCTS, [PRODUCT.title])
+    expect(mockDb).toHaveInserted(PRODUCTS, [title2])
+    expect(mockOra.spinner.prefixText).toContain(error.message)
   })
 
-  it("handles fatal errors", async ({ expect }) => {
+  it("handles fatal errors", async ({
+    expect,
+    mockDb,
+    mockPython,
+    mockOra,
+  }) => {
     const error = new Error("Booh!")
-    pg.pool.query.mockRejectedValue(error)
+    mockDb.pool.query.mockRejectedValue(error)
 
     await import("./index.js")
 
-    expect(ora.spinner.fail).toHaveBeenCalledWith(
+    expect(mockOra.spinner.fail).toHaveBeenCalledWith(
       expect.stringContaining(error.message),
     )
-    expect(pg.pool.end).toHaveBeenCalled()
-    expect(python.worker.end).toHaveBeenCalled()
+    expect(mockDb.pool.end).toHaveBeenCalled()
+    expect(mockPython.worker.end).toHaveBeenCalled()
   })
 
-  it("reports processed pages", async ({ expect }) => {
+  it("reports processed pages", async ({ expect, mockDb, mockOra }) => {
     const page = pageWithSchema({
       "@context": "https://schema.org",
       "@type": "Product",
       name: PRODUCT.title,
     })
-    pg.cursor.read.mockResolvedValueOnce([page])
+    mockDb.cursor.read.mockResolvedValueOnce([page])
 
     await import("./index.js")
 
-    expect(ora.spinner.text).toContain(page.id)
+    expect(mockOra.spinner.text).toContain(page.id)
   })
 
-  it("initializes db", async ({ expect }) => {
-    pg.cursor.read.mockResolvedValueOnce([])
+  it("initializes db", async ({ expect, mockDb }) => {
+    mockDb.cursor.read.mockResolvedValueOnce([])
 
     await import("./index.js")
 
-    expect(pg.pool.query).toHaveBeenCalledWith(
+    expect(mockDb.pool.query).toHaveBeenCalledWith(
       expect.stringContaining("CREATE TABLE"),
       undefined,
     )
