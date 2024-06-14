@@ -79,7 +79,7 @@ describe.concurrent("db", () => {
       products: [product1, product2],
     })
 
-    const result = await db.searchProducts(product2.embedding)
+    const result = await db.searchProducts({ embedding: product2.embedding })
 
     expect(result).toStrictEqual([
       {
@@ -88,6 +88,43 @@ describe.concurrent("db", () => {
         image: product2.images[0],
         brand: undefined,
       },
+      {
+        id: product1.id,
+        title: product1.title,
+        image: product1.images[0],
+        brand: BRAND,
+      },
+    ])
+  })
+
+  it("filters search by brand", async ({ expect, db }) => {
+    const baseProduct = {
+      title: PRODUCT.title,
+      images: PRODUCT.images,
+      category: PRODUCT.category,
+      tags: PRODUCT.tags,
+    }
+    const product1 = {
+      ...baseProduct,
+      id: randomUUID(),
+      embedding: [0, ...PRODUCT.embedding.slice(1)],
+      brand: PRODUCT.brand,
+    }
+    const product2 = {
+      ...baseProduct,
+      id: randomUUID(),
+      embedding: [1, ...PRODUCT.embedding.slice(1)],
+    }
+    await db.load({
+      categories: [CATEGORY],
+      tags: [TAG],
+      brands: [BRAND],
+      products: [product1, product2],
+    })
+
+    const result = await db.searchProducts({ embedding: product2.embedding, brand: BRAND.name })
+
+    expect(result).toStrictEqual([
       {
         id: product1.id,
         title: product1.title,

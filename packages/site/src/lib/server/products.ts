@@ -9,9 +9,13 @@ export function Products() {
     return db.getProductDetails(id)
   }
 
-  async function search(searchQuery: string) {
-    const embedding = await embedder.embed(searchQuery)
-    return db.searchProducts(embedding)
+  type SearchParam = {
+    query: string
+    brand?: string
+  }
+  async function search({ query, brand }: SearchParam) {
+    const embedding = await embedder.embed(query)
+    return db.searchProducts({ embedding, brand })
   }
 
   return {

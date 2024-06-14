@@ -75,6 +75,7 @@ describe("Search page", () => {
       "href",
       expect.stringContaining(SIMILAR.id),
     )
+    expect(pg.pool.query).toHaveBeenCalledWith(expect.anything(), [`[${EMBEDDING.join(",")}]`])
   })
 
   it("handles brands without logo", async () => {
@@ -120,6 +121,7 @@ describe("Search page", () => {
     const brandName = results.getByText(BRAND.name)
 
     expect(brandName).toBeInTheDocument()
+    expect(pg.pool.query).toHaveBeenCalledWith(expect.anything(), [`[${EMBEDDING.join(",")}]`, BRAND.name])
   })
 
   it("handles filterless search", async () => {

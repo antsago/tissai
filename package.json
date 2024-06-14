@@ -10,9 +10,9 @@
     "format:py": "poetry run black .",
     "db": "yarn workspace @tissai/db",
     "site": "yarn workspace @tissai/site",
-    "index": "yarn workspace @tissai/indexer",
+    "ind": "yarn workspace @tissai/indexer",
     "pp": "yarn workspace @tissai/python-pool",
-    "test": "yarn db test && yarn pp test && yarn indexer test && yarn site test"
+    "test": "yarn db test && yarn pp test && yarn ind test && yarn site test"
   },
   "devDependencies": {
     "prettier": "3.3.0",
