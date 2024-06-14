@@ -1,4 +1,5 @@
 import { describe, test, beforeEach, vi, afterEach } from "vitest"
+import { mockDbFixture } from "@tissai/db/mocks"
 import {
   MockPg,
   MockPython,
@@ -11,22 +12,13 @@ import {
 import { BRANDS, CATEGORIES, OFFERS, PRODUCTS, SELLERS, TAGS } from "@tissai/db"
 
 type Fixtures = {
-  mockDb: MockPg
+  mockDb: mockDbFixture
   mockPython: MockPython
   mockOra: MockOra
 }
 
 const it = test.extend<Fixtures>({
-  mockDb: [
-    async ({}, use) => {
-      const { MockPg } = await import("#mocks")
-      const pg = MockPg()
-      pg.pool.query.mockResolvedValue({ rows: [] })
-
-      use(pg)
-    },
-    { auto: true },
-  ],
+  mockDb: [mockDbFixture as any, { auto: true }],
   mockPython: [
     async ({}, use) => {
       const { MockPython } = await import("#mocks")
