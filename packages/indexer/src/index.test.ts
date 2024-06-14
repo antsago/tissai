@@ -1,42 +1,25 @@
 import { describe, test, beforeEach, vi, afterEach } from "vitest"
 import { mockDbFixture } from "@tissai/db/mocks"
+import { mockPythonFixture } from "@tissai/python-pool/mocks"
 import {
-  MockPg,
-  MockPython,
-  MockOra,
   PRODUCT,
   DERIVED_DATA,
   pageWithSchema,
   OFFER,
+  mockOraFixture,
 } from "#mocks"
 import { BRANDS, CATEGORIES, OFFERS, PRODUCTS, SELLERS, TAGS } from "@tissai/db"
 
 type Fixtures = {
   mockDb: mockDbFixture
-  mockPython: MockPython
-  mockOra: MockOra
+  mockPython: mockPythonFixture
+  mockOra: mockOraFixture
 }
 
 const it = test.extend<Fixtures>({
   mockDb: [mockDbFixture as any, { auto: true }],
-  mockPython: [
-    async ({}, use) => {
-      const { MockPython } = await import("#mocks")
-      const python = MockPython()
-
-      use(python)
-    },
-    { auto: true },
-  ],
-  mockOra: [
-    async ({}, use) => {
-      const { MockOra } = await import("#mocks")
-      const ora = MockOra()
-
-      use(ora)
-    },
-    { auto: true },
-  ],
+  mockPython: [mockPythonFixture, { auto: true }],
+  mockOra: [mockOraFixture, { auto: true }],
 })
 
 describe("index", () => {

@@ -7,7 +7,7 @@ export const mockDbFixture = async (
   {}: TaskContext & TestContext,
   use: (pg: mockDbFixture) => any,
 ) => {
-  const { MockPg } = await import("#mocks")
+  const { MockPg } = await import("./MockPg.js")
   const pg = MockPg()
   pg.pool.query.mockResolvedValue({ rows: [] })
 
