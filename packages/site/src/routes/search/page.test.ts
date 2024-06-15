@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, test, expect, afterEach, vi } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
-import { CATEGORY, MockPg, OFFER, mockDbFixture } from "@tissai/db/mocks"
+import { CATEGORY, MockPg, OFFER, TAG, mockDbFixture } from "@tissai/db/mocks"
 import { MockPython, mockPythonFixture } from "@tissai/python-pool/mocks"
 import { QUERY, SIMILAR, EMBEDDING, BRAND } from "mocks"
 import * as stores from "$app/stores"
@@ -169,6 +169,33 @@ describe("Search page", () => {
 
     expect(categoryName).toBeInTheDocument()
     expect(db).toHaveSearched({ embedding: EMBEDDING, category: CATEGORY.name })
+  })
+
+  it("displays tags filter", async ({ db, python }) => {
+    const results = await loadAndRender(db, python, {
+      queryParams: `inc=${TAG.name}`,
+      sectionName: "Filtros",
+    })
+
+    const tagName = results.getByText(TAG.name)
+
+    expect(tagName).toBeInTheDocument()
+    // expect(db).toHaveSearched({ embedding: EMBEDDING, tag: TAG.name })
+  })
+
+  it("supports multiple tags filter", async ({ db, python }) => {
+    const tag2 = "myTag"
+    const results = await loadAndRender(db, python, {
+      queryParams: `inc=${TAG.name}&inc=${tag2}`,
+      sectionName: "Filtros",
+    })
+
+    const tagName = results.getByText(TAG.name)
+    const tag2Name = results.getByText(tag2)
+
+    expect(tagName).toBeInTheDocument()
+    expect(tag2Name).toBeInTheDocument()
+    // expect(db).toHaveSearched({ embedding: EMBEDDING, tag: TAG.name })
   })
 
   it("handles filterless search", async ({ db, python }) => {

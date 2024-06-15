@@ -8,6 +8,11 @@
 </script>
 
 <Section label="Filtros">
+  {#if $page.url.searchParams.get("inc")}
+    {#each $page.url.searchParams.getAll("inc") as tag}
+      <span>{tag}</span>
+    {/each}
+  {/if}
   {#if $page.url.searchParams.get("min")}
     <span>{$page.url.searchParams.get("min")}</span>
   {/if}
