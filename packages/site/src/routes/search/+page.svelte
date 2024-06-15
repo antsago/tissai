@@ -29,7 +29,9 @@
           class="h-full mx-auto rounded-t border border-b-0 border-stone-300/50"
         />
       </div>
-      <span>{product.price}</span>
+      {#if product.price}
+        <span>{product.price}</span>
+      {/if}
       {#if product.brand}
         {#if product.brand.logo}
           <img src={product.brand.logo} alt="Logo de {product.brand.name}" />

@@ -119,6 +119,18 @@ describe("Search page", () => {
     expect(undef).not.toBeInTheDocument()
   })
 
+  it("handles products without price", async ({ db, python }) => {
+    const results = await loadAndRender(db, python, {
+      price: undefined,
+    })
+
+    const undef = results.queryByText("undefined")
+    const price = results.queryByText(OFFER.price)
+
+    expect(price).not.toBeInTheDocument()
+    expect(undef).not.toBeInTheDocument()
+  })
+
   it("displays brands filter", async ({ db, python }) => {
     const results = await loadAndRender(db, python, {
       queryParams: `brand=${BRAND.name}`,
