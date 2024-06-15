@@ -143,6 +143,22 @@ describe("Search page", () => {
     expect(db).toHaveSearched({ embedding: EMBEDDING, brand: BRAND.name })
   })
 
+  it("displays price filters", async ({ db, python }) => {
+    const min = 11.1
+    const max = 22.2
+    const results = await loadAndRender(db, python, {
+      queryParams: `min=${min}&max=${max}`,
+      sectionName: "Filtros",
+    })
+
+    const minFilter = results.getByText(min)
+    const maxFilter = results.getByText(max)
+
+    expect(minFilter).toBeInTheDocument()
+    expect(maxFilter).toBeInTheDocument()
+    expect(db).toHaveSearched({ embedding: EMBEDDING, min, max })
+  })
+
   it("displays categories filter", async ({ db, python }) => {
     const results = await loadAndRender(db, python, {
       queryParams: `category=${CATEGORY.name}`,

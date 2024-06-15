@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto"
 import { describe, test, beforeEach } from "vitest"
-import { PRODUCT, BRAND, CATEGORY, TAG, dbFixture, OFFER, SITE } from "#mocks"
+import { PRODUCT, BRAND, CATEGORY, TAG, dbFixture, OFFER, SITE, SELLER } from "#mocks"
 
 type Fixtures = { db: dbFixture }
 const it = test.extend<Fixtures>({
@@ -119,12 +119,52 @@ describe.concurrent("search", () => {
     ])
   })
 
+  it("filters by min price", async ({ expect, db }) => {
+    await db.load({ products: [PRODUCT], offers: [OFFER], sellers: [SELLER] })
+
+    const result = await db.searchProducts({
+      embedding: product2.embedding,
+      min: OFFER.price,
+    })
+
+    expect(result).toStrictEqual([
+      {
+        id: PRODUCT.id,
+        title: PRODUCT.title,
+        image: PRODUCT.images[0],
+        brand: BRAND,
+        price: OFFER.price,
+      },
+    ])
+  })
+
+  it("filters by max price", async ({ expect, db }) => {
+    await db.load({ products: [PRODUCT], offers: [OFFER], sellers: [SELLER] })
+
+    const result = await db.searchProducts({
+      embedding: product2.embedding,
+      max: offer1.price,
+    })
+
+    expect(result).toStrictEqual([
+      {
+        id: product1.id,
+        title: product1.title,
+        image: product1.images[0],
+        brand: BRAND,
+        price: offer1.price,
+      },
+    ])
+  })
+
   describe.each([null, undefined])("handles %s filters", (value) => {
     it("ignores them", async ({ expect, db }) => {
       const results = await db.searchProducts({
         embedding: product2.embedding,
         category: value,
         brand: value,
+        min: value,
+        max: value,
       })
   
       expect(results.length).toBe(2)
@@ -136,6 +176,8 @@ describe.concurrent("search", () => {
       embedding: product2.embedding,
       category: CATEGORY.name,
       brand: BRAND.name,
+      max: OFFER.price,
+      min: offer1.price,
     })
 
     await expect(act).resolves.not.toThrow()

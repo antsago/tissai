@@ -8,6 +8,12 @@
 </script>
 
 <Section label="Filtros">
+  {#if $page.url.searchParams.get("min")}
+    <span>{$page.url.searchParams.get("min")}</span>
+  {/if}
+  {#if $page.url.searchParams.get("max")}
+    <span>{$page.url.searchParams.get("max")}</span>
+  {/if}
   {#if $page.url.searchParams.get("brand")}
     <span>{$page.url.searchParams.get("brand")}</span>
   {/if}

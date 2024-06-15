@@ -7,12 +7,15 @@ import {
   Brand,
   formatEmbedding,
   OFFERS,
+  Offer,
 } from "./tables/index.js"
 
 export type SearchParams = {
   embedding: Product["embedding"]
   brand?: Product["brand"] | null
   category?: Product["category"] | null
+  min?: Offer["price"] | null
+  max?: Offer["price"] | null
 }
 type SearchResult = {
   id: Product["id"]
@@ -26,7 +29,7 @@ const builder = knex({ client: "pg" })
 
 const searchProducts =
   (connection: Connection) =>
-  async ({ embedding, ...parameters }: SearchParams) => {
+  async ({ embedding, min, max, ...parameters }: SearchParams) => {
     const filters = Object.fromEntries(
       Object.entries(parameters).filter(
         ([k, v]) => v !== undefined && v !== null,
@@ -48,9 +51,15 @@ const searchProducts =
         value: formatEmbedding(embedding),
       })
       .limit(24)
-      .toString()
 
-    const response = await connection.query<SearchResult>(query)
+    if (min !== null && min !== undefined) {
+      query.andWhere(`o.${OFFERS.price}`, ">=", min)
+    }
+    if (max !== null && max !== undefined) {
+      query.andWhere(`o.${OFFERS.price}`, "<=", max)
+    }
+
+    const response = await connection.query<SearchResult>(query.toString())
 
     return response.map((p) => ({
       ...p,
