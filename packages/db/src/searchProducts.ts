@@ -1,3 +1,4 @@
+import { knex } from "knex"
 import { Connection } from "./Connection.js"
 import {
   PRODUCTS,
@@ -19,39 +20,25 @@ type SearchResult = {
   image?: string
 }
 
+const builder = knex({ client: "pg" })
+
 const searchProducts =
   (connection: Connection) =>
-  async ({ embedding, brand, category }: SearchParams) => {
-    const parameters = [formatEmbedding(embedding), brand, category].filter(
-      (p) => !!p,
-    )
+  async ({ embedding, ...parameters }: SearchParams) => {
+    const filters = Object.fromEntries(Object.entries(parameters).filter(([k, v]) => v !== undefined || v !== null))
+    const query = builder
+      .select(PRODUCTS.id, PRODUCTS.title)
+      .select(`${PRODUCTS.images}[1] AS image`)
+      .select(builder.raw("JSON_AGG(b.*) AS brand"))
+      .from(PRODUCTS.toString())
+      .leftJoin(` ${BRANDS} AS b`, `b.${BRANDS.name}`, "=", PRODUCTS.brand)
+      .where(filters)
+      .groupBy(PRODUCTS.id)
+      .orderByRaw(":column: <-> :value", { column: PRODUCTS.embedding, value: formatEmbedding(embedding) })
+      .limit(24)
+      .toString()
 
-    const filter =
-      brand && category
-        ? `WHERE ${PRODUCTS.brand} = $2 AND ${PRODUCTS.category} = $3`
-        : brand
-          ? `WHERE ${PRODUCTS.brand} = $2`
-          : category
-            ? `WHERE ${PRODUCTS.category} = $2`
-            : ""
-
-    const response = await connection.query<SearchResult>(
-      `
-        SELECT
-          ${PRODUCTS.id},
-          ${PRODUCTS.title},
-          ${PRODUCTS.images}[1] AS image,
-          JSON_AGG(b.*) AS brand
-        FROM
-          ${PRODUCTS}
-          LEFT JOIN ${BRANDS} AS b ON b.${BRANDS.name} = ${PRODUCTS.brand}
-        ${filter}
-        GROUP BY ${PRODUCTS.id}
-        ORDER BY ${PRODUCTS.embedding} <-> $1
-        LIMIT 24;
-      `,
-      parameters,
-    )
+    const response = await connection.query<SearchResult>(query)
 
     return response.map((p) => ({
       ...p,

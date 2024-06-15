@@ -37,9 +37,9 @@ expect.extend({
     const expected = expect.arrayContaining([
       [
         expect.stringMatching(
-          new RegExp(`SELECT[\\s\\S]*FROM[\\s\\S]*${PRODUCTS}`),
+          new RegExp(`SELECT[\\s\\S]*FROM[\\s\\S]*${PRODUCTS}${category ? `[\\s\\S]*${category}` : ""}${brand ? `[\\s\\S]*${brand}` : ""}[\\s\\S]*\\[${embedding.join(',')}\\]`, "i"),
         ),
-        [formatEmbedding(embedding), brand, category].filter((p) => !!p),
+        undefined,
       ],
     ])
     const actual = pg.pool.query.mock.calls
