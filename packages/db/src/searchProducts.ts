@@ -16,6 +16,7 @@ export type SearchParams = {
   category?: Product["category"] | null
   min?: Offer["price"] | null
   max?: Offer["price"] | null
+  tags?: Product["tags"]
 }
 type SearchResult = {
   id: Product["id"]
@@ -29,7 +30,7 @@ const builder = knex({ client: "pg" })
 
 const searchProducts =
   (connection: Connection) =>
-  async ({ embedding, min, max, ...parameters }: SearchParams) => {
+  async ({ embedding, min, max, tags, ...parameters }: SearchParams) => {
     const filters = Object.fromEntries(
       Object.entries(parameters).filter(
         ([k, v]) => v !== undefined && v !== null,
@@ -51,6 +52,8 @@ const searchProducts =
         value: formatEmbedding(embedding),
       })
       .limit(24)
+    
+    tags?.forEach(t => query.andWhereRaw(`? = ANY (p.${PRODUCTS.tags})`, t))
 
     if (min !== null && min !== undefined) {
       query.andWhere(`o.${OFFERS.price}`, ">=", min)

@@ -8,13 +8,11 @@ const it = test.extend<Fixtures>({
 })
 
 describe.concurrent("search", () => {
-  const category2 = {
-    name: "another",
-  }
+  const category2 = { name: "anothercategory" }
+  const tag2 = { name: "anothertag" }
   const baseProduct = {
     title: PRODUCT.title,
     images: PRODUCT.images,
-    tags: PRODUCT.tags,
   }
   const product1 = {
     ...baseProduct,
@@ -22,12 +20,14 @@ describe.concurrent("search", () => {
     embedding: [0, ...PRODUCT.embedding.slice(1)],
     category: PRODUCT.category,
     brand: PRODUCT.brand,
+    tags: [TAG.name, tag2.name],
   }
   const product2 = {
     ...baseProduct,
     id: randomUUID(),
     embedding: [1, ...PRODUCT.embedding.slice(1)],
     category: category2.name,
+    tags: [tag2.name],
   }
   const baseOffer = {
     site: OFFER.site,
@@ -119,6 +119,40 @@ describe.concurrent("search", () => {
     ])
   })
 
+  it("filters by tag", async ({ expect, db }) => {
+    const result = await db.searchProducts({
+      embedding: product2.embedding,
+      tags: [TAG.name],
+    })
+
+    expect(result).toStrictEqual([
+      {
+        id: product1.id,
+        title: product1.title,
+        image: product1.images[0],
+        brand: BRAND,
+        price: offer1.price,
+      },
+    ])
+  })
+
+  it("requires all tags", async ({ expect, db }) => {
+    const result = await db.searchProducts({
+      embedding: product2.embedding,
+      tags: [TAG.name, tag2.name],
+    })
+
+    expect(result).toStrictEqual([
+      {
+        id: product1.id,
+        title: product1.title,
+        image: product1.images[0],
+        brand: BRAND,
+        price: offer1.price,
+      },
+    ])
+  })
+
   it("filters by min price", async ({ expect, db }) => {
     await db.load({ products: [PRODUCT], offers: [OFFER], sellers: [SELLER] })
 
@@ -178,6 +212,7 @@ describe.concurrent("search", () => {
       brand: BRAND.name,
       max: OFFER.price,
       min: offer1.price,
+      tags: [TAG.name],
     })
 
     await expect(act).resolves.not.toThrow()

@@ -180,7 +180,7 @@ describe("Search page", () => {
     const tagName = results.getByText(TAG.name)
 
     expect(tagName).toBeInTheDocument()
-    // expect(db).toHaveSearched({ embedding: EMBEDDING, tag: TAG.name })
+    expect(db).toHaveSearched({ embedding: EMBEDDING, tags: [TAG.name] })
   })
 
   it("supports multiple tags filter", async ({ db, python }) => {
@@ -195,7 +195,7 @@ describe("Search page", () => {
 
     expect(tagName).toBeInTheDocument()
     expect(tag2Name).toBeInTheDocument()
-    // expect(db).toHaveSearched({ embedding: EMBEDDING, tag: TAG.name })
+    expect(db).toHaveSearched({ embedding: EMBEDDING, tags: [TAG.name, tag2] })
   })
 
   it("handles filterless search", async ({ db, python }) => {

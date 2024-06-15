@@ -32,9 +32,9 @@ expect.extend({
       expected,
     }
   },
-  toHaveSearched(pg: MockPg, { embedding, brand, category, min, max }: SearchParams) {
+  toHaveSearched(pg: MockPg, { embedding, brand, category, min, max, tags }: SearchParams) {
     const { isNot, equals } = this
-    const filters = [category, brand, min, max].filter(f => !!f).map(f => `(?=[\\s\\S]*${f})`).join('')
+    const filters = [category, brand, min, max, ...(tags ?? [])].filter(f => !!f).map(f => `(?=[\\s\\S]*${f})`).join('')
     const expected = expect.arrayContaining([
       [
         expect.stringMatching(
