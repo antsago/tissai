@@ -37,7 +37,10 @@ expect.extend({
     const expected = expect.arrayContaining([
       [
         expect.stringMatching(
-          new RegExp(`SELECT[\\s\\S]*FROM[\\s\\S]*${PRODUCTS}${category ? `[\\s\\S]*${category}` : ""}${brand ? `[\\s\\S]*${brand}` : ""}[\\s\\S]*\\[${embedding.join(',')}\\]`, "i"),
+          new RegExp(
+            `SELECT[\\s\\S]*FROM[\\s\\S]*${PRODUCTS}${category ? `[\\s\\S]*${category}` : ""}${brand ? `[\\s\\S]*${brand}` : ""}[\\s\\S]*\\[${embedding.join(",")}\\]`,
+            "i",
+          ),
         ),
         undefined,
       ],

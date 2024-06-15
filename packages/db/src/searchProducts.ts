@@ -25,7 +25,11 @@ const builder = knex({ client: "pg" })
 const searchProducts =
   (connection: Connection) =>
   async ({ embedding, ...parameters }: SearchParams) => {
-    const filters = Object.fromEntries(Object.entries(parameters).filter(([k, v]) => v !== undefined || v !== null))
+    const filters = Object.fromEntries(
+      Object.entries(parameters).filter(
+        ([k, v]) => v !== undefined || v !== null,
+      ),
+    )
     const query = builder
       .select(PRODUCTS.id, PRODUCTS.title)
       .select(`${PRODUCTS.images}[1] AS image`)
@@ -34,7 +38,10 @@ const searchProducts =
       .leftJoin(` ${BRANDS} AS b`, `b.${BRANDS.name}`, "=", PRODUCTS.brand)
       .where(filters)
       .groupBy(PRODUCTS.id)
-      .orderByRaw(":column: <-> :value", { column: PRODUCTS.embedding, value: formatEmbedding(embedding) })
+      .orderByRaw(":column: <-> :value", {
+        column: PRODUCTS.embedding,
+        value: formatEmbedding(embedding),
+      })
       .limit(24)
       .toString()
 
