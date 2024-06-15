@@ -23,7 +23,7 @@ type SearchResult = {
   title: Product["title"]
   brand: [Brand | null]
   image?: string
-  price?: string,
+  price?: string
 }
 
 const builder = knex({ client: "pg" })
@@ -43,7 +43,12 @@ const searchProducts =
       .select(builder.raw("JSON_AGG(b.*) AS brand"))
       .min(`o.${OFFERS.price} AS price`)
       .from(`${PRODUCTS.toString()} AS p`)
-      .leftJoin(`${BRANDS} AS b`, `b.${BRANDS.name}`, "=", `p.${PRODUCTS.brand}`)
+      .leftJoin(
+        `${BRANDS} AS b`,
+        `b.${BRANDS.name}`,
+        "=",
+        `p.${PRODUCTS.brand}`,
+      )
       .join(`${OFFERS} AS o`, `o.${OFFERS.product}`, "=", `p.${PRODUCTS.id}`)
       .where(filters)
       .groupBy(`p.${PRODUCTS.id}`)
@@ -52,8 +57,8 @@ const searchProducts =
         value: formatEmbedding(embedding),
       })
       .limit(24)
-    
-    tags?.forEach(t => query.andWhereRaw(`? = ANY (p.${PRODUCTS.tags})`, t))
+
+    tags?.forEach((t) => query.andWhereRaw(`? = ANY (p.${PRODUCTS.tags})`, t))
 
     if (min !== null && min !== undefined) {
       query.andWhere(`o.${OFFERS.price}`, ">=", min)

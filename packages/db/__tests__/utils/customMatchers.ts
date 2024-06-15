@@ -32,9 +32,15 @@ expect.extend({
       expected,
     }
   },
-  toHaveSearched(pg: MockPg, { embedding, brand, category, min, max, tags }: SearchParams) {
+  toHaveSearched(
+    pg: MockPg,
+    { embedding, brand, category, min, max, tags }: SearchParams,
+  ) {
     const { isNot, equals } = this
-    const filters = [category, brand, min, max, ...(tags ?? [])].filter(f => !!f).map(f => `(?=[\\s\\S]*${f})`).join('')
+    const filters = [category, brand, min, max, ...(tags ?? [])]
+      .filter((f) => !!f)
+      .map((f) => `(?=[\\s\\S]*${f})`)
+      .join("")
     const expected = expect.arrayContaining([
       [
         expect.stringMatching(
@@ -49,7 +55,8 @@ expect.extend({
     const actual = pg.pool.query.mock.calls
     return {
       pass: equals(actual, expected),
-      message: () => (isNot ? `Found unwanted search` : `Expected search not found`),
+      message: () =>
+        isNot ? `Found unwanted search` : `Expected search not found`,
       actual,
       expected,
     }
