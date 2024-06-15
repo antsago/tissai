@@ -1,4 +1,4 @@
-import { knex } from "knex"
+import knex from "knex"
 import { Connection } from "./Connection.js"
 import {
   PRODUCTS,
@@ -10,8 +10,8 @@ import {
 
 export type SearchParams = {
   embedding: Product["embedding"]
-  brand?: Product["brand"]
-  category?: Product["category"]
+  brand?: Product["brand"] | null
+  category?: Product["category"] | null
 }
 type SearchResult = {
   id: Product["id"]
@@ -27,7 +27,7 @@ const searchProducts =
   async ({ embedding, ...parameters }: SearchParams) => {
     const filters = Object.fromEntries(
       Object.entries(parameters).filter(
-        ([k, v]) => v !== undefined || v !== null,
+        ([k, v]) => v !== undefined && v !== null,
       ),
     )
     const query = builder

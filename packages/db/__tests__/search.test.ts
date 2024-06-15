@@ -89,6 +89,18 @@ describe.concurrent("search", () => {
     ])
   })
 
+  describe.each([null, undefined])("ignores %s filters", (value) => {
+    it("all filters", async ({ expect, db }) => {
+      const results = await db.searchProducts({
+        embedding: product2.embedding,
+        category: value,
+        brand: value,
+      })
+  
+      expect(results.length).toBe(2)
+    })
+  })
+
   it("all filters", async ({ expect, db }) => {
     const act = db.searchProducts({
       embedding: product2.embedding,
