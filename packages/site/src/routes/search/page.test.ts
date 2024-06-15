@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, test, expect, afterEach, vi } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
-import { CATEGORY, MockPg, mockDbFixture } from "@tissai/db/mocks"
+import { CATEGORY, MockPg, OFFER, mockDbFixture } from "@tissai/db/mocks"
 import { MockPython, mockPythonFixture } from "@tissai/python-pool/mocks"
 import { QUERY, SIMILAR, EMBEDDING, BRAND } from "mocks"
 import * as stores from "$app/stores"
@@ -35,6 +35,7 @@ describe("Search page", () => {
         {
           ...SIMILAR,
           brand: [BRAND],
+          price: String(OFFER.price),
           ...overwrite,
         },
       ],
@@ -66,6 +67,7 @@ describe("Search page", () => {
     const title = results.getByRole("heading", { level: 3 })
     const image = results.getByRole("img", { name: SIMILAR.title })
     const detailLink = results.getByRole("link")
+    const price = results.getByText(OFFER.price)
     const brandName = results.queryByText(BRAND.name)
     const brandLogo = results.getByRole("img", {
       name: `Logo de ${BRAND.name}`,
@@ -73,6 +75,7 @@ describe("Search page", () => {
 
     expect(image).toHaveAttribute("src", SIMILAR.image)
     expect(title).toHaveTextContent(SIMILAR.title)
+    expect(price).toBeInTheDocument()
     expect(brandLogo).toBeInTheDocument()
     expect(brandName).not.toBeInTheDocument()
     expect(detailLink).toHaveAttribute(

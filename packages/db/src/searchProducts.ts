@@ -6,6 +6,7 @@ import {
   Product,
   Brand,
   formatEmbedding,
+  OFFERS,
 } from "./tables/index.js"
 
 export type SearchParams = {
@@ -18,6 +19,7 @@ type SearchResult = {
   title: Product["title"]
   brand: [Brand | null]
   image?: string
+  price?: string,
 }
 
 const builder = knex({ client: "pg" })
@@ -31,13 +33,16 @@ const searchProducts =
       ),
     )
     const query = builder
-      .select(PRODUCTS.id, PRODUCTS.title)
-      .select(`${PRODUCTS.images}[1] AS image`)
+      .select(`p.${PRODUCTS.id}`)
+      .select(`p.${PRODUCTS.title}`)
+      .select(`p.${PRODUCTS.images}[1] AS image`)
       .select(builder.raw("JSON_AGG(b.*) AS brand"))
-      .from(PRODUCTS.toString())
-      .leftJoin(` ${BRANDS} AS b`, `b.${BRANDS.name}`, "=", PRODUCTS.brand)
+      .min(`o.${OFFERS.price} AS price`)
+      .from(`${PRODUCTS.toString()} AS p`)
+      .leftJoin(`${BRANDS} AS b`, `b.${BRANDS.name}`, "=", `p.${PRODUCTS.brand}`)
+      .leftJoin(`${OFFERS} AS o`, `o.${OFFERS.product}`, "=", `p.${PRODUCTS.id}`)
       .where(filters)
-      .groupBy(PRODUCTS.id)
+      .groupBy(`p.${PRODUCTS.id}`)
       .orderByRaw(":column: <-> :value", {
         column: PRODUCTS.embedding,
         value: formatEmbedding(embedding),
@@ -50,6 +55,7 @@ const searchProducts =
     return response.map((p) => ({
       ...p,
       brand: p.brand[0] ?? undefined,
+      price: p.price ? parseFloat(p.price) : undefined,
     }))
   }
 

@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto"
 import { describe, test, beforeEach } from "vitest"
-import { PRODUCT, BRAND, CATEGORY, TAG, dbFixture } from "#mocks"
+import { PRODUCT, BRAND, CATEGORY, TAG, dbFixture, OFFER, SITE } from "#mocks"
 
 type Fixtures = { db: dbFixture }
 const it = test.extend<Fixtures>({
@@ -29,12 +29,30 @@ describe.concurrent("search", () => {
     embedding: [1, ...PRODUCT.embedding.slice(1)],
     category: category2.name,
   }
+  const baseOffer = {
+    site: OFFER.site,
+    url: OFFER.url,
+  }
+  const offer1 = {
+    ...baseOffer,
+    seller: undefined,
+    id: randomUUID(),
+    product: product1.id,
+    price: OFFER.price - 10,
+  }
+  const offer2 = {
+    ...baseOffer,
+    id: randomUUID(),
+    product: product2.id,
+  }
   beforeEach<Fixtures>(async ({ db }) => {
     await db.load({
+      sites: [SITE],
       categories: [CATEGORY, category2],
       tags: [TAG],
       brands: [BRAND],
       products: [product1, product2],
+      offers: [offer1, offer2],
     })
   })
 
@@ -47,12 +65,14 @@ describe.concurrent("search", () => {
         title: product2.title,
         image: product2.images[0],
         brand: undefined,
+        price: undefined,
       },
       {
         id: product1.id,
         title: product1.title,
         image: product1.images[0],
         brand: BRAND,
+        price: offer1.price,
       },
     ])
   })
@@ -69,6 +89,7 @@ describe.concurrent("search", () => {
         title: product1.title,
         image: product1.images[0],
         brand: BRAND,
+        price: offer1.price,
       },
     ])
   })
@@ -85,12 +106,13 @@ describe.concurrent("search", () => {
         title: product1.title,
         image: product1.images[0],
         brand: BRAND,
+        price: offer1.price,
       },
     ])
   })
 
-  describe.each([null, undefined])("ignores %s filters", (value) => {
-    it("all filters", async ({ expect, db }) => {
+  describe.each([null, undefined])("handles %s filters", (value) => {
+    it("ignores them", async ({ expect, db }) => {
       const results = await db.searchProducts({
         embedding: product2.embedding,
         category: value,
