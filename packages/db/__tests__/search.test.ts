@@ -77,6 +77,14 @@ describe.concurrent("search", () => {
     ])
   })
 
+  it("ignores products without offers", async ({ expect, db }) => {
+    await db.load({ products: [PRODUCT] })
+
+    const results = await db.searchProducts({ embedding: product2.embedding })
+
+    expect(results.length).toBe(2)
+  })
+
   it("filters by brand", async ({ expect, db }) => {
     const result = await db.searchProducts({
       embedding: product2.embedding,

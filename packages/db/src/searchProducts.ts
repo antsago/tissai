@@ -40,7 +40,7 @@ const searchProducts =
       .min(`o.${OFFERS.price} AS price`)
       .from(`${PRODUCTS.toString()} AS p`)
       .leftJoin(`${BRANDS} AS b`, `b.${BRANDS.name}`, "=", `p.${PRODUCTS.brand}`)
-      .leftJoin(`${OFFERS} AS o`, `o.${OFFERS.product}`, "=", `p.${PRODUCTS.id}`)
+      .join(`${OFFERS} AS o`, `o.${OFFERS.product}`, "=", `p.${PRODUCTS.id}`)
       .where(filters)
       .groupBy(`p.${PRODUCTS.id}`)
       .orderByRaw(":column: <-> :value", {
