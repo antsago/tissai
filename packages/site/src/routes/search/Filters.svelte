@@ -19,17 +19,16 @@
       marca: {filters.brand}
     </Chip>
   {/if}
-  {#if filters.min && filters.max}
+  {#if filters.min || filters.max}
     <Chip background="bg-stone-50" style="z-index: {tagsLength + 1}">
-      precio: {filters.min} - {filters.max}
-    </Chip>
-  {:else if filters.max}
-    <Chip background="bg-stone-50" style="z-index: {tagsLength + 1}">
-      precio: &lt;{filters.max}
-    </Chip>
-  {:else if filters.min}
-    <Chip background="bg-stone-50" style="z-index: {tagsLength + 1}">
-      precio: &gt;{filters.min}
+      precio:
+      {#if filters.min && filters.max}
+        {filters.min} - {filters.max}
+      {:else if filters.max}
+        &lt;{filters.max}
+      {:else}
+        &gt;{filters.min}
+      {/if}
     </Chip>
   {/if}
   {#if filters.tags}
