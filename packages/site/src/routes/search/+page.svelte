@@ -3,28 +3,42 @@
   import type { Search } from "@tissai/db"
   import Masonry from "./Masonry.svelte"
   import { Section } from "$lib/components"
+  import Chip from "../product/[productId]/Chip.svelte"
 
   export let data: { products: Search }
 </script>
 
-<Section label="Filtros">
-  {#if $page.url.searchParams.get("inc")}
-    {#each $page.url.searchParams.getAll("inc") as tag}
-      <span>{tag}</span>
-    {/each}
-  {/if}
-  {#if $page.url.searchParams.get("min")}
-    <span>{$page.url.searchParams.get("min")}</span>
-  {/if}
-  {#if $page.url.searchParams.get("max")}
-    <span>{$page.url.searchParams.get("max")}</span>
-  {/if}
-  {#if $page.url.searchParams.get("brand")}
-    <span>{$page.url.searchParams.get("brand")}</span>
-  {/if}
-  {#if $page.url.searchParams.get("category")}
-    <span>{$page.url.searchParams.get("category")}</span>
-  {/if}
+<Section label="Filtros" class="mb-12 bg-stone-50">
+  <div class="mx-auto flex flex-row flex-wrap justify-center px-1">
+    {#if $page.url.searchParams.get("category")}
+      <Chip orange background="bg-stone-50" style="z-index: {$page.url.searchParams.getAll("inc").length + 3}">
+        categoría: {$page.url.searchParams.get("category")}
+      </Chip>
+    {/if}
+    {#if $page.url.searchParams.get("brand")}
+      <Chip background="bg-stone-50" style="z-index: {$page.url.searchParams.getAll("inc").length + 2}">
+        marca: {$page.url.searchParams.get("brand")}
+      </Chip>
+    {/if}
+    {#if $page.url.searchParams.get("min") && $page.url.searchParams.get("max")}
+      <Chip background="bg-stone-50" style="z-index: {$page.url.searchParams.getAll("inc").length + 1}">
+        precio: {$page.url.searchParams.get("min")} - {$page.url.searchParams.get("max")}
+      </Chip>
+    {:else if $page.url.searchParams.get("max")}
+      <Chip background="bg-stone-50" style="z-index: {$page.url.searchParams.getAll("inc").length + 1}">
+        precio: &lt;{$page.url.searchParams.get("max")}
+      </Chip>
+    {:else if $page.url.searchParams.get("min")}
+      <Chip background="bg-stone-50" style="z-index: {$page.url.searchParams.getAll("inc").length + 1}">
+        precio: &gt;{$page.url.searchParams.get("min")}
+      </Chip>
+    {/if}
+    {#if $page.url.searchParams.get("inc")}
+      {#each $page.url.searchParams.getAll("inc") as tag, index}
+        <Chip background="bg-stone-50" style="z-index: {$page.url.searchParams.getAll("inc").length - index}">{tag}</Chip>
+      {/each}
+    {/if}
+  </div>
 </Section>
 
 <Section label="Resultados de la búsqueda">

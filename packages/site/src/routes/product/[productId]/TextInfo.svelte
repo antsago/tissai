@@ -39,12 +39,13 @@
     </p>
   {/if}
   <div class="flex flex-wrap justify-center mt-4 px-1">
-    <Chip style="order:{rng(details.tags.length)}; z-index: {rng(0)};" orange>
+    <Chip background="bg-stone-200" style="order:{rng(details.tags.length)}; z-index: {rng(0)};" orange>
       {details.category}
     </Chip>
 
     {#each details.tags as tag, index}
       <Chip
+        background="bg-stone-200"
         style="order:{rng(details.tags.length - index)}; z-index: {rng(
           index + 1,
         )};"
