@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { SearchParams } from "@tissai/db"
-  import Chip from "../product/[productId]/Chip.svelte"
-  import ChipContainer from "../product/[productId]/ChipContainer.svelte"
+  import { Chip, ChipContainer } from "$lib/components"
 
   let classes = ""
   export { classes as class }

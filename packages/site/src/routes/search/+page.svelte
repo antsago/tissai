@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Search, SearchParams } from "@tissai/db"
-  import Masonry from "./Masonry.svelte"
   import { Section } from "$lib/components"
+  import Masonry from "./Masonry.svelte"
   import Filters from "./Filters.svelte"
 
   export let data: { products: Search, filters: Omit<SearchParams, "embedding"> }
