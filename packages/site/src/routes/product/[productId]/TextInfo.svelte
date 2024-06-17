@@ -25,7 +25,7 @@
           alt="Logo de {details.brand.name}"
         />
       {/if}
-      <span class="font-light text-stone-600 uppercase text-sm">
+      <span class="font-semibold text-stone-500 text-sm">
         {details.brand.name}
       </span>
     </div>
