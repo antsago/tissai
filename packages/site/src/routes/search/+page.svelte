@@ -1,41 +1,41 @@
 <script lang="ts">
   import { page } from "$app/stores"
-  import type { Search } from "@tissai/db"
+  import type { Search, SearchParams } from "@tissai/db"
   import Masonry from "./Masonry.svelte"
   import { Section } from "$lib/components"
   import Chip from "../product/[productId]/Chip.svelte"
 
-  export let data: { products: Search }
+  export let data: { products: Search, filters: Omit<SearchParams, "embedding"> }
 </script>
 
 <Section label="Filtros" class="mb-12 bg-stone-50">
   <div class="mx-auto flex flex-row flex-wrap justify-center px-1">
-    {#if $page.url.searchParams.get("category")}
-      <Chip orange background="bg-stone-50" style="z-index: {$page.url.searchParams.getAll("inc").length + 3}">
+    {#if data.filters.category}
+      <Chip orange background="bg-stone-50" style="z-index: {(data.filters.tags?.length ?? 0) + 3}">
         categoría: {$page.url.searchParams.get("category")}
       </Chip>
     {/if}
-    {#if $page.url.searchParams.get("brand")}
-      <Chip background="bg-stone-50" style="z-index: {$page.url.searchParams.getAll("inc").length + 2}">
-        marca: {$page.url.searchParams.get("brand")}
+    {#if data.filters.brand}
+      <Chip background="bg-stone-50" style="z-index: {(data.filters.tags?.length ?? 0) + 2}">
+        marca: {data.filters.brand}
       </Chip>
     {/if}
-    {#if $page.url.searchParams.get("min") && $page.url.searchParams.get("max")}
-      <Chip background="bg-stone-50" style="z-index: {$page.url.searchParams.getAll("inc").length + 1}">
-        precio: {$page.url.searchParams.get("min")} - {$page.url.searchParams.get("max")}
+    {#if data.filters.min && data.filters.max}
+      <Chip background="bg-stone-50" style="z-index: {(data.filters.tags?.length ?? 0) + 1}">
+        precio: {data.filters.min} - {data.filters.max}
       </Chip>
-    {:else if $page.url.searchParams.get("max")}
-      <Chip background="bg-stone-50" style="z-index: {$page.url.searchParams.getAll("inc").length + 1}">
-        precio: &lt;{$page.url.searchParams.get("max")}
+    {:else if data.filters.max}
+      <Chip background="bg-stone-50" style="z-index: {(data.filters.tags?.length ?? 0) + 1}">
+        precio: &lt;{data.filters.max}
       </Chip>
-    {:else if $page.url.searchParams.get("min")}
-      <Chip background="bg-stone-50" style="z-index: {$page.url.searchParams.getAll("inc").length + 1}">
-        precio: &gt;{$page.url.searchParams.get("min")}
+    {:else if data.filters.min}
+      <Chip background="bg-stone-50" style="z-index: {(data.filters.tags?.length ?? 0) + 1}">
+        precio: &gt;{data.filters.min}
       </Chip>
     {/if}
-    {#if $page.url.searchParams.get("inc")}
-      {#each $page.url.searchParams.getAll("inc") as tag, index}
-        <Chip background="bg-stone-50" style="z-index: {$page.url.searchParams.getAll("inc").length - index}">{tag}</Chip>
+    {#if data.filters.tags?.length}
+      {#each data.filters.tags as tag, index}
+        <Chip background="bg-stone-50" style="z-index: {data.filters.tags?.length - index}">{tag}</Chip>
       {/each}
     {/if}
   </div>
