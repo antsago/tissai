@@ -137,7 +137,7 @@ describe("Search page", () => {
       sectionName: "Filtros",
     })
 
-    const brandName = results.getByText(BRAND.name)
+    const brandName = results.getByText(BRAND.name, { exact: false })
 
     expect(brandName).toBeInTheDocument()
     expect(db).toHaveSearched({ embedding: EMBEDDING, brand: BRAND.name })
@@ -151,12 +151,38 @@ describe("Search page", () => {
       sectionName: "Filtros",
     })
 
-    const minFilter = results.getByText(min)
-    const maxFilter = results.getByText(max)
+    const minFilter = results.getByText(min, { exact: false })
+    const maxFilter = results.getByText(max, { exact: false })
 
     expect(minFilter).toBeInTheDocument()
     expect(maxFilter).toBeInTheDocument()
     expect(db).toHaveSearched({ embedding: EMBEDDING, min, max })
+  })
+
+  it("displays min price filter only", async ({ db, python }) => {
+    const min = 11.1
+    const max = 22.2
+    const results = await loadAndRender(db, python, {
+      queryParams: `min=${min}`,
+      sectionName: "Filtros",
+    })
+
+    const minFilter = results.getByText(min, { exact: false })
+
+    expect(minFilter).toBeInTheDocument()
+  })
+
+  it("displays max price filter only", async ({ db, python }) => {
+    const min = 11.1
+    const max = 22.2
+    const results = await loadAndRender(db, python, {
+      queryParams: `max=${max}`,
+      sectionName: "Filtros",
+    })
+
+    const maxFilter = results.getByText(max, { exact: false })
+
+    expect(maxFilter).toBeInTheDocument()
   })
 
   it("displays categories filter", async ({ db, python }) => {
@@ -165,7 +191,7 @@ describe("Search page", () => {
       sectionName: "Filtros",
     })
 
-    const categoryName = results.getByText(CATEGORY.name)
+    const categoryName = results.getByText(CATEGORY.name, { exact: false })
 
     expect(categoryName).toBeInTheDocument()
     expect(db).toHaveSearched({ embedding: EMBEDDING, category: CATEGORY.name })
@@ -203,7 +229,7 @@ describe("Search page", () => {
       sectionName: "Filtros",
     })
 
-    const undef = results.queryByText(new RegExp("^undefined|null$"))
+    const undef = results.queryByText(new RegExp("undefined|null"))
 
     expect(undef).not.toBeInTheDocument()
   })
