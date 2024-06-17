@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { SearchParams } from "@tissai/db"
   import Chip from "../product/[productId]/Chip.svelte"
+  import ChipContainer from "../product/[productId]/ChipContainer.svelte"
 
   let classes = ""
   export { classes as class }
@@ -8,7 +9,7 @@
   const tagsLength = filters.tags?.length ?? 0
 </script>
 
-<div class="flex flex-row flex-wrap justify-center px-1 {classes}">
+<ChipContainer class={classes}>
   {#if filters.category}
     <Chip orange background="bg-stone-50" style="z-index: {tagsLength + 3}">
       categoría: {filters.category}
@@ -37,4 +38,4 @@
       <Chip background="bg-stone-50" style="z-index: {tagsLength - index}">{tag}</Chip>
     {/each}
   {/if}
-</div>
+</ChipContainer>

@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ProductDetails } from "@tissai/db"
   import Chip from "./Chip.svelte"
+  import ChipContainer from "./ChipContainer.svelte"
 
   export let details: ProductDetails
   let classes = ""
@@ -30,19 +31,21 @@
       </span>
     </div>
   {/if}
+
   <h1 id="product-details" class="text-stone-900 uppercase text-lg font-medium">
     {details.title}
   </h1>
+
   {#if details.description}
     <p class="mt-4 text-stone-700 text-base">
       {details.description}
     </p>
   {/if}
-  <div class="flex flex-wrap justify-center mt-4 px-1">
+
+  <ChipContainer class="mt-4">
     <Chip background="bg-stone-200" style="order:{rng(details.tags.length)}; z-index: {rng(0)};" orange>
       {details.category}
     </Chip>
-
     {#each details.tags as tag, index}
       <Chip
         background="bg-stone-200"
@@ -53,5 +56,5 @@
         {tag}
       </Chip>
     {/each}
-  </div>
+  </ChipContainer>
 </div>
