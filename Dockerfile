@@ -7,28 +7,31 @@ RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/usr/local python3
 # Yarn
 RUN bash -ic "corepack enable"
 
+WORKDIR /app
+
 # --- #
 
 FROM base AS build
 
 COPY . /app
-WORKDIR /app
 
 # Build svelte
 RUN yarn
-RUN yarn build
-RUN cp src/lib/server/Embedder/embedder.py build/server/chunks/embedder.py
+RUN yarn site build
+RUN cp packages/site/src/lib/server/Embedder/embedder.py packages/site/build/server/chunks/embedder.py
 
 # --- #
 
 FROM base AS final
 
-COPY --from=build /app/build /app/build
-COPY --from=build /app/.yarn /app/.yarn
-COPY --from=build /app/package.json /app/yarn.lock /app/.yarnrc.yml /app/pyproject.toml /app/poetry.lock /app/
+COPY --from=build /app/package.json /app/yarn.lock /app/.yarnrc.yml /app/
+COPY --from=build \
+  /app/packages/site/build /app/packages/site/packages.json \
+  /app/packages/site/pyproject.toml /app/packages/site/poetry.lock \
+  /app/packages/site/
 
-WORKDIR /app
 RUN yarn workspaces focus --all --production
+WORKDIR /app/packages/site
 RUN poetry install --only main
 
 # Predownload model

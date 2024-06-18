@@ -1,0 +1,35 @@
+# Mac
+.DS_Store
+
+# Node & TS
+**/node_modules
+**/coverage
+packages/*/build
+**/*.tsbuildinfo
+**/*.test.ts
+
+# Python
+**/__pycache__
+**/.venv
+**/.pytest_cache
+
+# Yarn
+**/.pnp.*
+**/.yarn/*
+!**/.yarn/patches
+!**/.yarn/plugins
+!**/.yarn/releases
+!**/.yarn/sdks
+!**/.yarn/versions
+
+# Env
+**/.env
+**/.env.*
+
+# Packages
+/packages/site/.svelte-kit
+/packages/*/vite.config.ts.timestamp-*
+/packages/indexer
+
+# Data folder
+/data
