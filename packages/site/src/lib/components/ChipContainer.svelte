@@ -4,5 +4,5 @@
 </script>
 
 <div class="flex flex-row flex-wrap justify-center px-1 {classes}">
-  <slot/>
+  <slot />
 </div>

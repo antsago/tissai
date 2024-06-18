@@ -33,7 +33,9 @@
   {/if}
   {#if filters.tags}
     {#each filters.tags as tag, index}
-      <Chip background="bg-stone-50" style="z-index: {tagsLength - index}">{tag}</Chip>
+      <Chip background="bg-stone-50" style="z-index: {tagsLength - index}">
+        {tag}
+      </Chip>
     {/each}
   {/if}
 </ChipContainer>

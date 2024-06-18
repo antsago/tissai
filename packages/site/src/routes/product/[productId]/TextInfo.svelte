@@ -42,7 +42,11 @@
   {/if}
 
   <ChipContainer class="mt-4">
-    <Chip background="bg-stone-200" style="order:{rng(details.tags.length)}; z-index: {rng(0)};" orange>
+    <Chip
+      background="bg-stone-200"
+      style="order:{rng(details.tags.length)}; z-index: {rng(0)};"
+      orange
+    >
       {details.category}
     </Chip>
     {#each details.tags as tag, index}
