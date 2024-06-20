@@ -1,7 +1,7 @@
 import type { MockPg } from "./MockPg.js"
 import type { SearchParams } from "../../src/index.js"
 import { expect } from "vitest"
-import { PRODUCTS, formatEmbedding } from "../../src/index.js"
+import { buildSearchQuery } from "../../src/searchProducts.js"
 
 interface CustomMatchers {
   toHaveInserted: (table: string, values?: any[]) => void
@@ -32,26 +32,10 @@ expect.extend({
       expected,
     }
   },
-  toHaveSearched(
-    pg: MockPg,
-    { embedding, brand, category, min, max, tags }: SearchParams,
-  ) {
+  toHaveSearched(pg: MockPg, parameters: SearchParams) {
     const { isNot, equals } = this
-    const filters = [category, brand, min, max, ...(tags ?? [])]
-      .filter((f) => !!f)
-      .map((f) => `(?=[\\s\\S]*${f})`)
-      .join("")
-    const expected = expect.arrayContaining([
-      [
-        expect.stringMatching(
-          new RegExp(
-            `SELECT[\\s\\S]*FROM[\\s\\S]*${PRODUCTS}${filters}(?![\\s\\S]*NaN)[\\s\\S]*\\[${embedding.join(",")}\\]`,
-            "i",
-          ),
-        ),
-        undefined,
-      ],
-    ])
+    const query = buildSearchQuery(parameters)
+    const expected = expect.arrayContaining([[query.sql, query.parameters]])
     const actual = pg.pool.query.mock.calls
     return {
       pass: equals(actual, expected),

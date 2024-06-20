@@ -1,14 +1,46 @@
-import knex from "knex"
-import { Connection } from "./Connection.js"
 import {
-  PRODUCTS,
-  BRANDS,
-  Product,
-  Brand,
-  formatEmbedding,
-  OFFERS,
-  Offer,
-} from "./tables/index.js"
+  DummyDriver,
+  Kysely,
+  PostgresAdapter,
+  PostgresIntrospector,
+  PostgresQueryCompiler,
+  sql,
+} from "kysely"
+import { Connection } from "./Connection.js"
+import { Product, Brand, formatEmbedding, Offer } from "./tables/index.js"
+
+interface Products {
+  id: Product["id"]
+  title: Product["title"]
+  images: Product["images"]
+  brand: Product["brand"]
+  embedding: Product["embedding"]
+  tags: Product["tags"]
+}
+interface Offers {
+  id: Offer["id"]
+  product: Offer["product"]
+  price: Offer["price"]
+}
+interface Brands {
+  name: Brand["name"]
+  logo: Brand["logo"]
+}
+
+interface Database {
+  products: Products
+  offers: Offers
+  brands: Brands
+}
+
+const builder = new Kysely<Database>({
+  dialect: {
+    createAdapter: () => new PostgresAdapter(),
+    createDriver: () => new DummyDriver(),
+    createIntrospector: (db) => new PostgresIntrospector(db),
+    createQueryCompiler: () => new PostgresQueryCompiler(),
+  },
+})
 
 export type SearchParams = {
   embedding: Product["embedding"]
@@ -21,57 +53,66 @@ export type SearchParams = {
 type SearchResult = {
   id: Product["id"]
   title: Product["title"]
-  brand: [Brand | null]
+  brand?: [Brand]
   image?: string
   price?: string
 }
 
-const builder = knex({ client: "pg" })
+export const buildSearchQuery = ({
+  embedding,
+  min,
+  max,
+  tags = [],
+  ...parameters
+}: SearchParams) => {
+  const filters = Object.fromEntries(
+    Object.entries(parameters).filter(
+      ([k, v]) => v !== undefined && v !== null,
+    ),
+  )
+  let query = builder
+    .selectFrom("products")
+    .innerJoin("offers", "product", "products.id")
+    .select(({ fn, selectFrom }) => [
+      "products.id",
+      "title",
+      sql<string>`images[1]`.as("image"),
+      fn.min<string>("price").as("price"),
+      selectFrom("brands")
+        .select(({ fn }) => [fn.jsonAgg("brands").as("brand")])
+        .whereRef("brands.name", "=", "products.brand")
+        .as("brand"),
+    ])
+    .where(({ and }) => and(filters))
+    .groupBy("products.id")
+    .orderBy(sql`embedding <-> ${formatEmbedding(embedding)}`)
+    .limit(24)
+
+  query = tags.reduce(
+    (q, t) => q.where((eb) => eb(eb.val(t), "=", eb.fn.any("tags"))),
+    query,
+  )
+
+  query =
+    min !== null && min !== undefined ? query.where("price", ">=", min) : query
+  query =
+    max !== null && max !== undefined ? query.where("price", "<=", max) : query
+
+  return query.compile()
+}
 
 const searchProducts =
-  (connection: Connection) =>
-  async ({ embedding, min, max, tags, ...parameters }: SearchParams) => {
-    const filters = Object.fromEntries(
-      Object.entries(parameters).filter(
-        ([k, v]) => v !== undefined && v !== null,
-      ),
+  (connection: Connection) => async (parameters: SearchParams) => {
+    const query = buildSearchQuery(parameters)
+
+    const response = await connection.query<SearchResult>(
+      query.sql,
+      query.parameters as any[],
     )
-    const query = builder
-      .select(`p.${PRODUCTS.id}`)
-      .select(`p.${PRODUCTS.title}`)
-      .select(`p.${PRODUCTS.images}[1] AS image`)
-      .select(builder.raw("JSON_AGG(b.*) AS brand"))
-      .min(`o.${OFFERS.price} AS price`)
-      .from(`${PRODUCTS.toString()} AS p`)
-      .leftJoin(
-        `${BRANDS} AS b`,
-        `b.${BRANDS.name}`,
-        "=",
-        `p.${PRODUCTS.brand}`,
-      )
-      .join(`${OFFERS} AS o`, `o.${OFFERS.product}`, "=", `p.${PRODUCTS.id}`)
-      .where(filters)
-      .groupBy(`p.${PRODUCTS.id}`)
-      .orderByRaw(":column: <-> :value", {
-        column: PRODUCTS.embedding,
-        value: formatEmbedding(embedding),
-      })
-      .limit(24)
-
-    tags?.forEach((t) => query.andWhereRaw(`? = ANY (p.${PRODUCTS.tags})`, t))
-
-    if (min !== null && min !== undefined) {
-      query.andWhere(`o.${OFFERS.price}`, ">=", min)
-    }
-    if (max !== null && max !== undefined) {
-      query.andWhere(`o.${OFFERS.price}`, "<=", max)
-    }
-
-    const response = await connection.query<SearchResult>(query.toString())
 
     return response.map((p) => ({
       ...p,
-      brand: p.brand[0] ?? undefined,
+      brand: p.brand?.[0],
       price: p.price ? parseFloat(p.price) : undefined,
     }))
   }
