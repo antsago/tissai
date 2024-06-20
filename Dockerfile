@@ -25,12 +25,16 @@ RUN cp packages/site/src/lib/server/Embedder/embedder.py packages/site/build/ser
 FROM base AS final
 
 COPY --from=build /app/package.json /app/yarn.lock /app/.yarnrc.yml /app/
+COPY --from=build /app/packages/db/package.json /app/packages/db/
+COPY --from=build /app/packages/pythonPool/package.json /app/packages/pythonPool/
 COPY --from=build \
-  /app/packages/site/build /app/packages/site/packages.json \
-  /app/packages/site/pyproject.toml /app/packages/site/poetry.lock \
+  /app/packages/site/package.json \
+  /app/packages/site/pyproject.toml \
+  /app/packages/site/poetry.lock \
   /app/packages/site/
+COPY --from=build /app/packages/site/build /app/packages/site/build
 
-RUN yarn workspaces focus --all --production
+RUN yarn workspaces focus @tissai/site --production
 WORKDIR /app/packages/site
 RUN poetry install --only main
 

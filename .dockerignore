@@ -1,5 +1,8 @@
-# Mac
-.DS_Store
+# Misc
+**/.DS_Store
+.devcontainer
+.editorconfig
+.git
 
 # Node & TS
 **/node_modules
@@ -27,9 +30,9 @@ packages/*/build
 **/.env.*
 
 # Packages
-/packages/site/.svelte-kit
-/packages/*/vite.config.ts.timestamp-*
-/packages/indexer
+packages/site/.svelte-kit
+packages/*/vite.config.ts.timestamp-*
+packages/indexer
 
 # Data folder
-/data
+data
