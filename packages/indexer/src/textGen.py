@@ -9,4 +9,6 @@ model = AutoModelForCausalLM.from_pretrained(modelName)
 
 inputs = tokenizer(prompt, return_tensors="pt")
 outputs = model.generate(**inputs, max_new_tokens=10, stop_strings=".\n", tokenizer=tokenizer)
-print(tokenizer.batch_decode(outputs, skip_special_tokens=True))
+output = tokenizer.batch_decode(outputs, skip_special_tokens=True)[0]
+category = output[(len(prompt)+1):-2]
+print(category)
