@@ -32,6 +32,6 @@ export const pageWithSchema = (...schemas: object[]) => ({
 
 export const DERIVED_DATA = {
   category: CATEGORY.name,
-  tags: [TAG.name],
+  tags: ["vaqueros", TAG.name],
   embedding: PRODUCT.embedding,
 }

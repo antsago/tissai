@@ -18,7 +18,7 @@ export const BRAND = {
 }
 
 export const CATEGORY = {
-  name: "vaqueros",
+  name: "vaquero",
 }
 
 export const TAG = {

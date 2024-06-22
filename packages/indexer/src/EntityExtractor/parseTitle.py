@@ -2,8 +2,9 @@ import sys
 import json
 import spacy
 from sentence_transformers import SentenceTransformer
+from textGen import getCategory
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+embedderModel = SentenceTransformer("all-MiniLM-L6-v2")
 
 nlp = spacy.load(
     "es_core_news_sm",
@@ -26,9 +27,9 @@ for query in sys.stdin:
     doc = nlp(title)
 
     augmented = {
-        "embedding": model.encode([title], convert_to_numpy=True)[0].tolist(),
-        "category": doc[0].lower_,
-        "tags": list({token.lower_ for token in doc[1:] if isMeaningless(token)}),
+        "embedding": embedderModel.encode([title], convert_to_numpy=True)[0].tolist(),
+        "category": getCategory(title),
+        "tags": list({token.lower_ for token in doc if isMeaningless(token)}),
     }
 
     print(json.dumps(augmented, separators=(",", ":")))

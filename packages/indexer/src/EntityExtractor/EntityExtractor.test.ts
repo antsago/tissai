@@ -103,6 +103,9 @@ describe("EntityExtractor", () => {
         {
           name: DERIVED_DATA.tags[0],
         },
+        {
+          name: DERIVED_DATA.tags[1],
+        },
       ])
     })
 

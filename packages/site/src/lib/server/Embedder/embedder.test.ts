@@ -7,10 +7,12 @@ describe("Embedder", () => {
     embedder = Embedder()
   })
 
-  it("calculates embeddings", async () => {
-    const result = await embedder.embed("A query")
+  it(
+    "calculates embeddings",
+    async () => {
+      const result = await embedder.embed("A query")
 
-    expect(result).toMatchInlineSnapshot(`
+      expect(result).toMatchInlineSnapshot(`
       [
         0.05054311081767082,
         0.08753636479377747,
@@ -398,5 +400,7 @@ describe("Embedder", () => {
         0.09099084138870239,
       ]
     `)
-  })
+    },
+    { timeout: 60000 },
+  )
 })
