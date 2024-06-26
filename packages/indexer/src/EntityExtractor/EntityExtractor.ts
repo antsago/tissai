@@ -122,6 +122,19 @@ async function tags(title: string, python: PythonPool<string, DerivedData>): Pro
 
   return derivedInfo.tags.map((t) => ({ name: t }))
 }
+async function product(ld: ParsedLd, head: ParsedH, og: ParsedOG, title: string, python: PythonPool<string, DerivedData>, category: Category, tags: Tag[], brand?: Brand): Promise<Product> {
+  const derivedInfo = await python.send(title)
+  return {
+    id: randomUUID(),
+    title,
+    images: ld.image ?? og.image,
+    description: ld.description ?? og.description ?? head.description,
+    brand: brand?.name,
+    category: category.name,
+    tags: tags.map((t) => t.name),
+    embedding: derivedInfo.embedding,
+  }
+}
 
 type Entities = {
   product: Product
@@ -158,23 +171,13 @@ export const EntityExtractor = () => {
       const sellerEntities = sellers(jsonLdInfo)
       const brandEntity = brand(jsonLdInfo)
 
-      const derivedInfo = await python.send(productTitle)
-      const product = {
-        id: randomUUID(),
-        title: productTitle,
-        images: jsonLdInfo.image ?? opengraphInfo.image,
-        description: jsonLdInfo.description ?? opengraphInfo.description ?? headingInfo.description,
-        brand: brandEntity?.name,
-        category: categoryEntity.name,
-        tags: tagEntities.map((t) => t.name),
-        embedding: derivedInfo.embedding,
-      }
+      const productEntity = await product(jsonLdInfo, headingInfo, opengraphInfo, productTitle, python, categoryEntity, tagEntities, brandEntity)
 
       const rawOffers = jsonLdInfo.offers?.map(
         (offer) => ({
           url: page.url,
           site: page.site,
-          product: product.id,
+          product: productEntity.id,
           price: offer.price,
           currency: offer.currency,
           seller: offer.seller,
@@ -183,7 +186,7 @@ export const EntityExtractor = () => {
         {
           url: page.url,
           site: page.site,
-          product: product.id,
+          product: productEntity.id,
           price: undefined,
           currency: undefined,
           seller: undefined,
@@ -199,7 +202,7 @@ export const EntityExtractor = () => {
         category: categoryEntity,
         tags: tagEntities,
         brand: brandEntity,
-        product,
+        product: productEntity,
         offers,
         sellers: sellerEntities,
       }
