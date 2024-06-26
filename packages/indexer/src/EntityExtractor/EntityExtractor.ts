@@ -86,6 +86,11 @@ function parsedLd(jsonLd: JsonLD): ParsedLd {
   }
 }
 
+type Title = string|undefined
+function title(jsonLd: ParsedLd, og: ParsedOG, head: ParsedH): Title {
+  return jsonLd.title ?? og.title ?? head.title
+}
+
 function brand({ brandName, brandLogo }: ParsedLd): Brand|undefined {
   if (!brandName) {
     return undefined
@@ -130,6 +135,7 @@ export const EntityExtractor = () => {
       const jsonLdInfo = parsedLd(sd.jsonLd)
       const opengraphInfo = parsedOg(sd.opengraph)
       const headingInfo = parsedH(sd.headings)
+      const productTitle = title(jsonLdInfo, opengraphInfo, headingInfo)
 
       const structuredInfo = _.defaults(
         {},
@@ -138,11 +144,11 @@ export const EntityExtractor = () => {
         headingInfo,
       )
 
-      if (!structuredInfo.title) {
+      if (!productTitle) {
         throw new Error("Product without title!")
       }
 
-      const derivedInfo = await python.send(structuredInfo.title)
+      const derivedInfo = await python.send(productTitle)
 
       const category = {
         name: derivedInfo.category,
@@ -154,7 +160,7 @@ export const EntityExtractor = () => {
 
       const product = {
         id: randomUUID(),
-        title: structuredInfo.title,
+        title: productTitle,
         images: structuredInfo.image,
         description: structuredInfo.description,
         brand: brandEntity?.name,
