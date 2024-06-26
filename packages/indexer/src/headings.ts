@@ -18,8 +18,12 @@ function headings(parsedPage: ParsedPage): Headings {
     keywords: parsedPage
       .querySelector('meta[name="keywords"]')
       ?.getAttribute("content"),
-    author: parsedPage.querySelector('meta[name="author"]')?.getAttribute("content"),
-    robots: parsedPage.querySelector('meta[name="robots"]')?.getAttribute("content"),
+    author: parsedPage
+      .querySelector('meta[name="author"]')
+      ?.getAttribute("content"),
+    robots: parsedPage
+      .querySelector('meta[name="robots"]')
+      ?.getAttribute("content"),
     canonical: parsedPage
       .querySelector('link[rel="canonical"]')
       ?.getAttribute("href"),

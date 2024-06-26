@@ -1,4 +1,4 @@
-import type { ParsedPage } from './parsedPage.js'
+import type { ParsedPage } from "./parsedPage.js"
 import he from "he"
 
 export type JsonLD = any[]
@@ -45,7 +45,7 @@ function jsonLd(parsedPage: ParsedPage): JsonLD {
     .map((t) => JSON.parse(t))
     .map(expandJsonLd)
     .map((t) => (t["@graph"] ? t["@graph"] : t))
-    .flat() 
+    .flat()
 }
 
 export default jsonLd

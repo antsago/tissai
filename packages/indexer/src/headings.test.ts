@@ -49,12 +49,12 @@ describe("headings", () => {
     const result = headings(parsedPage(page))
 
     expect(result).toStrictEqual({
-        title: undefined,
-        description: undefined,
-        keywords: undefined,
-        author: undefined,
-        robots: undefined,
-        canonical: undefined,
-      })
+      title: undefined,
+      description: undefined,
+      keywords: undefined,
+      author: undefined,
+      robots: undefined,
+      canonical: undefined,
+    })
   })
 })
