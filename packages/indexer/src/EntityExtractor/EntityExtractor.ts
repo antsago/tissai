@@ -135,6 +135,35 @@ async function product(ld: ParsedLd, head: ParsedH, og: ParsedOG, title: string,
     embedding: derivedInfo.embedding,
   }
 }
+function offers(ld: ParsedLd, page: Page, product: Product): Offer[] {
+  const base = {
+    url: page.url,
+    site: page.site,
+    product: product.id,
+  }
+
+  if (!ld.offers) {
+    return [
+      {
+        ...base,
+        id: randomUUID(),
+        price: undefined,
+        currency: undefined,
+        seller: undefined,
+      },
+    ]
+  }
+
+  return _.uniqWith(ld.offers, _.isEqual).map(
+    (offer) => ({
+      ...base,
+      id: randomUUID(),
+      price: offer.price,
+      currency: offer.currency,
+      seller: offer.seller,
+    }),
+  )
+}
 
 type Entities = {
   product: Product
@@ -170,40 +199,15 @@ export const EntityExtractor = () => {
       const tagEntities = await tags(productTitle, python)
       const sellerEntities = sellers(jsonLdInfo)
       const brandEntity = brand(jsonLdInfo)
-
       const productEntity = await product(jsonLdInfo, headingInfo, opengraphInfo, productTitle, python, categoryEntity, tagEntities, brandEntity)
-
-      const rawOffers = jsonLdInfo.offers?.map(
-        (offer) => ({
-          url: page.url,
-          site: page.site,
-          product: productEntity.id,
-          price: offer.price,
-          currency: offer.currency,
-          seller: offer.seller,
-        }),
-      ) ?? [
-        {
-          url: page.url,
-          site: page.site,
-          product: productEntity.id,
-          price: undefined,
-          currency: undefined,
-          seller: undefined,
-        },
-      ]
-
-      const offers = _.uniqWith(rawOffers, _.isEqual).map((o) => ({
-        ...o,
-        id: randomUUID(),
-      }))
+      const offerEntities = offers(jsonLdInfo, page, productEntity)
 
       return {
         category: categoryEntity,
         tags: tagEntities,
         brand: brandEntity,
         product: productEntity,
-        offers,
+        offers: offerEntities,
         sellers: sellerEntities,
       }
     },
