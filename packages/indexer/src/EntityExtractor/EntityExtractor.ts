@@ -33,7 +33,12 @@ type OfferStructuredInfo = {
   seller?: string
 }
 
-function extractOg(opengraph: StructuredData["opengraph"]) {
+type ParsedOG = Partial<{
+  title: string
+  description: string
+  image: string[]
+}>
+function parsedOg(opengraph: OpenGraph): ParsedOG {
   if (opengraph["og:type"] !== "product") {
     return {}
   }
@@ -42,6 +47,42 @@ function extractOg(opengraph: StructuredData["opengraph"]) {
     title: opengraph["og:title"],
     description: opengraph["og:description"],
     image: opengraph["og:image"] ? [opengraph["og:image"]] : undefined,
+  }
+}
+
+type ParsedH = Partial<{
+  title: string
+  description: string
+}>
+function parsedH(headings: Headings): ParsedH {
+  return {
+    title: headings.title,
+    description: headings.description,
+  }
+}
+
+type ParsedLd = Partial<{
+  title: string
+  description: string
+  image: string[]
+  brandName: string
+  brandLogo: string
+  offers: OfferStructuredInfo[]
+}>
+function parsedLd(jsonLd: JsonLD): ParsedLd {
+  const productTag = jsonLd.filter((t) => t["@type"].includes("Product"))[0]
+
+  return {
+    title: productTag?.name[0],
+    description: productTag?.description?.[0],
+    image: productTag?.image,
+    brandName: productTag?.brand?.[0].name[0]?.toLowerCase(),
+    brandLogo: productTag?.brand?.[0].image?.[0],
+    offers: productTag?.offers?.map((offer: any) => ({
+      price: offer.price?.[0],
+      currency: offer.priceCurrency?.[0],
+      seller: offer.seller?.[0].name[0]?.toLowerCase(),
+    })),
   }
 }
 
@@ -63,28 +104,13 @@ export const EntityExtractor = () => {
   return {
     close: () => python.close(),
     extract: async (
-      { jsonLd, opengraph, headings }: StructuredData,
+      sd: StructuredData,
       page: Page,
     ): Promise<Entities> => {
-      const productTag = jsonLd.filter((t) => t["@type"].includes("Product"))[0]
+      const jsonLdInfo = parsedLd(sd.jsonLd)
+      const opengraphInfo = parsedOg(sd.opengraph)
+      const headingInfo = parsedH(sd.headings)
 
-      const jsonLdInfo = {
-        title: productTag?.name[0],
-        description: productTag?.description?.[0],
-        image: productTag?.image,
-        brandName: productTag?.brand?.[0].name[0]?.toLowerCase(),
-        brandLogo: productTag?.brand?.[0].image?.[0],
-        offers: productTag?.offers?.map((offer: any) => ({
-          price: offer.price?.[0],
-          currency: offer.priceCurrency?.[0],
-          seller: offer.seller?.[0].name[0]?.toLowerCase(),
-        })),
-      }
-      const opengraphInfo = extractOg(opengraph)
-      const headingInfo = {
-        title: headings.title,
-        description: headings.description,
-      }
       const structuredInfo = _.defaults(
         {},
         jsonLdInfo,
