@@ -10,7 +10,10 @@ import {
   TAGS,
 } from "@tissai/db"
 import { reporter } from "./Reporter.js"
-import parsePage from "./parsePage.js"
+import parsedPage from "./parsedPage.js"
+import jsonLd from "./jsonLd.js"
+import opengraph from "./opengraph.js"
+import headings from "./headings.js"
 import { EntityExtractor } from "./EntityExtractor/index.js"
 
 let db!: Db
@@ -33,7 +36,13 @@ try {
       reporter.progress(
         `Processing page ${index}/${totalPageCount}: ${page.id} (${page.url})`,
       )
-      const structuredData = parsePage(page)
+      const root = parsedPage(page)
+
+      const structuredData = {
+        jsonLd: jsonLd(root),
+        headings: headings(root),
+        opengraph: opengraph(root),
+      }
 
       const { product, offers, category, tags, sellers, brand } =
         await extractor.extract(structuredData, page)

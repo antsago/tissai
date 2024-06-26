@@ -7,7 +7,9 @@ import type {
   Seller,
   Page,
 } from "@tissai/db"
-import type { StructuredData } from "../parsePage.js"
+import type { JsonLD } from "../jsonLd.js"
+import type { OpenGraph } from "../opengraph.js"
+import type { Headings } from "../headings.js"
 import { dirname } from "node:path"
 import { randomUUID } from "node:crypto"
 import { fileURLToPath } from "node:url"
@@ -15,6 +17,11 @@ import _ from "lodash"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
 
+type StructuredData = {
+  jsonLd: JsonLD
+  opengraph: OpenGraph
+  headings: Headings
+}
 type DerivedData = {
   embedding: number[]
   category: string
