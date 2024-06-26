@@ -90,14 +90,6 @@ type Title = string|undefined
 function title(jsonLd: ParsedLd, og: ParsedOG, head: ParsedH): Title {
   return jsonLd.title ?? og.title ?? head.title
 }
-type Description = string|undefined
-function description(jsonLd: ParsedLd, og: ParsedOG, head: ParsedH): Description {
-  return jsonLd.description ?? og.description ?? head.description
-}
-type Images = string[]|undefined
-function images(jsonLd: ParsedLd, og: ParsedOG): Images {
-  return jsonLd.image ?? og.image
-}
 
 function brand({ brandName, brandLogo }: ParsedLd): Brand|undefined {
   if (!brandName) {
@@ -162,8 +154,8 @@ export const EntityExtractor = () => {
       const product = {
         id: randomUUID(),
         title: productTitle,
-        images: images(jsonLdInfo, opengraphInfo),
-        description: description(jsonLdInfo, opengraphInfo, headingInfo),
+        images: jsonLdInfo.image ?? opengraphInfo.image,
+        description: jsonLdInfo.description ?? opengraphInfo.description ?? headingInfo.description,
         brand: brandEntity?.name,
         category: category.name,
         tags: tags.map((t) => t.name),
