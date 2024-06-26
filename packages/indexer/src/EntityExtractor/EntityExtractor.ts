@@ -86,8 +86,7 @@ function parsedLd(jsonLd: JsonLD): ParsedLd {
   }
 }
 
-type Title = string|undefined
-function title(jsonLd: ParsedLd, og: ParsedOG, head: ParsedH): Title {
+function title(jsonLd: ParsedLd, og: ParsedOG, head: ParsedH) {
   return jsonLd.title ?? og.title ?? head.title
 }
 
@@ -109,6 +108,14 @@ function sellers({ offers }: ParsedLd): Seller[] {
       name: offer.seller,
     }))
     .filter(({ name }) => !!name)
+}
+
+async function category(title: string, python: PythonPool<string, DerivedData>): Promise<Category> {
+  const derivedInfo = await python.send(title)
+
+  return {
+    name: derivedInfo.category,
+  }
 }
 
 type Entities = {
@@ -143,9 +150,7 @@ export const EntityExtractor = () => {
 
       const derivedInfo = await python.send(productTitle)
 
-      const category = {
-        name: derivedInfo.category,
-      }
+      const categoryEntity = await category(productTitle, python)
       const tags = derivedInfo.tags.map((t) => ({ name: t }))
 
       const sellerEntities = sellers(jsonLdInfo)
@@ -157,7 +162,7 @@ export const EntityExtractor = () => {
         images: jsonLdInfo.image ?? opengraphInfo.image,
         description: jsonLdInfo.description ?? opengraphInfo.description ?? headingInfo.description,
         brand: brandEntity?.name,
-        category: category.name,
+        category: categoryEntity.name,
         tags: tags.map((t) => t.name),
         embedding: derivedInfo.embedding,
       }
@@ -188,7 +193,7 @@ export const EntityExtractor = () => {
       }))
 
       return {
-        category,
+        category: categoryEntity,
         tags,
         brand: brandEntity,
         product,
