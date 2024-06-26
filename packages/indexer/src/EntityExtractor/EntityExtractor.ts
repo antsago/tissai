@@ -90,6 +90,14 @@ type Title = string|undefined
 function title(jsonLd: ParsedLd, og: ParsedOG, head: ParsedH): Title {
   return jsonLd.title ?? og.title ?? head.title
 }
+type Description = string|undefined
+function description(jsonLd: ParsedLd, og: ParsedOG, head: ParsedH): Description {
+  return jsonLd.description ?? og.description ?? head.description
+}
+type Images = string[]|undefined
+function images(jsonLd: ParsedLd, og: ParsedOG): Images {
+  return jsonLd.image ?? og.image
+}
 
 function brand({ brandName, brandLogo }: ParsedLd): Brand|undefined {
   if (!brandName) {
@@ -137,13 +145,6 @@ export const EntityExtractor = () => {
       const headingInfo = parsedH(sd.headings)
       const productTitle = title(jsonLdInfo, opengraphInfo, headingInfo)
 
-      const structuredInfo = _.defaults(
-        {},
-        jsonLdInfo,
-        opengraphInfo,
-        headingInfo,
-      )
-
       if (!productTitle) {
         throw new Error("Product without title!")
       }
@@ -161,15 +162,15 @@ export const EntityExtractor = () => {
       const product = {
         id: randomUUID(),
         title: productTitle,
-        images: structuredInfo.image,
-        description: structuredInfo.description,
+        images: images(jsonLdInfo, opengraphInfo),
+        description: description(jsonLdInfo, opengraphInfo, headingInfo),
         brand: brandEntity?.name,
         category: category.name,
         tags: tags.map((t) => t.name),
         embedding: derivedInfo.embedding,
       }
 
-      const rawOffers = (structuredInfo.offers as OfferStructuredInfo[])?.map(
+      const rawOffers = jsonLdInfo.offers?.map(
         (offer) => ({
           url: page.url,
           site: page.site,
