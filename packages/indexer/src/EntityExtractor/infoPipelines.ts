@@ -49,7 +49,7 @@ export function parsedLd(jsonLd: JsonLD): ParsedLd {
     title: productTag?.name[0],
     description: productTag?.description?.[0],
     image: productTag?.image,
-    brandName: productTag?.brand?.[0].name[0]?.toLowerCase(),
+    brandName: productTag?.brand?.[0].name[0],
     brandLogo: productTag?.brand?.[0].image?.[0],
     offers: productTag?.offers?.map((offer: any) => ({
       price: offer.price?.[0],

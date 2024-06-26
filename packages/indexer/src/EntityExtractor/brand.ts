@@ -6,6 +6,6 @@ function brand({ brandName, brandLogo }: ParsedLd): Brand|undefined {
     return undefined
   }
 
-  return { name: brandName, logo: brandLogo }
+  return { name: brandName.toLowerCase(), logo: brandLogo }
 }
 export default brand
