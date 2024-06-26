@@ -86,6 +86,14 @@ function parsedLd(jsonLd: JsonLD): ParsedLd {
   }
 }
 
+function brand(jsonLd: ParsedLd): Brand|undefined {
+  if (!jsonLd.brandName) {
+    return undefined
+  }
+
+  return { name: jsonLd.brandName, logo: jsonLd.brandLogo }
+}
+
 type Entities = {
   product: Product
   category: Category
@@ -135,16 +143,14 @@ export const EntityExtractor = () => {
             name: offer.seller,
           }))
           .filter(({ name }) => !!name) ?? []
-      const brand = structuredInfo.brandName
-        ? { name: structuredInfo.brandName, logo: structuredInfo.brandLogo }
-        : undefined
+      const brandEntity = brand(jsonLdInfo)
 
       const product = {
         id: randomUUID(),
         title: structuredInfo.title,
         images: structuredInfo.image,
         description: structuredInfo.description,
-        brand: brand?.name,
+        brand: brandEntity?.name,
         category: category.name,
         tags: tags.map((t) => t.name),
         embedding: derivedInfo.embedding,
@@ -178,7 +184,7 @@ export const EntityExtractor = () => {
       return {
         category,
         tags,
-        brand,
+        brand: brandEntity,
         product,
         offers,
         sellers,
