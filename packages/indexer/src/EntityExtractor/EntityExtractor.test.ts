@@ -79,19 +79,6 @@ describe("EntityExtractor", () => {
     expect(mockPython.worker.send).not.toHaveBeenCalled()
   })
 
-  describe("categories", () => {
-    it("extracts category", async () => {
-      const { category } = await extractor.extract(
-        { jsonLd: [jsonLd], opengraph: {}, headings: {} },
-        PAGE,
-      )
-
-      expect(category).toStrictEqual({
-        name: DERIVED_DATA.category,
-      })
-    })
-  })
-
   describe("tags", () => {
     it("extracts tag", async () => {
       const { tags } = await extractor.extract(

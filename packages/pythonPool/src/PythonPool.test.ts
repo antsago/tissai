@@ -14,7 +14,7 @@ describe("PythonPool", () => {
   const RESPONSE = { the: "response" }
 
   const log = vi.fn()
-  let pool: PythonPool
+  let pool: PythonPool<string, any>
   beforeEach(async () => {
     pool = PythonPool(SCRIPT_PATH, { log })
   })
