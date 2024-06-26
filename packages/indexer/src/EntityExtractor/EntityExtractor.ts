@@ -117,6 +117,11 @@ async function category(title: string, python: PythonPool<string, DerivedData>):
     name: derivedInfo.category,
   }
 }
+async function tags(title: string, python: PythonPool<string, DerivedData>): Promise<Tag[]> {
+  const derivedInfo = await python.send(title)
+
+  return derivedInfo.tags.map((t) => ({ name: t }))
+}
 
 type Entities = {
   product: Product
@@ -148,14 +153,12 @@ export const EntityExtractor = () => {
         throw new Error("Product without title!")
       }
 
-      const derivedInfo = await python.send(productTitle)
-
       const categoryEntity = await category(productTitle, python)
-      const tags = derivedInfo.tags.map((t) => ({ name: t }))
-
+      const tagEntities = await tags(productTitle, python)
       const sellerEntities = sellers(jsonLdInfo)
       const brandEntity = brand(jsonLdInfo)
 
+      const derivedInfo = await python.send(productTitle)
       const product = {
         id: randomUUID(),
         title: productTitle,
@@ -163,7 +166,7 @@ export const EntityExtractor = () => {
         description: jsonLdInfo.description ?? opengraphInfo.description ?? headingInfo.description,
         brand: brandEntity?.name,
         category: categoryEntity.name,
-        tags: tags.map((t) => t.name),
+        tags: tagEntities.map((t) => t.name),
         embedding: derivedInfo.embedding,
       }
 
@@ -194,7 +197,7 @@ export const EntityExtractor = () => {
 
       return {
         category: categoryEntity,
-        tags,
+        tags: tagEntities,
         brand: brandEntity,
         product,
         offers,
