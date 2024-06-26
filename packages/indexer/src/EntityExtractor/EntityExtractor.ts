@@ -86,12 +86,24 @@ function parsedLd(jsonLd: JsonLD): ParsedLd {
   }
 }
 
-function brand(jsonLd: ParsedLd): Brand|undefined {
-  if (!jsonLd.brandName) {
+function brand({ brandName, brandLogo }: ParsedLd): Brand|undefined {
+  if (!brandName) {
     return undefined
   }
 
-  return { name: jsonLd.brandName, logo: jsonLd.brandLogo }
+  return { name: brandName, logo: brandLogo }
+}
+
+function sellers({ offers }: ParsedLd): Seller[] {
+  if (!offers) {
+    return []
+  }
+
+  return offers
+    .map((offer: any) => ({
+      name: offer.seller,
+    }))
+    .filter(({ name }) => !!name)
 }
 
 type Entities = {
@@ -137,12 +149,7 @@ export const EntityExtractor = () => {
       }
       const tags = derivedInfo.tags.map((t) => ({ name: t }))
 
-      const sellers =
-        (structuredInfo.offers as OfferStructuredInfo[])
-          ?.map((offer: any) => ({
-            name: offer.seller,
-          }))
-          .filter(({ name }) => !!name) ?? []
+      const sellerEntities = sellers(jsonLdInfo)
       const brandEntity = brand(jsonLdInfo)
 
       const product = {
@@ -187,7 +194,7 @@ export const EntityExtractor = () => {
         brand: brandEntity,
         product,
         offers,
-        sellers,
+        sellers: sellerEntities,
       }
     },
   }
