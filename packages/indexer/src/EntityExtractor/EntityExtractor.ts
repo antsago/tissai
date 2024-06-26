@@ -16,87 +16,13 @@ import { fileURLToPath } from "node:url"
 import _ from "lodash"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
-import { parsedLd, parsedOg, parsedH, title, type ParsedLd, type ParsedOG, type ParsedH } from './infoPipelines.js'
-
-type DerivedData = {
-  embedding: number[]
-  category: string
-  tags: string[]
-}
-function brand({ brandName, brandLogo }: ParsedLd): Brand|undefined {
-  if (!brandName) {
-    return undefined
-  }
-
-  return { name: brandName, logo: brandLogo }
-}
-
-function sellers({ offers }: ParsedLd): Seller[] {
-  if (!offers) {
-    return []
-  }
-
-  return offers
-    .map((offer: any) => ({
-      name: offer.seller,
-    }))
-    .filter(({ name }) => !!name)
-}
-
-async function category(title: string, python: PythonPool<string, DerivedData>): Promise<Category> {
-  const derivedInfo = await python.send(title)
-
-  return {
-    name: derivedInfo.category,
-  }
-}
-async function tags(title: string, python: PythonPool<string, DerivedData>): Promise<Tag[]> {
-  const derivedInfo = await python.send(title)
-
-  return derivedInfo.tags.map((t) => ({ name: t }))
-}
-async function product(ld: ParsedLd, head: ParsedH, og: ParsedOG, title: string, python: PythonPool<string, DerivedData>, category: Category, tags: Tag[], brand?: Brand): Promise<Product> {
-  const derivedInfo = await python.send(title)
-  return {
-    id: randomUUID(),
-    title,
-    images: ld.image ?? og.image,
-    description: ld.description ?? og.description ?? head.description,
-    brand: brand?.name,
-    category: category.name,
-    tags: tags.map((t) => t.name),
-    embedding: derivedInfo.embedding,
-  }
-}
-function offers(ld: ParsedLd, page: Page, product: Product): Offer[] {
-  const base = {
-    url: page.url,
-    site: page.site,
-    product: product.id,
-  }
-
-  if (!ld.offers) {
-    return [
-      {
-        ...base,
-        id: randomUUID(),
-        price: undefined,
-        currency: undefined,
-        seller: undefined,
-      },
-    ]
-  }
-
-  return _.uniqWith(ld.offers, _.isEqual).map(
-    (offer) => ({
-      ...base,
-      id: randomUUID(),
-      price: offer.price,
-      currency: offer.currency,
-      seller: offer.seller,
-    }),
-  )
-}
+import { parsedLd, parsedOg, parsedH, title } from './infoPipelines.js'
+import brand from "./brand.js"
+import sellers from "./sellers.js"
+import category from "./category.js"
+import tags from "./tags.js"
+import product from "./product.js"
+import offers from "./offers.js"
 
 type Entities = {
   product: Product
@@ -108,7 +34,7 @@ type Entities = {
 }
 export const EntityExtractor = () => {
   const currentDirectory = dirname(fileURLToPath(import.meta.url))
-  const python = PythonPool<string, DerivedData>(
+  const python = PythonPool<string, { embedding: number[], category: string, tags: string[] }>(
     `${currentDirectory}/parseTitle.py`,
     reporter,
   )
