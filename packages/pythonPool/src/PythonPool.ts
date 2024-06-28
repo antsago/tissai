@@ -62,4 +62,6 @@ export function PythonPool<Input extends string | Object, Output>(
   }
 }
 
-export type PythonPool<I extends string|object, O> = ReturnType<typeof PythonPool<I, O>>
+export type PythonPool<I extends string | object, O> = ReturnType<
+  typeof PythonPool<I, O>
+>

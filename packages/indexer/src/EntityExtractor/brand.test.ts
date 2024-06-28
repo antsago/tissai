@@ -3,7 +3,7 @@ import brand from "./brand.js"
 
 const NAME = "wedze"
 const LOGO = "https://brand.com/image.jpg"
-  
+
 describe("brands", () => {
   it("extracts brand", async () => {
     const result = brand({ brandName: NAME, brandLogo: LOGO })

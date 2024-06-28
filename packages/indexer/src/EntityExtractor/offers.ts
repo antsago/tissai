@@ -1,9 +1,5 @@
-import type {
-  Product,
-  Offer,
-  Page,
-} from "@tissai/db"
-import type { ParsedLd } from './infoPipelines.js'
+import type { Product, Offer, Page } from "@tissai/db"
+import type { ParsedLd } from "./infoPipelines.js"
 import { randomUUID } from "node:crypto"
 import _ from "lodash"
 
@@ -26,15 +22,13 @@ function offers(ld: ParsedLd, page: Page, product: Product): Offer[] {
     ]
   }
 
-  return _.uniqWith(ld.offers, _.isEqual).map(
-    (offer) => ({
-      ...base,
-      id: randomUUID(),
-      price: offer.price,
-      currency: offer.currency,
-      seller: offer.seller,
-    }),
-  )
+  return _.uniqWith(ld.offers, _.isEqual).map((offer) => ({
+    ...base,
+    id: randomUUID(),
+    price: offer.price,
+    currency: offer.currency,
+    seller: offer.seller,
+  }))
 }
 
 export default offers

@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url"
 import _ from "lodash"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
-import { parsedLd, parsedOg, parsedH, title } from './infoPipelines.js'
+import { parsedLd, parsedOg, parsedH, title } from "./infoPipelines.js"
 import brand from "./brand.js"
 import sellers from "./sellers.js"
 import category from "./category.js"
@@ -33,10 +33,10 @@ type Entities = {
 }
 export const EntityExtractor = () => {
   const currentDirectory = dirname(fileURLToPath(import.meta.url))
-  const python = PythonPool<string, { embedding: number[], category: string, tags: string[] }>(
-    `${currentDirectory}/parseTitle.py`,
-    reporter,
-  )
+  const python = PythonPool<
+    string,
+    { embedding: number[]; category: string; tags: string[] }
+  >(`${currentDirectory}/parseTitle.py`, reporter)
 
   return {
     close: () => python.close(),
@@ -61,7 +61,16 @@ export const EntityExtractor = () => {
       const tagEntities = await tags(productTitle, python)
       const sellerEntities = sellers(jsonLdInfo)
       const brandEntity = brand(jsonLdInfo)
-      const productEntity = await product(jsonLdInfo, headingInfo, opengraphInfo, productTitle, python, categoryEntity, tagEntities, brandEntity)
+      const productEntity = await product(
+        jsonLdInfo,
+        headingInfo,
+        opengraphInfo,
+        productTitle,
+        python,
+        categoryEntity,
+        tagEntities,
+        brandEntity,
+      )
       const offerEntities = offers(jsonLdInfo, page, productEntity)
 
       return {

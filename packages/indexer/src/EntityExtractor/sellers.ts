@@ -1,7 +1,5 @@
-import type {
-  Seller,
-} from "@tissai/db"
-import type { ParsedLd } from './infoPipelines.js'
+import type { Seller } from "@tissai/db"
+import type { ParsedLd } from "./infoPipelines.js"
 
 function sellers({ offers }: ParsedLd): Seller[] {
   if (!offers) {
@@ -10,7 +8,7 @@ function sellers({ offers }: ParsedLd): Seller[] {
 
   return offers
     .map((offer: any) => ({
-      name: offer.seller,
+      name: offer.seller?.toLowerCase(),
     }))
     .filter(({ name }) => !!name)
 }

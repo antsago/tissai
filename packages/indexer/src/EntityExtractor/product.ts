@@ -1,14 +1,18 @@
 import type { PythonPool } from "@tissai/python-pool"
-import type {
-  Brand,
-  Category,
-  Product,
-  Tag,
-} from "@tissai/db"
-import type { ParsedLd, ParsedOG, ParsedH } from './infoPipelines.js'
+import type { Brand, Category, Product, Tag } from "@tissai/db"
+import type { ParsedLd, ParsedOG, ParsedH } from "./infoPipelines.js"
 import { randomUUID } from "node:crypto"
 
-async function product(ld: ParsedLd, head: ParsedH, og: ParsedOG, title: string, python: PythonPool<string, { embedding: number[] }>, category: Category, tags: Tag[], brand?: Brand): Promise<Product> {
+async function product(
+  ld: ParsedLd,
+  head: ParsedH,
+  og: ParsedOG,
+  title: string,
+  python: PythonPool<string, { embedding: number[] }>,
+  category: Category,
+  tags: Tag[],
+  brand?: Brand,
+): Promise<Product> {
   const derivedInfo = await python.send(title)
   return {
     id: randomUUID(),
