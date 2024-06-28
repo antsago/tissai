@@ -27,13 +27,16 @@ import offers from "./EntityExtractor/offers.js"
 
 let db!: Db
 let python!: PythonPool<
-  { method: "category"|"embedding"|"tags", input: string},
+  { method: "category" | "embedding" | "tags"; input: string },
   { embedding: number[] } & { category: string } & { tags: string[] }
 >
 try {
   const currentDirectory = dirname(fileURLToPath(import.meta.url))
   db = Db()
-  python = PythonPool(`${currentDirectory}/EntityExtractor/parseTitle.py`, reporter)
+  python = PythonPool(
+    `${currentDirectory}/EntityExtractor/parseTitle.py`,
+    reporter,
+  )
 
   reporter.progress("Initializing database")
   await db.initialize()
@@ -81,7 +84,11 @@ try {
         [
           [
             db.categories.create(categoryEntity),
-            db.traces.create(page.id, CATEGORIES.toString(), categoryEntity.name),
+            db.traces.create(
+              page.id,
+              CATEGORIES.toString(),
+              categoryEntity.name,
+            ),
           ],
           tagEntities.map((tag) => [
             db.tags.create(tag),

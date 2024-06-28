@@ -60,7 +60,10 @@ describe("tags", () => {
         name: foundTags[0],
       },
     ])
-    expect(mockPython.worker.send).toHaveBeenCalledWith({ method: "tags", input: TITLE })
+    expect(mockPython.worker.send).toHaveBeenCalledWith({
+      method: "tags",
+      input: TITLE,
+    })
   })
 
   it("extracts multiple tags", async ({ mockPython }) => {

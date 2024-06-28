@@ -54,7 +54,10 @@ describe("products", () => {
       tags: [TAG.name],
       embedding: DERIVED_DATA.embedding,
     })
-    expect(mockPython.worker.send).toHaveBeenCalledWith({ method: "embedding", input: TITLE })
+    expect(mockPython.worker.send).toHaveBeenCalledWith({
+      method: "embedding",
+      input: TITLE,
+    })
   })
 
   it("handles title-only product", async () => {

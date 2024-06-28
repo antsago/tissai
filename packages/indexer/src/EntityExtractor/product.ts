@@ -11,7 +11,7 @@ async function product(
   og: OpenGraph,
   title: string,
   python: PythonPool<
-    { method: "embedding", input: string},
+    { method: "embedding"; input: string },
     { embedding: number[] }
   >,
   category: Category,

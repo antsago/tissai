@@ -16,7 +16,7 @@ isMeaningless = lambda token: not (
     or token.text == "|"
 )
 
+
 def getTags(title):
     doc = nlp(title)
     return list({token.lower_ for token in doc if isMeaningless(token)})
-

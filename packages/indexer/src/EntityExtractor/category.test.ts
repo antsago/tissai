@@ -25,6 +25,9 @@ describe("categories", () => {
     expect(result).toStrictEqual({
       name: DERIVED_DATA.category,
     })
-    expect(mockPython.worker.send).toHaveBeenCalledWith({ method: "category", input: TITLE })
+    expect(mockPython.worker.send).toHaveBeenCalledWith({
+      method: "category",
+      input: TITLE,
+    })
   })
 })
