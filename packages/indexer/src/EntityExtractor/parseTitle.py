@@ -4,13 +4,14 @@ from getCategory import getCategory
 from getTags import getTags
 from getEmbedding import getEmbedding
 
-for query in sys.stdin:
-    title = json.loads(query)
+methods = {
+    "embedding": getEmbedding,
+    "category": getCategory,
+    "tags": getTags,
+}
 
-    augmented = {
-        "embedding": getEmbedding(title),
-        "category": getCategory(title),
-        "tags": getTags(title),
-    }
+for rawQuery in sys.stdin:
+    query = json.loads(rawQuery)
+    response = methods[query["method"]](query["input"])
 
-    print(json.dumps(augmented, separators=(",", ":")))
+    print(json.dumps({ query["method"]: response }, separators=(",", ":")))

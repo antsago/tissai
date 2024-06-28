@@ -27,9 +27,9 @@ import offers from "./EntityExtractor/offers.js"
 
 let db!: Db
 let python!: PythonPool<
-    string,
-    { embedding: number[]; category: string; tags: string[] }
-  >
+  { method: "category"|"embedding"|"tags", input: string},
+  { embedding: number[] } & { category: string } & { tags: string[] }
+>
 try {
   const currentDirectory = dirname(fileURLToPath(import.meta.url))
   db = Db()

@@ -1,7 +1,7 @@
 import type { Seller } from "@tissai/db"
-import type { ParsedLd } from "./title.js"
+import type { JsonLD } from "../jsonLd.js"
 
-function sellers({ offers }: ParsedLd): Seller[] {
+function sellers({ offers }: JsonLD): Seller[] {
   if (!offers) {
     return []
   }

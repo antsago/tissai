@@ -15,7 +15,7 @@ const it = test.extend<Fixtures>({
 describe("categories", () => {
   it("extracts category", async ({ mockPython }) => {
     const TITLE = "The title of the product"
-    const pool = PythonPool<string, { category: string }>("script", {
+    const pool = PythonPool<any, any>("script", {
       log: () => {},
     })
     mockPython.mockReturnValue(DERIVED_DATA)
@@ -25,6 +25,6 @@ describe("categories", () => {
     expect(result).toStrictEqual({
       name: DERIVED_DATA.category,
     })
-    expect(mockPython.worker.send).toHaveBeenCalledWith(TITLE)
+    expect(mockPython.worker.send).toHaveBeenCalledWith({ method: "category", input: TITLE })
   })
 })

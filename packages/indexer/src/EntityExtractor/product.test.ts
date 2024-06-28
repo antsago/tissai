@@ -26,7 +26,7 @@ const HEAD = {
 }
 
 describe("products", () => {
-  let pool: PythonPool<string, { embedding: number[] }>
+  let pool: PythonPool<any, any>
   beforeEach<Fixtures>(async ({ mockPython }) => {
     pool = PythonPool("script", { log: () => {} })
     mockPython.mockReturnValue(DERIVED_DATA)
@@ -54,7 +54,7 @@ describe("products", () => {
       tags: [TAG.name],
       embedding: DERIVED_DATA.embedding,
     })
-    expect(mockPython.worker.send).toHaveBeenCalledWith(TITLE)
+    expect(mockPython.worker.send).toHaveBeenCalledWith({ method: "embedding", input: TITLE })
   })
 
   it("handles title-only product", async () => {

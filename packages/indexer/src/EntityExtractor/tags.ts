@@ -3,9 +3,9 @@ import type { PythonPool } from "@tissai/python-pool"
 
 async function tags(
   title: string,
-  python: PythonPool<string, { tags: string[] }>,
+  python: PythonPool<{ method: "tags", input: string}, { tags: string[] }>
 ): Promise<Tag[]> {
-  const derivedInfo = await python.send(title)
+  const derivedInfo = await python.send({ method: "tags", input: title })
 
   return derivedInfo.tags.map((t) => ({ name: t }))
 }

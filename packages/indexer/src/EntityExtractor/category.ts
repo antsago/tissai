@@ -3,9 +3,9 @@ import type { PythonPool } from "@tissai/python-pool"
 
 async function category(
   title: string,
-  python: PythonPool<string, { category: string }>,
+  python: PythonPool<{ method: "category", input: string }, { category: string }>,
 ): Promise<Category> {
-  const derivedInfo = await python.send(title)
+  const derivedInfo = await python.send({ method: "category", input: title })
 
   return {
     name: derivedInfo.category,

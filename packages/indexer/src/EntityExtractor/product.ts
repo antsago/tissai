@@ -1,20 +1,24 @@
 import type { PythonPool } from "@tissai/python-pool"
 import type { Brand, Category, Product, Tag } from "@tissai/db"
-import type { ParsedLd, ParsedH } from "./title.js"
 import type { OpenGraph } from "../opengraph.js"
+import type { Headings } from "../headings.js"
+import type { JsonLD } from "../jsonLd.js"
 import { randomUUID } from "node:crypto"
 
 async function product(
-  ld: ParsedLd,
-  head: ParsedH,
+  ld: JsonLD,
+  head: Headings,
   og: OpenGraph,
   title: string,
-  python: PythonPool<string, { embedding: number[] }>,
+  python: PythonPool<
+    { method: "embedding", input: string},
+    { embedding: number[] }
+  >,
   category: Category,
   tags: Tag[],
   brand?: Brand,
 ): Promise<Product> {
-  const derivedInfo = await python.send(title)
+  const derivedInfo = await python.send({ method: "embedding", input: title })
   return {
     id: randomUUID(),
     title,

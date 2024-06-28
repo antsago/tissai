@@ -1,7 +1,7 @@
 import type { Brand } from "@tissai/db"
-import type { ParsedLd } from "./title.js"
+import type { JsonLD } from "../jsonLd.js"
 
-function brand({ brandName, brandLogo }: ParsedLd): Brand | undefined {
+function brand({ brandName, brandLogo }: JsonLD): Brand | undefined {
   if (!brandName) {
     return undefined
   }

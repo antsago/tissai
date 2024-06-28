@@ -1,9 +1,9 @@
 import type { Product, Offer, Page } from "@tissai/db"
-import type { ParsedLd } from "./title.js"
+import type { JsonLD } from "../jsonLd.js"
 import { randomUUID } from "node:crypto"
 import _ from "lodash"
 
-function offers(ld: ParsedLd, page: Page, product: Product): Offer[] {
+function offers(ld: JsonLD, page: Page, product: Product): Offer[] {
   const base = {
     url: page.url,
     site: page.site,

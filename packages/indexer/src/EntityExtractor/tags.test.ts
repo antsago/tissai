@@ -44,7 +44,7 @@ const jsonLd = {
 
 describe("tags", () => {
   const TITLE = "Product title"
-  let pool: PythonPool<string, { tags: string[] }>
+  let pool: PythonPool<any, any>
   beforeEach<Fixtures>(async () => {
     pool = PythonPool("script", { log: () => {} })
   })
@@ -60,7 +60,7 @@ describe("tags", () => {
         name: foundTags[0],
       },
     ])
-    expect(mockPython.worker.send).toHaveBeenCalledWith(TITLE)
+    expect(mockPython.worker.send).toHaveBeenCalledWith({ method: "tags", input: TITLE })
   })
 
   it("extracts multiple tags", async ({ mockPython }) => {
