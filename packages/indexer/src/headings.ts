@@ -3,14 +3,10 @@ import type { ParsedPage } from "./parsedPage.js"
 export type Headings = Partial<{
   title: string
   description: string
-  keywords: string
-  author: string
-  robots: string
-  canonical: string
 }>
 
 function headings(parsedPage: ParsedPage): Headings {
-  return {
+  const headers = {
     title: parsedPage.querySelector("title")?.textContent,
     description: parsedPage
       .querySelector('meta[name="description"]')
@@ -27,6 +23,11 @@ function headings(parsedPage: ParsedPage): Headings {
     canonical: parsedPage
       .querySelector('link[rel="canonical"]')
       ?.getAttribute("href"),
+  }
+
+  return {
+    title: headers.title,
+    description: headers.description,
   }
 }
 

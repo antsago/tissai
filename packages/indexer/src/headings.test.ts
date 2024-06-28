@@ -32,7 +32,10 @@ describe("headings", () => {
 
     const result = headings(parsedPage(page))
 
-    expect(result).toStrictEqual(headers)
+    expect(result).toStrictEqual({
+      title: headers.title,
+      description: headers.description,
+    })
   })
 
   it("handles empty pages", () => {
@@ -51,10 +54,6 @@ describe("headings", () => {
     expect(result).toStrictEqual({
       title: undefined,
       description: undefined,
-      keywords: undefined,
-      author: undefined,
-      robots: undefined,
-      canonical: undefined,
     })
   })
 })

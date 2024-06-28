@@ -12,7 +12,7 @@ import {
 import { reporter } from "./Reporter.js"
 import parsedPage from "./parsedPage.js"
 import jsonLd from "./jsonLd.js"
-import entries from "./opengraph.js"
+import opengraph from "./opengraph.js"
 import headings from "./headings.js"
 import { EntityExtractor } from "./EntityExtractor/index.js"
 
@@ -41,7 +41,7 @@ try {
       const structuredData = {
         jsonLd: jsonLd(root),
         headings: headings(root),
-        opengraph: entries(root),
+        opengraph: opengraph(root),
       }
 
       const { product, offers, category, tags, sellers, brand } =

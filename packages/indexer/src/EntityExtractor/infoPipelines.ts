@@ -2,17 +2,6 @@ import type { JsonLD } from "../jsonLd.js"
 import type { OpenGraph } from "../opengraph.js"
 import type { Headings } from "../headings.js"
 
-export type ParsedH = Partial<{
-  title: string
-  description: string
-}>
-export function parsedH(headings: Headings): ParsedH {
-  return {
-    title: headings.title,
-    description: headings.description,
-  }
-}
-
 export type ParsedLd = Partial<{
   title: string
   description: string
@@ -42,6 +31,6 @@ export function parsedLd(jsonLd: JsonLD): ParsedLd {
   }
 }
 
-export function title(jsonLd: ParsedLd, og: OpenGraph, head: ParsedH) {
+export function title(jsonLd: ParsedLd, og: OpenGraph, head: Headings) {
   return jsonLd.title ?? og.title ?? head.title
 }

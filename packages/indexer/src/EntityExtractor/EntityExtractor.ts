@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url"
 import _ from "lodash"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
-import { parsedLd, parsedH, title } from "./infoPipelines.js"
+import { parsedLd, title } from "./infoPipelines.js"
 import brand from "./brand.js"
 import sellers from "./sellers.js"
 import category from "./category.js"
@@ -50,7 +50,7 @@ export const EntityExtractor = () => {
     ): Promise<Entities> => {
       const jsonLdInfo = parsedLd(sd.jsonLd)
       const opengraph = sd.opengraph
-      const headingInfo = parsedH(sd.headings)
+      const headingInfo = sd.headings
       const productTitle = title(jsonLdInfo, opengraph, headingInfo)
 
       if (!productTitle) {
