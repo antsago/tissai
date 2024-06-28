@@ -2,23 +2,6 @@ import type { JsonLD } from "../jsonLd.js"
 import type { OpenGraph } from "../opengraph.js"
 import type { Headings } from "../headings.js"
 
-export type ParsedOG = Partial<{
-  title: string
-  description: string
-  image: string[]
-}>
-export function parsedOg(opengraph: OpenGraph): ParsedOG {
-  if (opengraph["og:type"] !== "product") {
-    return {}
-  }
-
-  return {
-    title: opengraph["og:title"],
-    description: opengraph["og:description"],
-    image: opengraph["og:image"] ? [opengraph["og:image"]] : undefined,
-  }
-}
-
 export type ParsedH = Partial<{
   title: string
   description: string
@@ -59,6 +42,6 @@ export function parsedLd(jsonLd: JsonLD): ParsedLd {
   }
 }
 
-export function title(jsonLd: ParsedLd, og: ParsedOG, head: ParsedH) {
+export function title(jsonLd: ParsedLd, og: OpenGraph, head: ParsedH) {
   return jsonLd.title ?? og.title ?? head.title
 }

@@ -3,6 +3,35 @@ import { PAGE, pageWithSchema } from "#mocks"
 import parsedPage from "./parsedPage"
 import jsonLd from "./jsonLd"
 
+const expanded = {
+  "@context": ["https://schema.org/"],
+  "@type": ["Product"],
+  name: ["The name of the product"],
+  productID: ["121230"],
+  brand: [
+    {
+      "@type": ["Brand"],
+      name: ["wedze"],
+      image: ["https://brand.com/image.jpg"],
+    },
+  ],
+  description: ["The description"],
+  image: ["https://example.com/image.jpg"],
+  offers: [
+    {
+      "@type": ["Offer"],
+      url: ["https://example.com/offer"],
+      price: [10],
+      priceCurrency: ["EUR"],
+      seller: [
+        {
+          "@type": ["Organization"],
+          name: ["pertemba"],
+        },
+      ],
+    },
+  ],
+}
 describe("jsonLd", () => {
   const PRESERVED_TYPES: [string, unknown][] = [
     ["strings", "a string"],

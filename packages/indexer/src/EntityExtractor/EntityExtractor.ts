@@ -15,7 +15,11 @@ import { fileURLToPath } from "node:url"
 import _ from "lodash"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
-import { parsedLd, parsedOg, parsedH, title } from "./infoPipelines.js"
+import {
+  parsedLd,
+  parsedH,
+  title,
+} from "./infoPipelines.js"
 import brand from "./brand.js"
 import sellers from "./sellers.js"
 import category from "./category.js"
@@ -49,9 +53,9 @@ export const EntityExtractor = () => {
       page: Page,
     ): Promise<Entities> => {
       const jsonLdInfo = parsedLd(sd.jsonLd)
-      const opengraphInfo = parsedOg(sd.opengraph)
+      const opengraph = sd.opengraph
       const headingInfo = parsedH(sd.headings)
-      const productTitle = title(jsonLdInfo, opengraphInfo, headingInfo)
+      const productTitle = title(jsonLdInfo, opengraph, headingInfo)
 
       if (!productTitle) {
         throw new Error("Product without title!")
@@ -64,7 +68,7 @@ export const EntityExtractor = () => {
       const productEntity = await product(
         jsonLdInfo,
         headingInfo,
-        opengraphInfo,
+        opengraph,
         productTitle,
         python,
         categoryEntity,

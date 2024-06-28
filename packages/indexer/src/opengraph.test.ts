@@ -1,45 +1,56 @@
 import { expect, describe, it } from "vitest"
 import { PAGE } from "#mocks"
 import parsedPage from "./parsedPage"
-import opengraph from "./opengraph"
+import entries from "./opengraph"
+
+const BASE_DATA = {
+  "og:title": "Friend Smash Coin",
+  "og:image": "http://www.friendsmash.com/images/coin_600.png",
+  "og:description": "Friend Smash Coins to purchase upgrades and items!",
+  "og:url": "http://www.friendsmash.com/og/coins.html",
+}
+const pageWithOg = (ogData: object) => ({
+  ...PAGE,
+  body: `
+    <html>
+      <head>
+        ${Object.entries(ogData).map(([property, content]) => `<meta property="${property}" content="${content}" />`)}
+      </head>
+    </html>
+  `,
+})
 
 describe("opengraph", () => {
   it("extracts opengraph information", () => {
-    const opengraphData = {
+    const page = pageWithOg({
       "og:type": "product",
-      "og:title": "Friend Smash Coin",
-      "og:image": "http://www.friendsmash.com/images/coin_600.png",
-      "og:description": "Friend Smash Coins to purchase upgrades and items!",
-      "og:url": "http://www.friendsmash.com/og/coins.html",
-    }
-    const page = {
-      ...PAGE,
-      body: `
-        <html>
-          <head>
-            ${Object.entries(opengraphData).map(([property, content]) => `<meta property="${property}" content="${content}" />`)}
-          </head>
-        </html>
-      `,
-    }
+      ...BASE_DATA,
+    })
 
-    const result = opengraph(parsedPage(page))
+    const result = entries(parsedPage(page))
 
-    expect(result).toStrictEqual(opengraphData)
+    expect(result).toStrictEqual({
+      title: BASE_DATA["og:title"],
+      description: BASE_DATA["og:description"],
+      image: [BASE_DATA["og:image"]],
+    })
   })
 
   it("handles empty pages", () => {
-    const page = {
-      ...PAGE,
-      body: `
-        <html>
-          <head>
-          </head>
-        </html>
-      `,
-    }
+    const page = pageWithOg({})
 
-    const result = opengraph(parsedPage(page))
+    const result = entries(parsedPage(page))
+
+    expect(result).toStrictEqual({})
+  })
+
+  it("ignores non-product opengraph", async () => {
+    const page = pageWithOg({
+      "og:type": "foo",
+      ...BASE_DATA,
+    })
+
+    const result = entries(parsedPage(page))
 
     expect(result).toStrictEqual({})
   })

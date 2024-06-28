@@ -1,12 +1,13 @@
 import type { PythonPool } from "@tissai/python-pool"
 import type { Brand, Category, Product, Tag } from "@tissai/db"
-import type { ParsedLd, ParsedOG, ParsedH } from "./infoPipelines.js"
+import type { ParsedLd, ParsedH } from "./infoPipelines.js"
+import type { OpenGraph } from "../opengraph.js"
 import { randomUUID } from "node:crypto"
 
 async function product(
   ld: ParsedLd,
   head: ParsedH,
-  og: ParsedOG,
+  og: OpenGraph,
   title: string,
   python: PythonPool<string, { embedding: number[] }>,
   category: Category,
