@@ -79,42 +79,6 @@ describe("EntityExtractor", () => {
     expect(mockPython.worker.send).not.toHaveBeenCalled()
   })
 
-  describe("tags", () => {
-    it("extracts tag", async () => {
-      const { tags } = await extractor.extract(
-        { jsonLd: [jsonLd], opengraph: {}, headings: {} },
-        PAGE,
-      )
-
-      expect(tags).toStrictEqual([
-        {
-          name: DERIVED_DATA.tags[0],
-        },
-        {
-          name: DERIVED_DATA.tags[1],
-        },
-      ])
-    })
-
-    it("extracts multiple tags", async ({ mockPython }) => {
-      const foundTags = ["two", "tags"]
-      mockPython.mockReturnValue({
-        ...DERIVED_DATA,
-        tags: foundTags,
-      })
-
-      const { tags } = await extractor.extract(
-        { jsonLd: [jsonLd], opengraph: {}, headings: {} },
-        PAGE,
-      )
-
-      expect(tags).toStrictEqual([
-        { name: foundTags[0] },
-        { name: foundTags[1] },
-      ])
-    })
-  })
-
   describe("products", () => {
     it("extracts product", async () => {
       const { product } = await extractor.extract(

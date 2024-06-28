@@ -14,13 +14,15 @@ const it = test.extend<Fixtures>({
 
 describe("categories", () => {
   it("extracts category", async ({ mockPython }) => {
-    const pool = PythonPool("script", { log: () => {} })
+    const TITLE = "The title of the product"
+    const pool = PythonPool<string, { category: string }>("script", { log: () => {} })
     mockPython.mockReturnValue(DERIVED_DATA)
 
-    const result = await category("The title of the product", pool as any)
+    const result = await category(TITLE, pool)
 
     expect(result).toStrictEqual({
       name: DERIVED_DATA.category,
     })
+    expect(mockPython.worker.send).toHaveBeenCalledWith(TITLE)
   })
 })
