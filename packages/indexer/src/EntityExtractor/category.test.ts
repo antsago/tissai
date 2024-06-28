@@ -15,7 +15,9 @@ const it = test.extend<Fixtures>({
 describe("categories", () => {
   it("extracts category", async ({ mockPython }) => {
     const TITLE = "The title of the product"
-    const pool = PythonPool<string, { category: string }>("script", { log: () => {} })
+    const pool = PythonPool<string, { category: string }>("script", {
+      log: () => {},
+    })
     mockPython.mockReturnValue(DERIVED_DATA)
 
     const result = await category(TITLE, pool)

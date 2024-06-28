@@ -26,7 +26,6 @@ const HEAD = {
 }
 
 describe("products", () => {
-
   let pool: PythonPool<string, { embedding: number[] }>
   beforeEach<Fixtures>(async ({ mockPython }) => {
     pool = PythonPool("script", { log: () => {} })
@@ -59,15 +58,7 @@ describe("products", () => {
   })
 
   it("handles title-only product", async () => {
-    const result = await product(
-      {},
-      {},
-      {},
-      TITLE,
-      pool,
-      CATEGORY,
-      [],
-    )
+    const result = await product({}, {}, {}, TITLE, pool, CATEGORY, [])
 
     expect(result).toStrictEqual({
       id: expect.any(String),
@@ -82,15 +73,7 @@ describe("products", () => {
   })
 
   it("defaults to opengraph", async () => {
-    const result = await product(
-      {},
-      HEAD,
-      OG,
-      TITLE,
-      pool,
-      CATEGORY,
-      [],
-    )
+    const result = await product({}, HEAD, OG, TITLE, pool, CATEGORY, [])
 
     expect(result).toStrictEqual({
       id: expect.any(String),
@@ -105,15 +88,7 @@ describe("products", () => {
   })
 
   it("defaults to headings", async () => {
-    const result = await product(
-      {},
-      HEAD,
-      {},
-      TITLE,
-      pool,
-      CATEGORY,
-      [],
-    )
+    const result = await product({}, HEAD, {}, TITLE, pool, CATEGORY, [])
 
     expect(result).toStrictEqual({
       id: expect.any(String),
