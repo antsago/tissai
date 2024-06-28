@@ -1,5 +1,5 @@
 import type { Brand } from "@tissai/db"
-import type { ParsedLd } from "./infoPipelines.js"
+import type { ParsedLd } from "./title.js"
 
 function brand({ brandName, brandLogo }: ParsedLd): Brand | undefined {
   if (!brandName) {

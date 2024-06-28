@@ -1,6 +1,6 @@
 import type { PythonPool } from "@tissai/python-pool"
 import type { Brand, Category, Product, Tag } from "@tissai/db"
-import type { ParsedLd, ParsedH } from "./infoPipelines.js"
+import type { ParsedLd, ParsedH } from "./title.js"
 import type { OpenGraph } from "../opengraph.js"
 import { randomUUID } from "node:crypto"
 

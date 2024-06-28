@@ -1,5 +1,5 @@
 import type { Product, Offer, Page } from "@tissai/db"
-import type { ParsedLd } from "./infoPipelines.js"
+import type { ParsedLd } from "./title.js"
 import { randomUUID } from "node:crypto"
 import _ from "lodash"
 

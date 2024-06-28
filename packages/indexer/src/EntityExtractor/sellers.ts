@@ -1,5 +1,5 @@
 import type { Seller } from "@tissai/db"
-import type { ParsedLd } from "./infoPipelines.js"
+import type { ParsedLd } from "./title.js"
 
 function sellers({ offers }: ParsedLd): Seller[] {
   if (!offers) {
