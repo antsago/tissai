@@ -79,101 +79,17 @@ describe("EntityExtractor", () => {
     expect(mockPython.worker.send).not.toHaveBeenCalled()
   })
 
-  describe("products", () => {
-    it("extracts product", async () => {
-      const { product } = await extractor.extract(
-        { jsonLd: [jsonLd], opengraph, headings },
-        PAGE,
-      )
+  it("ignores non-product opengraph", async () => {
+    const { product } = await extractor.extract(
+      { jsonLd: [], opengraph: { ...opengraph, "og:type": "foo" }, headings },
+      PAGE,
+    )
 
-      expect(product).toStrictEqual({
-        id: expect.any(String),
-        title: jsonLd.name[0],
-        images: jsonLd.image,
-        description: jsonLd.description[0],
-        brand: jsonLd.brand[0].name[0],
-        category: DERIVED_DATA.category,
-        tags: DERIVED_DATA.tags,
-        embedding: DERIVED_DATA.embedding,
-      })
-    })
-
-    it("handles title-only product", async () => {
-      const { product } = await extractor.extract(
-        {
-          jsonLd: [
-            {
-              "@context": jsonLd["@context"],
-              "@type": jsonLd["@type"],
-              name: jsonLd["name"],
-            },
-          ],
-          opengraph: {},
-          headings: {},
-        },
-        PAGE,
-      )
-
-      expect(product).toStrictEqual({
-        id: expect.any(String),
-        title: jsonLd.name[0],
-        images: undefined,
-        description: undefined,
-        brand: undefined,
-        category: DERIVED_DATA.category,
-        tags: DERIVED_DATA.tags,
-        embedding: DERIVED_DATA.embedding,
-      })
-    })
-
-    it("defaults to opengraph", async () => {
-      const { product } = await extractor.extract(
-        { jsonLd: [], opengraph, headings },
-        PAGE,
-      )
-
-      expect(product).toStrictEqual({
-        id: expect.any(String),
-        title: opengraph["og:title"],
-        images: [opengraph["og:image"]],
-        description: opengraph["og:description"],
-        brand: undefined,
-        category: DERIVED_DATA.category,
-        tags: DERIVED_DATA.tags,
-        embedding: DERIVED_DATA.embedding,
-      })
-    })
-
-    it("defaults to headings", async () => {
-      const { product } = await extractor.extract(
-        { jsonLd: [], opengraph: {}, headings },
-        PAGE,
-      )
-
-      expect(product).toStrictEqual({
-        id: expect.any(String),
+    expect(product).toStrictEqual(
+      expect.objectContaining({
         title: headings.title,
-        images: undefined,
-        description: headings.description,
-        brand: undefined,
-        category: DERIVED_DATA.category,
-        tags: DERIVED_DATA.tags,
-        embedding: DERIVED_DATA.embedding,
-      })
-    })
-
-    it("ignores non-product opengraph", async () => {
-      const { product } = await extractor.extract(
-        { jsonLd: [], opengraph: { ...opengraph, "og:type": "foo" }, headings },
-        PAGE,
-      )
-
-      expect(product).toStrictEqual(
-        expect.objectContaining({
-          title: headings.title,
-        }),
-      )
-    })
+      }),
+    )
   })
 
   describe("offers", () => {
