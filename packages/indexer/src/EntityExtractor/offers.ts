@@ -22,12 +22,15 @@ function offers(ld: ParsedLd, page: Page, product: Product): Offer[] {
     ]
   }
 
-  return _.uniqWith(ld.offers, _.isEqual).map((offer) => ({
+  const rawOffers = ld.offers.map((offer) => ({
     ...base,
-    id: randomUUID(),
     price: offer.price,
     currency: offer.currency,
     seller: offer.seller,
+  }))
+  return _.uniqWith(rawOffers, _.isEqual).map((offer) => ({
+    ...offer,
+    id: randomUUID(),
   }))
 }
 
