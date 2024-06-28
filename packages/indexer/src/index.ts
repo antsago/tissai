@@ -1,3 +1,5 @@
+import { dirname } from "node:path"
+import { fileURLToPath } from "node:url"
 import {
   BRANDS,
   CATEGORIES,
@@ -9,18 +11,29 @@ import {
   SELLERS,
   TAGS,
 } from "@tissai/db"
+import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "./Reporter.js"
 import parsedPage from "./parsedPage.js"
 import jsonLd from "./jsonLd.js"
 import opengraph from "./opengraph.js"
 import headings from "./headings.js"
-import { EntityExtractor } from "./EntityExtractor/index.js"
+import title from "./EntityExtractor/title.js"
+import category from "./EntityExtractor/category.js"
+import tags from "./EntityExtractor/tags.js"
+import sellers from "./EntityExtractor/sellers.js"
+import brand from "./EntityExtractor/brand.js"
+import product from "./EntityExtractor/product.js"
+import offers from "./EntityExtractor/offers.js"
 
 let db!: Db
-let extractor!: EntityExtractor
+let python!: PythonPool<
+    string,
+    { embedding: number[]; category: string; tags: string[] }
+  >
 try {
+  const currentDirectory = dirname(fileURLToPath(import.meta.url))
   db = Db()
-  extractor = EntityExtractor()
+  python = PythonPool(`${currentDirectory}/EntityExtractor/parseTitle.py`, reporter)
 
   reporter.progress("Initializing database")
   await db.initialize()
@@ -38,44 +51,61 @@ try {
       )
       const root = parsedPage(page)
 
-      const structuredData = {
-        jsonLd: jsonLd(root),
-        headings: headings(root),
-        opengraph: opengraph(root),
+      const jsonLdInfo = jsonLd(root)
+      const opengraphInfo = opengraph(root)
+      const headingInfo = headings(root)
+
+      const productTitle = title(jsonLdInfo, opengraphInfo, headingInfo)
+
+      if (!productTitle) {
+        throw new Error("Product without title!")
       }
 
-      const { product, offers, category, tags, sellers, brand } =
-        await extractor.extract(structuredData, page)
+      const categoryEntity = await category(productTitle, python)
+      const tagEntities = await tags(productTitle, python)
+      const sellerEntities = sellers(jsonLdInfo)
+      const brandEntity = brand(jsonLdInfo)
+      const productEntity = await product(
+        jsonLdInfo,
+        headingInfo,
+        opengraphInfo,
+        productTitle,
+        python,
+        categoryEntity,
+        tagEntities,
+        brandEntity,
+      )
+      const offerEntities = offers(jsonLdInfo, page, productEntity)
 
       await Promise.all(
         [
           [
-            db.categories.create(category),
-            db.traces.create(page.id, CATEGORIES.toString(), category.name),
+            db.categories.create(categoryEntity),
+            db.traces.create(page.id, CATEGORIES.toString(), categoryEntity.name),
           ],
-          tags.map((tag) => [
+          tagEntities.map((tag) => [
             db.tags.create(tag),
             db.traces.create(page.id, TAGS.toString(), tag.name),
           ]),
-          sellers.map((seller) => [
+          sellerEntities.map((seller) => [
             db.sellers.create(seller),
             db.traces.create(page.id, SELLERS.toString(), seller.name),
           ]),
-          brand
+          brandEntity
             ? [
-                db.brands.create(brand),
-                db.traces.create(page.id, BRANDS.toString(), brand.name),
+                db.brands.create(brandEntity),
+                db.traces.create(page.id, BRANDS.toString(), brandEntity.name),
               ]
             : Promise.resolve(),
         ].flat(Infinity),
       )
 
       await Promise.all([
-        db.products.create(product),
-        db.traces.create(page.id, PRODUCTS.toString(), product.id),
+        db.products.create(productEntity),
+        db.traces.create(page.id, PRODUCTS.toString(), productEntity.id),
       ])
       await Promise.all(
-        offers
+        offerEntities
           .map((offer) => [
             db.offers.create(offer),
             db.traces.create(page.id, OFFERS.toString(), offer.id),
@@ -95,5 +125,5 @@ try {
   const message = err instanceof Error ? err.message : String(err)
   reporter.fail(`Fatal error: ${message}`)
 } finally {
-  await Promise.all([db?.close(), extractor?.close()])
+  await Promise.all([db?.close(), python?.close()])
 }
