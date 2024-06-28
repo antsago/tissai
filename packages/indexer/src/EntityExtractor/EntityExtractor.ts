@@ -15,11 +15,7 @@ import { fileURLToPath } from "node:url"
 import _ from "lodash"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
-import {
-  parsedLd,
-  parsedH,
-  title,
-} from "./infoPipelines.js"
+import { parsedLd, parsedH, title } from "./infoPipelines.js"
 import brand from "./brand.js"
 import sellers from "./sellers.js"
 import category from "./category.js"
