@@ -1,9 +1,9 @@
-import type { Product, Offer, Page } from "@tissai/db"
+import type { Product, Offer, Page, Db } from "@tissai/db"
 import type { JsonLD } from "../jsonLd.js"
 import { randomUUID } from "node:crypto"
 import _ from "lodash"
 
-function offers(ld: JsonLD, page: Page, product: Product): Offer[] {
+function extractOffers(ld: JsonLD, page: Page, product: Product): Offer[] {
   const base = {
     url: page.url,
     site: page.site,
@@ -32,6 +32,17 @@ function offers(ld: JsonLD, page: Page, product: Product): Offer[] {
     ...offer,
     id: randomUUID(),
   }))
+}
+
+async function offers(ld: JsonLD, page: Page, product: Product, db: Db): Promise<Offer[]> {
+  const entities = extractOffers(ld, page, product)
+
+  await Promise.all(
+    entities
+      .map((offer) => db.offers.create(offer))
+  )
+
+  return entities
 }
 
 export default offers

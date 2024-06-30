@@ -79,12 +79,7 @@ try {
         db,
         brandEntity,
       )
-      const offerEntities = offers(jsonLdInfo, page, productEntity)
-
-      await Promise.all(
-        offerEntities
-          .map((offer) => db.offers.create(offer))
-      )
+      await offers(jsonLdInfo, page, productEntity, db)
 
       index += 1
     } catch (err) {

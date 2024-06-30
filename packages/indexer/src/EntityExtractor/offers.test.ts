@@ -1,23 +1,12 @@
-import { expect, describe, it } from "vitest"
+import { expect, describe, test, beforeEach } from "vitest"
+import { PAGE, PRODUCT, mockDbFixture } from "@tissai/db/mocks"
+import { Db, OFFERS } from "@tissai/db"
 import offers from "./offers.js"
-import { PAGE, PRODUCT } from "@tissai/db/mocks"
 
-const jsonLd = {
-  "@context": ["https://schema.org/"],
-  "@type": ["Product"],
-  name: ["The name of the product"],
-  productID: ["121230"],
-  brand: [
-    {
-      "@type": ["Brand"],
-      name: ["wedze"],
-      image: ["https://brand.com/image.jpg"],
-    },
-  ],
-  description: ["The description"],
-  image: ["https://example.com/image.jpg"],
-  offers: [,],
-}
+type Fixtures = { pg: mockDbFixture }
+const it = test.extend<Fixtures>({
+  pg: [mockDbFixture as any, { auto: true }],
+})
 
 const OFFER = {
   url: "https://example.com/offer",
@@ -27,8 +16,14 @@ const OFFER = {
 }
 
 describe("offers", () => {
-  it("extracts offer", async () => {
-    const result = offers({ offers: [OFFER] }, PAGE, PRODUCT)
+  let db: Db
+  beforeEach<Fixtures>(({ pg }) => {
+    pg.pool.query.mockResolvedValue({ rows: [] })
+    db = Db()
+  })
+
+  it("extracts offer", async ({ pg }) => {
+    const result = await offers({ offers: [OFFER] }, PAGE, PRODUCT, db)
 
     expect(result).toStrictEqual([
       {
@@ -41,10 +36,11 @@ describe("offers", () => {
         seller: OFFER.seller,
       },
     ])
+    expect(pg).toHaveInserted(OFFERS, [PAGE.url, PAGE.site, PRODUCT.id, OFFER.price, OFFER.currency, OFFER.seller])
   })
 
-  it("extracts implicit offer", async () => {
-    const result = offers({}, PAGE, PRODUCT)
+  it("extracts implicit offer", async ({ pg }) => {
+    const result = await offers({}, PAGE, PRODUCT, db)
 
     expect(result).toStrictEqual([
       {
@@ -57,16 +53,17 @@ describe("offers", () => {
         seller: undefined,
       },
     ])
+    expect(pg).toHaveInserted(OFFERS, [PAGE.url, PAGE.site, PRODUCT.id])
   })
 
-  it("extracts multiple offers", async () => {
+  it("extracts multiple offers", async ({ pg }) => {
     const offer2 = {
       url: "https://example.com/offer",
       price: 20,
       currency: "USD",
       seller: "batemper",
     }
-    const result = offers({ offers: [OFFER, offer2] }, PAGE, PRODUCT)
+    const result = await offers({ offers: [OFFER, offer2] }, PAGE, PRODUCT, db)
 
     expect(result).toStrictEqual([
       {
@@ -88,6 +85,8 @@ describe("offers", () => {
         seller: offer2.seller,
       },
     ])
+    expect(pg).toHaveInserted(OFFERS, [OFFER.seller])
+    expect(pg).toHaveInserted(OFFERS, [offer2.seller])
   })
 
   it("ignores duplicated offers", async () => {
@@ -95,7 +94,7 @@ describe("offers", () => {
       id: "something-different",
       ...OFFER,
     }
-    const result = offers({ offers: [OFFER, offer2] }, PAGE, PRODUCT)
+    const result = await offers({ offers: [OFFER, offer2] }, PAGE, PRODUCT, db)
 
     expect(result.length).toStrictEqual(1)
   })

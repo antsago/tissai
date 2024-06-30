@@ -5,10 +5,9 @@ import {
   PRODUCT,
   DERIVED_DATA,
   pageWithSchema,
-  OFFER,
   mockOraFixture,
 } from "#mocks"
-import { OFFERS, PRODUCTS, TAGS } from "@tissai/db"
+import { PRODUCTS } from "@tissai/db"
 
 type Fixtures = {
   mockDb: mockDbFixture
@@ -41,7 +40,6 @@ describe("index", () => {
 
     await import("./index.js")
 
-    expect(mockDb).toHaveInserted(OFFERS)
     expect(mockDb.pool.end).toHaveBeenCalled()
     expect(mockPython.worker.end).toHaveBeenCalled()
     expect(mockOra.spinner.succeed).toHaveBeenCalled()
@@ -53,49 +51,9 @@ describe("index", () => {
 
     await import("./index.js")
 
-    expect(mockDb).not.toHaveInserted(OFFERS)
     expect(mockDb.pool.end).toHaveBeenCalled()
     expect(mockPython.worker.end).toHaveBeenCalled()
     expect(mockOra.spinner.succeed).toHaveBeenCalled()
-  })
-
-  it("stores multiple offers, sellers, and tags", async ({
-    expect,
-    mockDb,
-    mockPython,
-  }) => {
-    const seller2 = `${OFFER.seller} 2`
-    const tags = ["tag1", "tag2"]
-    const page = pageWithSchema({
-      "@context": "https://schema.org/",
-      "@type": "Product",
-      name: PRODUCT.title,
-      offers: [
-        {
-          "@type": "Offer",
-          seller: {
-            "@type": "Organization",
-            name: OFFER.seller,
-          },
-        },
-        {
-          "@type": "Offer",
-          seller: {
-            "@type": "Organization",
-            name: seller2,
-          },
-        },
-      ],
-    })
-    mockDb.cursor.read.mockResolvedValueOnce([page])
-    mockPython.mockReturnValue({ ...DERIVED_DATA, tags })
-
-    await import("./index.js")
-
-    expect(mockDb).toHaveInserted(OFFERS, [OFFER.seller])
-    expect(mockDb).toHaveInserted(OFFERS, [seller2])
-    expect(mockDb).toHaveInserted(TAGS, [tags[0]])
-    expect(mockDb).toHaveInserted(TAGS, [tags[1]])
   })
 
   it("processes multiple pages", async ({ expect, mockDb }) => {
