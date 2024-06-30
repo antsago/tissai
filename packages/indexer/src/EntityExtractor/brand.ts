@@ -9,9 +9,9 @@ async function brand(
     return undefined
   }
 
-  const enitity = { name: brandName.toLowerCase(), logo: brandLogo }
-  await db.brands.create(enitity)
+  const entity = { name: brandName.toLowerCase(), logo: brandLogo }
+  await db.brands.create(entity)
 
-  return enitity
+  return entity
 }
 export default brand
