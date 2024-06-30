@@ -7,7 +7,7 @@ async function category(
     { method: "category"; input: string },
     { category: string }
   >,
-  db: Db
+  db: Db,
 ): Promise<Category> {
   const derivedInfo = await python.send({ method: "category", input: title })
   const entity = {

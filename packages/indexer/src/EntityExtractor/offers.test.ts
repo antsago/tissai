@@ -36,7 +36,14 @@ describe("offers", () => {
         seller: OFFER.seller,
       },
     ])
-    expect(pg).toHaveInserted(OFFERS, [PAGE.url, PAGE.site, PRODUCT.id, OFFER.price, OFFER.currency, OFFER.seller])
+    expect(pg).toHaveInserted(OFFERS, [
+      PAGE.url,
+      PAGE.site,
+      PRODUCT.id,
+      OFFER.price,
+      OFFER.currency,
+      OFFER.seller,
+    ])
   })
 
   it("extracts implicit offer", async ({ pg }) => {

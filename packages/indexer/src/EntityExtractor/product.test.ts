@@ -69,7 +69,14 @@ describe("products", () => {
       method: "embedding",
       input: TITLE,
     })
-    expect(pg).toHaveInserted(PRODUCTS, [expected.title, expected.images, expected.description, expected.brand, expected.category, expected.tags])
+    expect(pg).toHaveInserted(PRODUCTS, [
+      expected.title,
+      expected.images,
+      expected.description,
+      expected.brand,
+      expected.category,
+      expected.tags,
+    ])
   })
 
   it("handles title-only product", async () => {

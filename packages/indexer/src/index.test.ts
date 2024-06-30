@@ -1,12 +1,7 @@
 import { describe, test, beforeEach, vi, afterEach } from "vitest"
 import { mockDbFixture } from "@tissai/db/mocks"
 import { mockPythonFixture } from "@tissai/python-pool/mocks"
-import {
-  PRODUCT,
-  DERIVED_DATA,
-  pageWithSchema,
-  mockOraFixture,
-} from "#mocks"
+import { PRODUCT, DERIVED_DATA, pageWithSchema, mockOraFixture } from "#mocks"
 import { PRODUCTS } from "@tissai/db"
 
 type Fixtures = {
@@ -30,7 +25,12 @@ describe("index", () => {
     vi.resetModules()
   })
 
-  it("handles title-only products", async ({ expect, mockDb, mockPython, mockOra  }) => {
+  it("handles title-only products", async ({
+    expect,
+    mockDb,
+    mockPython,
+    mockOra,
+  }) => {
     const page = pageWithSchema({
       "@context": "https://schema.org",
       "@type": "Product",

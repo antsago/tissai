@@ -32,16 +32,22 @@ describe("sellers", () => {
   })
 
   it("turns name to lowercase", async () => {
-    const result = await sellers({ offers: [{ seller: NAME.toUpperCase() }] }, db)
+    const result = await sellers(
+      { offers: [{ seller: NAME.toUpperCase() }] },
+      db,
+    )
 
     expect(result).toStrictEqual([{ name: NAME }])
   })
 
   it("extracts multiple sellers", async ({ pg }) => {
     const seller2 = "batemper"
-    const result = await sellers({
-      offers: [{ seller: NAME }, { seller: seller2 }],
-    }, db)
+    const result = await sellers(
+      {
+        offers: [{ seller: NAME }, { seller: seller2 }],
+      },
+      db,
+    )
 
     expect(result).toStrictEqual([{ name: NAME }, { name: seller2 }])
     expect(pg).toHaveInserted(SELLERS, [NAME])

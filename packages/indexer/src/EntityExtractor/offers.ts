@@ -34,13 +34,15 @@ function extractOffers(ld: JsonLD, page: Page, product: Product): Offer[] {
   }))
 }
 
-async function offers(ld: JsonLD, page: Page, product: Product, db: Db): Promise<Offer[]> {
+async function offers(
+  ld: JsonLD,
+  page: Page,
+  product: Product,
+  db: Db,
+): Promise<Offer[]> {
   const entities = extractOffers(ld, page, product)
 
-  await Promise.all(
-    entities
-      .map((offer) => db.offers.create(offer))
-  )
+  await Promise.all(entities.map((offer) => db.offers.create(offer)))
 
   return entities
 }

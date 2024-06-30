@@ -11,7 +11,7 @@ async function sellers({ offers }: JsonLD, db: Db): Promise<Seller[]> {
       name: offer.seller?.toLowerCase(),
     }))
     .filter(({ name }) => !!name)
-  
+
   await Promise.all(entities.map((seller) => db.sellers.create(seller)))
   return entities
 }
