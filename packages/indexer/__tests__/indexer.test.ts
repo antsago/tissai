@@ -97,60 +97,6 @@ describe(
       expect(brands).toStrictEqual([{ name: BRAND.name, logo: BRAND.logo }])
       const sellers = await db.sellers.getAll()
       expect(sellers).toStrictEqual([{ name: OFFER.seller }])
-      const traces = await db.traces.getAll()
-      expect(traces).toStrictEqual(
-        expect.arrayContaining([
-          {
-            id: expect.any(String),
-            pageId: PAGE.id,
-            objectTable: PRODUCTS.toString(),
-            objectId: products[0].id,
-            timestamp: expect.any(Date),
-          },
-          {
-            id: expect.any(String),
-            pageId: PAGE.id,
-            objectTable: OFFERS.toString(),
-            objectId: offers[0].id,
-            timestamp: expect.any(Date),
-          },
-          {
-            id: expect.any(String),
-            pageId: PAGE.id,
-            objectTable: CATEGORIES.toString(),
-            objectId: categories[0].name,
-            timestamp: expect.any(Date),
-          },
-          {
-            id: expect.any(String),
-            pageId: PAGE.id,
-            objectTable: TAGS.toString(),
-            objectId: tags[0].name,
-            timestamp: expect.any(Date),
-          },
-          {
-            id: expect.any(String),
-            pageId: PAGE.id,
-            objectTable: TAGS.toString(),
-            objectId: tags[1].name,
-            timestamp: expect.any(Date),
-          },
-          {
-            id: expect.any(String),
-            pageId: PAGE.id,
-            objectTable: BRANDS.toString(),
-            objectId: brands[0].name,
-            timestamp: expect.any(Date),
-          },
-          {
-            id: expect.any(String),
-            pageId: PAGE.id,
-            objectTable: SELLERS.toString(),
-            objectId: sellers[0].name,
-            timestamp: expect.any(Date),
-          },
-        ]),
-      )
     })
 
     it("handles duplicates", async ({ expect, db }) => {
@@ -177,8 +123,6 @@ describe(
       expect(brands.length).toBe(1)
       const sellers = await db.sellers.getAll()
       expect(sellers.length).toBe(1)
-      const traces = await db.traces.getAll()
-      expect(traces.length).toBe(7)
     })
   },
   { timeout: 60000 },

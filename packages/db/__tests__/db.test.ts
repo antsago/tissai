@@ -27,7 +27,6 @@ describe.concurrent("db", () => {
     await db.brands.create(BRAND)
     await db.products.create(PRODUCT)
     await db.offers.create(OFFER)
-    await db.traces.create(PAGE.id, PRODUCTS.toString(), PRODUCT.id)
 
     const products = await db.products.getAll()
     const offers = await db.offers.getAll()
@@ -35,7 +34,6 @@ describe.concurrent("db", () => {
     const tags = await db.tags.getAll()
     const brands = await db.brands.getAll()
     const sellers = await db.sellers.getAll()
-    const traces = await db.traces.getAll()
 
     expect(products).toStrictEqual([PRODUCT])
     expect(offers).toStrictEqual([OFFER])
@@ -43,15 +41,6 @@ describe.concurrent("db", () => {
     expect(tags).toStrictEqual([TAG])
     expect(brands).toStrictEqual([BRAND])
     expect(sellers).toStrictEqual([SELLER])
-    expect(traces).toStrictEqual([
-      {
-        id: expect.any(String),
-        timestamp: expect.any(Date),
-        pageId: PAGE.id,
-        objectTable: PRODUCTS.toString(),
-        objectId: PRODUCT.id,
-      },
-    ])
   })
 
   it("gets product details", async ({ expect, db }) => {

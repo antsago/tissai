@@ -1,5 +1,4 @@
 import { Connection } from "../Connection.js"
-import * as traces from "./traces.js"
 import * as sellers from "./sellers.js"
 import * as brands from "./brands.js"
 import * as categories from "./categories.js"
@@ -18,7 +17,6 @@ const TABLE_MODULES = {
   sellers,
   sites,
   tags,
-  traces,
 }
 type TABLE_MODULES = typeof TABLE_MODULES
 

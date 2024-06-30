@@ -82,42 +82,23 @@ try {
 
       await Promise.all(
         [
-          [
-            db.categories.create(categoryEntity),
-            db.traces.create(
-              page.id,
-              CATEGORIES.toString(),
-              categoryEntity.name,
-            ),
-          ],
+          db.categories.create(categoryEntity),
           tagEntities.map((tag) => [
             db.tags.create(tag),
-            db.traces.create(page.id, TAGS.toString(), tag.name),
           ]),
-          sellerEntities.map((seller) => [
-            db.sellers.create(seller),
-            db.traces.create(page.id, SELLERS.toString(), seller.name),
-          ]),
+          sellerEntities.map((seller) => 
+            db.sellers.create(seller)
+          ),
           brandEntity
-            ? [
-                db.brands.create(brandEntity),
-                db.traces.create(page.id, BRANDS.toString(), brandEntity.name),
-              ]
+            ? db.brands.create(brandEntity)
             : Promise.resolve(),
-        ].flat(Infinity),
+        ].flat(),
       )
 
-      await Promise.all([
-        db.products.create(productEntity),
-        db.traces.create(page.id, PRODUCTS.toString(), productEntity.id),
-      ])
+      await db.products.create(productEntity)
       await Promise.all(
         offerEntities
-          .map((offer) => [
-            db.offers.create(offer),
-            db.traces.create(page.id, OFFERS.toString(), offer.id),
-          ])
-          .flat(),
+          .map((offer) => db.offers.create(offer))
       )
 
       index += 1
