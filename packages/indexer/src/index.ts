@@ -65,7 +65,7 @@ try {
       }
 
       const categoryEntity = await category(productTitle, python, db)
-      const tagEntities = await tags(productTitle, python)
+      const tagEntities = await tags(productTitle, python, db)
       await sellers(jsonLdInfo, db)
       const brandEntity = await brand(jsonLdInfo, db)
       const productEntity = await product(
@@ -79,12 +79,6 @@ try {
         brandEntity,
       )
       const offerEntities = offers(jsonLdInfo, page, productEntity)
-
-      await Promise.all(
-        tagEntities.map((tag) => [
-          db.tags.create(tag),
-        ]),
-      )
 
       await db.products.create(productEntity)
       await Promise.all(

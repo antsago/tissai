@@ -1,59 +1,36 @@
 import { expect, describe, test, beforeEach } from "vitest"
 import { mockPythonFixture } from "@tissai/python-pool/mocks"
-import { DERIVED_DATA, PAGE } from "#mocks"
 import { PythonPool } from "@tissai/python-pool"
+import { mockDbFixture } from "@tissai/db/mocks"
+import { Db, TAGS } from "@tissai/db"
 import tags from "./tags.js"
 
 type Fixtures = {
   mockPython: mockPythonFixture
+  pg: mockDbFixture
 }
 
 const it = test.extend<Fixtures>({
   mockPython: [mockPythonFixture, { auto: true }],
+  pg: [mockDbFixture as any, { auto: true }],
 })
-
-const jsonLd = {
-  "@context": ["https://schema.org/"],
-  "@type": ["Product"],
-  name: ["The name of the product"],
-  productID: ["121230"],
-  brand: [
-    {
-      "@type": ["Brand"],
-      name: ["wedze"],
-      image: ["https://brand.com/image.jpg"],
-    },
-  ],
-  description: ["The description"],
-  image: ["https://example.com/image.jpg"],
-  offers: [
-    {
-      "@type": ["Offer"],
-      url: ["https://example.com/offer"],
-      price: [10],
-      priceCurrency: ["EUR"],
-      seller: [
-        {
-          "@type": ["Organization"],
-          name: ["pertemba"],
-        },
-      ],
-    },
-  ],
-}
 
 describe("tags", () => {
   const TITLE = "Product title"
+  let db: Db
   let pool: PythonPool<any, any>
-  beforeEach<Fixtures>(async () => {
+  beforeEach<Fixtures>(async ({ pg }) => {
+    db = Db()
     pool = PythonPool("script", { log: () => {} })
+
+    pg.pool.query.mockResolvedValue({ rows: [] })
   })
 
-  it("extracts tag", async ({ mockPython }) => {
+  it("extracts tag", async ({ mockPython, pg }) => {
     const foundTags = ["myTag"]
     mockPython.mockReturnValue({ tags: foundTags })
 
-    const result = await tags(TITLE, pool)
+    const result = await tags(TITLE, pool, db)
 
     expect(result).toStrictEqual([
       {
@@ -64,17 +41,20 @@ describe("tags", () => {
       method: "tags",
       input: TITLE,
     })
+    expect(pg).toHaveInserted(TAGS, foundTags)
   })
 
-  it("extracts multiple tags", async ({ mockPython }) => {
+  it("extracts multiple tags", async ({ mockPython, pg }) => {
     const foundTags = ["two", "tags"]
     mockPython.mockReturnValue({ tags: foundTags })
 
-    const result = await tags(TITLE, pool)
+    const result = await tags(TITLE, pool, db)
 
     expect(result).toStrictEqual([
       { name: foundTags[0] },
       { name: foundTags[1] },
     ])
+    expect(pg).toHaveInserted(TAGS, [foundTags[0]])
+    expect(pg).toHaveInserted(TAGS, [foundTags[1]])
   })
 })

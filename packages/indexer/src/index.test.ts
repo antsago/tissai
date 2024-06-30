@@ -43,7 +43,6 @@ describe("index", () => {
 
     expect(mockDb).toHaveInserted(PRODUCTS)
     expect(mockDb).toHaveInserted(OFFERS)
-    expect(mockDb).toHaveInserted(TAGS)
   })
 
   it("handles empty pages", async ({ expect, mockDb, mockPython, mockOra }) => {
@@ -54,7 +53,6 @@ describe("index", () => {
 
     expect(mockDb).not.toHaveInserted(PRODUCTS)
     expect(mockDb).not.toHaveInserted(OFFERS)
-    expect(mockDb).not.toHaveInserted(TAGS)
     expect(mockDb.pool.end).toHaveBeenCalled()
     expect(mockPython.worker.end).toHaveBeenCalled()
     expect(mockOra.spinner.succeed).toHaveBeenCalled()
