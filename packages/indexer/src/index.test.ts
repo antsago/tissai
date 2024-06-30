@@ -43,7 +43,6 @@ describe("index", () => {
 
     expect(mockDb).toHaveInserted(PRODUCTS)
     expect(mockDb).toHaveInserted(OFFERS)
-    expect(mockDb).toHaveInserted(CATEGORIES)
     expect(mockDb).toHaveInserted(TAGS)
   })
 
@@ -55,7 +54,6 @@ describe("index", () => {
 
     expect(mockDb).not.toHaveInserted(PRODUCTS)
     expect(mockDb).not.toHaveInserted(OFFERS)
-    expect(mockDb).not.toHaveInserted(CATEGORIES)
     expect(mockDb).not.toHaveInserted(TAGS)
     expect(mockDb.pool.end).toHaveBeenCalled()
     expect(mockPython.worker.end).toHaveBeenCalled()

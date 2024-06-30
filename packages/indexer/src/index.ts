@@ -64,7 +64,7 @@ try {
         throw new Error("Product without title!")
       }
 
-      const categoryEntity = await category(productTitle, python)
+      const categoryEntity = await category(productTitle, python, db)
       const tagEntities = await tags(productTitle, python)
       await sellers(jsonLdInfo, db)
       const brandEntity = await brand(jsonLdInfo, db)
@@ -81,12 +81,9 @@ try {
       const offerEntities = offers(jsonLdInfo, page, productEntity)
 
       await Promise.all(
-        [
-          db.categories.create(categoryEntity),
-          tagEntities.map((tag) => [
-            db.tags.create(tag),
-          ]),
-        ].flat(),
+        tagEntities.map((tag) => [
+          db.tags.create(tag),
+        ]),
       )
 
       await db.products.create(productEntity)

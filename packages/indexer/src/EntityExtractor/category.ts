@@ -1,4 +1,4 @@
-import type { Category } from "@tissai/db"
+import type { Category, Db } from "@tissai/db"
 import type { PythonPool } from "@tissai/python-pool"
 
 async function category(
@@ -7,12 +7,16 @@ async function category(
     { method: "category"; input: string },
     { category: string }
   >,
+  db: Db
 ): Promise<Category> {
   const derivedInfo = await python.send({ method: "category", input: title })
-
-  return {
+  const entity = {
     name: derivedInfo.category,
   }
+
+  await db.categories.create(entity)
+
+  return entity
 }
 
 export default category
