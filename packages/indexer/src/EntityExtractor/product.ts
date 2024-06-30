@@ -1,5 +1,5 @@
 import type { PythonPool } from "@tissai/python-pool"
-import type { Brand, Category, Product, Tag } from "@tissai/db"
+import type { Brand, Category, Db, Product, Tag } from "@tissai/db"
 import type { OpenGraph } from "../opengraph.js"
 import type { Headings } from "../headings.js"
 import type { JsonLD } from "../jsonLd.js"
@@ -16,10 +16,11 @@ async function product(
   >,
   category: Category,
   tags: Tag[],
+  db: Db,
   brand?: Brand,
 ): Promise<Product> {
   const derivedInfo = await python.send({ method: "embedding", input: title })
-  return {
+  const entity = {
     id: randomUUID(),
     title,
     images: ld.image ?? og.image,
@@ -29,6 +30,10 @@ async function product(
     tags: tags.map((t) => t.name),
     embedding: derivedInfo.embedding,
   }
+
+  await db.products.create(entity)
+
+  return entity
 }
 
 export default product

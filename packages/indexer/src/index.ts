@@ -76,11 +76,11 @@ try {
         python,
         categoryEntity,
         tagEntities,
+        db,
         brandEntity,
       )
       const offerEntities = offers(jsonLdInfo, page, productEntity)
 
-      await db.products.create(productEntity)
       await Promise.all(
         offerEntities
           .map((offer) => db.offers.create(offer))

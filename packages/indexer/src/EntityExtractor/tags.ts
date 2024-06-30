@@ -7,7 +7,6 @@ async function tags(
   db: Db,
 ): Promise<Tag[]> {
   const derivedInfo = await python.send({ method: "tags", input: title })
-
   const entities = derivedInfo.tags.map((t) => ({ name: t }))
 
   await Promise.all(entities.map((tag) => [db.tags.create(tag)]))

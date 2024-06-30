@@ -8,7 +8,7 @@ import {
   OFFER,
   mockOraFixture,
 } from "#mocks"
-import { CATEGORIES, OFFERS, PRODUCTS, SELLERS, TAGS } from "@tissai/db"
+import { OFFERS, PRODUCTS, TAGS } from "@tissai/db"
 
 type Fixtures = {
   mockDb: mockDbFixture
@@ -31,7 +31,7 @@ describe("index", () => {
     vi.resetModules()
   })
 
-  it("handles title-only products", async ({ expect, mockDb }) => {
+  it("handles title-only products", async ({ expect, mockDb, mockPython, mockOra  }) => {
     const page = pageWithSchema({
       "@context": "https://schema.org",
       "@type": "Product",
@@ -41,8 +41,10 @@ describe("index", () => {
 
     await import("./index.js")
 
-    expect(mockDb).toHaveInserted(PRODUCTS)
     expect(mockDb).toHaveInserted(OFFERS)
+    expect(mockDb.pool.end).toHaveBeenCalled()
+    expect(mockPython.worker.end).toHaveBeenCalled()
+    expect(mockOra.spinner.succeed).toHaveBeenCalled()
   })
 
   it("handles empty pages", async ({ expect, mockDb, mockPython, mockOra }) => {
@@ -51,7 +53,6 @@ describe("index", () => {
 
     await import("./index.js")
 
-    expect(mockDb).not.toHaveInserted(PRODUCTS)
     expect(mockDb).not.toHaveInserted(OFFERS)
     expect(mockDb.pool.end).toHaveBeenCalled()
     expect(mockPython.worker.end).toHaveBeenCalled()
