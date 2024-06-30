@@ -8,7 +8,7 @@ import {
   OFFER,
   mockOraFixture,
 } from "#mocks"
-import { BRANDS, CATEGORIES, OFFERS, PRODUCTS, SELLERS, TAGS } from "@tissai/db"
+import { CATEGORIES, OFFERS, PRODUCTS, SELLERS, TAGS } from "@tissai/db"
 
 type Fixtures = {
   mockDb: mockDbFixture
@@ -46,7 +46,6 @@ describe("index", () => {
     expect(mockDb).toHaveInserted(CATEGORIES)
     expect(mockDb).toHaveInserted(TAGS)
     expect(mockDb).not.toHaveInserted(SELLERS)
-    expect(mockDb).not.toHaveInserted(BRANDS)
   })
 
   it("handles empty pages", async ({ expect, mockDb, mockPython, mockOra }) => {
@@ -60,7 +59,6 @@ describe("index", () => {
     expect(mockDb).not.toHaveInserted(CATEGORIES)
     expect(mockDb).not.toHaveInserted(TAGS)
     expect(mockDb).not.toHaveInserted(SELLERS)
-    expect(mockDb).not.toHaveInserted(BRANDS)
     expect(mockDb.pool.end).toHaveBeenCalled()
     expect(mockPython.worker.end).toHaveBeenCalled()
     expect(mockOra.spinner.succeed).toHaveBeenCalled()

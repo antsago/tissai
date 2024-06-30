@@ -1,21 +1,35 @@
-import { expect, describe, it } from "vitest"
+import { expect, describe, test, beforeEach } from "vitest"
+import { mockDbFixture } from "@tissai/db/mocks"
+import { Db, BRANDS } from "@tissai/db"
 import brand from "./brand.js"
+
+type Fixtures = { pg: mockDbFixture }
+const it = test.extend<Fixtures>({
+  pg: [mockDbFixture as any, { auto: true }],
+})
 
 const NAME = "wedze"
 const LOGO = "https://brand.com/image.jpg"
 
 describe("brands", () => {
-  it("extracts brand", async () => {
-    const result = brand({ brandName: NAME, brandLogo: LOGO })
+  let db: Db
+  beforeEach<Fixtures>(({ pg }) => {
+    pg.pool.query.mockResolvedValue({ rows: [] })
+    db = Db()
+  })
+
+  it("extracts brand", async ({ pg }) => {
+    const result = await brand({ brandName: NAME, brandLogo: LOGO }, db)
 
     expect(result).toStrictEqual({
       name: NAME,
       logo: LOGO,
     })
+    expect(pg).toHaveInserted(BRANDS, [NAME, LOGO])
   })
 
   it("handles brands without logo", async () => {
-    const result = brand({ brandName: NAME })
+    const result = await brand({ brandName: NAME }, db)
 
     expect(result).toStrictEqual({
       name: NAME,
@@ -24,7 +38,7 @@ describe("brands", () => {
   })
 
   it("turns name to lowercase", async () => {
-    const result = brand({ brandName: "WEDZE" })
+    const result = await brand({ brandName: "WEDZE" }, db)
 
     expect(result).toStrictEqual({
       name: "wedze",
@@ -32,9 +46,10 @@ describe("brands", () => {
     })
   })
 
-  it("handles pages without brand", async ({}) => {
-    const result = brand({})
+  it("handles pages without brand", async ({ pg }) => {
+    const result = await brand({}, db)
 
     expect(result).toBe(undefined)
+    expect(pg).not.toHaveInserted(BRANDS)
   })
 })
