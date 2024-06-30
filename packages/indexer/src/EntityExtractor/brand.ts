@@ -6,9 +6,9 @@ async function brand({ brandName, brandLogo }: JsonLD, db: Db): Promise<Brand | 
     return undefined
   }
 
-  const brandEntity = { name: brandName.toLowerCase(), logo: brandLogo }
-  await db.brands.create(brandEntity)
+  const enitity = { name: brandName.toLowerCase(), logo: brandLogo }
+  await db.brands.create(enitity)
 
-  return brandEntity
+  return enitity
 }
 export default brand

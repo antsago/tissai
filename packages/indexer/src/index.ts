@@ -66,7 +66,7 @@ try {
 
       const categoryEntity = await category(productTitle, python)
       const tagEntities = await tags(productTitle, python)
-      const sellerEntities = sellers(jsonLdInfo)
+      await sellers(jsonLdInfo, db)
       const brandEntity = await brand(jsonLdInfo, db)
       const productEntity = await product(
         jsonLdInfo,
@@ -86,9 +86,6 @@ try {
           tagEntities.map((tag) => [
             db.tags.create(tag),
           ]),
-          sellerEntities.map((seller) => 
-            db.sellers.create(seller)
-          ),
         ].flat(),
       )
 

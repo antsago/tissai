@@ -45,7 +45,6 @@ describe("index", () => {
     expect(mockDb).toHaveInserted(OFFERS)
     expect(mockDb).toHaveInserted(CATEGORIES)
     expect(mockDb).toHaveInserted(TAGS)
-    expect(mockDb).not.toHaveInserted(SELLERS)
   })
 
   it("handles empty pages", async ({ expect, mockDb, mockPython, mockOra }) => {
@@ -58,7 +57,6 @@ describe("index", () => {
     expect(mockDb).not.toHaveInserted(OFFERS)
     expect(mockDb).not.toHaveInserted(CATEGORIES)
     expect(mockDb).not.toHaveInserted(TAGS)
-    expect(mockDb).not.toHaveInserted(SELLERS)
     expect(mockDb.pool.end).toHaveBeenCalled()
     expect(mockPython.worker.end).toHaveBeenCalled()
     expect(mockOra.spinner.succeed).toHaveBeenCalled()
@@ -99,8 +97,6 @@ describe("index", () => {
 
     expect(mockDb).toHaveInserted(OFFERS, [OFFER.seller])
     expect(mockDb).toHaveInserted(OFFERS, [seller2])
-    expect(mockDb).toHaveInserted(SELLERS, [OFFER.seller])
-    expect(mockDb).toHaveInserted(SELLERS, [seller2])
     expect(mockDb).toHaveInserted(TAGS, [tags[0]])
     expect(mockDb).toHaveInserted(TAGS, [tags[1]])
   })
