@@ -15,18 +15,6 @@ export const TABLE = Object.assign("pages", {
   site: "site",
 })
 
-export const create =
-  (connection: Connection) =>
-  ({ id, url, body, site }: Page) =>
-    connection.query(
-      `INSERT INTO ${TABLE} (
-        ${TABLE.id}, ${TABLE.url}, ${TABLE.body}, ${TABLE.site}
-      ) VALUES (
-        $1, $2, $3, $4
-      );`,
-      [id, url, body, site],
-    )
-
 export const initialize = (connection: Connection) =>
   connection.query(`
     CREATE TABLE IF NOT EXISTS ${TABLE} (
@@ -37,5 +25,16 @@ export const initialize = (connection: Connection) =>
     );
   `)
 
-export const getAll = (connection: Connection) => async () =>
-  connection.query<Page>(`SELECT * FROM ${TABLE};`)
+export const crud = (connection: Connection) => ({
+  create: ({ id, url, body, site }: Page) =>
+    connection.query(
+      `INSERT INTO ${TABLE} (
+        ${TABLE.id}, ${TABLE.url}, ${TABLE.body}, ${TABLE.site}
+      ) VALUES (
+        $1, $2, $3, $4
+      );`,
+      [id, url, body, site],
+    ),
+
+  getAll: async () => connection.query<Page>(`SELECT * FROM ${TABLE};`),
+})

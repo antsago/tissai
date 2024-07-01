@@ -10,13 +10,13 @@ async function brand(
   }
 
   const existing = await db.brands.byName(brandName)
-  
+
   if (!existing) {
     const entity = { name: brandName, logo: brandLogo }
     await db.brands.create(entity)
     return entity
   }
-  
+
   if (existing.logo || !brandLogo) {
     return existing
   }

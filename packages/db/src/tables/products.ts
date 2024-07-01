@@ -27,32 +27,6 @@ export function formatEmbedding(embedding: number[]) {
   return `[${embedding.join(",")}]`
 }
 
-export const create = (connection: Connection) => (product: Product) =>
-  connection.query(
-    `INSERT INTO ${TABLE} (
-      ${TABLE.id},
-      ${TABLE.title},
-      ${TABLE.description},
-      ${TABLE.images},
-      ${TABLE.brand},
-      ${TABLE.embedding},
-      ${TABLE.category},
-      ${TABLE.tags}
-    ) VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8
-    );`,
-    [
-      product.id,
-      product.title,
-      product.description,
-      product.images,
-      product.brand,
-      formatEmbedding(product.embedding),
-      product.category,
-      product.tags,
-    ],
-  )
-
 export const initialize = (connection: Connection) =>
   connection.query(`
     CREATE TABLE IF NOT EXISTS ${TABLE} (
@@ -66,8 +40,34 @@ export const initialize = (connection: Connection) =>
       ${TABLE.brand}          text REFERENCES ${BRANDS}
     );`)
 
-export const getAll =
-  (connection: Connection) => async (): Promise<Product[]> => {
+export const crud = (connection: Connection) => ({
+  create: (product: Product) =>
+    connection.query(
+      `INSERT INTO ${TABLE} (
+      ${TABLE.id},
+      ${TABLE.title},
+      ${TABLE.description},
+      ${TABLE.images},
+      ${TABLE.brand},
+      ${TABLE.embedding},
+      ${TABLE.category},
+      ${TABLE.tags}
+    ) VALUES (
+      $1, $2, $3, $4, $5, $6, $7, $8
+    );`,
+      [
+        product.id,
+        product.title,
+        product.description,
+        product.images,
+        product.brand,
+        formatEmbedding(product.embedding),
+        product.category,
+        product.tags,
+      ],
+    ),
+
+  getAll: async (): Promise<Product[]> => {
     const products = await connection.query<
       Omit<Product, "embedding"> & { embedding: string }
     >(`SELECT * FROM ${TABLE};`)
@@ -76,4 +76,5 @@ export const getAll =
       ...p,
       embedding: JSON.parse(p.embedding),
     }))
-  }
+  },
+})

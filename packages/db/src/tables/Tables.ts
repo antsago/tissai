@@ -21,15 +21,7 @@ const TABLE_MODULES = {
 type TABLE_MODULES = typeof TABLE_MODULES
 
 type CRUD_METHODS = {
-  [T in keyof TABLE_MODULES]: {
-    create: ReturnType<TABLE_MODULES[T]["create"]>
-    getAll: ReturnType<TABLE_MODULES[T]["getAll"]>
-  }
-} & {
-  brands: {
-    byName: ReturnType<TABLE_MODULES['brands']['byName']>
-    update: ReturnType<TABLE_MODULES['brands']['update']>
-  }
+  [T in keyof TABLE_MODULES]: ReturnType<TABLE_MODULES[T]["crud"]>
 }
 
 const Tables = (connection: Connection) => ({
@@ -47,21 +39,10 @@ const Tables = (connection: Connection) => ({
     await initializeInParalel(others)
   },
   crud: Object.values(TABLE_MODULES).reduce(
-    (aggregate, table) => {
-      const toAdd = 'byName' in table ? {
-        byName: table.byName(connection),
-        update: table.update(connection),
-      } : {}
-
-      return ({
-        ...aggregate,
-        [table.TABLE]: {
-          create: table.create(connection),
-          getAll: table.getAll(connection),
-          ...toAdd,
-        },
-      })
-    },
+    (aggregate, table) => ({
+      ...aggregate,
+      [table.TABLE]: table.crud(connection),
+    }),
     {} as CRUD_METHODS,
   ),
 })

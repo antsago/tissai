@@ -35,9 +35,10 @@ export const initialize = (connection: Connection) =>
       ${TABLE.currency}       text
     );`)
 
-export const create = (connection: Connection) => (offer: Offer) =>
-  connection.query(
-    `INSERT INTO ${TABLE} (
+export const crud = (connection: Connection) => ({
+  create: (offer: Offer) =>
+    connection.query(
+      `INSERT INTO ${TABLE} (
       ${TABLE.id},
       ${TABLE.url},
       ${TABLE.site},
@@ -48,19 +49,18 @@ export const create = (connection: Connection) => (offer: Offer) =>
     ) VALUES (
       $1, $2, $3, $4, $5, $6, $7
     );`,
-    [
-      offer.id,
-      offer.url,
-      offer.site,
-      offer.product,
-      offer.seller,
-      offer.price,
-      offer.currency,
-    ],
-  )
+      [
+        offer.id,
+        offer.url,
+        offer.site,
+        offer.product,
+        offer.seller,
+        offer.price,
+        offer.currency,
+      ],
+    ),
 
-export const getAll =
-  (connection: Connection) => async (): Promise<Offer[]> => {
+  getAll: async (): Promise<Offer[]> => {
     const offers = await connection.query<
       Omit<Offer, "price"> & { price: string }
     >(`SELECT * FROM ${TABLE};`)
@@ -69,4 +69,5 @@ export const getAll =
       ...o,
       price: parseInt(o.price, 10),
     }))
-  }
+  },
+})

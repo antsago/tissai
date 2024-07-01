@@ -20,24 +20,6 @@ export const TABLE = Object.assign("sites", {
   urlKeywords: "urlKeywords",
 })
 
-export const create =
-  (connection: Connection) =>
-  ({ id, name, icon, domain, sitemaps, sitemapWhitelist, urlKeywords }: Site) =>
-    connection.query(
-      `INSERT INTO ${TABLE} (
-        ${TABLE.id},
-        ${TABLE.name},
-        ${TABLE.icon},
-        ${TABLE.domain},
-        ${TABLE.sitemaps},
-        ${TABLE.sitemapWhitelist},
-        ${TABLE.urlKeywords}
-      ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7
-      );`,
-      [id, name, icon, domain, sitemaps, sitemapWhitelist, urlKeywords],
-    )
-
 export const initialize = (connection: Connection) =>
   connection.query(`
     CREATE TABLE IF NOT EXISTS ${TABLE} (
@@ -51,5 +33,30 @@ export const initialize = (connection: Connection) =>
     );
   `)
 
-export const getAll = (connection: Connection) => async () =>
-  connection.query<Site>(`SELECT * FROM ${TABLE};`)
+export const crud = (connection: Connection) => ({
+  create: ({
+    id,
+    name,
+    icon,
+    domain,
+    sitemaps,
+    sitemapWhitelist,
+    urlKeywords,
+  }: Site) =>
+    connection.query(
+      `INSERT INTO ${TABLE} (
+        ${TABLE.id},
+        ${TABLE.name},
+        ${TABLE.icon},
+        ${TABLE.domain},
+        ${TABLE.sitemaps},
+        ${TABLE.sitemapWhitelist},
+        ${TABLE.urlKeywords}
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6, $7
+      );`,
+      [id, name, icon, domain, sitemaps, sitemapWhitelist, urlKeywords],
+    ),
+
+  getAll: async () => connection.query<Site>(`SELECT * FROM ${TABLE};`),
+})

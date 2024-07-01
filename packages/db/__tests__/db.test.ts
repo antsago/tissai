@@ -42,35 +42,35 @@ describe.concurrent("db", () => {
     expect(sellers).toStrictEqual([SELLER])
   })
 
-  describe('brands', () => {
-    it('searches for brand by name', async ({ expect, db }) => {
+  describe("brands", () => {
+    it("searches for brand by name", async ({ expect, db }) => {
       await db.load({
         brands: [BRAND],
       })
-  
+
       const found = await db.brands.byName(BRAND.name.toLowerCase())
-  
+
       expect(found).toStrictEqual(BRAND)
     })
 
-    it('ignores brands with different names', async ({ expect, db }) => {
+    it("ignores brands with different names", async ({ expect, db }) => {
       await db.load({
         brands: [BRAND],
       })
-  
-      const found = await db.brands.byName('foo')
-  
+
+      const found = await db.brands.byName("foo")
+
       expect(found).toBe(undefined)
     })
 
-    it('updates brand details', async ({ expect, db }) => {
+    it("updates brand details", async ({ expect, db }) => {
       await db.load({
         brands: [{ name: BRAND.name }],
       })
-  
+
       await db.brands.update(BRAND)
       const brands = await db.brands.getAll()
-  
+
       expect(brands).toStrictEqual([BRAND])
     })
   })

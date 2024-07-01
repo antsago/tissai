@@ -42,10 +42,16 @@ describe("brands", () => {
     const existing = { name: NAME }
     pg.pool.query.mockResolvedValueOnce({ rows: [existing] })
 
-    const result = await brand({ brandName: NAME.toLowerCase(), brandLogo: LOGO }, db)
+    const result = await brand(
+      { brandName: NAME.toLowerCase(), brandLogo: LOGO },
+      db,
+    )
 
     expect(result).toStrictEqual({ name: NAME, logo: LOGO })
-    expect(pg.pool.query).toHaveBeenCalledWith(expect.stringContaining('UPDATE'), expect.anything())
+    expect(pg.pool.query).toHaveBeenCalledWith(
+      expect.stringContaining("UPDATE"),
+      expect.anything(),
+    )
     expect(pg).not.toHaveInserted(BRANDS)
   })
 
