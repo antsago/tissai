@@ -13,7 +13,7 @@ async function brand(
   
   if (existingBrand) {
     if (!existingBrand.logo && brandLogo) {
-      await db.query<[]>('UPDATE brands SET logo $2 WHERE name = $1', [existingBrand.name, brandLogo])
+      await db.query<[]>('UPDATE brands SET logo = $2 WHERE name = $1', [existingBrand.name, brandLogo])
 
       return {
         ...existingBrand,
