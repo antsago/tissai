@@ -62,6 +62,17 @@ describe.concurrent("db", () => {
   
       expect(found).toBe(undefined)
     })
+
+    it('updates brand details', async ({ expect, db }) => {
+      await db.load({
+        brands: [{ name: BRAND.name }],
+      })
+  
+      await db.brands.update(BRAND)
+      const brands = await db.brands.getAll()
+  
+      expect(brands).toStrictEqual([BRAND])
+    })
   })
 
   it("gets product details", async ({ expect, db }) => {

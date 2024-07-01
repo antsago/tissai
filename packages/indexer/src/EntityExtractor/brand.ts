@@ -9,23 +9,24 @@ async function brand(
     return undefined
   }
 
-  const existingBrand = await db.brands.byName(brandName)
+  const existing = await db.brands.byName(brandName)
   
-  if (!existingBrand) {
+  if (!existing) {
     const entity = { name: brandName, logo: brandLogo }
     await db.brands.create(entity)
     return entity
   }
   
-  if (existingBrand.logo || !brandLogo) {
-    return existingBrand
+  if (existing.logo || !brandLogo) {
+    return existing
   }
 
-  await db.query<[]>('UPDATE brands SET logo = $2 WHERE name = $1', [existingBrand.name, brandLogo])
-
-  return {
-    ...existingBrand,
+  const updated = {
+    ...existing,
     logo: brandLogo,
   }
+  await db.brands.update(updated)
+
+  return updated
 }
 export default brand

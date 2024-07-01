@@ -33,3 +33,6 @@ export const byName = (connection: Connection) => async (name: string) => {
   const [found] = await connection.query<Brand>('SELECT * FROM brands WHERE similarity(name, $1) >= 1 LIMIT 1', [name])
   return found
 }
+
+export const update = (connection: Connection) => async (brand: Brand) =>
+  connection.query('UPDATE brands SET logo = $2 WHERE name = $1', [brand.name, brand.logo])

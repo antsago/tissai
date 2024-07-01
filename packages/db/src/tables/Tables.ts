@@ -27,7 +27,8 @@ type CRUD_METHODS = {
   }
 } & {
   brands: {
-    byName: (name: string) => Promise<brands.Brand>
+    byName: ReturnType<TABLE_MODULES['brands']['byName']>
+    update: ReturnType<TABLE_MODULES['brands']['update']>
   }
 }
 
@@ -49,6 +50,7 @@ const Tables = (connection: Connection) => ({
     (aggregate, table) => {
       const toAdd = 'byName' in table ? {
         byName: table.byName(connection),
+        update: table.update(connection),
       } : {}
 
       return ({
