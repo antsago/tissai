@@ -1,3 +1,4 @@
+import { CompiledQuery } from "kysely"
 import { default as pg, QueryResultRow } from "pg"
 import PgCursor from "pg-cursor"
 
@@ -17,6 +18,16 @@ export const Connection = (database?: string) => {
     values?: any[],
   ) {
     const response = await pool.query<T, any[]>(queryString, values)
+    return response.rows
+  }
+
+  async function fromBuilder<T extends QueryResultRow>(
+    query: CompiledQuery<T>,
+  ) {
+    const response = await pool.query<T, any[]>(
+      query.sql,
+      query.parameters as any[],
+    )
     return response.rows
   }
 
@@ -43,6 +54,7 @@ export const Connection = (database?: string) => {
   return {
     query,
     stream,
+    fromBuilder,
     close: () => pool.end(),
   }
 }

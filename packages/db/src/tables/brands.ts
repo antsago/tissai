@@ -39,15 +39,15 @@ export const crud = (connection: Connection) => ({
       )
       .limit(1)
       .compile()
-    const [found] = await connection.query<Brand>(
-      query.sql,
-      query.parameters as any[],
-    )
+    const [found] = await connection.fromBuilder(query)
     return found
   },
   update: async (brand: Brand) =>
-    connection.query("UPDATE brands SET logo = $2 WHERE name = $1", [
-      brand.name,
-      brand.logo,
-    ]),
+    connection.fromBuilder(
+      builder
+        .updateTable("brands")
+        .set(brand)
+        .where("name", "=", brand.name)
+        .compile(),
+    ),
 })
