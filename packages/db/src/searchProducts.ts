@@ -1,46 +1,6 @@
-import {
-  DummyDriver,
-  Kysely,
-  PostgresAdapter,
-  PostgresIntrospector,
-  PostgresQueryCompiler,
-  sql,
-} from "kysely"
+import { sql } from "kysely"
 import { Connection } from "./Connection.js"
-import { Product, Brand, formatEmbedding, Offer } from "./tables/index.js"
-
-interface Products {
-  id: Product["id"]
-  title: Product["title"]
-  images: Product["images"]
-  brand: Product["brand"]
-  embedding: Product["embedding"]
-  tags: Product["tags"]
-}
-interface Offers {
-  id: Offer["id"]
-  product: Offer["product"]
-  price: Offer["price"]
-}
-interface Brands {
-  name: Brand["name"]
-  logo: Brand["logo"]
-}
-
-interface Database {
-  products: Products
-  offers: Offers
-  brands: Brands
-}
-
-const builder = new Kysely<Database>({
-  dialect: {
-    createAdapter: () => new PostgresAdapter(),
-    createDriver: () => new DummyDriver(),
-    createIntrospector: (db) => new PostgresIntrospector(db),
-    createQueryCompiler: () => new PostgresQueryCompiler(),
-  },
-})
+import { Product, Brand, formatEmbedding, Offer, builder } from "./tables/index.js"
 
 export type SearchParams = {
   embedding: Product["embedding"]
