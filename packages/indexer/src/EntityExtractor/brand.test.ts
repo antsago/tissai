@@ -38,7 +38,18 @@ describe("brands", () => {
     expect(pg).not.toHaveInserted(BRANDS)
   })
 
-  it("handles brands without logo", async () => {
+  it("updates missing information", async ({ pg }) => {
+    const existing = { name: NAME }
+    pg.pool.query.mockResolvedValueOnce({ rows: [existing] })
+
+    const result = await brand({ brandName: NAME.toLowerCase(), brandLogo: LOGO }, db)
+
+    expect(result).toStrictEqual({ name: NAME, logo: LOGO })
+    expect(pg.pool.query).toHaveBeenCalledWith(expect.stringContaining('UPDATE'), expect.anything())
+    expect(pg).not.toHaveInserted(BRANDS)
+  })
+
+  it("handles new brands without logo", async () => {
     const result = await brand({ brandName: NAME }, db)
 
     expect(result).toStrictEqual({
