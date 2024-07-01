@@ -28,3 +28,8 @@ export const initialize = (connection: Connection) =>
 
 export const getAll = (connection: Connection) => async () =>
   connection.query<Brand>(`SELECT * FROM ${TABLE};`)
+
+export const byName = (connection: Connection) => async (name: string) => {
+  const [found] = await connection.query<Brand>('SELECT * FROM brands WHERE similarity(name, $1) >= 1 LIMIT 1', [name])
+  return found
+}

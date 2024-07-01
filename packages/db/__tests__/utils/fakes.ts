@@ -13,7 +13,7 @@ export const PAGE = {
 }
 
 export const BRAND = {
-  name: "eg",
+  name: "Eg",
   logo: "https://example.com/EG.jpg",
 }
 

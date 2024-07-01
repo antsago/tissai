@@ -25,6 +25,10 @@ type CRUD_METHODS = {
     create: ReturnType<TABLE_MODULES[T]["create"]>
     getAll: ReturnType<TABLE_MODULES[T]["getAll"]>
   }
+} & {
+  brands: {
+    byName: (name: string) => Promise<brands.Brand>
+  }
 }
 
 const Tables = (connection: Connection) => ({
@@ -42,13 +46,20 @@ const Tables = (connection: Connection) => ({
     await initializeInParalel(others)
   },
   crud: Object.values(TABLE_MODULES).reduce(
-    (aggregate, table) => ({
-      ...aggregate,
-      [table.TABLE]: {
-        create: table.create(connection),
-        getAll: table.getAll(connection),
-      },
-    }),
+    (aggregate, table) => {
+      const toAdd = 'byName' in table ? {
+        byName: table.byName(connection),
+      } : {}
+
+      return ({
+        ...aggregate,
+        [table.TABLE]: {
+          create: table.create(connection),
+          getAll: table.getAll(connection),
+          ...toAdd,
+        },
+      })
+    },
     {} as CRUD_METHODS,
   ),
 })

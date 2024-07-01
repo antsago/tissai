@@ -10,7 +10,6 @@ import {
   SELLER,
   dbFixture,
 } from "#mocks"
-import { PRODUCTS } from "../src/index.js"
 
 type Fixtures = { db: dbFixture }
 const it = test.extend<Fixtures>({
@@ -41,6 +40,28 @@ describe.concurrent("db", () => {
     expect(tags).toStrictEqual([TAG])
     expect(brands).toStrictEqual([BRAND])
     expect(sellers).toStrictEqual([SELLER])
+  })
+
+  describe('brands', () => {
+    it('searches for brand by name', async ({ expect, db }) => {
+      await db.load({
+        brands: [BRAND],
+      })
+  
+      const found = await db.brands.byName(BRAND.name.toLowerCase())
+  
+      expect(found).toStrictEqual(BRAND)
+    })
+
+    it('ignores brands with different names', async ({ expect, db }) => {
+      await db.load({
+        brands: [BRAND],
+      })
+  
+      const found = await db.brands.byName('foo')
+  
+      expect(found).toBe(undefined)
+    })
   })
 
   it("gets product details", async ({ expect, db }) => {

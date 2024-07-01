@@ -9,22 +9,23 @@ async function brand(
     return undefined
   }
 
-  const [existingBrand] = await db.query<Brand>('SELECT * FROM brands WHERE similarity(name, $1) >= 1 LIMIT 1', [brandName])
+  const existingBrand = await db.brands.byName(brandName)
   
-  if (existingBrand) {
-    if (!existingBrand.logo && brandLogo) {
-      await db.query<[]>('UPDATE brands SET logo = $2 WHERE name = $1', [existingBrand.name, brandLogo])
-
-      return {
-        ...existingBrand,
-        logo: brandLogo,
-      }
-    }
+  if (!existingBrand) {
+    const entity = { name: brandName, logo: brandLogo }
+    await db.brands.create(entity)
+    return entity
+  }
+  
+  if (existingBrand.logo || !brandLogo) {
     return existingBrand
   }
 
-  const entity = { name: brandName, logo: brandLogo }
-  await db.brands.create(entity)
-  return entity
+  await db.query<[]>('UPDATE brands SET logo = $2 WHERE name = $1', [existingBrand.name, brandLogo])
+
+  return {
+    ...existingBrand,
+    logo: brandLogo,
+  }
 }
 export default brand
