@@ -1,6 +1,12 @@
 import { sql } from "kysely"
 import { Connection } from "./Connection.js"
-import { Product, Brand, formatEmbedding, Offer, builder } from "./tables/index.js"
+import {
+  Product,
+  Brand,
+  formatEmbedding,
+  Offer,
+  builder,
+} from "./tables/index.js"
 
 export type SearchParams = {
   embedding: Product["embedding"]

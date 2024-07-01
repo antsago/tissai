@@ -1,4 +1,5 @@
 import { Connection } from "../Connection.js"
+import builder from "./queryBuilder.js"
 
 export type Brand = {
   name: string
@@ -28,9 +29,19 @@ export const crud = (connection: Connection) => ({
     ),
   getAll: async () => connection.query<Brand>(`SELECT * FROM ${TABLE};`),
   byName: async (name: string) => {
+    const query = builder
+      .selectFrom("brands")
+      .selectAll()
+      .where(
+        ({ fn, val }) => fn<number>("similarity", ["name", val(name)]),
+        ">=",
+        1,
+      )
+      .limit(1)
+      .compile()
     const [found] = await connection.query<Brand>(
-      "SELECT * FROM brands WHERE similarity(name, $1) >= 1 LIMIT 1",
-      [name],
+      query.sql,
+      query.parameters as any[],
     )
     return found
   },
