@@ -8,7 +8,7 @@ const it = test.extend<Fixtures>({
   pg: [mockDbFixture as any, { auto: true }],
 })
 
-const NAME = "wedze"
+const NAME = "Wedze"
 const LOGO = "https://brand.com/image.jpg"
 
 describe("brands", () => {
@@ -18,7 +18,7 @@ describe("brands", () => {
     db = Db()
   })
 
-  it("extracts brand", async ({ pg }) => {
+  it("extracts new brands", async ({ pg }) => {
     const result = await brand({ brandName: NAME, brandLogo: LOGO }, db)
 
     expect(result).toStrictEqual({
@@ -26,6 +26,16 @@ describe("brands", () => {
       logo: LOGO,
     })
     expect(pg).toHaveInserted(BRANDS, [NAME, LOGO])
+  })
+
+  it("reuses existing brands", async ({ pg }) => {
+    const existing = { name: NAME, logo: LOGO }
+    pg.pool.query.mockResolvedValueOnce({ rows: [existing] })
+
+    const result = await brand({ brandName: NAME.toLowerCase() }, db)
+
+    expect(result).toStrictEqual(existing)
+    expect(pg).not.toHaveInserted(BRANDS)
   })
 
   it("handles brands without logo", async () => {

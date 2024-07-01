@@ -9,6 +9,7 @@ export const Db = (database?: string) => {
 
   const initialize = async () => {
     await connection.query("CREATE EXTENSION IF NOT EXISTS vector;")
+    await connection.query("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
     await tables.initialize()
   }
 

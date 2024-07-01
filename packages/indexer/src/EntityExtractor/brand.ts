@@ -10,8 +10,13 @@ async function brand(
   }
 
   const entity = { name: brandName, logo: brandLogo }
-  await db.brands.create(entity)
+  const [existingBrand] = await db.query<Brand>('SELECT * FROM brands WHERE similarity(name, $1) >= 1 LIMIT 1', [brandName])
 
+  if (existingBrand) {
+    return existingBrand
+  }
+
+  await db.brands.create(entity)
   return entity
 }
 export default brand
