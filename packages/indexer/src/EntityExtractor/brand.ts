@@ -9,7 +9,7 @@ async function brand(
     return undefined
   }
 
-  const entity = { name: brandName.toLowerCase(), logo: brandLogo }
+  const entity = { name: brandName, logo: brandLogo }
   await db.brands.create(entity)
 
   return entity

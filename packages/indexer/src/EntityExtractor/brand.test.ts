@@ -37,15 +37,6 @@ describe("brands", () => {
     })
   })
 
-  it("turns name to lowercase", async () => {
-    const result = await brand({ brandName: "WEDZE" }, db)
-
-    expect(result).toStrictEqual({
-      name: "wedze",
-      logo: undefined,
-    })
-  })
-
   it("handles pages without brand", async ({ pg }) => {
     const result = await brand({}, db)
 
