@@ -21,13 +21,8 @@ export const initialize = (connection: Connection) =>
 
 export const crud = (connection: Connection) => ({
   create: (brand: Brand) =>
-    connection.raw(
-      `INSERT INTO ${TABLE}
-        (${TABLE.name}, ${TABLE.logo}) VALUES ($1, $2)
-      ON CONFLICT DO NOTHING;`,
-      [brand.name, brand.logo],
-    ),
-  getAll: async () => connection.raw<Brand>(`SELECT * FROM ${TABLE};`),
+    connection.query(builder.insertInto('brands').values(brand).compile()),
+  getAll: async () => connection.query(builder.selectFrom('brands').selectAll().compile()),
   byName: async (name: string) => {
     const query = builder
       .selectFrom("brands")
