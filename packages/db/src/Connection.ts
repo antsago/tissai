@@ -22,7 +22,7 @@ export const Connection = (database?: string) => {
   }
 
   async function query<T extends QueryResultRow>(query: CompiledQuery<T>) {
-    return raw(query.sql, query.parameters as any[])
+    return raw<T>(query.sql, query.parameters as any[])
   }
 
   const ONE_ROW = 1
