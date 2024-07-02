@@ -1,12 +1,6 @@
 import { sql } from "kysely"
 import { Connection } from "./Connection.js"
-import {
-  Product,
-  Brand,
-  formatEmbedding,
-  Offer,
-  builder,
-} from "./tables/index.js"
+import { Product, formatEmbedding, Offer, builder } from "./tables/index.js"
 
 export type SearchParams = {
   embedding: Product["embedding"]
@@ -15,13 +9,6 @@ export type SearchParams = {
   min?: Offer["price"] | null
   max?: Offer["price"] | null
   tags?: Product["tags"]
-}
-type SearchResult = {
-  id: Product["id"]
-  title: Product["title"]
-  brand?: [Brand]
-  image?: string
-  price?: string
 }
 
 export const buildSearchQuery = ({

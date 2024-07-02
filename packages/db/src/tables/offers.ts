@@ -2,6 +2,7 @@ import { Connection } from "../Connection.js"
 import { TABLE as PRODUCTS } from "./products.js"
 import { TABLE as SELLERS } from "./sellers.js"
 import { TABLE as SITES } from "./sites.js"
+import builder from "./queryBuilder.js"
 
 export type Offer = {
   id: string
@@ -37,37 +38,20 @@ export const initialize = (connection: Connection) =>
 
 export const crud = (connection: Connection) => ({
   create: (offer: Offer) =>
-    connection.raw(
-      `INSERT INTO ${TABLE} (
-      ${TABLE.id},
-      ${TABLE.url},
-      ${TABLE.site},
-      ${TABLE.product},
-      ${TABLE.seller},
-      ${TABLE.price},
-      ${TABLE.currency}
-    ) VALUES (
-      $1, $2, $3, $4, $5, $6, $7
-    );`,
-      [
-        offer.id,
-        offer.url,
-        offer.site,
-        offer.product,
-        offer.seller,
-        offer.price,
-        offer.currency,
-      ],
-    ),
+    connection.query(builder.insertInto("offers").values(offer).compile()),
 
   getAll: async (): Promise<Offer[]> => {
-    const offers = await connection.raw<
-      Omit<Offer, "price"> & { price: string }
-    >(`SELECT * FROM ${TABLE};`)
+    const offers = await connection.query(
+      builder.selectFrom("offers").selectAll().compile(),
+    )
 
-    return offers.map((o) => ({
-      ...o,
-      price: parseInt(o.price, 10),
-    }))
+    return offers.map((o) =>
+      o.price
+        ? {
+            ...o,
+            price: parseInt(o.price as unknown as string, 10),
+          }
+        : o,
+    )
   },
 })
