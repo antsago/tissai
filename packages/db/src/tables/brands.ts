@@ -21,8 +21,9 @@ export const initialize = (connection: Connection) =>
 
 export const crud = (connection: Connection) => ({
   create: (brand: Brand) =>
-    connection.query(builder.insertInto('brands').values(brand).compile()),
-  getAll: async () => connection.query(builder.selectFrom('brands').selectAll().compile()),
+    connection.query(builder.insertInto("brands").values(brand).compile()),
+  getAll: async () =>
+    connection.query(builder.selectFrom("brands").selectAll().compile()),
   byName: async (name: string) => {
     const query = builder
       .selectFrom("brands")

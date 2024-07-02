@@ -17,7 +17,7 @@ expect.extend({
     const { isNot, equals } = this
     const expected = expect.arrayContaining([
       [
-        expect.stringContaining(`INSERT INTO ${table}`),
+        expect.stringMatching(new RegExp(`INSERT INTO (\\")?${table}`, "i")),
         expect.arrayContaining(values),
       ],
     ])

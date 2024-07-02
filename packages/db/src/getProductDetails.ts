@@ -1,90 +1,60 @@
+import { sql } from "kysely"
+import { jsonBuildObject } from "kysely/helpers/postgres"
 import { Connection } from "./Connection.js"
-import {
-  BRANDS,
-  Brand,
-  OFFERS,
-  Offer,
-  PRODUCTS,
-  Product,
-  SITES,
-  Site,
-} from "./tables/index.js"
-
-type DetailsResponse = {
-  title: Product["title"]
-  description: Product["description"]
-  images: Product["images"]
-  category: Product["category"]
-  tags: Product["tags"]
-  brand: (Brand | undefined)[]
-  offers: {
-    url: Offer["url"]
-    price: Offer["price"]
-    currency: Offer["currency"]
-    seller: Offer["seller"]
-    site: {
-      name: Site["name"]
-      icon: Site["icon"]
-    }
-  }[]
-}
-type SimilarResponse = {
-  id: Product["id"]
-  title: Product["title"]
-  image?: string
-}
+import { Product, builder } from "./tables/index.js"
 
 const getProductDetails =
   (connection: Connection) => async (productId: Product["id"]) => {
-    const [details] = await connection.raw<DetailsResponse>(
-      `
-        SELECT
-          p.${PRODUCTS.title},
-          p.${PRODUCTS.description},
-          p.${PRODUCTS.images},
-          p.${PRODUCTS.category},
-          p.${PRODUCTS.tags},
-          JSON_AGG(b.*) AS brand,
-          JSON_AGG(
-            JSON_BUILD_OBJECT(
-              'url', o.${OFFERS.url},
-              'price', o.${OFFERS.price},
-              'currency', o.${OFFERS.currency},
-              'seller', o.${OFFERS.seller},
-              'site', JSON_BUILD_OBJECT(
-                'name', s.${SITES.name},
-                'icon', s.${SITES.icon}
-              )
+    const [details] = await connection.query(
+      builder
+        .selectFrom("products")
+        .leftJoin("offers", "offers.product", "products.id")
+        .innerJoin("sites", "offers.site", "sites.id")
+        .leftJoin("brands", "brands.name", "products.brand")
+        .select(({ fn, ref }) => [
+          "products.title",
+          "products.description",
+          "products.images",
+          "products.category",
+          "products.tags",
+          fn.jsonAgg("brands").as("brand"),
+          fn
+            .jsonAgg(
+              jsonBuildObject({
+                url: ref("offers.url"),
+                price: ref("offers.price"),
+                currency: ref("offers.currency"),
+                seller: ref("offers.seller"),
+                site: jsonBuildObject({
+                  name: ref("sites.name"),
+                  icon: ref("sites.icon"),
+                }),
+              }),
             )
-          ) AS offers
-        FROM 
-          ${PRODUCTS} AS p
-          LEFT JOIN ${OFFERS} AS o ON o.${OFFERS.product} = p.${PRODUCTS.id}
-          INNER JOIN ${SITES} AS s ON o.${OFFERS.site} = s.${SITES.id}
-          LEFT JOIN ${BRANDS} AS b ON b.${BRANDS.name} = p.${PRODUCTS.brand}
-        WHERE p.${PRODUCTS.id} = $1
-        GROUP BY p.${PRODUCTS.id};
-      `,
-      [productId],
+            .as("offers"),
+        ])
+        .where("products.id", "=", productId)
+        .groupBy("products.id")
+        .compile(),
     )
-
-    const similar = await connection.raw<SimilarResponse>(
-      `
-        SELECT
-          ${PRODUCTS.id},
-          ${PRODUCTS.title},
-          ${PRODUCTS.images}[1] AS image
-        FROM ${PRODUCTS}
-        WHERE ${PRODUCTS.id} != $1
-        ORDER BY ${PRODUCTS.embedding} <-> (
-          SELECT
-            ${PRODUCTS.embedding}
-          FROM ${PRODUCTS}
-          WHERE ${PRODUCTS.id} = $1
+    const similar = await connection.query(
+      builder
+        .selectFrom("products")
+        .select(({ ref }) => [
+          "id",
+          "title",
+          sql<string | undefined>`${ref("images")}[1]`.as("image"),
+        ])
+        .where("products.id", "!=", productId)
+        .orderBy(
+          ({ ref, eb }) =>
+            sql<number>`${ref("products.embedding")} <-> ${eb
+              .selectFrom("products")
+              .select("embedding")
+              .where("products.id", "=", productId)}`,
         )
-        LIMIT 4
-      `,
-      [productId],
+        .limit(4)
+        .compile(),
     )
 
     return {
