@@ -42,7 +42,7 @@ try {
   await db.initialize()
 
   reporter.progress("Setting up page stream")
-  const [{ count: totalPageCount }] = await db.query<{ count: number }>(
+  const [{ count: totalPageCount }] = await db.raw<{ count: number }>(
     `SELECT COUNT(id) FROM ${PAGES}`,
   )
   const pages = db.stream<Page>(`SELECT * FROM ${PAGES}`)

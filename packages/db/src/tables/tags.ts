@@ -9,17 +9,17 @@ export const TABLE = Object.assign("tags", {
 })
 
 export const initialize = (connection: Connection) =>
-  connection.query(`
+  connection.raw(`
     CREATE TABLE IF NOT EXISTS ${TABLE} (
       ${TABLE.name}   text PRIMARY KEY
     );`)
 
 export const crud = (connection: Connection) => ({
   create: (tag: Tag) =>
-    connection.query(
+    connection.raw(
       `INSERT INTO ${TABLE} (${TABLE.name}) VALUES ($1) ON CONFLICT DO NOTHING;`,
       [tag.name],
     ),
 
-  getAll: async () => connection.query<Tag>(`SELECT * FROM ${TABLE};`),
+  getAll: async () => connection.raw<Tag>(`SELECT * FROM ${TABLE};`),
 })

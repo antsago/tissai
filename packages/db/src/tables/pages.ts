@@ -16,7 +16,7 @@ export const TABLE = Object.assign("pages", {
 })
 
 export const initialize = (connection: Connection) =>
-  connection.query(`
+  connection.raw(`
     CREATE TABLE IF NOT EXISTS ${TABLE} (
       ${TABLE.id}       uuid PRIMARY KEY,
       ${TABLE.url}      text UNIQUE NOT NULL,
@@ -27,7 +27,7 @@ export const initialize = (connection: Connection) =>
 
 export const crud = (connection: Connection) => ({
   create: ({ id, url, body, site }: Page) =>
-    connection.query(
+    connection.raw(
       `INSERT INTO ${TABLE} (
         ${TABLE.id}, ${TABLE.url}, ${TABLE.body}, ${TABLE.site}
       ) VALUES (
@@ -36,5 +36,5 @@ export const crud = (connection: Connection) => ({
       [id, url, body, site],
     ),
 
-  getAll: async () => connection.query<Page>(`SELECT * FROM ${TABLE};`),
+  getAll: async () => connection.raw<Page>(`SELECT * FROM ${TABLE};`),
 })

@@ -49,7 +49,7 @@ describe("brands", () => {
 
     expect(result).toStrictEqual({ name: NAME, logo: LOGO })
     expect(pg.pool.query).toHaveBeenCalledWith(
-      expect.stringContaining("UPDATE"),
+      expect.stringContaining("update"),
       expect.anything(),
     )
     expect(pg).not.toHaveInserted(BRANDS)

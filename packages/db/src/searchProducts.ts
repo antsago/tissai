@@ -69,12 +69,7 @@ export const buildSearchQuery = ({
 
 const searchProducts =
   (connection: Connection) => async (parameters: SearchParams) => {
-    const query = buildSearchQuery(parameters)
-
-    const response = await connection.query<SearchResult>(
-      query.sql,
-      query.parameters as any[],
-    )
+    const response = await connection.query(buildSearchQuery(parameters))
 
     return response.map((p) => ({
       ...p,

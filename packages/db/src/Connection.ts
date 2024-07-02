@@ -13,7 +13,7 @@ export const Connection = (database?: string) => {
   const connectionString = `${process.env.PG_CONNECTION_STRING}/${database ?? process.env.PG_DATABASE}`
   const pool = new Pool({ connectionString })
 
-  async function query<T extends QueryResultRow>(
+  async function raw<T extends QueryResultRow>(
     queryString: string,
     values?: any[],
   ) {
@@ -21,14 +21,8 @@ export const Connection = (database?: string) => {
     return response.rows
   }
 
-  async function fromBuilder<T extends QueryResultRow>(
-    query: CompiledQuery<T>,
-  ) {
-    const response = await pool.query<T, any[]>(
-      query.sql,
-      query.parameters as any[],
-    )
-    return response.rows
+  async function query<T extends QueryResultRow>(query: CompiledQuery<T>) {
+    return raw(query.sql, query.parameters as any[])
   }
 
   const ONE_ROW = 1
@@ -52,9 +46,9 @@ export const Connection = (database?: string) => {
   }
 
   return {
+    raw,
     query,
     stream,
-    fromBuilder,
     close: () => pool.end(),
   }
 }

@@ -24,7 +24,7 @@ export const TABLE = Object.assign("offers", {
 })
 
 export const initialize = (connection: Connection) =>
-  connection.query(`
+  connection.raw(`
     CREATE TABLE IF NOT EXISTS ${TABLE} (
       ${TABLE.id}             uuid PRIMARY KEY,
       ${TABLE.url}            text NOT NULL,
@@ -37,7 +37,7 @@ export const initialize = (connection: Connection) =>
 
 export const crud = (connection: Connection) => ({
   create: (offer: Offer) =>
-    connection.query(
+    connection.raw(
       `INSERT INTO ${TABLE} (
       ${TABLE.id},
       ${TABLE.url},
@@ -61,7 +61,7 @@ export const crud = (connection: Connection) => ({
     ),
 
   getAll: async (): Promise<Offer[]> => {
-    const offers = await connection.query<
+    const offers = await connection.raw<
       Omit<Offer, "price"> & { price: string }
     >(`SELECT * FROM ${TABLE};`)
 

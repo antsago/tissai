@@ -12,7 +12,7 @@ export const TABLE = Object.assign("brands", {
 })
 
 export const initialize = (connection: Connection) =>
-  connection.query(`
+  connection.raw(`
     CREATE TABLE IF NOT EXISTS ${TABLE} (
       ${TABLE.name}   text PRIMARY KEY,
       ${TABLE.logo}   text
@@ -21,13 +21,13 @@ export const initialize = (connection: Connection) =>
 
 export const crud = (connection: Connection) => ({
   create: (brand: Brand) =>
-    connection.query(
+    connection.raw(
       `INSERT INTO ${TABLE}
         (${TABLE.name}, ${TABLE.logo}) VALUES ($1, $2)
       ON CONFLICT DO NOTHING;`,
       [brand.name, brand.logo],
     ),
-  getAll: async () => connection.query<Brand>(`SELECT * FROM ${TABLE};`),
+  getAll: async () => connection.raw<Brand>(`SELECT * FROM ${TABLE};`),
   byName: async (name: string) => {
     const query = builder
       .selectFrom("brands")
@@ -39,11 +39,11 @@ export const crud = (connection: Connection) => ({
       )
       .limit(1)
       .compile()
-    const [found] = await connection.fromBuilder(query)
+    const [found] = await connection.query(query)
     return found
   },
   update: async (brand: Brand) =>
-    connection.fromBuilder(
+    connection.query(
       builder
         .updateTable("brands")
         .set(brand)

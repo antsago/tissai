@@ -36,7 +36,7 @@ type SimilarResponse = {
 
 const getProductDetails =
   (connection: Connection) => async (productId: Product["id"]) => {
-    const [details] = await connection.query<DetailsResponse>(
+    const [details] = await connection.raw<DetailsResponse>(
       `
         SELECT
           p.${PRODUCTS.title},
@@ -68,7 +68,7 @@ const getProductDetails =
       [productId],
     )
 
-    const similar = await connection.query<SimilarResponse>(
+    const similar = await connection.raw<SimilarResponse>(
       `
         SELECT
           ${PRODUCTS.id},

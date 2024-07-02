@@ -21,7 +21,7 @@ export const TABLE = Object.assign("sites", {
 })
 
 export const initialize = (connection: Connection) =>
-  connection.query(`
+  connection.raw(`
     CREATE TABLE IF NOT EXISTS ${TABLE} (
       ${TABLE.id}                   uuid PRIMARY KEY,
       ${TABLE.name}                 text NOT NULL,
@@ -43,7 +43,7 @@ export const crud = (connection: Connection) => ({
     sitemapWhitelist,
     urlKeywords,
   }: Site) =>
-    connection.query(
+    connection.raw(
       `INSERT INTO ${TABLE} (
         ${TABLE.id},
         ${TABLE.name},
@@ -58,5 +58,5 @@ export const crud = (connection: Connection) => ({
       [id, name, icon, domain, sitemaps, sitemapWhitelist, urlKeywords],
     ),
 
-  getAll: async () => connection.query<Site>(`SELECT * FROM ${TABLE};`),
+  getAll: async () => connection.raw<Site>(`SELECT * FROM ${TABLE};`),
 })

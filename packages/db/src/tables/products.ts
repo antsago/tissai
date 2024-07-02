@@ -28,7 +28,7 @@ export function formatEmbedding(embedding: number[]) {
 }
 
 export const initialize = (connection: Connection) =>
-  connection.query(`
+  connection.raw(`
     CREATE TABLE IF NOT EXISTS ${TABLE} (
       ${TABLE.id}             uuid PRIMARY KEY,
       ${TABLE.title}          text NOT NULL,
@@ -42,7 +42,7 @@ export const initialize = (connection: Connection) =>
 
 export const crud = (connection: Connection) => ({
   create: (product: Product) =>
-    connection.query(
+    connection.raw(
       `INSERT INTO ${TABLE} (
       ${TABLE.id},
       ${TABLE.title},
@@ -68,7 +68,7 @@ export const crud = (connection: Connection) => ({
     ),
 
   getAll: async (): Promise<Product[]> => {
-    const products = await connection.query<
+    const products = await connection.raw<
       Omit<Product, "embedding"> & { embedding: string }
     >(`SELECT * FROM ${TABLE};`)
 
