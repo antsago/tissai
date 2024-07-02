@@ -1,6 +1,7 @@
 import { Connection } from "../Connection.js"
 import { TABLE as BRANDS } from "./brands.js"
 import { TABLE as CATEGORIES } from "./categories.js"
+import builder from "./queryBuilder.js"
 
 export type Product = {
   id: string
@@ -42,39 +43,24 @@ export const initialize = (connection: Connection) =>
 
 export const crud = (connection: Connection) => ({
   create: (product: Product) =>
-    connection.raw(
-      `INSERT INTO ${TABLE} (
-      ${TABLE.id},
-      ${TABLE.title},
-      ${TABLE.description},
-      ${TABLE.images},
-      ${TABLE.brand},
-      ${TABLE.embedding},
-      ${TABLE.category},
-      ${TABLE.tags}
-    ) VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8
-    );`,
-      [
-        product.id,
-        product.title,
-        product.description,
-        product.images,
-        product.brand,
-        formatEmbedding(product.embedding),
-        product.category,
-        product.tags,
-      ],
+    connection.query(
+      builder
+        .insertInto("products")
+        .values({
+          ...product,
+          embedding: formatEmbedding(product.embedding),
+        })
+        .compile(),
     ),
 
-  getAll: async (): Promise<Product[]> => {
-    const products = await connection.raw<
-      Omit<Product, "embedding"> & { embedding: string }
-    >(`SELECT * FROM ${TABLE};`)
+  getAll: async () => {
+    const products = await connection.query(
+      builder.selectFrom("products").selectAll().compile(),
+    )
 
     return products.map((p) => ({
       ...p,
-      embedding: JSON.parse(p.embedding),
+      embedding: JSON.parse(p.embedding) as number[],
     }))
   },
 })

@@ -1,4 +1,5 @@
 import { Connection } from "../Connection.js"
+import builder from "./queryBuilder.js"
 
 export type Tag = {
   name: string
@@ -16,10 +17,14 @@ export const initialize = (connection: Connection) =>
 
 export const crud = (connection: Connection) => ({
   create: (tag: Tag) =>
-    connection.raw(
-      `INSERT INTO ${TABLE} (${TABLE.name}) VALUES ($1) ON CONFLICT DO NOTHING;`,
-      [tag.name],
+    connection.query(
+      builder
+        .insertInto("tags")
+        .onConflict((oc) => oc.doNothing())
+        .values(tag)
+        .compile(),
     ),
 
-  getAll: async () => connection.raw<Tag>(`SELECT * FROM ${TABLE};`),
+  getAll: async () =>
+    connection.query(builder.selectFrom("tags").selectAll().compile()),
 })

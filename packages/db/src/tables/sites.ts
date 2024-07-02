@@ -1,4 +1,5 @@
 import { Connection } from "../Connection.js"
+import builder from "./queryBuilder.js"
 
 export type Site = {
   id: string
@@ -34,29 +35,9 @@ export const initialize = (connection: Connection) =>
   `)
 
 export const crud = (connection: Connection) => ({
-  create: ({
-    id,
-    name,
-    icon,
-    domain,
-    sitemaps,
-    sitemapWhitelist,
-    urlKeywords,
-  }: Site) =>
-    connection.raw(
-      `INSERT INTO ${TABLE} (
-        ${TABLE.id},
-        ${TABLE.name},
-        ${TABLE.icon},
-        ${TABLE.domain},
-        ${TABLE.sitemaps},
-        ${TABLE.sitemapWhitelist},
-        ${TABLE.urlKeywords}
-      ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7
-      );`,
-      [id, name, icon, domain, sitemaps, sitemapWhitelist, urlKeywords],
-    ),
+  create: (site: Site) =>
+    connection.query(builder.insertInto("sites").values(site).compile()),
 
-  getAll: async () => connection.raw<Site>(`SELECT * FROM ${TABLE};`),
+  getAll: async () =>
+    connection.query(builder.selectFrom("sites").selectAll().compile()),
 })

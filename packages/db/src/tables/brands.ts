@@ -3,7 +3,7 @@ import builder from "./queryBuilder.js"
 
 export type Brand = {
   name: string
-  logo: string | null
+  logo?: string
 }
 
 export const TABLE = Object.assign("brands", {
