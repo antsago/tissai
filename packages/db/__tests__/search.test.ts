@@ -19,21 +19,19 @@ const it = test.extend<Fixtures>({
 describe.concurrent("search", () => {
   const category2 = { name: "anothercategory" }
   const tag2 = { name: "anothertag" }
-  const baseProduct = {
+  const product1 = {
+    id: randomUUID(),
     title: PRODUCT.title,
     images: PRODUCT.images,
-  }
-  const product1 = {
-    ...baseProduct,
-    id: randomUUID(),
     embedding: [0, ...PRODUCT.embedding.slice(1)],
     category: PRODUCT.category,
     brand: PRODUCT.brand,
     tags: [TAG.name, tag2.name],
   }
   const product2 = {
-    ...baseProduct,
     id: randomUUID(),
+    title: "Vaqueros prietos",
+    images: PRODUCT.images,
     embedding: [1, ...PRODUCT.embedding.slice(1)],
     category: category2.name,
     tags: [tag2.name],
@@ -66,7 +64,7 @@ describe.concurrent("search", () => {
   })
 
   it("retrieves results", async ({ expect, db }) => {
-    const result = await db.searchProducts({ embedding: product2.embedding })
+    const result = await db.searchProducts({ query: product2.title })
 
     expect(result).toStrictEqual([
       {
@@ -89,14 +87,13 @@ describe.concurrent("search", () => {
   it("ignores products without offers", async ({ expect, db }) => {
     await db.load({ products: [PRODUCT] })
 
-    const results = await db.searchProducts({ embedding: product2.embedding })
+    const result = await db.searchProducts({ query: product2.title })
 
-    expect(results.length).toBe(2)
+    expect(result.length).toBe(2)
   })
 
   it("filters by brand", async ({ expect, db }) => {
-    const result = await db.searchProducts({
-      embedding: product2.embedding,
+    const result = await db.searchProducts({ query: product2.title,
       brand: BRAND.name,
     })
 
@@ -113,7 +110,7 @@ describe.concurrent("search", () => {
 
   it("filters by category", async ({ expect, db }) => {
     const result = await db.searchProducts({
-      embedding: product2.embedding,
+      query: product2.title,
       category: CATEGORY.name,
     })
 
@@ -130,7 +127,7 @@ describe.concurrent("search", () => {
 
   it("filters by tag", async ({ expect, db }) => {
     const result = await db.searchProducts({
-      embedding: product2.embedding,
+      query: product2.title,
       tags: [TAG.name],
     })
 
@@ -147,7 +144,7 @@ describe.concurrent("search", () => {
 
   it("requires all tags", async ({ expect, db }) => {
     const result = await db.searchProducts({
-      embedding: product2.embedding,
+      query: product2.title,
       tags: [TAG.name, tag2.name],
     })
 
@@ -166,7 +163,7 @@ describe.concurrent("search", () => {
     await db.load({ products: [PRODUCT], offers: [OFFER], sellers: [SELLER] })
 
     const result = await db.searchProducts({
-      embedding: product2.embedding,
+      query: product2.title,
       min: OFFER.price,
     })
 
@@ -185,7 +182,7 @@ describe.concurrent("search", () => {
     await db.load({ products: [PRODUCT], offers: [OFFER], sellers: [SELLER] })
 
     const result = await db.searchProducts({
-      embedding: product2.embedding,
+      query: product2.title,
       max: offer1.price,
     })
 
@@ -203,7 +200,7 @@ describe.concurrent("search", () => {
   describe.each([null, undefined])("handles %s filters", (value) => {
     it("ignores them", async ({ expect, db }) => {
       const results = await db.searchProducts({
-        embedding: product2.embedding,
+        query: product2.title,
         category: value,
         brand: value,
         min: value,
@@ -214,9 +211,9 @@ describe.concurrent("search", () => {
     })
   })
 
-  it("all filters", async ({ expect, db }) => {
+  it("handles all filters", async ({ expect, db }) => {
     const act = db.searchProducts({
-      embedding: product2.embedding,
+      query: product2.title,
       category: CATEGORY.name,
       brand: BRAND.name,
       max: OFFER.price,

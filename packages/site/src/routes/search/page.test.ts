@@ -2,8 +2,7 @@ import "@testing-library/jest-dom/vitest"
 import { describe, test, expect, afterEach, vi } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
 import { CATEGORY, MockPg, OFFER, TAG, mockDbFixture } from "@tissai/db/mocks"
-import { MockPython, mockPythonFixture } from "@tissai/python-pool/mocks"
-import { QUERY, SIMILAR, EMBEDDING, BRAND } from "mocks"
+import { QUERY, SIMILAR, BRAND } from "mocks"
 import * as stores from "$app/stores"
 import { Products } from "$lib/server"
 import { load } from "./+page.server"
@@ -11,9 +10,8 @@ import page from "./+page.svelte"
 
 vi.mock("$app/stores", async () => (await import("mocks")).storesMock())
 
-const it = test.extend<{ db: mockDbFixture; python: mockPythonFixture }>({
+const it = test.extend<{ db: mockDbFixture }>({
   db: [mockDbFixture, { auto: true }],
-  python: [mockPythonFixture as any, { auto: true }],
 })
 
 describe("Search page", () => {
@@ -23,7 +21,6 @@ describe("Search page", () => {
 
   async function loadAndRender(
     db: MockPg,
-    python: MockPython,
     {
       queryParams,
       sectionName = "Resultados de la búsqueda",
@@ -40,7 +37,6 @@ describe("Search page", () => {
         },
       ],
     })
-    python.mockReturnValue(EMBEDDING)
 
     const url = new URL(
       `http://localhost:3000/search?q=${QUERY}${queryParams ? `&${queryParams}` : ""}`,
@@ -61,8 +57,8 @@ describe("Search page", () => {
     return within(results)
   }
 
-  it("shows search results", async ({ db, python }) => {
-    const results = await loadAndRender(db, python)
+  it("shows search results", async ({ db }) => {
+    const results = await loadAndRender(db)
 
     const title = results.getByRole("heading", { level: 3 })
     const image = results.getByRole("img", { name: SIMILAR.title })
@@ -82,11 +78,11 @@ describe("Search page", () => {
       "href",
       expect.stringContaining(SIMILAR.id),
     )
-    expect(db).toHaveSearched({ embedding: EMBEDDING })
+    expect(db).toHaveSearched({ query: QUERY })
   })
 
-  it("handles brands without logo", async ({ db, python }) => {
-    const results = await loadAndRender(db, python, {
+  it("handles brands without logo", async ({ db }) => {
+    const results = await loadAndRender(db, {
       brand: [
         {
           name: BRAND.name,
@@ -103,8 +99,8 @@ describe("Search page", () => {
     expect(brandLogo).not.toBeInTheDocument()
   })
 
-  it("handles products without brand", async ({ db, python }) => {
-    const results = await loadAndRender(db, python, {
+  it("handles products without brand", async ({ db,  }) => {
+    const results = await loadAndRender(db,  {
       brand: [null],
     })
 
@@ -119,8 +115,8 @@ describe("Search page", () => {
     expect(undef).not.toBeInTheDocument()
   })
 
-  it("handles products without price", async ({ db, python }) => {
-    const results = await loadAndRender(db, python, {
+  it("handles products without price", async ({ db }) => {
+    const results = await loadAndRender(db, {
       price: undefined,
     })
 
@@ -131,8 +127,8 @@ describe("Search page", () => {
     expect(undef).not.toBeInTheDocument()
   })
 
-  it("displays brands filter", async ({ db, python }) => {
-    const results = await loadAndRender(db, python, {
+  it("displays brands filter", async ({ db }) => {
+    const results = await loadAndRender(db, {
       queryParams: `brand=${BRAND.name}`,
       sectionName: "Filtros",
     })
@@ -140,13 +136,13 @@ describe("Search page", () => {
     const brandName = results.getByText(BRAND.name, { exact: false })
 
     expect(brandName).toBeInTheDocument()
-    expect(db).toHaveSearched({ embedding: EMBEDDING, brand: BRAND.name })
+    expect(db).toHaveSearched({ query: QUERY, brand: BRAND.name })
   })
 
-  it("displays price filters", async ({ db, python }) => {
+  it("displays price filters", async ({ db }) => {
     const min = 11.1
     const max = 22.2
-    const results = await loadAndRender(db, python, {
+    const results = await loadAndRender(db, {
       queryParams: `min=${min}&max=${max}`,
       sectionName: "Filtros",
     })
@@ -156,13 +152,13 @@ describe("Search page", () => {
 
     expect(minFilter).toBeInTheDocument()
     expect(maxFilter).toBeInTheDocument()
-    expect(db).toHaveSearched({ embedding: EMBEDDING, min, max })
+    expect(db).toHaveSearched({ query: QUERY, min, max })
   })
 
-  it("displays min price filter only", async ({ db, python }) => {
+  it("displays min price filter only", async ({ db }) => {
     const min = 11.1
     const max = 22.2
-    const results = await loadAndRender(db, python, {
+    const results = await loadAndRender(db, {
       queryParams: `min=${min}`,
       sectionName: "Filtros",
     })
@@ -172,10 +168,10 @@ describe("Search page", () => {
     expect(minFilter).toBeInTheDocument()
   })
 
-  it("displays max price filter only", async ({ db, python }) => {
+  it("displays max price filter only", async ({ db }) => {
     const min = 11.1
     const max = 22.2
-    const results = await loadAndRender(db, python, {
+    const results = await loadAndRender(db, {
       queryParams: `max=${max}`,
       sectionName: "Filtros",
     })
@@ -185,8 +181,8 @@ describe("Search page", () => {
     expect(maxFilter).toBeInTheDocument()
   })
 
-  it("displays categories filter", async ({ db, python }) => {
-    const results = await loadAndRender(db, python, {
+  it("displays categories filter", async ({ db }) => {
+    const results = await loadAndRender(db, {
       queryParams: `category=${CATEGORY.name}`,
       sectionName: "Filtros",
     })
@@ -194,11 +190,11 @@ describe("Search page", () => {
     const categoryName = results.getByText(CATEGORY.name, { exact: false })
 
     expect(categoryName).toBeInTheDocument()
-    expect(db).toHaveSearched({ embedding: EMBEDDING, category: CATEGORY.name })
+    expect(db).toHaveSearched({ query: QUERY, category: CATEGORY.name })
   })
 
-  it("displays tags filter", async ({ db, python }) => {
-    const results = await loadAndRender(db, python, {
+  it("displays tags filter", async ({ db }) => {
+    const results = await loadAndRender(db, {
       queryParams: `inc=${TAG.name}`,
       sectionName: "Filtros",
     })
@@ -206,12 +202,12 @@ describe("Search page", () => {
     const tagName = results.getByText(TAG.name)
 
     expect(tagName).toBeInTheDocument()
-    expect(db).toHaveSearched({ embedding: EMBEDDING, tags: [TAG.name] })
+    expect(db).toHaveSearched({ query: QUERY, tags: [TAG.name] })
   })
 
-  it("supports multiple tags filter", async ({ db, python }) => {
+  it("supports multiple tags filter", async ({ db }) => {
     const tag2 = "myTag"
-    const results = await loadAndRender(db, python, {
+    const results = await loadAndRender(db, {
       queryParams: `inc=${TAG.name}&inc=${tag2}`,
       sectionName: "Filtros",
     })
@@ -221,11 +217,11 @@ describe("Search page", () => {
 
     expect(tagName).toBeInTheDocument()
     expect(tag2Name).toBeInTheDocument()
-    expect(db).toHaveSearched({ embedding: EMBEDDING, tags: [TAG.name, tag2] })
+    expect(db).toHaveSearched({ query: QUERY, tags: [TAG.name, tag2] })
   })
 
-  it("handles filterless search", async ({ db, python }) => {
-    const results = await loadAndRender(db, python, {
+  it("handles filterless search", async ({ db }) => {
+    const results = await loadAndRender(db, {
       sectionName: "Filtros",
     })
 

@@ -1,9 +1,9 @@
 import { sql } from "kysely"
 import { Connection } from "./Connection.js"
-import { Product, formatEmbedding, Offer, builder } from "./tables/index.js"
+import { Product, Offer, builder } from "./tables/index.js"
 
 export type SearchParams = {
-  embedding: Product["embedding"]
+  query: string
   brand?: Product["brand"] | null
   category?: Product["category"] | null
   min?: Offer["price"] | null
@@ -12,7 +12,7 @@ export type SearchParams = {
 }
 
 export const buildSearchQuery = ({
-  embedding,
+  query: searchQuery,
   min,
   max,
   tags = [],
@@ -32,13 +32,13 @@ export const buildSearchQuery = ({
       sql<string>`images[1]`.as("image"),
       fn.min<string>("price").as("price"),
       selectFrom("brands")
-        .select(({ fn }) => [fn.jsonAgg("brands").as("brand")])
+        .select(({ fn }) => fn.jsonAgg("brands").as("brand"))
         .whereRef("brands.name", "=", "products.brand")
         .as("brand"),
     ])
     .where(({ and }) => and(filters))
     .groupBy("products.id")
-    .orderBy(sql`embedding <-> ${formatEmbedding(embedding)}`)
+    .orderBy(({ ref }) => sql<number>`ts_rank(to_tsvector('spanish', ${ref("title")}), websearch_to_tsquery('spanish', ${searchQuery}))`, "desc")
     .limit(24)
 
   query = tags.reduce(

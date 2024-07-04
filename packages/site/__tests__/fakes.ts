@@ -12,4 +12,3 @@ export const SIMILAR = {
   image: "https://example.com/related_product.jpg",
 }
 export const QUERY = PRODUCT.title
-export const EMBEDDING = PRODUCT.embedding

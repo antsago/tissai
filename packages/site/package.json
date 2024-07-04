@@ -38,8 +38,6 @@
   "type": "module",
   "dependencies": {
     "@tissai/db": "workspace:*",
-    "@tissai/python-pool": "workspace:*",
-    "pg": "8.11.5",
-    "python-shell": "5.0.0"
+    "pg": "8.11.5"
   }
 }
