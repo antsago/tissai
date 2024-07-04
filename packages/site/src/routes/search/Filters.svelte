@@ -4,7 +4,7 @@
 
   let classes = ""
   export { classes as class }
-  export let filters: Omit<SearchParams, "embedding">
+  export let filters: Omit<SearchParams, "query">
   const tagsLength = filters.tags?.length ?? 0
 </script>
 

@@ -4,10 +4,10 @@
   "private": true,
   "packageManager": "yarn@4.1.1",
   "scripts": {
-    "dev": "poetry run vite dev --host",
+    "dev": "vite dev --host",
     "build": "vite build",
-    "start": "poetry run node build",
-    "test": "poetry run vitest run",
+    "start": "node build",
+    "test": "vitest run",
     "lint": "eslint ."
   },
   "devDependencies": {

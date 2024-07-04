@@ -6,7 +6,7 @@
 
   export let data: {
     products: Search
-    filters: Omit<SearchParams, "embedding">
+    filters: Omit<SearchParams, "query">
   }
 </script>
 
