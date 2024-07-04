@@ -20,10 +20,11 @@ import headings from "./headings.js"
 import title from "./EntityExtractor/title.js"
 import category from "./EntityExtractor/category.js"
 import tags from "./EntityExtractor/tags.js"
-import sellers from "./EntityExtractor/sellers.js"
+import seller from "./EntityExtractor/seller.js"
 import brand from "./EntityExtractor/brand.js"
 import product from "./EntityExtractor/product.js"
-import offers from "./EntityExtractor/offers.js"
+import offer from "./EntityExtractor/offer.js"
+import normalizedOffers from "./EntityExtractor/normalizedOffers.js"
 
 let db!: Db
 let python!: PythonPool<
@@ -66,7 +67,6 @@ try {
 
       const categoryEntity = await category(productTitle, python, db)
       const tagEntities = await tags(productTitle, python, db)
-      await sellers(jsonLdInfo, db)
       const brandEntity = await brand(jsonLdInfo, db)
       const productEntity = await product(
         jsonLdInfo,
@@ -78,7 +78,10 @@ try {
         db,
         brandEntity,
       )
-      await offers(jsonLdInfo, page, productEntity, db)
+      await Promise.all(normalizedOffers(jsonLdInfo).map(async o => {
+        const sellerEntity = await seller(o, db)
+        await offer(o, sellerEntity, page, productEntity, db)
+      }))
 
       index += 1
     } catch (err) {

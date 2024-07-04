@@ -2,7 +2,7 @@ import { describe, test, beforeEach, vi, afterEach } from "vitest"
 import { mockDbFixture } from "@tissai/db/mocks"
 import { mockPythonFixture } from "@tissai/python-pool/mocks"
 import { PRODUCT, DERIVED_DATA, pageWithSchema, mockOraFixture } from "#mocks"
-import { PRODUCTS } from "@tissai/db"
+import { OFFERS, PRODUCTS, SELLERS } from "@tissai/db"
 
 type Fixtures = {
   mockDb: mockDbFixture
@@ -43,6 +43,47 @@ describe("index", () => {
     expect(mockDb.pool.end).toHaveBeenCalled()
     expect(mockPython.worker.end).toHaveBeenCalled()
     expect(mockOra.spinner.succeed).toHaveBeenCalled()
+  })
+
+  it("processes multiple offers", async ({
+    expect,
+    mockDb,
+  }) => {
+    const offer1 = {
+          "@type": "Offer",
+          price: 10,
+          seller:
+            {
+              "@type": "Organization",
+              name: "pertemba",
+            },
+        }
+    const offer2 = {
+          "@type": "Offer",
+          price: 20,
+          seller:
+            {
+              "@type": "Organization",
+              name: "batemper",
+            },
+        }
+    const page = pageWithSchema({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: PRODUCT.title,
+      offers: [
+        offer1,
+        offer2,
+      ],
+    })
+    mockDb.cursor.read.mockResolvedValueOnce([page])
+
+    await import("./index.js")
+
+    expect(mockDb).toHaveInserted(OFFERS, [offer1.price])
+    expect(mockDb).toHaveInserted(OFFERS, [offer2.price])
+    expect(mockDb).toHaveInserted(SELLERS, [offer1.seller.name])
+    expect(mockDb).toHaveInserted(SELLERS, [offer2.seller.name])
   })
 
   it("handles empty pages", async ({ expect, mockDb, mockPython, mockOra }) => {
