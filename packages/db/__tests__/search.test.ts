@@ -23,7 +23,6 @@ describe.concurrent("search", () => {
     id: randomUUID(),
     title: PRODUCT.title,
     images: PRODUCT.images,
-    embedding: [0, ...PRODUCT.embedding.slice(1)],
     category: PRODUCT.category,
     brand: PRODUCT.brand,
     tags: [TAG.name, tag2.name],
@@ -32,7 +31,6 @@ describe.concurrent("search", () => {
     id: randomUUID(),
     title: "Vaqueros prietos",
     images: PRODUCT.images,
-    embedding: [1, ...PRODUCT.embedding.slice(1)],
     category: category2.name,
     tags: [tag2.name],
   }

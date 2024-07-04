@@ -2,10 +2,8 @@ import sys
 import json
 from getCategory import getCategory
 from getTags import getTags
-from getEmbedding import getEmbedding
 
 methods = {
-    "embedding": getEmbedding,
     "category": getCategory,
     "tags": getTags,
 }

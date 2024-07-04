@@ -1,18 +1,14 @@
 import { expect, describe, test, beforeEach } from "vitest"
-import { mockPythonFixture } from "@tissai/python-pool/mocks"
-import { BRAND, CATEGORY, DERIVED_DATA, TAG } from "#mocks"
-import { PythonPool } from "@tissai/python-pool"
+import { BRAND, CATEGORY, TAG } from "#mocks"
 import { mockDbFixture } from "@tissai/db/mocks"
 import { Db, PRODUCTS } from "@tissai/db"
 import product from "./product.js"
 
 type Fixtures = {
-  mockPython: mockPythonFixture
   pg: mockDbFixture
 }
 
 const it = test.extend<Fixtures>({
-  mockPython: [mockPythonFixture, { auto: true }],
   pg: [mockDbFixture as any, { auto: true }],
 })
 
@@ -31,16 +27,12 @@ const HEAD = {
 
 describe("products", () => {
   let db: Db
-  let pool: PythonPool<any, any>
-  beforeEach<Fixtures>(async ({ mockPython, pg }) => {
-    pool = PythonPool("script", { log: () => {} })
-    mockPython.mockReturnValue(DERIVED_DATA)
-
+  beforeEach<Fixtures>(async ({ pg }) => {
     db = Db()
     pg.pool.query.mockResolvedValue({ rows: [] })
   })
 
-  it("extracts product", async ({ mockPython, pg }) => {
+  it("extracts product", async ({ pg }) => {
     const expected = {
       id: expect.any(String),
       title: TITLE,
@@ -49,7 +41,6 @@ describe("products", () => {
       brand: BRAND.name,
       category: CATEGORY.name,
       tags: [TAG.name],
-      embedding: DERIVED_DATA.embedding,
     }
 
     const result = await product(
@@ -57,7 +48,6 @@ describe("products", () => {
       HEAD,
       OG,
       TITLE,
-      pool,
       CATEGORY,
       [TAG],
       db,
@@ -65,10 +55,6 @@ describe("products", () => {
     )
 
     expect(result).toStrictEqual(expected)
-    expect(mockPython.worker.send).toHaveBeenCalledWith({
-      method: "embedding",
-      input: TITLE,
-    })
     expect(pg).toHaveInserted(PRODUCTS, [
       expected.title,
       expected.images,
@@ -80,7 +66,7 @@ describe("products", () => {
   })
 
   it("handles title-only product", async () => {
-    const result = await product({}, {}, {}, TITLE, pool, CATEGORY, [], db)
+    const result = await product({}, {}, {}, TITLE, CATEGORY, [], db)
 
     expect(result).toStrictEqual({
       id: expect.any(String),
@@ -90,12 +76,11 @@ describe("products", () => {
       brand: undefined,
       category: CATEGORY.name,
       tags: [],
-      embedding: DERIVED_DATA.embedding,
     })
   })
 
   it("defaults to opengraph", async () => {
-    const result = await product({}, HEAD, OG, TITLE, pool, CATEGORY, [], db)
+    const result = await product({}, HEAD, OG, TITLE, CATEGORY, [], db)
 
     expect(result).toStrictEqual({
       id: expect.any(String),
@@ -105,12 +90,11 @@ describe("products", () => {
       brand: undefined,
       category: CATEGORY.name,
       tags: [],
-      embedding: DERIVED_DATA.embedding,
     })
   })
 
   it("defaults to headings", async () => {
-    const result = await product({}, HEAD, {}, TITLE, pool, CATEGORY, [], db)
+    const result = await product({}, HEAD, {}, TITLE, CATEGORY, [], db)
 
     expect(result).toStrictEqual({
       id: expect.any(String),
@@ -120,7 +104,6 @@ describe("products", () => {
       brand: undefined,
       category: CATEGORY.name,
       tags: [],
-      embedding: DERIVED_DATA.embedding,
     })
   })
 })

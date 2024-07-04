@@ -82,7 +82,6 @@ describe.concurrent("db", () => {
       images: PRODUCT.images,
       category: PRODUCT.category,
       tags: PRODUCT.tags,
-      embedding: [0, ...PRODUCT.embedding.slice(1)],
     }
     await db.load({
       categories: [CATEGORY],

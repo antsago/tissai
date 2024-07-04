@@ -6,7 +6,6 @@ import builder from "./queryBuilder.js"
 export type Product = {
   id: string
   title: string
-  embedding: number[]
   category: string
   tags: string[]
   description?: string
@@ -19,14 +18,9 @@ export const TABLE = Object.assign("products", {
   description: "description",
   images: "images",
   brand: "brand",
-  embedding: "embedding",
   category: "category",
   tags: "tags",
 })
-
-export function formatEmbedding(embedding: number[]) {
-  return `[${embedding.join(",")}]`
-}
 
 export const initialize = (connection: Connection) =>
   connection.raw(`
@@ -35,7 +29,6 @@ export const initialize = (connection: Connection) =>
       ${TABLE.title}          text NOT NULL,
       ${TABLE.category}       text NOT NULL REFERENCES ${CATEGORIES},
       ${TABLE.tags}           text[] NOT NULL,
-      ${TABLE.embedding}      vector(384) NOT NULL,
       ${TABLE.description}    text,
       ${TABLE.images}         text[],
       ${TABLE.brand}          text REFERENCES ${BRANDS}
@@ -46,21 +39,11 @@ export const crud = (connection: Connection) => ({
     connection.query(
       builder
         .insertInto("products")
-        .values({
-          ...product,
-          embedding: formatEmbedding(product.embedding),
-        })
+        .values(product)
         .compile(),
     ),
 
-  getAll: async () => {
-    const products = await connection.query(
+  getAll: async () => connection.query(
       builder.selectFrom("products").selectAll().compile(),
-    )
-
-    return products.map((p) => ({
-      ...p,
-      embedding: JSON.parse(p.embedding) as number[],
-    }))
-  },
+    ),
 })

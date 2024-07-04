@@ -10,16 +10,11 @@ async function product(
   head: Headings,
   og: OpenGraph,
   title: string,
-  python: PythonPool<
-    { method: "embedding"; input: string },
-    { embedding: number[] }
-  >,
   category: Category,
   tags: Tag[],
   db: Db,
   brand?: Brand,
 ): Promise<Product> {
-  const derivedInfo = await python.send({ method: "embedding", input: title })
   const entity = {
     id: randomUUID(),
     title,
@@ -28,7 +23,6 @@ async function product(
     brand: brand?.name,
     category: category.name,
     tags: tags.map((t) => t.name),
-    embedding: derivedInfo.embedding,
   }
 
   await db.products.create(entity)

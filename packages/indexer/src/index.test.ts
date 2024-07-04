@@ -81,7 +81,7 @@ describe("index", () => {
     expect(mockDb).toHaveInserted(PRODUCTS, [title2])
   })
 
-  it.only("handles processsing errors", async ({ expect, mockDb, mockOra }) => {
+  it("handles processsing errors", async ({ expect, mockDb, mockOra }) => {
     const error = new Error("Booh!")
     const title2 = "Another product"
     const page = pageWithSchema({

@@ -66,7 +66,6 @@ describe(
           title: PRODUCT.title,
           description: PRODUCT.description,
           images: [PRODUCT.images[0]],
-          embedding: PRODUCT.embedding,
           category: DERIVED_DATA.category,
           tags: expect.arrayContaining(DERIVED_DATA.tags),
           brand: BRAND.name,

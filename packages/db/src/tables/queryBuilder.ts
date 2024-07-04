@@ -19,7 +19,7 @@ interface Database {
   categories: Category
   offers: Offer
   pages: Page
-  products: Omit<Product, "embedding"> & { embedding: string }
+  products: Product
   sellers: Seller
   sites: Site
   tags: Tag
