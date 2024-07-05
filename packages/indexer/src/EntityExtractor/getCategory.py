@@ -1,6 +1,5 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-# modelName = "stabilityai/stablelm-2-1_6b"
 modelName = "unsloth/tinyllama"
 tokenizer = AutoTokenizer.from_pretrained(modelName)
 model = AutoModelForCausalLM.from_pretrained(modelName)
