@@ -7,8 +7,10 @@ import * as products from "./products.js"
 import * as offers from "./offers.js"
 import * as sites from "./sites.js"
 import * as pages from "./pages.js"
+import * as attributes from "./attributes.js"
 
 const TABLE_MODULES = {
+  attributes,
   brands,
   categories,
   offers,

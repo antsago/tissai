@@ -16,6 +16,12 @@ const it = test.extend<Fixtures>({
   db: dbFixture,
 })
 
+const ATTRIBUTE = {
+  id: "5f592540-9e7b-465b-89df-83527c2b7df0",
+  label: "modelo",
+  value: "BL 900",
+  product: PRODUCT.id,
+}
 describe.concurrent("db", () => {
   it("creates entities", async ({ expect, db }) => {
     await db.sites.create(SITE)
@@ -26,6 +32,7 @@ describe.concurrent("db", () => {
     await db.brands.create(BRAND)
     await db.products.create(PRODUCT)
     await db.offers.create(OFFER)
+    await db.attributes.create(ATTRIBUTE)
 
     const products = await db.products.getAll()
     const offers = await db.offers.getAll()
@@ -33,6 +40,7 @@ describe.concurrent("db", () => {
     const tags = await db.tags.getAll()
     const brands = await db.brands.getAll()
     const sellers = await db.sellers.getAll()
+    const attributes = await db.attributes.getAll()
 
     expect(products).toStrictEqual([PRODUCT])
     expect(offers).toStrictEqual([OFFER])
@@ -40,6 +48,7 @@ describe.concurrent("db", () => {
     expect(tags).toStrictEqual([TAG])
     expect(brands).toStrictEqual([BRAND])
     expect(sellers).toStrictEqual([SELLER])
+    expect(attributes).toStrictEqual([ATTRIBUTE])
   })
 
   describe("brands", () => {

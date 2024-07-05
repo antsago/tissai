@@ -6,6 +6,7 @@ import type { Page } from "./pages.js"
 import type { Seller } from "./sellers.js"
 import type { Site } from "./sites.js"
 import type { Tag } from "./tags.js"
+import type { Attribute } from "./attributes.js"
 import {
   DummyDriver,
   Kysely,
@@ -15,6 +16,7 @@ import {
 } from "kysely"
 
 type Database = {
+  attributes: Attribute
   brands: Brand
   categories: Category
   offers: Offer
