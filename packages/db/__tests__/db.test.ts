@@ -20,7 +20,7 @@ const ATTRIBUTE = {
   id: "5f592540-9e7b-465b-89df-83527c2b7df0",
   label: "modelo",
   value: "BL 900",
-  product: PRODUCT.id,
+  page: PAGE.id,
 }
 describe.concurrent("db", () => {
   it("creates entities", async ({ expect, db }) => {

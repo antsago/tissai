@@ -1,21 +1,19 @@
 import { Connection } from "../Connection.js"
-import { TABLE as PRODUCTS } from "./products.js"
-import { TABLE as SELLERS } from "./sellers.js"
-import { TABLE as SITES } from "./sites.js"
+import { TABLE as PAGES } from "./pages.js"
 import builder from "./queryBuilder.js"
 
 export type Attribute = {
   id: string
   label: string
   value: string
-  product: string
+  page: string
 }
 
 export const TABLE = Object.assign("attributes", {
   id: "id",
   label: "label",
   value: "value",
-  product: "product",
+  page: "page",
 })
 
 export const initialize = (connection: Connection) =>
@@ -24,7 +22,7 @@ export const initialize = (connection: Connection) =>
       ${TABLE.id}             uuid PRIMARY KEY,
       ${TABLE.label}          text,
       ${TABLE.value}          text,
-      ${TABLE.product}        uuid NOT NULL REFERENCES ${PRODUCTS}
+      ${TABLE.page}           uuid NOT NULL REFERENCES ${PAGES}
     );`)
 
 export const crud = (connection: Connection) => ({
