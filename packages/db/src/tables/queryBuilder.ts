@@ -14,7 +14,7 @@ import {
   PostgresQueryCompiler,
 } from "kysely"
 
-interface Database {
+type Database = {
   brands: Brand
   categories: Category
   offers: Offer
