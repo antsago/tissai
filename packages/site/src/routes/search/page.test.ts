@@ -2,9 +2,9 @@ import "@testing-library/jest-dom/vitest"
 import { describe, test, expect, afterEach, vi } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
 import { CATEGORY, MockPg, OFFER, TAG, mockDbFixture } from "@tissai/db/mocks"
+import { Db } from "@tissai/db"
 import { QUERY, SIMILAR, BRAND } from "mocks"
 import * as stores from "$app/stores"
-import { Products } from "$lib/server"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
 
@@ -48,7 +48,7 @@ describe("Search page", () => {
     render(page, {
       data: await load({
         url,
-        locals: { products: Products() },
+        locals: { db: Db() },
       } as any),
     } as any)
 

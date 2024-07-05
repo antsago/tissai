@@ -13,7 +13,7 @@ describe("Server hooks", () => {
     handle = hooks.handle
   })
 
-  it("initializes products", async () => {
+  it("initializes db", async () => {
     const expected = "The result"
     resolve.mockResolvedValue(expected)
 
@@ -21,14 +21,14 @@ describe("Server hooks", () => {
 
     expect(result).toStrictEqual(expected)
     expect(resolve).toHaveBeenCalledWith(event)
-    expect(event.locals.products).not.toBe(undefined)
+    expect(event.locals.db).not.toBe(undefined)
   })
 
-  it("reuses initialized products", async () => {
+  it("reuses initialized db", async () => {
     const event2: any = { locals: {} }
     await handle({ event, resolve })
     await handle({ event: event2, resolve })
 
-    expect(event.locals.products).toBe(event2.locals.products)
+    expect(event.locals.db).toBe(event2.locals.db)
   })
 })

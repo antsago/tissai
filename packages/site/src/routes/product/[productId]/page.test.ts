@@ -2,8 +2,8 @@ import "@testing-library/jest-dom/vitest"
 import { describe, test, expect, beforeEach } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
 import { mockDbFixture, MockPg } from "@tissai/db/mocks"
+import { Db } from "@tissai/db"
 import { PRODUCT, SIMILAR, BRAND, OFFER, SITE } from "mocks"
-import { Products } from "$lib/server"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
 
@@ -59,7 +59,7 @@ describe("Product details page", () => {
     render(page, {
       data: await load({
         params: { productId: PRODUCT.id },
-        locals: { products: Products() },
+        locals: { db: Db() },
       } as any),
     } as any)
     const section = screen.getByRole("region", { name: sectionName })

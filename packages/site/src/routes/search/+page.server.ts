@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
   }
 
   return {
-    products: await locals.products.search({
+    products: await locals.db.searchProducts({
       query,
       ...filters,
     }),

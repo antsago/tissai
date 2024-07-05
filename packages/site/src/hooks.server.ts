@@ -1,11 +1,11 @@
 import type { Handle } from "./$types"
-import { Products } from "$lib/server"
+import { Db } from "@tissai/db"
 
-let products: Products
+let db: Db
 export const handle: Handle = async ({ event, resolve }) => {
-  if (!products) {
-    products = Products()
+  if (!db) {
+    db = Db()
   }
-  event.locals.products = products
+  event.locals.db = db
   return resolve(event)
 }
