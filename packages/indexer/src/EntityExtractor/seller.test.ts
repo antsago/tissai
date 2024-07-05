@@ -25,10 +25,7 @@ describe("seller", () => {
   })
 
   it("turns name to lowercase", async () => {
-    const result = await seller(
-      { seller: NAME.toUpperCase() },
-      db,
-    )
+    const result = await seller({ seller: NAME.toUpperCase() }, db)
 
     expect(result).toStrictEqual({ name: NAME })
   })

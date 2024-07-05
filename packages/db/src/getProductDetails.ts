@@ -49,19 +49,14 @@ const getProductDetails =
         .orderBy(
           ({ fn, val, ref, eb }) =>
             fn("ts_rank_cd", [
-              fn("to_tsvector", [
-                val('spanish'),
-                ref("products.title")
-              ]),
-              sql`replace(${
-                fn("plainto_tsquery", [
-                  val('spanish'),
-                  eb
-                    .selectFrom("products")
-                    .select("title")
-                    .where("products.id", "=", productId)
-                ])
-              }::text, '&', '|')::tsquery`,
+              fn("to_tsvector", [val("spanish"), ref("products.title")]),
+              sql`replace(${fn("plainto_tsquery", [
+                val("spanish"),
+                eb
+                  .selectFrom("products")
+                  .select("title")
+                  .where("products.id", "=", productId),
+              ])}::text, '&', '|')::tsquery`,
             ]),
           "desc",
         )

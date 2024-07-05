@@ -1,5 +1,5 @@
 import { expect, describe, it } from "vitest"
-import normalizedOffers from './normalizedOffers'
+import normalizedOffers from "./normalizedOffers"
 
 const OFFER = {
   url: "https://example.com/offer",

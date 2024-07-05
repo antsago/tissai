@@ -91,7 +91,8 @@ describe.concurrent("search", () => {
   })
 
   it("filters by brand", async ({ expect, db }) => {
-    const result = await db.searchProducts({ query: product2.title,
+    const result = await db.searchProducts({
+      query: product2.title,
       brand: BRAND.name,
     })
 

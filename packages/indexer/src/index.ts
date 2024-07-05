@@ -78,10 +78,12 @@ try {
         db,
         brandEntity,
       )
-      await Promise.all(normalizedOffers(jsonLdInfo).map(async o => {
-        const sellerEntity = await seller(o, db)
-        await offer(o, sellerEntity, page, productEntity, db)
-      }))
+      await Promise.all(
+        normalizedOffers(jsonLdInfo).map(async (o) => {
+          const sellerEntity = await seller(o, db)
+          await offer(o, sellerEntity, page, productEntity, db)
+        }),
+      )
 
       index += 1
     } catch (err) {

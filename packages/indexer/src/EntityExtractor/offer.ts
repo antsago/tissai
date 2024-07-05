@@ -5,7 +5,7 @@ import _ from "lodash"
 
 async function offer(
   normalized: NormalizedOffer,
-  seller: Seller|undefined, 
+  seller: Seller | undefined,
   page: Page,
   product: Product,
   db: Db,

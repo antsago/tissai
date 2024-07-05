@@ -14,11 +14,14 @@ function normalizedOffers(ld: JsonLD): NormalizedOffer[] {
     ]
   }
 
-  return _.uniqWith(ld.offers.map(o => ({
-    price: o.price,
-    currency: o.currency,
-    seller: o.seller,
-  })), _.isEqual)
+  return _.uniqWith(
+    ld.offers.map((o) => ({
+      price: o.price,
+      currency: o.currency,
+      seller: o.seller,
+    })),
+    _.isEqual,
+  )
 }
 
 export default normalizedOffers

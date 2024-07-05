@@ -44,7 +44,7 @@ describe("offer", () => {
   })
 
   it("handles offers without sellers", async () => {
-    const result = await offer(OFFER , undefined, PAGE, PRODUCT, db)
+    const result = await offer(OFFER, undefined, PAGE, PRODUCT, db)
 
     expect(result).toStrictEqual({
       id: expect.any(String),

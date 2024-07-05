@@ -45,36 +45,28 @@ describe("index", () => {
     expect(mockOra.spinner.succeed).toHaveBeenCalled()
   })
 
-  it("processes multiple offers", async ({
-    expect,
-    mockDb,
-  }) => {
+  it("processes multiple offers", async ({ expect, mockDb }) => {
     const offer1 = {
-          "@type": "Offer",
-          price: 10,
-          seller:
-            {
-              "@type": "Organization",
-              name: "pertemba",
-            },
-        }
+      "@type": "Offer",
+      price: 10,
+      seller: {
+        "@type": "Organization",
+        name: "pertemba",
+      },
+    }
     const offer2 = {
-          "@type": "Offer",
-          price: 20,
-          seller:
-            {
-              "@type": "Organization",
-              name: "batemper",
-            },
-        }
+      "@type": "Offer",
+      price: 20,
+      seller: {
+        "@type": "Organization",
+        name: "batemper",
+      },
+    }
     const page = pageWithSchema({
       "@context": "https://schema.org",
       "@type": "Product",
       name: PRODUCT.title,
-      offers: [
-        offer1,
-        offer2,
-      ],
+      offers: [offer1, offer2],
     })
     mockDb.cursor.read.mockResolvedValueOnce([page])
 

@@ -99,8 +99,8 @@ describe("Search page", () => {
     expect(brandLogo).not.toBeInTheDocument()
   })
 
-  it("handles products without brand", async ({ db,  }) => {
-    const results = await loadAndRender(db,  {
+  it("handles products without brand", async ({ db }) => {
+    const results = await loadAndRender(db, {
       brand: [null],
     })
 

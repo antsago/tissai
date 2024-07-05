@@ -38,7 +38,14 @@ export const buildSearchQuery = ({
     ])
     .where(({ and }) => and(filters))
     .groupBy("products.id")
-    .orderBy(({ ref }) => sql<number>`ts_rank(to_tsvector('spanish', ${ref("title")}), websearch_to_tsquery('spanish', ${searchQuery}))`, "desc")
+    .orderBy(
+      ({ val, fn }) =>
+        fn<number>("ts_rank", [
+          fn("to_tsvector", [val("spanish"), "title"]),
+          fn("websearch_to_tsquery", [val("spanish"), val(searchQuery)]),
+        ]),
+      "desc",
+    )
     .limit(24)
 
   query = tags.reduce(

@@ -36,14 +36,8 @@ export const initialize = (connection: Connection) =>
 
 export const crud = (connection: Connection) => ({
   create: (product: Product) =>
-    connection.query(
-      builder
-        .insertInto("products")
-        .values(product)
-        .compile(),
-    ),
+    connection.query(builder.insertInto("products").values(product).compile()),
 
-  getAll: async () => connection.query(
-      builder.selectFrom("products").selectAll().compile(),
-    ),
+  getAll: async () =>
+    connection.query(builder.selectFrom("products").selectAll().compile()),
 })
