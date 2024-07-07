@@ -1,12 +1,15 @@
+from functools import reduce
 from transformers import AutoTokenizer, AutoModelForCausalLM
+from getTags import getTags
 
 modelName = "unsloth/tinyllama"
 tokenizer = AutoTokenizer.from_pretrained(modelName)
 model = AutoModelForCausalLM.from_pretrained(modelName)
 
 
-def labelWords(title):
-    prompt = f"""Dados los nombres de los productos siguientes, etiqueta cada palabra con el nombre de los atributos que representa:
+def getPrompt(title, labels):
+    labeled = "\n    ".join([f"""{word} <> {label}""" for (word, label) in labels])[:-1]
+    return f"""Dados los nombres de los productos siguientes, etiqueta cada palabra con el nombre de los atributos que representa:
   Conjunto de cazadora y pantalón | Total look de hombre | SPF
     Conjunto <> categoría
     cazadora <> categoría
@@ -41,31 +44,26 @@ def labelWords(title):
     SWIX <> marca
     Race <> modelo
 
-  Pantalón térmico interior lana merina de esquí y nieve Mujer Wedze BL 900
-    Pantalón <> categoría
-    térmico <>"""
-    # térmico <> térmico
-    # interior <> interior
-    # lana <> tejido
-    # merina <> tejido
-    # esqui <> deporte
-    # nieve <> deporte
-    # Mujer <> género
-    # Wedze <> marca
-    # BL <> modelo
-    # 900 <>"""
+  {title}
+    {labeled}"""
 
+
+def getLabel(title, labels, toLabel):
+    prompt = getPrompt(title, [*labels, (toLabel, "")])
 
     inputs = tokenizer(prompt, return_tensors="pt")
     outputs = model.generate(
-        **inputs, max_new_tokens=100, stop_strings="\n ", tokenizer=tokenizer
+        **inputs, max_new_tokens=100, stop_strings=["\n ", "\n\n"], tokenizer=tokenizer
     )
     output = tokenizer.batch_decode(outputs, skip_special_tokens=True)[0]
 
-    # return output[(len(prompt) + 1) : -2]
-    return output
+    label = [
+        w for w in output[(len(prompt) + 1) :].split("\n") if w and not w.isspace()
+    ][-1]
+    return [*labels, (toLabel, label)]
 
 
-if __name__ == "__main__":
-    output = labelWords("Pantalón térmico interior lana merina de esquí y nieve Mujer Wedze BL 900")
-    print(output)
+def getAttributes(title):
+    words = getTags(title, verbatim=True)
+    labels = reduce(lambda labels, toLabel: getLabel(title, labels, toLabel), words, [])
+    return [{"label": label, "value": value} for (value, label) in labels]

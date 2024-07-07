@@ -6,6 +6,7 @@ export { TABLE as PRODUCTS, Product } from "./products.js"
 export { TABLE as TAGS, Tag } from "./tags.js"
 export { TABLE as SELLERS, Seller } from "./sellers.js"
 export { TABLE as SITES, Site } from "./sites.js"
+export { TABLE as ATTRIBUTES, Attribute } from "./attributes.js"
 
 export { default as builder } from "./queryBuilder.js"
 export { default } from "./Tables.js"

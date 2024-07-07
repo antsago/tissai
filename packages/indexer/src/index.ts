@@ -1,16 +1,6 @@
 import { dirname } from "node:path"
 import { fileURLToPath } from "node:url"
-import {
-  BRANDS,
-  CATEGORIES,
-  Db,
-  OFFERS,
-  Page,
-  PAGES,
-  PRODUCTS,
-  SELLERS,
-  TAGS,
-} from "@tissai/db"
+import { Db, Page, PAGES } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "./Reporter.js"
 import parsedPage from "./parsedPage.js"
@@ -25,11 +15,14 @@ import brand from "./EntityExtractor/brand.js"
 import product from "./EntityExtractor/product.js"
 import offer from "./EntityExtractor/offer.js"
 import normalizedOffers from "./EntityExtractor/normalizedOffers.js"
+import attributes from "./EntityExtractor/attributes.js"
 
 let db!: Db
 let python!: PythonPool<
-  { method: "category" | "tags"; input: string },
-  { category: string } & { tags: string[] }
+  { method: "category" | "tags" | "attributes"; input: string },
+  { category: string } & { tags: string[] } & {
+    attributes: { label: string; value: string }[]
+  }
 >
 try {
   const currentDirectory = dirname(fileURLToPath(import.meta.url))
@@ -84,6 +77,8 @@ try {
           await offer(o, sellerEntity, page, productEntity, db)
         }),
       )
+
+      await attributes(productTitle, page, python, db)
 
       index += 1
     } catch (err) {

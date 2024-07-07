@@ -17,7 +17,7 @@ describe("seller", () => {
     db = Db()
   })
 
-  it.only("extracts seller", async ({ pg }) => {
+  it("extracts seller", async ({ pg }) => {
     const result = await seller({ seller: NAME }, db)
 
     expect(result).toStrictEqual({ name: NAME })

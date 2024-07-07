@@ -27,9 +27,10 @@ export const initialize = (connection: Connection) =>
 
 export const crud = (connection: Connection) => ({
   create: (attribute: Attribute) =>
-    connection.query(builder.insertInto("attributes").values(attribute).compile()),
+    connection.query(
+      builder.insertInto("attributes").values(attribute).compile(),
+    ),
 
-  getAll: async () => connection.query(
-    builder.selectFrom("attributes").selectAll().compile(),
-  ),
+  getAll: async () =>
+    connection.query(builder.selectFrom("attributes").selectAll().compile()),
 })

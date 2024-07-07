@@ -5,7 +5,7 @@ nlp = spacy.load(
     exclude=["morphologizer", "parser", "attribute_ruler", "lemmatizer", "ner"],
 )
 
-isMeaningless = lambda token: not (
+isMeaningful = lambda token: not (
     token.is_stop
     or token.is_punct
     or token.is_space
@@ -17,6 +17,10 @@ isMeaningless = lambda token: not (
 )
 
 
-def getTags(title):
+def getTags(title, verbatim=False):
     doc = nlp(title)
-    return list({token.lower_ for token in doc if isMeaningless(token)})
+
+    if verbatim:
+        return [token.text for token in doc if isMeaningful(token)]
+
+    return list({token.lower_ for token in doc if isMeaningful(token)})

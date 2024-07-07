@@ -96,6 +96,23 @@ describe(
       expect(brands).toStrictEqual([{ name: BRAND.name, logo: BRAND.logo }])
       const sellers = await db.sellers.getAll()
       expect(sellers).toStrictEqual([{ name: OFFER.seller }])
+      const attributes = await db.attributes.getAll()
+      expect(attributes).toStrictEqual(
+        expect.arrayContaining([
+          {
+            id: expect.any(String),
+            page: PAGE.id,
+            label: "categoría",
+            value: "Vaqueros",
+          },
+          {
+            id: expect.any(String),
+            page: PAGE.id,
+            label: "modelo",
+            value: "ajustados",
+          },
+        ]),
+      )
     })
 
     it("handles duplicates", async ({ expect, db }) => {
