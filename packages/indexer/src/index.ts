@@ -15,13 +15,13 @@ import brand from "./EntityExtractor/brand.js"
 import product from "./EntityExtractor/product.js"
 import offer from "./EntityExtractor/offer.js"
 import normalizedOffers from "./EntityExtractor/normalizedOffers.js"
-import attributes from "./EntityExtractor/attributes.js"
+import attributes, { type PythonAttribute } from "./EntityExtractor/attributes.js"
 
 let db!: Db
 let python!: PythonPool<
   { method: "category" | "tags" | "attributes"; input: string },
   { category: string } & { tags: string[] } & {
-    attributes: { label: string; value: string }[]
+    attributes: PythonAttribute[]
   }
 >
 try {

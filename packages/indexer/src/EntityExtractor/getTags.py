@@ -21,6 +21,6 @@ def getTags(title, verbatim=False):
     doc = nlp(title)
 
     if verbatim:
-        return [token.text for token in doc if isMeaningful(token)]
+        return [token for token in doc if isMeaningful(token)]
 
     return list({token.lower_ for token in doc if isMeaningful(token)})
