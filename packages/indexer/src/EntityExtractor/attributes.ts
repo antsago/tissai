@@ -32,7 +32,6 @@ function* mergeWords(title: string, words: PythonAttribute[]): Generator<Omit<Py
 
 async function attributes(
   title: string,
-  page: Page,
   python: PythonPool<
     { method: "attributes"; input: string },
     { attributes: PythonAttribute[] }
@@ -44,7 +43,7 @@ async function attributes(
   const merged = [...mergeWords(title, labelled)]
   const entities = merged.map((att) => ({
     id: randomUUID(),
-    page: page.id,
+    title,
     ...att,
   }))
 

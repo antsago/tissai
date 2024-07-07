@@ -1,7 +1,7 @@
 import { expect, describe, test, beforeEach } from "vitest"
 import { mockPythonFixture } from "@tissai/python-pool/mocks"
 import { PythonPool } from "@tissai/python-pool"
-import { mockDbFixture, PAGE } from "@tissai/db/mocks"
+import { mockDbFixture } from "@tissai/db/mocks"
 import { Db, ATTRIBUTES } from "@tissai/db"
 import attributes from "./attributes.js"
 
@@ -30,12 +30,12 @@ describe("attributes", () => {
     const foundAttributes = [{ label: "test", value: "attribute", offset: 0 }]
     mockPython.mockReturnValue({ attributes: foundAttributes })
 
-    const result = await attributes(TITLE, PAGE, pool, db)
+    const result = await attributes(TITLE, pool, db)
 
     expect(result).toStrictEqual([
       {
         id: expect.any(String),
-        page: PAGE.id,
+        title: TITLE,
         label: foundAttributes[0].label,
         value: foundAttributes[0].value,
       },
@@ -47,7 +47,7 @@ describe("attributes", () => {
     expect(pg).toHaveInserted(ATTRIBUTES, [
       foundAttributes[0].label,
       foundAttributes[0].value,
-      PAGE.id,
+      TITLE,
     ])
   })
 
@@ -59,18 +59,18 @@ describe("attributes", () => {
     ]
     mockPython.mockReturnValue({ attributes: foundAttributes })
 
-    const result = await attributes(TITLE, PAGE, pool, db)
+    const result = await attributes(TITLE, pool, db)
 
     expect(result).toStrictEqual([
       {
         id: expect.any(String),
-        page: PAGE.id,
+        title: TITLE,
         label: foundAttributes[0].label,
         value: foundAttributes[0].value,
       },
       {
         id: expect.any(String),
-        page: PAGE.id,
+        title: TITLE,
         label: foundAttributes[1].label,
         value: foundAttributes[1].value,
       },
@@ -87,12 +87,12 @@ describe("attributes", () => {
     ]
     mockPython.mockReturnValue({ attributes: foundAttributes })
 
-    const result = await attributes(TITLE, PAGE, pool, db)
+    const result = await attributes(TITLE, pool, db)
 
     expect(result).toStrictEqual([
       {
         id: expect.any(String),
-        page: PAGE.id,
+        title: TITLE,
         label: "category",
         value: TITLE,
       },
@@ -107,12 +107,12 @@ describe("attributes", () => {
     ]
     mockPython.mockReturnValue({ attributes: foundAttributes })
 
-    const result = await attributes(TITLE, PAGE, pool, db)
+    const result = await attributes(TITLE, pool, db)
 
     expect(result).toStrictEqual([
       {
         id: expect.any(String),
-        page: PAGE.id,
+        title: TITLE,
         label: "category",
         value: TITLE,
       },

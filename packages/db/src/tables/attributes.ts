@@ -6,14 +6,14 @@ export type Attribute = {
   id: string
   label: string
   value: string
-  page: string
+  title: string
 }
 
 export const TABLE = Object.assign("attributes", {
   id: "id",
   label: "label",
   value: "value",
-  page: "page",
+  title: "title",
 })
 
 export const initialize = (connection: Connection) =>
@@ -22,7 +22,7 @@ export const initialize = (connection: Connection) =>
       ${TABLE.id}             uuid PRIMARY KEY,
       ${TABLE.label}          text,
       ${TABLE.value}          text,
-      ${TABLE.page}           uuid NOT NULL REFERENCES ${PAGES}
+      ${TABLE.title}          text
     );`)
 
 export const crud = (connection: Connection) => ({

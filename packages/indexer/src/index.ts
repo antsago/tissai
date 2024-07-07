@@ -78,7 +78,7 @@ try {
         }),
       )
 
-      await attributes(productTitle, page, python, db)
+      await attributes(productTitle, python, db)
 
       index += 1
     } catch (err) {
