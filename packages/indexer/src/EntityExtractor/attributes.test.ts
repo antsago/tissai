@@ -98,4 +98,24 @@ describe("attributes", () => {
       },
     ])
   })
+
+  it("handles repeated words", async ({ mockPython, pg }) => {
+    const TITLE = "title and title"
+    const foundAttributes = [
+      { label: "category", value: "title", offet: 0 },
+      { label: "category", value: "title", offset: 10 },
+    ]
+    mockPython.mockReturnValue({ attributes: foundAttributes })
+
+    const result = await attributes(TITLE, PAGE, pool, db)
+
+    expect(result).toStrictEqual([
+      {
+        id: expect.any(String),
+        page: PAGE.id,
+        label: "category",
+        value: TITLE,
+      },
+    ])
+  })
 })
