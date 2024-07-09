@@ -7,7 +7,7 @@
   export { classes as class }
 
   const rng = function (seed: number) {
-    const max = details.tags.length + 1
+    const max = details.attributes.length
     const min = 0
 
     const rnd = Math.abs(Math.cos(seed))

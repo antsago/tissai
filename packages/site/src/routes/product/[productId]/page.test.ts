@@ -36,13 +36,11 @@ describe("Product details page", () => {
     description: PRODUCT.description,
     images: PRODUCT.images,
     brand: BRAND,
-    category: PRODUCT.category,
     attributes: [
       { value: CAT_ATTRIBUTE.value, label: CAT_ATTRIBUTE.label },
       { value: ATTRIBUTE.value, label: ATTRIBUTE.label },
       BOOL_ATTRIBUTE,
     ],
-    tags: [...PRODUCT.tags, "muy"],
     offers: [
       {
         url: OFFER.url,
