@@ -1,7 +1,11 @@
-import { sql } from "kysely"
+import { sql, RawBuilder } from "kysely"
 import { jsonBuildObject } from "kysely/helpers/postgres"
 import { Connection } from "./Connection.js"
 import { Product, Brand, builder, Attribute } from "./tables/index.js"
+
+function toJsonb<T>(value: RawBuilder<T>): RawBuilder<T> {
+  return sql<T>`to_jsonb(${value})`
+}
 
 const getProductDetails =
   (connection: Connection) => async (productId: Product["id"]) => {
@@ -21,18 +25,16 @@ const getProductDetails =
           sql<Brand>`${fn.jsonAgg("brands")}->0`.as("brand"),
           fn
             .jsonAgg(
-              fn('to_jsonb', [
-                jsonBuildObject({
-                  label: ref("attributes.label"),
-                  value: ref("attributes.value"),
-                }),
-              ])
+              toJsonb(jsonBuildObject({
+                label: ref("attributes.label"),
+                value: ref("attributes.value"),
+              }))
             )
             .distinct()
             .as("attributes"),
           fn
             .jsonAgg(
-              fn('to_jsonb', [
+              toJsonb(
               jsonBuildObject({
                 url: ref("offers.url"),
                 price: ref("offers.price"),
@@ -43,7 +45,7 @@ const getProductDetails =
                   icon: ref("sites.icon"),
                 }),
               }),
-              ])
+              )
             )
             .distinct()
             .as("offers"),
