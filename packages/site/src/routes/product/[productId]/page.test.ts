@@ -26,7 +26,7 @@ describe("Product details page", () => {
     title: PRODUCT.title,
     description: PRODUCT.description,
     images: PRODUCT.images,
-    brand: [BRAND],
+    brand: BRAND,
     category: PRODUCT.category,
     tags: [...PRODUCT.tags, "muy"],
     offers: [
@@ -117,7 +117,7 @@ describe("Product details page", () => {
     })
 
     it("handles products without brand", async ({ db }) => {
-      const section = await loadAndRender(db, PRODUCT.title, { brand: [] })
+      const section = await loadAndRender(db, PRODUCT.title, { brand: undefined })
 
       const brandName = section.queryByText(BRAND.name)
       const brandLogo = section.queryByRole("img", {
@@ -132,7 +132,7 @@ describe("Product details page", () => {
 
     it("handles brands without logo", async ({ db }) => {
       const section = await loadAndRender(db, PRODUCT.title, {
-        brand: [{ name: BRAND.name }],
+        brand: { name: BRAND.name },
       })
 
       const brandName = section.queryByText(BRAND.name)
