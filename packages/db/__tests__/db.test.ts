@@ -8,6 +8,8 @@ import {
   CATEGORY,
   TAG,
   SELLER,
+  ATTRIBUTE,
+  CAT_ATTRIBUTE,
   dbFixture,
 } from "#mocks"
 
@@ -16,12 +18,6 @@ const it = test.extend<Fixtures>({
   db: dbFixture,
 })
 
-const ATTRIBUTE = {
-  id: "5f592540-9e7b-465b-89df-83527c2b7df0",
-  label: "modelo",
-  value: "BL 900",
-  product: PRODUCT.id,
-}
 describe.concurrent("db", () => {
   it("creates entities", async ({ expect, db }) => {
     await db.sites.create(SITE)
@@ -100,7 +96,7 @@ describe.concurrent("db", () => {
       sellers: [SELLER],
       products: [SIMILAR, PRODUCT],
       offers: [OFFER, { ...OFFER, price: OFFER.price+10, id: "3931b158-a7d2-41d5-9b13-7266fe976a2a" }],
-      attributes: [ATTRIBUTE, { id: "61636baa-ad62-40a1-a125-3352ba7ad4e1", label: "category", value: PRODUCT.category, product: PRODUCT.id }]
+      attributes: [ATTRIBUTE, CAT_ATTRIBUTE]
     })
 
     const result = await db.getProductDetails(PRODUCT.id)
@@ -112,7 +108,7 @@ describe.concurrent("db", () => {
       category: PRODUCT.category,
       tags: PRODUCT.tags,
       attributes: [
-        { label: 'category', value: PRODUCT.category },
+        { label: CAT_ATTRIBUTE.label, value: CAT_ATTRIBUTE.value },
         { label: ATTRIBUTE.label, value: ATTRIBUTE.value },
       ],
       brand: BRAND,

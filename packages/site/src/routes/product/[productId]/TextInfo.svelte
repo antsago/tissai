@@ -13,6 +13,9 @@
     const rnd = Math.abs(Math.cos(seed))
     return Math.floor(rnd * (max - min) + min)
   }
+
+  const category = details.attributes.find((a) => a.label === 'categoría')
+  const attributes = details.attributes.filter((a) => a.label !== 'categoría')
 </script>
 
 <div class={classes}>
@@ -44,19 +47,23 @@
   <ChipContainer class="mt-4">
     <Chip
       background="bg-stone-200"
-      style="order:{rng(details.tags.length)}; z-index: {rng(0)};"
+      style="order:{rng(attributes.length)}; z-index: {rng(0)};"
       orange
     >
-      {details.category}
+      {category?.label}: {category?.value}
     </Chip>
-    {#each details.tags as tag, index}
+    {#each attributes as attribute, index}
       <Chip
         background="bg-stone-200"
-        style="order:{rng(details.tags.length - index)}; z-index: {rng(
+        style="order:{rng(attributes.length - index)}; z-index: {rng(
           index + 1,
         )};"
       >
-        {tag}
+        {#if attribute.label === attribute.value}
+          {attribute.value}
+        {:else}
+          {attribute.label}: {attribute.value}
+        {/if}
       </Chip>
     {/each}
   </ChipContainer>

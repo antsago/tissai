@@ -3,7 +3,7 @@ import { describe, test, expect, beforeEach } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
 import { mockDbFixture, MockPg } from "@tissai/db/mocks"
 import { Db } from "@tissai/db"
-import { PRODUCT, SIMILAR, BRAND, OFFER, SITE } from "mocks"
+import { PRODUCT, SIMILAR, BRAND, OFFER, SITE, ATTRIBUTE, CAT_ATTRIBUTE } from "mocks"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
 
@@ -16,6 +16,7 @@ describe("Product details page", () => {
     cleanup()
   })
 
+  const BOOL_ATTRIBUTE = { label: "lavados", value: "lavados" }
   const OFFER2 = {
     url: "www.example.com/offer2.html",
     site: {
@@ -28,6 +29,11 @@ describe("Product details page", () => {
     images: PRODUCT.images,
     brand: BRAND,
     category: PRODUCT.category,
+    attributes: [
+      { value: CAT_ATTRIBUTE.value, label: CAT_ATTRIBUTE.label },
+      { value: ATTRIBUTE.value, label: ATTRIBUTE.label },
+      BOOL_ATTRIBUTE,
+    ],
     tags: [...PRODUCT.tags, "muy"],
     offers: [
       {
@@ -74,10 +80,9 @@ describe("Product details page", () => {
       const images = section.getAllByRole("img", { name: PRODUCT.title })
       const heading = section.getByRole("heading")
       const description = section.getByText(PRODUCT.description)
-      const tags = section.getAllByText(
-        new RegExp(`^(${PRODUCT_DETAILS.tags.join(")|(")})$`),
-      )
-      const category = section.getByText(PRODUCT.category)
+      const category = section.getByText(new RegExp(`^${CAT_ATTRIBUTE.label}.*${CAT_ATTRIBUTE.value}$`))
+      const stringAttribute = section.getByText(new RegExp(`^${ATTRIBUTE.label}.*${ATTRIBUTE.value}$`))
+      const boolAttribute = section.getByText(new RegExp(`^${BOOL_ATTRIBUTE.label}$`))
       const brandName = section.getByText(BRAND.name)
       const brandLogo = section.getByRole("img", {
         name: `Logo de ${BRAND.name}`,
@@ -91,7 +96,8 @@ describe("Product details page", () => {
       expect(heading).toHaveTextContent(PRODUCT.title)
       expect(description).toBeInTheDocument()
       expect(category).toBeInTheDocument()
-      expect(tags.length).toBe(PRODUCT_DETAILS.tags.length)
+      expect(stringAttribute).toBeInTheDocument()
+      expect(boolAttribute).toBeInTheDocument()
       expect(brandName).toBeInTheDocument()
       expect(brandLogo).toHaveAttribute("src", BRAND.logo)
     })

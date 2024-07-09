@@ -1,6 +1,6 @@
 import { PRODUCT as DB_PRODUCT } from "@tissai/db/mocks"
 
-export { BRAND, OFFER, SITE } from "@tissai/db/mocks"
+export { BRAND, OFFER, SITE, ATTRIBUTE, CAT_ATTRIBUTE } from "@tissai/db/mocks"
 
 export const PRODUCT = {
   ...DB_PRODUCT,
