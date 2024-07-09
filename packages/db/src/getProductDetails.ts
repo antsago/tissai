@@ -1,7 +1,7 @@
 import { sql } from "kysely"
 import { jsonBuildObject } from "kysely/helpers/postgres"
 import { Connection } from "./Connection.js"
-import { Product, builder } from "./tables/index.js"
+import { Product, Brand, builder } from "./tables/index.js"
 
 const getProductDetails =
   (connection: Connection) => async (productId: Product["id"]) => {
@@ -17,7 +17,7 @@ const getProductDetails =
           "products.images",
           "products.category",
           "products.tags",
-          fn.jsonAgg("brands").as("brand"),
+          sql<Brand>`${fn.jsonAgg("brands")}->0`.as("brand"),
           fn
             .jsonAgg(
               jsonBuildObject({
@@ -66,7 +66,6 @@ const getProductDetails =
 
     return {
       ...details,
-      brand: details.brand[0],
       similar,
     }
   }
