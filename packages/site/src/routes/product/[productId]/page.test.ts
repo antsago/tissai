@@ -3,7 +3,15 @@ import { describe, test, expect, beforeEach } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
 import { mockDbFixture, MockPg } from "@tissai/db/mocks"
 import { Db } from "@tissai/db"
-import { PRODUCT, SIMILAR, BRAND, OFFER, SITE, ATTRIBUTE, CAT_ATTRIBUTE } from "mocks"
+import {
+  PRODUCT,
+  SIMILAR,
+  BRAND,
+  OFFER,
+  SITE,
+  ATTRIBUTE,
+  CAT_ATTRIBUTE,
+} from "mocks"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
 
@@ -80,9 +88,15 @@ describe("Product details page", () => {
       const images = section.getAllByRole("img", { name: PRODUCT.title })
       const heading = section.getByRole("heading")
       const description = section.getByText(PRODUCT.description)
-      const category = section.getByText(new RegExp(`^${CAT_ATTRIBUTE.label}.*${CAT_ATTRIBUTE.value}$`))
-      const stringAttribute = section.getByText(new RegExp(`^${ATTRIBUTE.label}.*${ATTRIBUTE.value}$`))
-      const boolAttribute = section.getByText(new RegExp(`^${BOOL_ATTRIBUTE.label}$`))
+      const category = section.getByText(
+        new RegExp(`^${CAT_ATTRIBUTE.label}.*${CAT_ATTRIBUTE.value}$`),
+      )
+      const stringAttribute = section.getByText(
+        new RegExp(`^${ATTRIBUTE.label}.*${ATTRIBUTE.value}$`),
+      )
+      const boolAttribute = section.getByText(
+        new RegExp(`^${BOOL_ATTRIBUTE.label}$`),
+      )
       const brandName = section.getByText(BRAND.name)
       const brandLogo = section.getByRole("img", {
         name: `Logo de ${BRAND.name}`,
@@ -133,7 +147,9 @@ describe("Product details page", () => {
     })
 
     it("handles products without brand", async ({ db }) => {
-      const section = await loadAndRender(db, PRODUCT.title, { brand: undefined })
+      const section = await loadAndRender(db, PRODUCT.title, {
+        brand: undefined,
+      })
 
       const brandName = section.queryByText(BRAND.name)
       const brandLogo = section.queryByRole("img", {

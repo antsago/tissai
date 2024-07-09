@@ -8,7 +8,9 @@ model = AutoModelForCausalLM.from_pretrained(modelName)
 
 
 def getPrompt(title, labels):
-    labeled = "\n    ".join([f"""{token.text} <> {label}""" for (token, label) in labels])[:-1]
+    labeled = "\n    ".join(
+        [f"""{token.text} <> {label}""" for (token, label) in labels]
+    )[:-1]
     return f"""Dados los nombres de los productos siguientes, etiqueta cada palabra con el nombre de los atributos que representa:
   Conjunto de cazadora y pantalón | Total look de hombre | SPF
     Conjunto <> categoría
@@ -66,4 +68,7 @@ def getLabel(title, labels, toLabel):
 def getAttributes(title):
     words = getTags(title, verbatim=True)
     labels = reduce(lambda labels, toLabel: getLabel(title, labels, toLabel), words, [])
-    return [{"label": label, "value": token.text, "offset": token.idx} for (token, label) in labels]
+    return [
+        {"label": label, "value": token.text, "offset": token.idx}
+        for (token, label) in labels
+    ]

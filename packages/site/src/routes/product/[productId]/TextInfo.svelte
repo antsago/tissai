@@ -14,8 +14,8 @@
     return Math.floor(rnd * (max - min) + min)
   }
 
-  const category = details.attributes.find((a) => a.label === 'categoría')
-  const attributes = details.attributes.filter((a) => a.label !== 'categoría')
+  const category = details.attributes.find((a) => a.label === "categoría")
+  const attributes = details.attributes.filter((a) => a.label !== "categoría")
 </script>
 
 <div class={classes}>
@@ -46,13 +46,13 @@
 
   <ChipContainer class="mt-4">
     {#if category}
-    <Chip
-      background="bg-stone-200"
-      style="order:{rng(attributes.length)}; z-index: {rng(0)};"
-      orange
-    >
-      {category?.label}: {category?.value}
-    </Chip>
+      <Chip
+        background="bg-stone-200"
+        style="order:{rng(attributes.length)}; z-index: {rng(0)};"
+        orange
+      >
+        {category?.label}: {category?.value}
+      </Chip>
     {/if}
     {#each attributes as attribute, index}
       <Chip

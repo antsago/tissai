@@ -15,7 +15,9 @@ import brand from "./EntityExtractor/brand.js"
 import product from "./EntityExtractor/product.js"
 import offer from "./EntityExtractor/offer.js"
 import normalizedOffers from "./EntityExtractor/normalizedOffers.js"
-import attributes, { type PythonAttribute } from "./EntityExtractor/attributes.js"
+import attributes, {
+  type PythonAttribute,
+} from "./EntityExtractor/attributes.js"
 
 let db!: Db
 let python!: PythonPool<

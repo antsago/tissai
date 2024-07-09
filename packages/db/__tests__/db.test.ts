@@ -95,8 +95,15 @@ describe.concurrent("db", () => {
       sites: [SITE],
       sellers: [SELLER],
       products: [SIMILAR, PRODUCT],
-      offers: [OFFER, { ...OFFER, price: OFFER.price+10, id: "3931b158-a7d2-41d5-9b13-7266fe976a2a" }],
-      attributes: [ATTRIBUTE, CAT_ATTRIBUTE]
+      offers: [
+        OFFER,
+        {
+          ...OFFER,
+          price: OFFER.price + 10,
+          id: "3931b158-a7d2-41d5-9b13-7266fe976a2a",
+        },
+      ],
+      attributes: [ATTRIBUTE, CAT_ATTRIBUTE],
     })
 
     const result = await db.getProductDetails(PRODUCT.id)
@@ -132,7 +139,7 @@ describe.concurrent("db", () => {
         },
         {
           url: OFFER.url,
-          price: OFFER.price+10,
+          price: OFFER.price + 10,
           currency: OFFER.currency,
           seller: OFFER.seller,
           site: {

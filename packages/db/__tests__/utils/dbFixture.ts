@@ -43,10 +43,12 @@ const load = (db: Db) => async (state: State) => {
     ].flat(),
   )
 
-  await Promise.all([
-    state.offers?.map((o) => db.offers.create(o)),
-    state.attributes?.map(a => db.attributes.create(a)),
-  ].flat())
+  await Promise.all(
+    [
+      state.offers?.map((o) => db.offers.create(o)),
+      state.attributes?.map((a) => db.attributes.create(a)),
+    ].flat(),
+  )
 }
 
 export type dbFixture = Db & { name: string; load: ReturnType<typeof load> }

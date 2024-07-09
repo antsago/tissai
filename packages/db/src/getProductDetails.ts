@@ -25,27 +25,29 @@ const getProductDetails =
           sql<Brand>`${fn.jsonAgg("brands")}->0`.as("brand"),
           fn
             .jsonAgg(
-              toJsonb(jsonBuildObject({
-                label: ref("attributes.label"),
-                value: ref("attributes.value"),
-              }))
+              toJsonb(
+                jsonBuildObject({
+                  label: ref("attributes.label"),
+                  value: ref("attributes.value"),
+                }),
+              ),
             )
             .distinct()
             .as("attributes"),
           fn
             .jsonAgg(
               toJsonb(
-              jsonBuildObject({
-                url: ref("offers.url"),
-                price: ref("offers.price"),
-                currency: ref("offers.currency"),
-                seller: ref("offers.seller"),
-                site: jsonBuildObject({
-                  name: ref("sites.name"),
-                  icon: ref("sites.icon"),
+                jsonBuildObject({
+                  url: ref("offers.url"),
+                  price: ref("offers.price"),
+                  currency: ref("offers.currency"),
+                  seller: ref("offers.seller"),
+                  site: jsonBuildObject({
+                    name: ref("sites.name"),
+                    icon: ref("sites.icon"),
+                  }),
                 }),
-              }),
-              )
+              ),
             )
             .distinct()
             .as("offers"),

@@ -59,5 +59,8 @@ export const ATTRIBUTE = {
   product: PRODUCT.id,
 }
 export const CAT_ATTRIBUTE = {
-  id: "61636baa-ad62-40a1-a125-3352ba7ad4e1", label: "categoría", value: PRODUCT.category, product: PRODUCT.id
+  id: "61636baa-ad62-40a1-a125-3352ba7ad4e1",
+  label: "categoría",
+  value: PRODUCT.category,
+  product: PRODUCT.id,
 }

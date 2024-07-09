@@ -79,7 +79,9 @@ describe("attributes", () => {
     expect(pg).toHaveInserted(ATTRIBUTES, [foundAttributes[1].label])
   })
 
-  it("merges consecutive attributes with same label", async ({ mockPython, pg }) => {
+  it("merges consecutive attributes with same label", async ({
+    mockPython,
+  }) => {
     const TITLE = "Product and title"
     const foundAttributes = [
       { label: "category", value: "Product", offet: 0 },
