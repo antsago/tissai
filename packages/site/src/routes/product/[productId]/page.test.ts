@@ -122,6 +122,16 @@ describe("Product details page", () => {
       expect(undef).not.toBeInTheDocument()
     })
 
+    it("handles products without attributes", async ({ db }) => {
+      const section = await loadAndRender(db, PRODUCT.title, {
+        attributes: [],
+      })
+
+      const undef = section.queryByText(/undefined/)
+
+      expect(undef).not.toBeInTheDocument()
+    })
+
     it("handles products without brand", async ({ db }) => {
       const section = await loadAndRender(db, PRODUCT.title, { brand: undefined })
 

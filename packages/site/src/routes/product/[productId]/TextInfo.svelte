@@ -45,6 +45,7 @@
   {/if}
 
   <ChipContainer class="mt-4">
+    {#if category}
     <Chip
       background="bg-stone-200"
       style="order:{rng(attributes.length)}; z-index: {rng(0)};"
@@ -52,6 +53,7 @@
     >
       {category?.label}: {category?.value}
     </Chip>
+    {/if}
     {#each attributes as attribute, index}
       <Chip
         background="bg-stone-200"
