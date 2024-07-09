@@ -1,4 +1,4 @@
-import type { Attribute, Db, Page } from "@tissai/db"
+import type { Attribute, Db, Product } from "@tissai/db"
 import type { PythonPool } from "@tissai/python-pool"
 import { randomUUID } from "node:crypto"
 
@@ -31,19 +31,19 @@ function* mergeWords(title: string, words: PythonAttribute[]): Generator<Omit<Py
 }
 
 async function attributes(
-  title: string,
+  product: Product,
   python: PythonPool<
     { method: "attributes"; input: string },
     { attributes: PythonAttribute[] }
   >,
   db: Db,
 ): Promise<Attribute[]> {
-  const derivedInfo = await python.send({ method: "attributes", input: title })
+  const derivedInfo = await python.send({ method: "attributes", input: product.title })
   const labelled = derivedInfo.attributes
-  const merged = [...mergeWords(title, labelled)]
+  const merged = [...mergeWords(product.title, labelled)]
   const entities = merged.map((att) => ({
     id: randomUUID(),
-    title,
+    product: product.id,
     ...att,
   }))
 

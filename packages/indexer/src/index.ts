@@ -77,8 +77,7 @@ try {
           await offer(o, sellerEntity, page, productEntity, db)
         }),
       )
-
-      await attributes(productTitle, python, db)
+      await attributes(productEntity, python, db)
 
       index += 1
     } catch (err) {

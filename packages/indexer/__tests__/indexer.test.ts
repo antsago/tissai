@@ -101,13 +101,13 @@ describe(
         expect.arrayContaining([
           {
             id: expect.any(String),
-            title: PRODUCT.title,
+            product: products[0].id,
             label: "categoría",
             value: "Vaqueros",
           },
           {
             id: expect.any(String),
-            title: PRODUCT.title,
+            product: products[0].id,
             label: "modelo",
             value: "ajustados",
           },
