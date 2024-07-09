@@ -1,7 +1,7 @@
 import { sql } from "kysely"
 import { jsonBuildObject } from "kysely/helpers/postgres"
 import { Connection } from "./Connection.js"
-import { Product, Brand, builder } from "./tables/index.js"
+import { Product, Brand, builder, Attribute } from "./tables/index.js"
 
 const getProductDetails =
   (connection: Connection) => async (productId: Product["id"]) => {
@@ -11,6 +11,7 @@ const getProductDetails =
         .leftJoin("offers", "offers.product", "products.id")
         .innerJoin("sites", "offers.site", "sites.id")
         .leftJoin("brands", "brands.name", "products.brand")
+        .leftJoin("attributes", "attributes.product", "products.id")
         .select(({ fn, ref }) => [
           "products.title",
           "products.description",
@@ -20,6 +21,18 @@ const getProductDetails =
           sql<Brand>`${fn.jsonAgg("brands")}->0`.as("brand"),
           fn
             .jsonAgg(
+              fn('to_jsonb', [
+                jsonBuildObject({
+                  label: ref("attributes.label"),
+                  value: ref("attributes.value"),
+                }),
+              ])
+            )
+            .distinct()
+            .as("attributes"),
+          fn
+            .jsonAgg(
+              fn('to_jsonb', [
               jsonBuildObject({
                 url: ref("offers.url"),
                 price: ref("offers.price"),
@@ -30,7 +43,9 @@ const getProductDetails =
                   icon: ref("sites.icon"),
                 }),
               }),
+              ])
             )
+            .distinct()
             .as("offers"),
         ])
         .where("products.id", "=", productId)

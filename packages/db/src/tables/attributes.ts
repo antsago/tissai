@@ -20,8 +20,8 @@ export const initialize = (connection: Connection) =>
   connection.raw(`
     CREATE TABLE IF NOT EXISTS ${TABLE} (
       ${TABLE.id}             uuid PRIMARY KEY,
-      ${TABLE.label}          text,
-      ${TABLE.value}          text,
+      ${TABLE.label}          text NOT NULL,
+      ${TABLE.value}          text NOT NULL,
       ${TABLE.product}        uuid NOT NULL REFERENCES ${PRODUCTS}
     );`)
 

@@ -99,7 +99,8 @@ describe.concurrent("db", () => {
       sites: [SITE],
       sellers: [SELLER],
       products: [SIMILAR, PRODUCT],
-      offers: [OFFER, { ...OFFER, id: "3931b158-a7d2-41d5-9b13-7266fe976a2a" }],
+      offers: [OFFER, { ...OFFER, price: OFFER.price+10, id: "3931b158-a7d2-41d5-9b13-7266fe976a2a" }],
+      attributes: [ATTRIBUTE, { id: "61636baa-ad62-40a1-a125-3352ba7ad4e1", label: "category", value: PRODUCT.category, product: PRODUCT.id }]
     })
 
     const result = await db.getProductDetails(PRODUCT.id)
@@ -110,6 +111,10 @@ describe.concurrent("db", () => {
       images: PRODUCT.images,
       category: PRODUCT.category,
       tags: PRODUCT.tags,
+      attributes: [
+        { label: 'category', value: PRODUCT.category },
+        { label: ATTRIBUTE.label, value: ATTRIBUTE.value },
+      ],
       brand: BRAND,
       similar: [
         {
@@ -131,7 +136,7 @@ describe.concurrent("db", () => {
         },
         {
           url: OFFER.url,
-          price: OFFER.price,
+          price: OFFER.price+10,
           currency: OFFER.currency,
           seller: OFFER.seller,
           site: {
