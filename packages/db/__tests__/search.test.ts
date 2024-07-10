@@ -9,6 +9,8 @@ import {
   OFFER,
   SITE,
   SELLER,
+  CAT_ATTRIBUTE,
+  ATTRIBUTE,
 } from "#mocks"
 
 type Fixtures = { db: dbFixture }
@@ -123,6 +125,45 @@ describe.concurrent("search", () => {
       },
     ])
   })
+
+  it("filters by category attribute", async ({ expect, db }) => {
+    await db.load({ attributes: [{ ...CAT_ATTRIBUTE, product: product1.id }] })
+
+    const result = await db.searchProducts({
+      query: product2.title,
+      attributes: { [CAT_ATTRIBUTE.label]: [CAT_ATTRIBUTE.value] },
+    })
+
+    expect(result).toStrictEqual([
+      {
+        id: product1.id,
+        title: product1.title,
+        image: product1.images[0],
+        brand: BRAND,
+        price: offer1.price,
+      },
+    ])
+  })
+
+  it("filters by string attribute", async ({ expect, db }) => {
+    await db.load({ attributes: [{ ...ATTRIBUTE, product: product1.id }] })
+
+    const result = await db.searchProducts({
+      query: product2.title,
+      attributes: {[ATTRIBUTE.label]: [ATTRIBUTE.value]},
+    })
+
+    expect(result).toStrictEqual([
+      {
+        id: product1.id,
+        title: product1.title,
+        image: product1.images[0],
+        brand: BRAND,
+        price: offer1.price,
+      },
+    ])
+  })
+
 
   it("filters by tag", async ({ expect, db }) => {
     const result = await db.searchProducts({

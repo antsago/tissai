@@ -9,6 +9,7 @@ export type SearchParams = {
   min?: Offer["price"] | null
   max?: Offer["price"] | null
   tags?: Product["tags"]
+  attributes?: { [label: string]: string[] }
 }
 
 export const buildSearchQuery = ({
@@ -16,47 +17,52 @@ export const buildSearchQuery = ({
   min,
   max,
   tags = [],
-  ...parameters
+  brand,
+  category,
+  attributes,
 }: SearchParams) => {
-  const filters = Object.fromEntries(
-    Object.entries(parameters).filter(
-      ([k, v]) => v !== undefined && v !== null,
-    ),
-  )
   let query = builder
     .selectFrom("products")
-    .innerJoin("offers", "product", "products.id")
-    .select(({ fn, selectFrom }) => [
+    .innerJoin("offers", "offers.product", "products.id")
+    .leftJoin("attributes", "attributes.product", "products.id")
+    .select(({ fn, selectFrom, ref }) => [
       "products.id",
-      "title",
-      sql<string>`images[1]`.as("image"),
-      fn.min<string>("price").as("price"),
+      "products.title",
+      sql<string>`${ref("products.images")}[1]`.as("image"),
+      fn.min<string>("offers.price").as("price"),
       selectFrom("brands")
         .select(({ fn }) => fn.jsonAgg("brands").as("brand"))
         .whereRef("brands.name", "=", "products.brand")
         .as("brand"),
     ])
-    .where(({ and }) => and(filters))
     .groupBy("products.id")
     .orderBy(
       ({ val, fn }) =>
         fn<number>("ts_rank", [
-          fn("to_tsvector", [val("spanish"), "title"]),
+          fn("to_tsvector", [val("spanish"), "products.title"]),
           fn("websearch_to_tsquery", [val("spanish"), val(searchQuery)]),
         ]),
       "desc",
     )
     .limit(24)
 
+  query = attributes ? query.where((eb) => 
+    eb.and(Object.entries(attributes).map(([label, value]) =>
+      eb.and([
+        eb('attributes.label', '=', label),
+        eb('attributes.value', '=', value),
+      ]))
+  )) : query
+  query = category !== null && category !== undefined ? query.where('products.category', '=', category) : query
+  query = brand !== null && brand !== undefined ? query.where('products.brand', '=', brand) : query
   query = tags.reduce(
-    (q, t) => q.where((eb) => eb(eb.val(t), "=", eb.fn.any("tags"))),
+    (q, t) => q.where((eb) => eb(eb.val(t), "=", eb.fn.any("products.tags"))),
     query,
   )
-
   query =
-    min !== null && min !== undefined ? query.where("price", ">=", min) : query
+    min !== null && min !== undefined ? query.where("offers.price", ">=", min) : query
   query =
-    max !== null && max !== undefined ? query.where("price", "<=", max) : query
+    max !== null && max !== undefined ? query.where("offers.price", "<=", max) : query
 
   return query.compile()
 }
