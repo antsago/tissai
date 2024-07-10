@@ -12,8 +12,8 @@ describe("parseSearchParams", () => {
     const result = parseSearchParams(params)
 
     expect(result).toStrictEqual({
-      brand: null,
-      category: null,
+      brand: undefined,
+      category: undefined,
       max: undefined,
       min: undefined,
       query: '',

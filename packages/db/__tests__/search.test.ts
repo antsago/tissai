@@ -202,19 +202,10 @@ describe.concurrent("search", () => {
     expect(result).toStrictEqual([product1Result])
   })
 
-  describe.each([null, undefined])("handles %s filters", (value) => {
-    it("ignores them", async ({ expect, db }) => {
-      const results = await db.searchProducts({
-        query: product2.title,
-        category: value,
-        brand: value,
-        min: value,
-        max: value,
-        attributes: {},
-      })
+  it("handles empty filters", async ({ expect, db }) => {
+    const results = await db.searchProducts({ query: '' })
 
-      expect(results.length).toBe(2)
-    })
+    expect(results.length).toBe(2)
   })
 
   it("handles all filters", async ({ expect, db }) => {

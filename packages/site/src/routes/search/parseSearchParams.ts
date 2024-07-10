@@ -1,12 +1,12 @@
 import type { SearchParams } from "@tissai/db"
 
 function parseSearchParams(params: URLSearchParams) {
-  const defaultFilters = {
+  const defaultFilters: SearchParams = {
     query: "",
     attributes: {},
     tags: [],
-    brand: null,
-    category: null,
+    brand: undefined,
+    category: undefined,
     max: undefined,
     min: undefined,
   }
@@ -52,7 +52,7 @@ function parseSearchParams(params: URLSearchParams) {
           }
         }
     }
-  }, defaultFilters as SearchParams)
+  }, defaultFilters)
 }
 
 export default parseSearchParams

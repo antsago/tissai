@@ -1,14 +1,14 @@
 import { sql } from "kysely"
 import { Connection } from "./Connection.js"
-import { Product, Offer, builder } from "./tables/index.js"
+import { builder } from "./tables/index.js"
 
 export type SearchParams = {
   query: string
-  brand?: Product["brand"] | null
-  category?: Product["category"] | null
-  min?: Offer["price"] | null
-  max?: Offer["price"] | null
-  tags?: Product["tags"]
+  brand?: string
+  category?: string
+  min?: number
+  max?: number
+  tags?: string[]
   attributes?: { [label: string]: string[] }
 }
 
@@ -85,7 +85,7 @@ export const buildSearchQuery = ({
 }
 
 const searchProducts =
-  (connection: Connection) => async (parameters: SearchParams) => {
+  (connection: Connection) => async (parameters: Parameters<typeof buildSearchQuery>[0]) => {
     const response = await connection.query(buildSearchQuery(parameters))
 
     return response.map((p) => ({
