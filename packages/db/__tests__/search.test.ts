@@ -135,7 +135,7 @@ describe.concurrent("search", () => {
       })
 
       const result = await db.searchProducts({
-        query: product2.title,
+        query: PRODUCT.title,
         attributes: {
           [ATTRIBUTE.label]: [OTHER_ATTRIBUTE.value, ATTRIBUTE.value],
         },

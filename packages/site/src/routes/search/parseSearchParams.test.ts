@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest"
-import { QUERY } from "mocks"
+import { ATTRIBUTE, QUERY } from "mocks"
 import parseSearchParams from "./parseSearchParams"
 
 describe("parseSearchParams", () => {
@@ -18,6 +18,7 @@ describe("parseSearchParams", () => {
       min: undefined,
       query: '',
       tags: [],
+      attributes: {},
     })
   })
 
@@ -33,6 +34,7 @@ describe("parseSearchParams", () => {
     params.append("brand", brand)
     params.append("category", category)
     params.append("inc", tag)
+    params.append(ATTRIBUTE.label, ATTRIBUTE.value)
 
     const result = parseSearchParams(params)
 
@@ -43,6 +45,9 @@ describe("parseSearchParams", () => {
       max,
       category,
       tags: [tag],
+      attributes: {
+        [ATTRIBUTE.label]: [ATTRIBUTE.value],
+      }
     })
   })
 

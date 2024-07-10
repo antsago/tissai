@@ -19,7 +19,7 @@ export const buildSearchQuery = ({
   tags = [],
   brand,
   category,
-  attributes,
+  attributes = {},
 }: SearchParams) => {
   let query = builder
     .selectFrom("products")
@@ -46,8 +46,7 @@ export const buildSearchQuery = ({
     )
     .limit(24)
 
-  query = attributes
-    ? query.where((eb) =>
+  query = query.where((eb) =>
         eb.and(
           Object.entries(attributes).map(([label, values]) =>
             eb.or(
@@ -61,7 +60,6 @@ export const buildSearchQuery = ({
           ),
         ),
       )
-    : query
   query =
     category !== null && category !== undefined
       ? query.where("products.category", "=", category)
