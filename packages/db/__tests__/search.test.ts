@@ -126,31 +126,12 @@ describe.concurrent("search", () => {
     ])
   })
 
-  it("filters by category attribute", async ({ expect, db }) => {
-    await db.load({ attributes: [{ ...CAT_ATTRIBUTE, product: product1.id }] })
-
-    const result = await db.searchProducts({
-      query: product2.title,
-      attributes: { [CAT_ATTRIBUTE.label]: [CAT_ATTRIBUTE.value] },
-    })
-
-    expect(result).toStrictEqual([
-      {
-        id: product1.id,
-        title: product1.title,
-        image: product1.images[0],
-        brand: BRAND,
-        price: offer1.price,
-      },
-    ])
-  })
-
   it("filters by string attribute", async ({ expect, db }) => {
     await db.load({ attributes: [{ ...ATTRIBUTE, product: product1.id }] })
 
     const result = await db.searchProducts({
       query: product2.title,
-      attributes: {[ATTRIBUTE.label]: [ATTRIBUTE.value]},
+      attributes: { [ATTRIBUTE.label]: [ATTRIBUTE.value] },
     })
 
     expect(result).toStrictEqual([
@@ -164,6 +145,43 @@ describe.concurrent("search", () => {
     ])
   })
 
+  it("filters by multiple values", async ({ expect, db }) => {
+    const OTHER_ATTRIBUTE = {
+      id: randomUUID(),
+      label: ATTRIBUTE.label,
+      value: "asdf",
+      product: PRODUCT.id,
+    }
+    await db.load({
+      products: [PRODUCT],
+      offers: [{ ...OFFER, seller: undefined }],
+      attributes: [{ ...ATTRIBUTE, product: product1.id }, OTHER_ATTRIBUTE],
+    })
+
+    const result = await db.searchProducts({
+      query: product2.title,
+      attributes: {
+        [ATTRIBUTE.label]: [OTHER_ATTRIBUTE.value, ATTRIBUTE.value],
+      },
+    })
+
+    expect(result).toStrictEqual([
+      {
+        id: PRODUCT.id,
+        title: PRODUCT.title,
+        image: PRODUCT.images[0],
+        brand: BRAND,
+        price: OFFER.price,
+      },
+      {
+        id: product1.id,
+        title: product1.title,
+        image: product1.images[0],
+        brand: BRAND,
+        price: offer1.price,
+      },
+    ])
+  })
 
   it("filters by tag", async ({ expect, db }) => {
     const result = await db.searchProducts({

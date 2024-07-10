@@ -46,23 +46,42 @@ export const buildSearchQuery = ({
     )
     .limit(24)
 
-  query = attributes ? query.where((eb) => 
-    eb.and(Object.entries(attributes).map(([label, value]) =>
-      eb.and([
-        eb('attributes.label', '=', label),
-        eb('attributes.value', '=', value),
-      ]))
-  )) : query
-  query = category !== null && category !== undefined ? query.where('products.category', '=', category) : query
-  query = brand !== null && brand !== undefined ? query.where('products.brand', '=', brand) : query
+  query = attributes
+    ? query.where((eb) =>
+        eb.and(
+          Object.entries(attributes).map(([label, values]) =>
+            eb.or(
+              values.map((value) =>
+                eb.and([
+                  eb("attributes.label", "=", label),
+                  eb("attributes.value", "=", value),
+                ]),
+              ),
+            ),
+          ),
+        ),
+      )
+    : query
+  query =
+    category !== null && category !== undefined
+      ? query.where("products.category", "=", category)
+      : query
+  query =
+    brand !== null && brand !== undefined
+      ? query.where("products.brand", "=", brand)
+      : query
   query = tags.reduce(
     (q, t) => q.where((eb) => eb(eb.val(t), "=", eb.fn.any("products.tags"))),
     query,
   )
   query =
-    min !== null && min !== undefined ? query.where("offers.price", ">=", min) : query
+    min !== null && min !== undefined
+      ? query.where("offers.price", ">=", min)
+      : query
   query =
-    max !== null && max !== undefined ? query.where("offers.price", "<=", max) : query
+    max !== null && max !== undefined
+      ? query.where("offers.price", "<=", max)
+      : query
 
   return query.compile()
 }
