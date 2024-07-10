@@ -22,7 +22,7 @@ describe.concurrent("search", () => {
   const tag2 = { name: "anothertag" }
   const product1 = {
     id: randomUUID(),
-    title: PRODUCT.title,
+    title: "Pantalones ajustados",
     images: PRODUCT.images,
     category: PRODUCT.category,
     brand: PRODUCT.brand,
@@ -66,6 +66,7 @@ describe.concurrent("search", () => {
       brands: [BRAND],
       products: [product1, product2],
       offers: [offer1, offer2],
+      attributes: [{ ...ATTRIBUTE, product: product1.id }],
     })
   })
 
@@ -111,10 +112,6 @@ describe.concurrent("search", () => {
   })
 
   describe("attributes", () => {
-    beforeEach<Fixtures>(async ({ db }) => {
-      await db.load({ attributes: [{ ...ATTRIBUTE, product: product1.id }] })
-    })
-
     it("filters by string attribute", async ({ expect, db }) => {
       const result = await db.searchProducts({
         query: product2.title,
@@ -213,6 +210,7 @@ describe.concurrent("search", () => {
         brand: value,
         min: value,
         max: value,
+        attributes: {},
       })
 
       expect(results.length).toBe(2)
@@ -227,6 +225,7 @@ describe.concurrent("search", () => {
       max: OFFER.price,
       min: offer1.price,
       tags: [TAG.name],
+      attributes: { [ATTRIBUTE.label]: [ATTRIBUTE.value] },
     })
 
     await expect(act).resolves.not.toThrow()
