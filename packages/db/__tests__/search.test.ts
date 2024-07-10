@@ -9,7 +9,6 @@ import {
   OFFER,
   SITE,
   SELLER,
-  CAT_ATTRIBUTE,
   ATTRIBUTE,
 } from "#mocks"
 
@@ -52,6 +51,13 @@ describe.concurrent("search", () => {
     id: randomUUID(),
     product: product2.id,
   }
+  const product1Result = {
+    id: product1.id,
+    title: product1.title,
+    image: product1.images[0],
+    brand: BRAND,
+    price: offer1.price,
+  }
   beforeEach<Fixtures>(async ({ db }) => {
     await db.load({
       sites: [SITE],
@@ -74,13 +80,7 @@ describe.concurrent("search", () => {
         brand: undefined,
         price: undefined,
       },
-      {
-        id: product1.id,
-        title: product1.title,
-        image: product1.images[0],
-        brand: BRAND,
-        price: offer1.price,
-      },
+      product1Result,
     ])
   })
 
@@ -98,15 +98,7 @@ describe.concurrent("search", () => {
       brand: BRAND.name,
     })
 
-    expect(result).toStrictEqual([
-      {
-        id: product1.id,
-        title: product1.title,
-        image: product1.images[0],
-        brand: BRAND,
-        price: offer1.price,
-      },
-    ])
+    expect(result).toStrictEqual([product1Result])
   })
 
   it("filters by category", async ({ expect, db }) => {
@@ -115,72 +107,54 @@ describe.concurrent("search", () => {
       category: CATEGORY.name,
     })
 
-    expect(result).toStrictEqual([
-      {
-        id: product1.id,
-        title: product1.title,
-        image: product1.images[0],
-        brand: BRAND,
-        price: offer1.price,
-      },
-    ])
+    expect(result).toStrictEqual([product1Result])
   })
 
-  it("filters by string attribute", async ({ expect, db }) => {
-    await db.load({ attributes: [{ ...ATTRIBUTE, product: product1.id }] })
-
-    const result = await db.searchProducts({
-      query: product2.title,
-      attributes: { [ATTRIBUTE.label]: [ATTRIBUTE.value] },
+  describe("attributes", () => {
+    beforeEach<Fixtures>(async ({ db }) => {
+      await db.load({ attributes: [{ ...ATTRIBUTE, product: product1.id }] })
     })
 
-    expect(result).toStrictEqual([
-      {
-        id: product1.id,
-        title: product1.title,
-        image: product1.images[0],
-        brand: BRAND,
-        price: offer1.price,
-      },
-    ])
-  })
+    it("filters by string attribute", async ({ expect, db }) => {
+      const result = await db.searchProducts({
+        query: product2.title,
+        attributes: { [ATTRIBUTE.label]: [ATTRIBUTE.value] },
+      })
 
-  it("filters by multiple values", async ({ expect, db }) => {
-    const OTHER_ATTRIBUTE = {
-      id: randomUUID(),
-      label: ATTRIBUTE.label,
-      value: "asdf",
-      product: PRODUCT.id,
-    }
-    await db.load({
-      products: [PRODUCT],
-      offers: [{ ...OFFER, seller: undefined }],
-      attributes: [{ ...ATTRIBUTE, product: product1.id }, OTHER_ATTRIBUTE],
+      expect(result).toStrictEqual([product1Result])
     })
 
-    const result = await db.searchProducts({
-      query: product2.title,
-      attributes: {
-        [ATTRIBUTE.label]: [OTHER_ATTRIBUTE.value, ATTRIBUTE.value],
-      },
-    })
+    it("accepts multiple values", async ({ expect, db }) => {
+      const OTHER_ATTRIBUTE = {
+        id: randomUUID(),
+        label: ATTRIBUTE.label,
+        value: "asdf",
+        product: PRODUCT.id,
+      }
+      await db.load({
+        products: [PRODUCT],
+        offers: [{ ...OFFER, seller: undefined }],
+        attributes: [OTHER_ATTRIBUTE],
+      })
 
-    expect(result).toStrictEqual([
-      {
-        id: PRODUCT.id,
-        title: PRODUCT.title,
-        image: PRODUCT.images[0],
-        brand: BRAND,
-        price: OFFER.price,
-      },
-      {
-        id: product1.id,
-        title: product1.title,
-        image: product1.images[0],
-        brand: BRAND,
-        price: offer1.price,
-      },
-    ])
+      const result = await db.searchProducts({
+        query: product2.title,
+        attributes: {
+          [ATTRIBUTE.label]: [OTHER_ATTRIBUTE.value, ATTRIBUTE.value],
+        },
+      })
+
+      expect(result).toStrictEqual([
+        {
+          id: PRODUCT.id,
+          title: PRODUCT.title,
+          image: PRODUCT.images[0],
+          brand: BRAND,
+          price: OFFER.price,
+        },
+        product1Result,
+      ])
+    })
   })
 
   it("filters by tag", async ({ expect, db }) => {
@@ -189,15 +163,7 @@ describe.concurrent("search", () => {
       tags: [TAG.name],
     })
 
-    expect(result).toStrictEqual([
-      {
-        id: product1.id,
-        title: product1.title,
-        image: product1.images[0],
-        brand: BRAND,
-        price: offer1.price,
-      },
-    ])
+    expect(result).toStrictEqual([product1Result])
   })
 
   it("requires all tags", async ({ expect, db }) => {
@@ -206,15 +172,7 @@ describe.concurrent("search", () => {
       tags: [TAG.name, tag2.name],
     })
 
-    expect(result).toStrictEqual([
-      {
-        id: product1.id,
-        title: product1.title,
-        image: product1.images[0],
-        brand: BRAND,
-        price: offer1.price,
-      },
-    ])
+    expect(result).toStrictEqual([product1Result])
   })
 
   it("filters by min price", async ({ expect, db }) => {
@@ -244,15 +202,7 @@ describe.concurrent("search", () => {
       max: offer1.price,
     })
 
-    expect(result).toStrictEqual([
-      {
-        id: product1.id,
-        title: product1.title,
-        image: product1.images[0],
-        brand: BRAND,
-        price: offer1.price,
-      },
-    ])
+    expect(result).toStrictEqual([product1Result])
   })
 
   describe.each([null, undefined])("handles %s filters", (value) => {
