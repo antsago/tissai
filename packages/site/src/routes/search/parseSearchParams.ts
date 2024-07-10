@@ -48,7 +48,7 @@ function parseSearchParams(params: URLSearchParams) {
           ...filters,
           attributes: {
             ...filters.attributes,
-            [key]: [value],
+            [key]: [...(filters.attributes?.[key] ?? []), value],
           }
         }
     }

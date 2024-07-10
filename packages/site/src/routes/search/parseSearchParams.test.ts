@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest"
-import { ATTRIBUTE, QUERY } from "mocks"
+import { ATTRIBUTE, CAT_ATTRIBUTE, QUERY } from "mocks"
 import parseSearchParams from "./parseSearchParams"
 
 describe("parseSearchParams", () => {
@@ -61,6 +61,34 @@ describe("parseSearchParams", () => {
 
     expect(result).toStrictEqual(expect.objectContaining({
       tags: [tag1, tag2],
+    }))
+  })
+
+  it("supports multiple attributes", async () => {
+    params.append(CAT_ATTRIBUTE.label, CAT_ATTRIBUTE.value)
+    params.append(ATTRIBUTE.label, ATTRIBUTE.value)
+
+    const result = parseSearchParams(params)
+
+    expect(result).toStrictEqual(expect.objectContaining({
+      attributes: {
+        [CAT_ATTRIBUTE.label]: [CAT_ATTRIBUTE.value],
+        [ATTRIBUTE.label]: [ATTRIBUTE.value],
+      }
+    }))
+  })
+
+  it("supports multiple attribute values", async () => {
+    const otherValue = "myTag"
+    params.append(ATTRIBUTE.label, ATTRIBUTE.value)
+    params.append(ATTRIBUTE.label, otherValue)
+
+    const result = parseSearchParams(params)
+
+    expect(result).toStrictEqual(expect.objectContaining({
+      attributes: {
+        [ATTRIBUTE.label]: [ATTRIBUTE.value, otherValue],
+      }
     }))
   })
 })
