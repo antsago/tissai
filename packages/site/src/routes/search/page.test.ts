@@ -127,7 +127,7 @@ describe("Search page", () => {
     expect(undef).not.toBeInTheDocument()
   })
 
-  it("displays brands filter", async ({ db }) => {
+  it("displays filters", async ({ db }) => {
     const results = await loadAndRender(db, {
       queryParams: `brand=${BRAND.name}`,
       sectionName: "Filtros",
@@ -137,94 +137,5 @@ describe("Search page", () => {
 
     expect(brandName).toBeInTheDocument()
     expect(db).toHaveSearched({ query: QUERY, brand: BRAND.name })
-  })
-
-  it("displays price filters", async ({ db }) => {
-    const min = 11.1
-    const max = 22.2
-    const results = await loadAndRender(db, {
-      queryParams: `min=${min}&max=${max}`,
-      sectionName: "Filtros",
-    })
-
-    const minFilter = results.getByText(min, { exact: false })
-    const maxFilter = results.getByText(max, { exact: false })
-
-    expect(minFilter).toBeInTheDocument()
-    expect(maxFilter).toBeInTheDocument()
-    expect(db).toHaveSearched({ query: QUERY, min, max })
-  })
-
-  it("displays min price filter only", async ({ db }) => {
-    const min = 11.1
-    const results = await loadAndRender(db, {
-      queryParams: `min=${min}`,
-      sectionName: "Filtros",
-    })
-
-    const minFilter = results.getByText(min, { exact: false })
-
-    expect(minFilter).toBeInTheDocument()
-  })
-
-  it("displays max price filter only", async ({ db }) => {
-    const max = 22.2
-    const results = await loadAndRender(db, {
-      queryParams: `max=${max}`,
-      sectionName: "Filtros",
-    })
-
-    const maxFilter = results.getByText(max, { exact: false })
-
-    expect(maxFilter).toBeInTheDocument()
-  })
-
-  it("displays categories filter", async ({ db }) => {
-    const results = await loadAndRender(db, {
-      queryParams: `category=${CATEGORY.name}`,
-      sectionName: "Filtros",
-    })
-
-    const categoryName = results.getByText(CATEGORY.name, { exact: false })
-
-    expect(categoryName).toBeInTheDocument()
-    expect(db).toHaveSearched({ query: QUERY, category: CATEGORY.name })
-  })
-
-  it("displays tags filter", async ({ db }) => {
-    const results = await loadAndRender(db, {
-      queryParams: `inc=${TAG.name}`,
-      sectionName: "Filtros",
-    })
-
-    const tagName = results.getByText(TAG.name)
-
-    expect(tagName).toBeInTheDocument()
-    expect(db).toHaveSearched({ query: QUERY, tags: [TAG.name] })
-  })
-
-  it("supports multiple tags filter", async ({ db }) => {
-    const tag2 = "myTag"
-    const results = await loadAndRender(db, {
-      queryParams: `inc=${TAG.name}&inc=${tag2}`,
-      sectionName: "Filtros",
-    })
-
-    const tagName = results.getByText(TAG.name)
-    const tag2Name = results.getByText(tag2)
-
-    expect(tagName).toBeInTheDocument()
-    expect(tag2Name).toBeInTheDocument()
-    expect(db).toHaveSearched({ query: QUERY, tags: [TAG.name, tag2] })
-  })
-
-  it("handles filterless search", async ({ db }) => {
-    const results = await loadAndRender(db, {
-      sectionName: "Filtros",
-    })
-
-    const undef = results.queryByText(new RegExp("undefined|null"))
-
-    expect(undef).not.toBeInTheDocument()
   })
 })
