@@ -157,7 +157,6 @@ describe("Search page", () => {
 
   it("displays min price filter only", async ({ db }) => {
     const min = 11.1
-    const max = 22.2
     const results = await loadAndRender(db, {
       queryParams: `min=${min}`,
       sectionName: "Filtros",
@@ -169,7 +168,6 @@ describe("Search page", () => {
   })
 
   it("displays max price filter only", async ({ db }) => {
-    const min = 11.1
     const max = 22.2
     const results = await loadAndRender(db, {
       queryParams: `max=${max}`,
