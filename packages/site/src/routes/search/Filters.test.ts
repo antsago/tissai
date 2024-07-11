@@ -69,6 +69,22 @@ describe("Filters", () => {
     expect(boolAttribute).toBeInTheDocument()
   })
 
+  it("supports multiple attribute values", async () => {
+    render(Filters, { filters: { attributes: {
+      [CAT_ATTRIBUTE.label]: [CAT_ATTRIBUTE.value, BOOL_ATTRIBUTE.value],
+      [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value, BOOL_ATTRIBUTE.value],
+     } } })
+
+    const category = screen.getByText(
+      new RegExp(`^${CAT_ATTRIBUTE.label}.*${CAT_ATTRIBUTE.value}.*${BOOL_ATTRIBUTE.value}$`),
+    )
+    const stringAttribute = screen.getByText(
+      new RegExp(`^${STRING_ATTRIBUTE.label}.*${STRING_ATTRIBUTE.value}.*${BOOL_ATTRIBUTE.value}$`),
+    )
+    expect(category).toBeInTheDocument()
+    expect(stringAttribute).toBeInTheDocument()
+  })
+
   it("handles filterless search", async () => {
     render(Filters, { filters: {} })
 

@@ -13,7 +13,7 @@
 <ChipContainer class={classes}>
   {#if category}
     <Chip orange background="bg-stone-50" style="z-index: {attributesLength + 3}">
-      categoría: {category[0]}
+      categoría: {category.join(' o ')}
     </Chip>
   {/if}
   {#if filters.brand}
@@ -38,7 +38,7 @@
       {#if attribute.value.length === 1 && attribute.value[0] === attribute.label}
         {attribute.label}
       {:else}
-        {attribute.label}: {attribute.value[0]}
+        {attribute.label}: {attribute.value.join(' o ')}
       {/if}
     </Chip>
   {/each}
