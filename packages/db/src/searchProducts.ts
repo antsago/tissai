@@ -47,19 +47,19 @@ export const buildSearchQuery = ({
     .limit(24)
 
   query = query.where((eb) =>
-        eb.and(
-          Object.entries(attributes).map(([label, values]) =>
-            eb.or(
-              values.map((value) =>
-                eb.and([
-                  eb("attributes.label", "=", label),
-                  eb("attributes.value", "=", value),
-                ]),
-              ),
-            ),
+    eb.and(
+      Object.entries(attributes).map(([label, values]) =>
+        eb.or(
+          values.map((value) =>
+            eb.and([
+              eb("attributes.label", "=", label),
+              eb("attributes.value", "=", value),
+            ]),
           ),
         ),
-      )
+      ),
+    ),
+  )
   query =
     category !== null && category !== undefined
       ? query.where("products.category", "=", category)
@@ -85,7 +85,8 @@ export const buildSearchQuery = ({
 }
 
 const searchProducts =
-  (connection: Connection) => async (parameters: Parameters<typeof buildSearchQuery>[0]) => {
+  (connection: Connection) =>
+  async (parameters: Parameters<typeof buildSearchQuery>[0]) => {
     const response = await connection.query(buildSearchQuery(parameters))
 
     return response.map((p) => ({

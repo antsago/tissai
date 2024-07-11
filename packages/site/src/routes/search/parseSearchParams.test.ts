@@ -16,7 +16,7 @@ describe("parseSearchParams", () => {
       category: undefined,
       max: undefined,
       min: undefined,
-      query: '',
+      query: "",
       tags: [],
       attributes: {},
     })
@@ -47,7 +47,7 @@ describe("parseSearchParams", () => {
       tags: [tag],
       attributes: {
         [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value],
-      }
+      },
     })
   })
 
@@ -59,9 +59,11 @@ describe("parseSearchParams", () => {
 
     const result = parseSearchParams(params)
 
-    expect(result).toStrictEqual(expect.objectContaining({
-      tags: [tag1, tag2],
-    }))
+    expect(result).toStrictEqual(
+      expect.objectContaining({
+        tags: [tag1, tag2],
+      }),
+    )
   })
 
   it("supports multiple attributes", async () => {
@@ -70,12 +72,14 @@ describe("parseSearchParams", () => {
 
     const result = parseSearchParams(params)
 
-    expect(result).toStrictEqual(expect.objectContaining({
-      attributes: {
-        [CAT_ATTRIBUTE.label]: [CAT_ATTRIBUTE.value],
-        [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value],
-      }
-    }))
+    expect(result).toStrictEqual(
+      expect.objectContaining({
+        attributes: {
+          [CAT_ATTRIBUTE.label]: [CAT_ATTRIBUTE.value],
+          [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value],
+        },
+      }),
+    )
   })
 
   it("supports multiple attribute values", async () => {
@@ -85,10 +89,12 @@ describe("parseSearchParams", () => {
 
     const result = parseSearchParams(params)
 
-    expect(result).toStrictEqual(expect.objectContaining({
-      attributes: {
-        [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value, otherValue],
-      }
-    }))
+    expect(result).toStrictEqual(
+      expect.objectContaining({
+        attributes: {
+          [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value, otherValue],
+        },
+      }),
+    )
   })
 })

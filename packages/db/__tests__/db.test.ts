@@ -113,9 +113,7 @@ describe.concurrent("db", () => {
       images: PRODUCT.images,
       category: PRODUCT.category,
       tags: PRODUCT.tags,
-      attributes: [
-        { label: ATTRIBUTE.label, value: ATTRIBUTE.value },
-      ],
+      attributes: [{ label: ATTRIBUTE.label, value: ATTRIBUTE.value }],
       brand: BRAND,
       similar: [
         {

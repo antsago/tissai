@@ -1,7 +1,6 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, afterEach } from "vitest"
 import { render, screen, cleanup } from "@testing-library/svelte"
-import { CATEGORY, TAG } from "@tissai/db/mocks"
 import { CAT_ATTRIBUTE, BOOL_ATTRIBUTE, BRAND, STRING_ATTRIBUTE } from "mocks"
 import Filters from "./Filters.svelte"
 
@@ -49,11 +48,15 @@ describe("Filters", () => {
   })
 
   it("displays attributes filter", async () => {
-    render(Filters, { filters: { attributes: {
-      [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value],
-      [CAT_ATTRIBUTE.label]: [CAT_ATTRIBUTE.value],
-      [BOOL_ATTRIBUTE.label]: [BOOL_ATTRIBUTE.value],
-     } } })
+    render(Filters, {
+      filters: {
+        attributes: {
+          [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value],
+          [CAT_ATTRIBUTE.label]: [CAT_ATTRIBUTE.value],
+          [BOOL_ATTRIBUTE.label]: [BOOL_ATTRIBUTE.value],
+        },
+      },
+    })
 
     const category = screen.getByText(
       new RegExp(`^${CAT_ATTRIBUTE.label}.*${CAT_ATTRIBUTE.value}$`),
@@ -70,16 +73,27 @@ describe("Filters", () => {
   })
 
   it("supports multiple attribute values", async () => {
-    render(Filters, { filters: { attributes: {
-      [CAT_ATTRIBUTE.label]: [CAT_ATTRIBUTE.value, BOOL_ATTRIBUTE.value],
-      [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value, BOOL_ATTRIBUTE.value],
-     } } })
+    render(Filters, {
+      filters: {
+        attributes: {
+          [CAT_ATTRIBUTE.label]: [CAT_ATTRIBUTE.value, BOOL_ATTRIBUTE.value],
+          [STRING_ATTRIBUTE.label]: [
+            STRING_ATTRIBUTE.value,
+            BOOL_ATTRIBUTE.value,
+          ],
+        },
+      },
+    })
 
     const category = screen.getByText(
-      new RegExp(`^${CAT_ATTRIBUTE.label}.*${CAT_ATTRIBUTE.value}.*${BOOL_ATTRIBUTE.value}$`),
+      new RegExp(
+        `^${CAT_ATTRIBUTE.label}.*${CAT_ATTRIBUTE.value}.*${BOOL_ATTRIBUTE.value}$`,
+      ),
     )
     const stringAttribute = screen.getByText(
-      new RegExp(`^${STRING_ATTRIBUTE.label}.*${STRING_ATTRIBUTE.value}.*${BOOL_ATTRIBUTE.value}$`),
+      new RegExp(
+        `^${STRING_ATTRIBUTE.label}.*${STRING_ATTRIBUTE.value}.*${BOOL_ATTRIBUTE.value}$`,
+      ),
     )
     expect(category).toBeInTheDocument()
     expect(stringAttribute).toBeInTheDocument()

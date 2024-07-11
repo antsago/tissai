@@ -13,35 +13,35 @@ function parseSearchParams(params: URLSearchParams) {
 
   return [...params.entries()].reduce((filters, [key, value]) => {
     switch (key) {
-      case 'q':
+      case "q":
         return {
           ...filters,
-          query: value, 
+          query: value,
         }
-      case 'brand':
+      case "brand":
         return {
           ...filters,
-          brand: value, 
+          brand: value,
         }
-      case 'category':
+      case "category":
         return {
           ...filters,
-          category: value, 
+          category: value,
         }
-      case 'min':
+      case "min":
         return {
           ...filters,
-          min: parseFloat(value), 
+          min: parseFloat(value),
         }
-      case 'max':
+      case "max":
         return {
           ...filters,
-          max: parseFloat(value), 
+          max: parseFloat(value),
         }
-      case 'inc':
+      case "inc":
         return {
           ...filters,
-          tags: [...filters.tags ?? [], value], 
+          tags: [...(filters.tags ?? []), value],
         }
       default:
         return {
@@ -49,7 +49,7 @@ function parseSearchParams(params: URLSearchParams) {
           attributes: {
             ...filters.attributes,
             [key]: [...(filters.attributes?.[key] ?? []), value],
-          }
+          },
         }
     }
   }, defaultFilters)

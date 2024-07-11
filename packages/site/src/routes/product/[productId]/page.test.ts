@@ -36,11 +36,7 @@ describe("Product details page", () => {
     description: PRODUCT.description,
     images: PRODUCT.images,
     brand: BRAND,
-    attributes: [
-      STRING_ATTRIBUTE,
-      CAT_ATTRIBUTE,
-      BOOL_ATTRIBUTE,
-    ],
+    attributes: [STRING_ATTRIBUTE, CAT_ATTRIBUTE, BOOL_ATTRIBUTE],
     offers: [
       {
         url: OFFER.url,

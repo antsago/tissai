@@ -203,7 +203,7 @@ describe.concurrent("search", () => {
   })
 
   it("handles empty filters", async ({ expect, db }) => {
-    const results = await db.searchProducts({ query: '' })
+    const results = await db.searchProducts({ query: "" })
 
     expect(results.length).toBe(2)
   })
