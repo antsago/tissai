@@ -5,22 +5,24 @@
   let classes = ""
   export { classes as class }
   export let filters: Omit<SearchParams, "query">
-  const tagsLength = filters.tags?.length ?? 0
+  const { ["categoría"]: category, ...otherAttributes } = filters?.attributes ?? {}
+  const attributes = Object.entries(otherAttributes).map(([label, value]) => ({ label, value }))
+  const attributesLength = attributes.length ?? 0
 </script>
 
 <ChipContainer class={classes}>
-  {#if filters.category}
-    <Chip orange background="bg-stone-50" style="z-index: {tagsLength + 3}">
-      categoría: {filters.category}
+  {#if category}
+    <Chip orange background="bg-stone-50" style="z-index: {attributesLength + 3}">
+      categoría: {category[0]}
     </Chip>
   {/if}
   {#if filters.brand}
-    <Chip background="bg-stone-50" style="z-index: {tagsLength + 2}">
+    <Chip background="bg-stone-50" style="z-index: {attributesLength + 2}">
       marca: {filters.brand}
     </Chip>
   {/if}
   {#if filters.min || filters.max}
-    <Chip background="bg-stone-50" style="z-index: {tagsLength + 1}">
+    <Chip background="bg-stone-50" style="z-index: {attributesLength + 1}">
       precio:
       {#if filters.min && filters.max}
         {filters.min} - {filters.max}
@@ -31,11 +33,13 @@
       {/if}
     </Chip>
   {/if}
-  {#if filters.tags}
-    {#each filters.tags as tag, index}
-      <Chip background="bg-stone-50" style="z-index: {tagsLength - index}">
-        {tag}
-      </Chip>
-    {/each}
-  {/if}
+  {#each attributes as attribute, index}
+    <Chip background="bg-stone-50" style="z-index: {attributesLength - index}">
+      {#if attribute.value.length === 1 && attribute.value[0] === attribute.label}
+        {attribute.label}
+      {:else}
+        {attribute.label}: {attribute.value[0]}
+      {/if}
+    </Chip>
+  {/each}
 </ChipContainer>

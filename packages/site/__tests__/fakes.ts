@@ -1,6 +1,6 @@
-import { PRODUCT as DB_PRODUCT } from "@tissai/db/mocks"
+import { PRODUCT as DB_PRODUCT, ATTRIBUTE as ATTRIBUTE } from "@tissai/db/mocks"
 
-export { BRAND, OFFER, SITE, ATTRIBUTE, CAT_ATTRIBUTE } from "@tissai/db/mocks"
+export { BRAND, OFFER, SITE } from "@tissai/db/mocks"
 
 export const PRODUCT = {
   ...DB_PRODUCT,
@@ -12,3 +12,6 @@ export const SIMILAR = {
   image: "https://example.com/related_product.jpg",
 }
 export const QUERY = PRODUCT.title
+export const STRING_ATTRIBUTE = { label: ATTRIBUTE.label, value: ATTRIBUTE.value }
+export const BOOL_ATTRIBUTE = { label: "lavados", value: "lavados" }
+export const CAT_ATTRIBUTE = { label: "categoría", value: PRODUCT.category }

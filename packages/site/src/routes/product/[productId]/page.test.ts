@@ -9,8 +9,9 @@ import {
   BRAND,
   OFFER,
   SITE,
-  ATTRIBUTE,
+  STRING_ATTRIBUTE,
   CAT_ATTRIBUTE,
+  BOOL_ATTRIBUTE,
 } from "mocks"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
@@ -24,7 +25,6 @@ describe("Product details page", () => {
     cleanup()
   })
 
-  const BOOL_ATTRIBUTE = { label: "lavados", value: "lavados" }
   const OFFER2 = {
     url: "www.example.com/offer2.html",
     site: {
@@ -37,8 +37,8 @@ describe("Product details page", () => {
     images: PRODUCT.images,
     brand: BRAND,
     attributes: [
-      { value: CAT_ATTRIBUTE.value, label: CAT_ATTRIBUTE.label },
-      { value: ATTRIBUTE.value, label: ATTRIBUTE.label },
+      STRING_ATTRIBUTE,
+      CAT_ATTRIBUTE,
       BOOL_ATTRIBUTE,
     ],
     offers: [
@@ -90,7 +90,7 @@ describe("Product details page", () => {
         new RegExp(`^${CAT_ATTRIBUTE.label}.*${CAT_ATTRIBUTE.value}$`),
       )
       const stringAttribute = section.getByText(
-        new RegExp(`^${ATTRIBUTE.label}.*${ATTRIBUTE.value}$`),
+        new RegExp(`^${STRING_ATTRIBUTE.label}.*${STRING_ATTRIBUTE.value}$`),
       )
       const boolAttribute = section.getByText(
         new RegExp(`^${BOOL_ATTRIBUTE.label}$`),

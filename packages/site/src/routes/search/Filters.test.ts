@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom/vitest"
-import { describe, it, expect, afterEach, vi } from "vitest"
+import { describe, it, expect, afterEach } from "vitest"
 import { render, screen, cleanup } from "@testing-library/svelte"
-import { CATEGORY, MockPg, OFFER, TAG, mockDbFixture } from "@tissai/db/mocks"
-import { QUERY, SIMILAR, BRAND } from "mocks"
+import { CATEGORY, TAG } from "@tissai/db/mocks"
+import { CAT_ATTRIBUTE, BOOL_ATTRIBUTE, BRAND, STRING_ATTRIBUTE } from "mocks"
 import Filters from "./Filters.svelte"
 
 describe("Filters", () => {
@@ -48,29 +48,25 @@ describe("Filters", () => {
     expect(maxFilter).toBeInTheDocument()
   })
 
-  it("displays categories filter", async () => {
-    render(Filters, { filters: { category: CATEGORY.name } })
+  it("displays attributes filter", async () => {
+    render(Filters, { filters: { attributes: {
+      [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value],
+      [CAT_ATTRIBUTE.label]: [CAT_ATTRIBUTE.value],
+      [BOOL_ATTRIBUTE.label]: [BOOL_ATTRIBUTE.value],
+     } } })
 
-    const categoryName = screen.getByText(CATEGORY.name, { exact: false })
-    expect(categoryName).toBeInTheDocument()
-  })
-
-  it("displays tags filter", async () => {
-    render(Filters, { filters: { tags: [TAG.name] } })
-
-    const tagName = screen.getByText(TAG.name)
-    expect(tagName).toBeInTheDocument()
-  })
-
-  it("supports multiple tags filter", async () => {
-    const tag2 = "myTag"
-
-    render(Filters, { filters: { tags: [TAG.name, tag2] } })
-
-    const tagName = screen.getByText(TAG.name)
-    const tag2Name = screen.getByText(tag2)
-    expect(tagName).toBeInTheDocument()
-    expect(tag2Name).toBeInTheDocument()
+    const category = screen.getByText(
+      new RegExp(`^${CAT_ATTRIBUTE.label}.*${CAT_ATTRIBUTE.value}$`),
+    )
+    const stringAttribute = screen.getByText(
+      new RegExp(`^${STRING_ATTRIBUTE.label}.*${STRING_ATTRIBUTE.value}$`),
+    )
+    const boolAttribute = screen.getByText(
+      new RegExp(`^${BOOL_ATTRIBUTE.label}$`),
+    )
+    expect(category).toBeInTheDocument()
+    expect(stringAttribute).toBeInTheDocument()
+    expect(boolAttribute).toBeInTheDocument()
   })
 
   it("handles filterless search", async () => {

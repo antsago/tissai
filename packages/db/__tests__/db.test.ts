@@ -9,7 +9,6 @@ import {
   TAG,
   SELLER,
   ATTRIBUTE,
-  CAT_ATTRIBUTE,
   dbFixture,
 } from "#mocks"
 
@@ -103,7 +102,7 @@ describe.concurrent("db", () => {
           id: "3931b158-a7d2-41d5-9b13-7266fe976a2a",
         },
       ],
-      attributes: [ATTRIBUTE, CAT_ATTRIBUTE],
+      attributes: [ATTRIBUTE],
     })
 
     const result = await db.getProductDetails(PRODUCT.id)
@@ -115,7 +114,6 @@ describe.concurrent("db", () => {
       category: PRODUCT.category,
       tags: PRODUCT.tags,
       attributes: [
-        { label: CAT_ATTRIBUTE.label, value: CAT_ATTRIBUTE.value },
         { label: ATTRIBUTE.label, value: ATTRIBUTE.value },
       ],
       brand: BRAND,

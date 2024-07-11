@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest"
-import { ATTRIBUTE, CAT_ATTRIBUTE, QUERY } from "mocks"
+import { STRING_ATTRIBUTE, CAT_ATTRIBUTE, QUERY } from "mocks"
 import parseSearchParams from "./parseSearchParams"
 
 describe("parseSearchParams", () => {
@@ -34,7 +34,7 @@ describe("parseSearchParams", () => {
     params.append("brand", brand)
     params.append("category", category)
     params.append("inc", tag)
-    params.append(ATTRIBUTE.label, ATTRIBUTE.value)
+    params.append(STRING_ATTRIBUTE.label, STRING_ATTRIBUTE.value)
 
     const result = parseSearchParams(params)
 
@@ -46,7 +46,7 @@ describe("parseSearchParams", () => {
       category,
       tags: [tag],
       attributes: {
-        [ATTRIBUTE.label]: [ATTRIBUTE.value],
+        [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value],
       }
     })
   })
@@ -66,28 +66,28 @@ describe("parseSearchParams", () => {
 
   it("supports multiple attributes", async () => {
     params.append(CAT_ATTRIBUTE.label, CAT_ATTRIBUTE.value)
-    params.append(ATTRIBUTE.label, ATTRIBUTE.value)
+    params.append(STRING_ATTRIBUTE.label, STRING_ATTRIBUTE.value)
 
     const result = parseSearchParams(params)
 
     expect(result).toStrictEqual(expect.objectContaining({
       attributes: {
         [CAT_ATTRIBUTE.label]: [CAT_ATTRIBUTE.value],
-        [ATTRIBUTE.label]: [ATTRIBUTE.value],
+        [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value],
       }
     }))
   })
 
   it("supports multiple attribute values", async () => {
     const otherValue = "myTag"
-    params.append(ATTRIBUTE.label, ATTRIBUTE.value)
-    params.append(ATTRIBUTE.label, otherValue)
+    params.append(STRING_ATTRIBUTE.label, STRING_ATTRIBUTE.value)
+    params.append(STRING_ATTRIBUTE.label, otherValue)
 
     const result = parseSearchParams(params)
 
     expect(result).toStrictEqual(expect.objectContaining({
       attributes: {
-        [ATTRIBUTE.label]: [ATTRIBUTE.value, otherValue],
+        [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value, otherValue],
       }
     }))
   })
