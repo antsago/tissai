@@ -1,6 +1,7 @@
 import { sql } from "kysely"
+import { jsonBuildObject } from "kysely/helpers/postgres"
 import { Connection } from "./Connection.js"
-import { builder } from "./tables/index.js"
+import { Attribute, builder } from "./tables/index.js"
 
 export type SearchParams = {
   query: string
@@ -25,7 +26,7 @@ export const buildSearchQuery = ({
     .selectFrom("products")
     .innerJoin("offers", "offers.product", "products.id")
     .leftJoin("attributes", "attributes.product", "products.id")
-    .select(({ fn, selectFrom, ref }) => [
+    .select(({ fn, selectFrom, ref, val }) => [
       "products.id",
       "products.title",
       sql<string>`${ref("products.images")}[1]`.as("image"),
@@ -34,6 +35,19 @@ export const buildSearchQuery = ({
         .select(({ fn }) => fn.jsonAgg("brands").as("brand"))
         .whereRef("brands.name", "=", "products.brand")
         .as("brand"),
+      fn
+        .coalesce(
+          fn
+            .jsonAgg(
+              jsonBuildObject({
+                label: ref("attributes.label"),
+                value: ref("attributes.value"),
+              }),
+            )
+            .filterWhere("attributes.label", "is not", null),
+          sql<Pick<Attribute, "label" | "value">>`'[]'`,
+        )
+        .as("attributes"),
     ])
     .groupBy("products.id")
     .orderBy(

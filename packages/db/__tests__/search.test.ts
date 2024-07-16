@@ -57,6 +57,7 @@ describe.concurrent("search", () => {
     image: product1.images[0],
     brand: BRAND,
     price: offer1.price,
+    attributes: [{ label: ATTRIBUTE.label, value: ATTRIBUTE.value }],
   }
   beforeEach<Fixtures>(async ({ db }) => {
     await db.load({
@@ -80,6 +81,7 @@ describe.concurrent("search", () => {
         image: product2.images[0],
         brand: undefined,
         price: undefined,
+        attributes: [],
       },
       product1Result,
     ])
@@ -148,6 +150,12 @@ describe.concurrent("search", () => {
           image: PRODUCT.images[0],
           brand: BRAND,
           price: OFFER.price,
+          attributes: [
+            {
+              label: OTHER_ATTRIBUTE.label,
+              value: OTHER_ATTRIBUTE.value,
+            },
+          ],
         },
         product1Result,
       ])
@@ -187,6 +195,7 @@ describe.concurrent("search", () => {
         image: PRODUCT.images[0],
         brand: BRAND,
         price: OFFER.price,
+        attributes: [],
       },
     ])
   })

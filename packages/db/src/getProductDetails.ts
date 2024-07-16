@@ -1,7 +1,7 @@
 import { sql, RawBuilder } from "kysely"
 import { jsonBuildObject } from "kysely/helpers/postgres"
 import { Connection } from "./Connection.js"
-import { Product, Brand, builder, Attribute } from "./tables/index.js"
+import { Product, Brand, builder } from "./tables/index.js"
 
 function toJsonb<T>(value: RawBuilder<T>): RawBuilder<T> {
   return sql<T>`to_jsonb(${value})`
