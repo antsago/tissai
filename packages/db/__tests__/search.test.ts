@@ -79,7 +79,7 @@ describe.concurrent("search", () => {
         id: product2.id,
         title: product2.title,
         image: product2.images[0],
-        brand: undefined,
+        brand: null,
         price: undefined,
         attributes: [],
       },

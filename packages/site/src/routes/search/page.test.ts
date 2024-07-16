@@ -31,7 +31,7 @@ describe("Search page", () => {
       rows: [
         {
           ...SIMILAR,
-          brand: [BRAND],
+          brand: BRAND,
           price: String(OFFER.price),
           ...overwrite,
         },
@@ -83,11 +83,9 @@ describe("Search page", () => {
 
   it("handles brands without logo", async ({ db }) => {
     const results = await loadAndRender(db, {
-      brand: [
-        {
-          name: BRAND.name,
-        },
-      ],
+      brand: {
+        name: BRAND.name,
+      },
     })
 
     const brandName = results.getByText(BRAND.name)
@@ -101,7 +99,7 @@ describe("Search page", () => {
 
   it("handles products without brand", async ({ db }) => {
     const results = await loadAndRender(db, {
-      brand: [null],
+      brand: null,
     })
 
     const undef = results.queryByText("undefined")

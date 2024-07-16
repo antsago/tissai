@@ -1,7 +1,7 @@
 import { sql } from "kysely"
 import { jsonBuildObject } from "kysely/helpers/postgres"
 import { Connection } from "./Connection.js"
-import { Attribute, builder } from "./tables/index.js"
+import { Attribute, builder, Brand } from "./tables/index.js"
 
 export type SearchParams = {
   query: string
@@ -32,7 +32,7 @@ export const buildSearchQuery = ({
       sql<string>`${ref("products.images")}[1]`.as("image"),
       fn.min<string>("offers.price").as("price"),
       selectFrom("brands")
-        .select(({ fn }) => fn.jsonAgg("brands").as("brand"))
+        .select(({ fn }) => sql<Brand>`${fn.jsonAgg("brands")}->0`.as("brand"))
         .whereRef("brands.name", "=", "products.brand")
         .as("brand"),
       fn
@@ -105,7 +105,6 @@ const searchProducts =
 
     return response.map((p) => ({
       ...p,
-      brand: p.brand?.[0],
       price: p.price ? parseFloat(p.price) : undefined,
     }))
   }
