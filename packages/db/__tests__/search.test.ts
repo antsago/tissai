@@ -57,7 +57,6 @@ describe.concurrent("search", () => {
     image: product1.images[0],
     brand: BRAND,
     price: offer1.price,
-    attributes: [{ label: ATTRIBUTE.label, value: ATTRIBUTE.value }],
   }
   beforeEach<Fixtures>(async ({ db }) => {
     await db.load({
@@ -71,163 +70,157 @@ describe.concurrent("search", () => {
     })
   })
 
-  it("retrieves results", async ({ expect, db }) => {
-    const result = await db.searchProducts({ query: product2.title })
+  describe("products", () => {
+    it("retrieves results", async ({ expect, db }) => {
+      const result = await db.searchProducts({ query: product2.title })
 
-    expect(result).toStrictEqual([
-      {
-        id: product2.id,
-        title: product2.title,
-        image: product2.images[0],
-        brand: null,
-        price: undefined,
-        attributes: [],
-      },
-      product1Result,
-    ])
-  })
-
-  it("ignores products without offers", async ({ expect, db }) => {
-    await db.load({ products: [PRODUCT] })
-
-    const result = await db.searchProducts({ query: product2.title })
-
-    expect(result.length).toBe(2)
-  })
-
-  it("filters by brand", async ({ expect, db }) => {
-    const result = await db.searchProducts({
-      query: product2.title,
-      brand: BRAND.name,
+      expect(result.products).toStrictEqual([
+        {
+          id: product2.id,
+          title: product2.title,
+          image: product2.images[0],
+          brand: null,
+          price: undefined,
+        },
+        product1Result,
+      ])
     })
 
-    expect(result).toStrictEqual([product1Result])
-  })
+    it("ignores products without offers", async ({ expect, db }) => {
+      await db.load({ products: [PRODUCT] })
 
-  it("filters by category", async ({ expect, db }) => {
-    const result = await db.searchProducts({
-      query: product2.title,
-      category: CATEGORY.name,
+      const result = await db.searchProducts({ query: product2.title })
+
+      expect(result.products.length).toBe(2)
     })
 
-    expect(result).toStrictEqual([product1Result])
-  })
-
-  describe("attributes", () => {
-    it("filters by string attribute", async ({ expect, db }) => {
+    it("filters by brand", async ({ expect, db }) => {
       const result = await db.searchProducts({
         query: product2.title,
-        attributes: { [ATTRIBUTE.label]: [ATTRIBUTE.value] },
+        brand: BRAND.name,
       })
 
-      expect(result).toStrictEqual([product1Result])
+      expect(result.products).toStrictEqual([product1Result])
     })
 
-    it("accepts multiple values", async ({ expect, db }) => {
-      const OTHER_ATTRIBUTE = {
-        id: randomUUID(),
-        label: ATTRIBUTE.label,
-        value: "asdf",
-        product: PRODUCT.id,
-      }
-      await db.load({
-        products: [PRODUCT],
-        offers: [{ ...OFFER, seller: undefined }],
-        attributes: [OTHER_ATTRIBUTE],
+    it("filters by category", async ({ expect, db }) => {
+      const result = await db.searchProducts({
+        query: product2.title,
+        category: CATEGORY.name,
       })
+
+      expect(result.products).toStrictEqual([product1Result])
+    })
+
+    describe("attributes", () => {
+      it("filters by string attribute", async ({ expect, db }) => {
+        const result = await db.searchProducts({
+          query: product2.title,
+          attributes: { [ATTRIBUTE.label]: [ATTRIBUTE.value] },
+        })
+
+        expect(result.products).toStrictEqual([product1Result])
+      })
+
+      it("accepts multiple values", async ({ expect, db }) => {
+        const OTHER_ATTRIBUTE = {
+          id: randomUUID(),
+          label: ATTRIBUTE.label,
+          value: "asdf",
+          product: PRODUCT.id,
+        }
+        await db.load({
+          products: [PRODUCT],
+          offers: [{ ...OFFER, seller: undefined }],
+          attributes: [OTHER_ATTRIBUTE],
+        })
+
+        const result = await db.searchProducts({
+          query: PRODUCT.title,
+          attributes: {
+            [ATTRIBUTE.label]: [OTHER_ATTRIBUTE.value, ATTRIBUTE.value],
+          },
+        })
+
+        expect(result.products).toStrictEqual([
+          {
+            id: PRODUCT.id,
+            title: PRODUCT.title,
+            image: PRODUCT.images[0],
+            brand: BRAND,
+            price: OFFER.price,
+          },
+          product1Result,
+        ])
+      })
+    })
+
+    it("filters by tag", async ({ expect, db }) => {
+      const result = await db.searchProducts({
+        query: product2.title,
+        tags: [TAG.name],
+      })
+
+      expect(result.products).toStrictEqual([product1Result])
+    })
+
+    it("requires all tags", async ({ expect, db }) => {
+      const result = await db.searchProducts({
+        query: product2.title,
+        tags: [TAG.name, tag2.name],
+      })
+
+      expect(result.products).toStrictEqual([product1Result])
+    })
+
+    it("filters by min price", async ({ expect, db }) => {
+      await db.load({ products: [PRODUCT], offers: [OFFER], sellers: [SELLER] })
 
       const result = await db.searchProducts({
-        query: PRODUCT.title,
-        attributes: {
-          [ATTRIBUTE.label]: [OTHER_ATTRIBUTE.value, ATTRIBUTE.value],
-        },
+        query: product2.title,
+        min: OFFER.price,
       })
 
-      expect(result).toStrictEqual([
+      expect(result.products).toStrictEqual([
         {
           id: PRODUCT.id,
           title: PRODUCT.title,
           image: PRODUCT.images[0],
           brand: BRAND,
           price: OFFER.price,
-          attributes: [
-            {
-              label: OTHER_ATTRIBUTE.label,
-              value: OTHER_ATTRIBUTE.value,
-            },
-          ],
         },
-        product1Result,
       ])
     })
-  })
 
-  it("filters by tag", async ({ expect, db }) => {
-    const result = await db.searchProducts({
-      query: product2.title,
-      tags: [TAG.name],
+    it("filters by max price", async ({ expect, db }) => {
+      await db.load({ products: [PRODUCT], offers: [OFFER], sellers: [SELLER] })
+
+      const result = await db.searchProducts({
+        query: product2.title,
+        max: offer1.price,
+      })
+
+      expect(result.products).toStrictEqual([product1Result])
     })
 
-    expect(result).toStrictEqual([product1Result])
-  })
+    it("handles empty filters", async ({ expect, db }) => {
+      const results = await db.searchProducts({ query: "" })
 
-  it("requires all tags", async ({ expect, db }) => {
-    const result = await db.searchProducts({
-      query: product2.title,
-      tags: [TAG.name, tag2.name],
+      expect(results.products.length).toBe(2)
     })
 
-    expect(result).toStrictEqual([product1Result])
-  })
+    it("handles all filters", async ({ expect, db }) => {
+      const act = db.searchProducts({
+        query: product2.title,
+        category: CATEGORY.name,
+        brand: BRAND.name,
+        max: OFFER.price,
+        min: offer1.price,
+        tags: [TAG.name],
+        attributes: { [ATTRIBUTE.label]: [ATTRIBUTE.value] },
+      })
 
-  it("filters by min price", async ({ expect, db }) => {
-    await db.load({ products: [PRODUCT], offers: [OFFER], sellers: [SELLER] })
-
-    const result = await db.searchProducts({
-      query: product2.title,
-      min: OFFER.price,
+      await expect(act).resolves.not.toThrow()
     })
-
-    expect(result).toStrictEqual([
-      {
-        id: PRODUCT.id,
-        title: PRODUCT.title,
-        image: PRODUCT.images[0],
-        brand: BRAND,
-        price: OFFER.price,
-        attributes: [],
-      },
-    ])
-  })
-
-  it("filters by max price", async ({ expect, db }) => {
-    await db.load({ products: [PRODUCT], offers: [OFFER], sellers: [SELLER] })
-
-    const result = await db.searchProducts({
-      query: product2.title,
-      max: offer1.price,
-    })
-
-    expect(result).toStrictEqual([product1Result])
-  })
-
-  it("handles empty filters", async ({ expect, db }) => {
-    const results = await db.searchProducts({ query: "" })
-
-    expect(results.length).toBe(2)
-  })
-
-  it("handles all filters", async ({ expect, db }) => {
-    const act = db.searchProducts({
-      query: product2.title,
-      category: CATEGORY.name,
-      brand: BRAND.name,
-      max: OFFER.price,
-      min: offer1.price,
-      tags: [TAG.name],
-      attributes: { [ATTRIBUTE.label]: [ATTRIBUTE.value] },
-    })
-
-    await expect(act).resolves.not.toThrow()
   })
 })
