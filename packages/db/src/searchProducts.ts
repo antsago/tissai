@@ -107,12 +107,18 @@ export const buildSearchQuery = ({
     )
     .with("suggestions", (db) =>
       db
-        .selectFrom(["present_attributes", "results"])
+        .selectFrom("present_attributes")
+        .innerJoin("results", (join) => join.onTrue())
+        .leftJoin("attributes", "attributes.label", "present_attributes.label")
         .select(({ fn, ref }) => [
           "present_attributes.label",
           sql<number>`${ref("present_attributes.tally")}::decimal / ${fn.count("results.id")}`.as(
             "frequency",
           ),
+          fn
+            .agg("array_agg", [ref("attributes.value")])
+            .distinct()
+            .as("values"),
         ])
         .groupBy(["present_attributes.label", "present_attributes.tally"]),
     )

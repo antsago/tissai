@@ -223,4 +223,18 @@ describe.concurrent("search", () => {
       await expect(act).resolves.not.toThrow()
     })
   })
+
+  describe("suggestions", () => {
+    it("retrieves suggestions", async ({ expect, db }) => {
+      const result = await db.searchProducts({ query: product2.title })
+
+      expect(result.suggestions).toStrictEqual([
+        {
+          label: ATTRIBUTE.label,
+          frequency: 0.5,
+          values: [ATTRIBUTE.value],
+        },
+      ])
+    })
+  })
 })
