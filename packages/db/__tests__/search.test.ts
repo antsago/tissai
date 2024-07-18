@@ -3,7 +3,6 @@ import { describe, test, beforeEach } from "vitest"
 import {
   PRODUCT,
   BRAND,
-  TAG,
   dbFixture,
   OFFER,
   SITE,
@@ -18,19 +17,16 @@ const it = test.extend<Fixtures>({
 })
 
 describe.concurrent("search", () => {
-  const tag2 = { name: "anothertag" }
   const product1 = {
     id: randomUUID(),
     title: "Pantalones ajustados",
     images: PRODUCT.images,
     brand: PRODUCT.brand,
-    tags: [TAG.name, tag2.name],
   }
   const product2 = {
     id: randomUUID(),
     title: "Vaqueros prietos",
     images: PRODUCT.images,
-    tags: [tag2.name],
   }
   const baseOffer = {
     site: OFFER.site,
@@ -72,7 +68,6 @@ describe.concurrent("search", () => {
   beforeEach<Fixtures>(async ({ db }) => {
     await db.load({
       sites: [SITE],
-      tags: [TAG],
       brands: [BRAND],
       products: [product1, product2],
       offers: [offer1, offer2],
@@ -131,24 +126,6 @@ describe.concurrent("search", () => {
       })
     })
 
-    it("filters by tag", async ({ expect, db }) => {
-      const result = await db.searchProducts({
-        query: product2.title,
-        tags: [TAG.name],
-      })
-
-      expect(result.products).toStrictEqual([product1Result])
-    })
-
-    it("requires all tags", async ({ expect, db }) => {
-      const result = await db.searchProducts({
-        query: product2.title,
-        tags: [TAG.name, tag2.name],
-      })
-
-      expect(result.products).toStrictEqual([product1Result])
-    })
-
     it("filters by min price", async ({ expect, db }) => {
       await db.load({ products: [PRODUCT], offers: [OFFER], sellers: [SELLER] })
 
@@ -191,7 +168,6 @@ describe.concurrent("search", () => {
         brand: BRAND.name,
         max: OFFER.price,
         min: offer1.price,
-        tags: [TAG.name],
         attributes: { [attribute1.label]: [attribute1.value] },
       })
 

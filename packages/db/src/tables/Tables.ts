@@ -1,7 +1,6 @@
 import { Connection } from "../Connection.js"
 import * as sellers from "./sellers.js"
 import * as brands from "./brands.js"
-import * as tags from "./tags.js"
 import * as products from "./products.js"
 import * as offers from "./offers.js"
 import * as sites from "./sites.js"
@@ -16,7 +15,6 @@ const TABLE_MODULES = {
   products,
   sellers,
   sites,
-  tags,
 }
 type TABLE_MODULES = typeof TABLE_MODULES
 

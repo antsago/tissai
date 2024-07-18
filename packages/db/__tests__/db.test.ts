@@ -5,7 +5,6 @@ import {
   PAGE,
   OFFER,
   BRAND,
-  TAG,
   SELLER,
   ATTRIBUTE,
   dbFixture,
@@ -20,7 +19,6 @@ describe.concurrent("db", () => {
   it("creates entities", async ({ expect, db }) => {
     await db.sites.create(SITE)
     await db.pages.create(PAGE)
-    await db.tags.create(TAG)
     await db.sellers.create(SELLER)
     await db.brands.create(BRAND)
     await db.products.create(PRODUCT)
@@ -29,14 +27,12 @@ describe.concurrent("db", () => {
 
     const products = await db.products.getAll()
     const offers = await db.offers.getAll()
-    const tags = await db.tags.getAll()
     const brands = await db.brands.getAll()
     const sellers = await db.sellers.getAll()
     const attributes = await db.attributes.getAll()
 
     expect(products).toStrictEqual([PRODUCT])
     expect(offers).toStrictEqual([OFFER])
-    expect(tags).toStrictEqual([TAG])
     expect(brands).toStrictEqual([BRAND])
     expect(sellers).toStrictEqual([SELLER])
     expect(attributes).toStrictEqual([ATTRIBUTE])
@@ -80,10 +76,8 @@ describe.concurrent("db", () => {
       id: "92b15b90-3673-4a0e-b57c-8f9835a4f4d9",
       title: PRODUCT.title,
       images: PRODUCT.images,
-      tags: PRODUCT.tags,
     }
     await db.load({
-      tags: [TAG],
       brands: [BRAND],
       sites: [SITE],
       sellers: [SELLER],
@@ -105,7 +99,6 @@ describe.concurrent("db", () => {
       title: PRODUCT.title,
       description: PRODUCT.description,
       images: PRODUCT.images,
-      tags: PRODUCT.tags,
       attributes: [{ label: ATTRIBUTE.label, value: ATTRIBUTE.value }],
       brand: BRAND,
       similar: [

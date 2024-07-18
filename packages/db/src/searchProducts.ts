@@ -9,7 +9,6 @@ export type SearchParams = {
   brand?: string
   min?: number
   max?: number
-  tags?: string[]
   attributes?: { [label: string]: string[] }
 }
 
@@ -17,7 +16,6 @@ export const buildSearchQuery = ({
   query: searchQuery,
   min,
   max,
-  tags = [],
   brand,
   attributes = {},
 }: SearchParams) => {
@@ -84,11 +82,6 @@ export const buildSearchQuery = ({
         brand !== null && brand !== undefined
           ? query.where("products.brand", "=", brand)
           : query
-      query = tags.reduce(
-        (q, t) =>
-          q.where((eb) => eb(eb.val(t), "=", eb.fn.any("products.tags"))),
-        query,
-      )
       query =
         min !== null && min !== undefined
           ? query.where("offers.price", ">=", min)

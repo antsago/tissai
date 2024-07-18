@@ -4,7 +4,6 @@ import type { Offer } from "./offers.js"
 import type { Page } from "./pages.js"
 import type { Seller } from "./sellers.js"
 import type { Site } from "./sites.js"
-import type { Tag } from "./tags.js"
 import type { Attribute } from "./attributes.js"
 import {
   DummyDriver,
@@ -22,7 +21,6 @@ type Database = {
   products: Product
   sellers: Seller
   sites: Site
-  tags: Tag
 }
 
 const builder = new Kysely<Database>({

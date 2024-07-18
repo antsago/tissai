@@ -9,13 +9,11 @@ import {
   Product,
   Seller,
   Site,
-  Tag,
 } from "../../src/index.js"
 
 type State = Partial<{
   sites: Site[]
   pages: Page[]
-  tags: Tag[]
   sellers: Seller[]
   brands: Brand[]
   products: Product[]
@@ -27,7 +25,6 @@ const load = (db: Db) => async (state: State) => {
   await Promise.all(
     [
       state.sites?.map((s) => db.sites.create(s)),
-      state.tags?.map((t) => db.tags.create(t)),
       state.sellers?.map((s) => db.sellers.create(s)),
       state.brands?.map((b) => db.brands.create(b)),
     ].flat(),

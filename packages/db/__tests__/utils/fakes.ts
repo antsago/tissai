@@ -17,10 +17,6 @@ export const BRAND = {
   logo: "https://example.com/EG.jpg",
 }
 
-export const TAG = {
-  name: "ajustados",
-}
-
 export const PRODUCT = {
   id: "1a13b49d-b43d-4eba-838d-a77c9d94f743",
   title: "Vaqueros ajustados",
@@ -30,7 +26,6 @@ export const PRODUCT = {
     "https://example.com/product-image-2.jpg",
   ],
   brand: BRAND.name,
-  tags: [TAG.name],
 }
 
 export const SELLER = {

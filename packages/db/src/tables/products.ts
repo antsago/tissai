@@ -5,7 +5,6 @@ import builder from "./queryBuilder.js"
 export type Product = {
   id: string
   title: string
-  tags: string[]
   description?: string
   images?: string[]
   brand?: string
@@ -16,7 +15,6 @@ export const TABLE = Object.assign("products", {
   description: "description",
   images: "images",
   brand: "brand",
-  tags: "tags",
 })
 
 export const initialize = (connection: Connection) =>
@@ -24,7 +22,6 @@ export const initialize = (connection: Connection) =>
     CREATE TABLE IF NOT EXISTS ${TABLE} (
       ${TABLE.id}             uuid PRIMARY KEY,
       ${TABLE.title}          text NOT NULL,
-      ${TABLE.tags}           text[] NOT NULL,
       ${TABLE.description}    text,
       ${TABLE.images}         text[],
       ${TABLE.brand}          text REFERENCES ${BRANDS}
