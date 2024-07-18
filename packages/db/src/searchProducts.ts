@@ -1,7 +1,6 @@
 import { sql } from "kysely"
-import { jsonBuildObject } from "kysely/helpers/postgres"
 import { Connection } from "./Connection.js"
-import { Attribute, builder, Brand } from "./tables/index.js"
+import { builder, Brand } from "./tables/index.js"
 
 export type SearchParams = {
   query: string
@@ -122,11 +121,23 @@ export const buildSearchQuery = ({
         ])
         .groupBy(["present_attributes.label", "present_attributes.tally"]),
     )
-    .selectFrom("results")
-    .leftJoin("suggestions", (join) => join.onTrue())
-    .select(({ fn }) => [
-      fn.jsonAgg("results").distinct().as("products"),
-      fn.jsonAgg("suggestions").distinct().as("suggestions"),
+    .selectNoFrom((eb) => [
+      eb
+        .selectFrom("suggestions")
+        .select(({ fn }) => [
+          fn.jsonAgg("suggestions").distinct().as("suggestions"),
+        ])
+        .as("suggestions"),
+      eb.fn
+        .coalesce(
+          eb
+            .selectFrom("results")
+            .select(({ fn }) => [
+              fn.jsonAgg("results").distinct().as("products"),
+            ]),
+          eb.val([]),
+        )
+        .as("products"),
     ])
 
   return fullQuery.compile()
@@ -139,7 +150,7 @@ const searchProducts =
 
     return {
       ...response,
-      products: response.products.map((p) => ({
+      products: response.products?.map((p) => ({
         ...p,
         price: p.price ? parseFloat(p.price) : undefined,
       })),

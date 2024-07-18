@@ -88,10 +88,7 @@ describe.concurrent("search", () => {
     it("retrieves results", async ({ expect, db }) => {
       const result = await db.searchProducts({ query: product2.title })
 
-      expect(result.products).toStrictEqual([
-        product2Result,
-        product1Result,
-      ])
+      expect(result.products).toStrictEqual([product2Result, product1Result])
     })
 
     it("ignores products without offers", async ({ expect, db }) => {
@@ -143,10 +140,7 @@ describe.concurrent("search", () => {
           },
         })
 
-        expect(result.products).toStrictEqual([
-          product2Result,
-          product1Result,
-        ])
+        expect(result.products).toStrictEqual([product2Result, product1Result])
       })
     })
 
@@ -233,7 +227,10 @@ describe.concurrent("search", () => {
     })
 
     it("includes values from other attributes", async ({ expect, db }) => {
-      const result = await db.searchProducts({ query: product1.title, brand: product1.brand })
+      const result = await db.searchProducts({
+        query: product1.title,
+        brand: product1.brand,
+      })
 
       expect(result.suggestions).toStrictEqual([
         {
