@@ -226,26 +226,22 @@ describe.concurrent("search", () => {
       expect(result.suggestions).toStrictEqual([
         {
           label: attribute1.label,
-          frequency: 0.5,
+          frequency: 1,
           values: [attribute2.value, attribute1.value],
         },
       ])
     })
 
-    // it("includes values from other attributes", async ({ expect, db }) => {
-    //   await db.load({
-    //     products: [PRODUCT],
-    //     // attributes: [{ id: }]
-    //   })
-    //   const result = await db.searchProducts({ query: product2.title })
+    it("includes values from other attributes", async ({ expect, db }) => {
+      const result = await db.searchProducts({ query: product1.title, brand: product1.brand })
 
-    //   expect(result.suggestions).toStrictEqual([
-    //     {
-    //       label: ATTRIBUTE.label,
-    //       frequency: 0.5,
-    //       values: [ATTRIBUTE.value],
-    //     },
-    //   ])
-    // })
+      expect(result.suggestions).toStrictEqual([
+        {
+          label: attribute1.label,
+          frequency: 1,
+          values: [attribute2.value, attribute1.value],
+        },
+      ])
+    })
   })
 })

@@ -112,7 +112,7 @@ export const buildSearchQuery = ({
         .leftJoin("attributes", "attributes.label", "present_attributes.label")
         .select(({ fn, ref }) => [
           "present_attributes.label",
-          sql<number>`${ref("present_attributes.tally")}::decimal / ${fn.count("results.id")}`.as(
+          sql<number>`${ref("present_attributes.tally")}::decimal / ${fn.count("results.id").distinct()}`.as(
             "frequency",
           ),
           fn
