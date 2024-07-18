@@ -1,6 +1,8 @@
 import { sql } from "kysely"
+import { jsonBuildObject } from "kysely/helpers/postgres"
 import { Connection } from "./Connection.js"
 import { builder, Brand } from "./tables/index.js"
+import { toJsonb } from "./getProductDetails.js"
 
 export type SearchParams = {
   query: string
@@ -121,29 +123,44 @@ export const buildSearchQuery = ({
     .selectNoFrom((eb) => [
       eb
         .selectFrom("suggestions")
-        .select(({ fn }) => [
-          fn.jsonAgg("suggestions").distinct().as("suggestions"),
+        .select(({ fn, ref }) => [
+          fn
+            .jsonAgg(
+              sql<{
+                frequency: number
+                label: string
+                values: string[]
+              }>`"suggestions" ORDER BY ${ref("suggestions.frequency")} desc`,
+            )
+            .as("suggestions"),
         ])
         .as("suggestions"),
       eb.fn
         .coalesce(
-          eb
-            .selectFrom((eb) =>
-              eb
-                .selectFrom("results")
-                .select([
-                  "results.id",
-                  "results.title",
-                  "results.brand",
-                  "results.image",
-                  "results.price",
-                ])
-                .orderBy("rank")
-                .as("results"),
-            )
-            .select(({ fn }) => [
-              fn.jsonAgg("results").distinct().as("products"),
-            ]),
+          eb.selectFrom("results").select(({ fn, ref }) =>
+            fn
+              .jsonAgg(
+                sql<{
+                  id: string
+                  title: string
+                  brand: {
+                    logo: string
+                    name: string
+                  }
+                  image: string
+                  price: string
+                }>`${toJsonb(
+                  jsonBuildObject({
+                    id: ref("results.id"),
+                    title: ref("results.title"),
+                    brand: ref("results.brand"),
+                    image: ref("results.image"),
+                    price: ref("results.price"),
+                  }),
+                )} ORDER BY ${ref("results.rank")} desc`,
+              )
+              .as("products"),
+          ),
           eb.val([]),
         )
         .as("products"),

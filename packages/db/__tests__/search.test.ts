@@ -134,7 +134,7 @@ describe.concurrent("search", () => {
         })
 
         const result = await db.searchProducts({
-          query: PRODUCT.title,
+          query: product2.title,
           attributes: {
             [ATTRIBUTE.label]: [attribute2.value, attribute1.value],
           },
@@ -254,6 +254,32 @@ describe.concurrent("search", () => {
           label: attribute1.label,
           frequency: 0.5,
           values: [attribute2.value, attribute1.value],
+        },
+      ])
+    })
+
+    it("sorts by frequency", async ({ expect, db }) => {
+      const otherAttribute = {
+        id: "d50bc19c-14a6-4edd-890f-aab73fe6ce7f",
+        label: "foo",
+        value: "bar",
+        product: product1.id,
+      }
+
+      await db.load({ attributes: [otherAttribute] })
+
+      const result = await db.searchProducts({ query: product1.title })
+
+      expect(result.suggestions).toStrictEqual([
+        {
+          label: attribute1.label,
+          frequency: 1,
+          values: [attribute2.value, attribute1.value],
+        },
+        {
+          label: otherAttribute.label,
+          frequency: 0.5,
+          values: [otherAttribute.value],
         },
       ])
     })
