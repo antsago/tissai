@@ -8,8 +8,6 @@ import jsonLd from "./jsonLd.js"
 import opengraph from "./opengraph.js"
 import headings from "./headings.js"
 import title from "./EntityExtractor/title.js"
-import category from "./EntityExtractor/category.js"
-import tags from "./EntityExtractor/tags.js"
 import seller from "./EntityExtractor/seller.js"
 import brand from "./EntityExtractor/brand.js"
 import product from "./EntityExtractor/product.js"
@@ -21,8 +19,8 @@ import attributes, {
 
 let db!: Db
 let python!: PythonPool<
-  { method: "category" | "tags" | "attributes"; input: string },
-  { category: string } & { tags: string[] } & {
+  { method: "attributes"; input: string },
+  {
     attributes: PythonAttribute[]
   }
 >
@@ -60,16 +58,12 @@ try {
         throw new Error("Product without title!")
       }
 
-      const categoryEntity = await category(productTitle, python, db)
-      const tagEntities = await tags(productTitle, python, db)
       const brandEntity = await brand(jsonLdInfo, db)
       const productEntity = await product(
         jsonLdInfo,
         headingInfo,
         opengraphInfo,
         productTitle,
-        categoryEntity,
-        tagEntities,
         db,
         brandEntity,
       )

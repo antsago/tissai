@@ -1,5 +1,5 @@
 import { expect, describe, test, beforeEach } from "vitest"
-import { BRAND, CATEGORY, TAG } from "#mocks"
+import { BRAND } from "#mocks"
 import { mockDbFixture } from "@tissai/db/mocks"
 import { Db, PRODUCTS } from "@tissai/db"
 import product from "./product.js"
@@ -39,8 +39,6 @@ describe("products", () => {
       images: JSON_LD.image,
       description: JSON_LD.description,
       brand: BRAND.name,
-      category: CATEGORY.name,
-      tags: [TAG.name],
     }
 
     const result = await product(
@@ -48,8 +46,6 @@ describe("products", () => {
       HEAD,
       OG,
       TITLE,
-      CATEGORY,
-      [TAG],
       db,
       BRAND,
     )
@@ -60,13 +56,11 @@ describe("products", () => {
       expected.images,
       expected.description,
       expected.brand,
-      expected.category,
-      expected.tags,
     ])
   })
 
   it("handles title-only product", async () => {
-    const result = await product({}, {}, {}, TITLE, CATEGORY, [], db)
+    const result = await product({}, {}, {}, TITLE, db)
 
     expect(result).toStrictEqual({
       id: expect.any(String),
@@ -74,13 +68,11 @@ describe("products", () => {
       images: undefined,
       description: undefined,
       brand: undefined,
-      category: CATEGORY.name,
-      tags: [],
     })
   })
 
   it("defaults to opengraph", async () => {
-    const result = await product({}, HEAD, OG, TITLE, CATEGORY, [], db)
+    const result = await product({}, HEAD, OG, TITLE, db)
 
     expect(result).toStrictEqual({
       id: expect.any(String),
@@ -88,13 +80,11 @@ describe("products", () => {
       images: OG.image,
       description: OG.description,
       brand: undefined,
-      category: CATEGORY.name,
-      tags: [],
     })
   })
 
   it("defaults to headings", async () => {
-    const result = await product({}, HEAD, {}, TITLE, CATEGORY, [], db)
+    const result = await product({}, HEAD, {}, TITLE, db)
 
     expect(result).toStrictEqual({
       id: expect.any(String),
@@ -102,8 +92,6 @@ describe("products", () => {
       images: undefined,
       description: HEAD.description,
       brand: undefined,
-      category: CATEGORY.name,
-      tags: [],
     })
   })
 })

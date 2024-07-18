@@ -1,9 +1,7 @@
 import { describe, test, beforeEach, afterEach, vi } from "vitest"
-import { PRODUCTS, OFFERS, CATEGORIES, TAGS, SELLERS, BRANDS } from "@tissai/db"
 import { dbFixture } from "@tissai/db/mocks"
 import {
   PRODUCT,
-  DERIVED_DATA,
   SITE,
   PAGE,
   pageWithSchema,
@@ -66,8 +64,6 @@ describe(
           title: PRODUCT.title,
           description: PRODUCT.description,
           images: [PRODUCT.images[0]],
-          category: DERIVED_DATA.category,
-          tags: expect.arrayContaining(DERIVED_DATA.tags),
           brand: BRAND.name,
         },
       ])
@@ -83,15 +79,6 @@ describe(
           currency: OFFER.currency,
         },
       ])
-      const categories = await db.categories.getAll()
-      expect(categories).toStrictEqual([{ name: DERIVED_DATA.category }])
-      const tags = await db.tags.getAll()
-      expect(tags).toStrictEqual(
-        expect.arrayContaining([
-          { name: DERIVED_DATA.tags[0] },
-          { name: DERIVED_DATA.tags[1] },
-        ]),
-      )
       const brands = await db.brands.getAll()
       expect(brands).toStrictEqual([{ name: BRAND.name, logo: BRAND.logo }])
       const sellers = await db.sellers.getAll()
@@ -119,8 +106,6 @@ describe(
       await db.load({
         sites: [SITE],
         pages: [pageWithSchema(FULL_SCHEMA)],
-        categories: [{ name: DERIVED_DATA.category }],
-        tags: [{ name: DERIVED_DATA.tags[0] }, { name: DERIVED_DATA.tags[1] }],
         sellers: [{ name: OFFER.seller }],
         brands: [{ name: BRAND.name }],
       })
@@ -131,10 +116,6 @@ describe(
       expect(products.length).toBe(1)
       const offers = await db.offers.getAll()
       expect(offers.length).toBe(1)
-      const categories = await db.categories.getAll()
-      expect(categories.length).toBe(1)
-      const tags = await db.tags.getAll()
-      expect(tags.length).toBe(2)
       const brands = await db.brands.getAll()
       expect(brands.length).toBe(1)
       const sellers = await db.sellers.getAll()

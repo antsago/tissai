@@ -1,5 +1,4 @@
-import type { PythonPool } from "@tissai/python-pool"
-import type { Brand, Category, Db, Product, Tag } from "@tissai/db"
+import type { Brand, Db, Product } from "@tissai/db"
 import type { OpenGraph } from "../opengraph.js"
 import type { Headings } from "../headings.js"
 import type { JsonLD } from "../jsonLd.js"
@@ -10,8 +9,6 @@ async function product(
   head: Headings,
   og: OpenGraph,
   title: string,
-  category: Category,
-  tags: Tag[],
   db: Db,
   brand?: Brand,
 ): Promise<Product> {
@@ -21,8 +18,6 @@ async function product(
     images: ld.image ?? og.image,
     description: ld.description ?? og.description ?? head.description,
     brand: brand?.name,
-    category: category.name,
-    tags: tags.map((t) => t.name),
   }
 
   await db.products.create(entity)

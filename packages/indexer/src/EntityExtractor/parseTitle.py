@@ -1,12 +1,8 @@
 import sys
 import json
-from getCategory import getCategory
-from getTags import getTags
 from labelWords import getAttributes
 
 methods = {
-    "category": getCategory,
-    "tags": getTags,
     "attributes": getAttributes,
 }
 

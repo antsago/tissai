@@ -1,7 +1,7 @@
 import { describe, test, beforeEach, vi, afterEach } from "vitest"
-import { mockDbFixture } from "@tissai/db/mocks"
+import { BRAND, mockDbFixture } from "@tissai/db/mocks"
 import { mockPythonFixture } from "@tissai/python-pool/mocks"
-import { PRODUCT, DERIVED_DATA, pageWithSchema, mockOraFixture } from "#mocks"
+import { PRODUCT, pageWithSchema, mockOraFixture } from "#mocks"
 import { OFFERS, PRODUCTS, SELLERS } from "@tissai/db"
 
 type Fixtures = {
@@ -18,7 +18,7 @@ const it = test.extend<Fixtures>({
 
 describe("index", () => {
   beforeEach<Fixtures>(async ({ mockDb, mockPython }) => {
-    mockPython.mockReturnValue(DERIVED_DATA)
+    mockPython.mockReturnValue({})
     mockDb.pool.query.mockResolvedValue({ rows: [{ count: 1 }] })
   })
   afterEach(() => {
@@ -94,6 +94,7 @@ describe("index", () => {
       "@context": "https://schema.org",
       "@type": "Product",
       name: PRODUCT.title,
+      
     })
     const title2 = "Another product"
     const page2 = {
@@ -114,13 +115,17 @@ describe("index", () => {
     expect(mockDb).toHaveInserted(PRODUCTS, [title2])
   })
 
-  it("handles processsing errors", async ({ expect, mockDb, mockOra }) => {
+  it("handles processsing errors", async ({ expect, mockDb, mockOra, mockPython }) => {
     const error = new Error("Booh!")
     const title2 = "Another product"
     const page = pageWithSchema({
       "@context": "https://schema.org",
       "@type": "Product",
       name: PRODUCT.title,
+      brand: {
+        "@type": "Brand",
+        name: BRAND.name,
+      },
     })
     const page2 = pageWithSchema({
       "@context": "https://schema.org",
@@ -131,7 +136,7 @@ describe("index", () => {
     mockDb.cursor.read.mockResolvedValueOnce([page2])
     let hasThrown = false
     mockDb.pool.query.mockImplementation((query) => {
-      if (query.includes("insert") && !hasThrown) {
+      if (query.includes("select") && !hasThrown) {
         hasThrown = true
         throw error
       }

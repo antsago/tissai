@@ -1,11 +1,9 @@
-import { PAGE, CATEGORY, TAG, PRODUCT } from "@tissai/db/mocks"
+import { PAGE } from "@tissai/db/mocks"
 
 export {
   SITE,
   PAGE,
   BRAND,
-  CATEGORY,
-  TAG,
   PRODUCT,
   SELLER,
   OFFER,
@@ -29,8 +27,3 @@ export const pageWithSchema = (...schemas: object[]) => ({
     </html>
   `,
 })
-
-export const DERIVED_DATA = {
-  category: CATEGORY.name,
-  tags: ["vaqueros", TAG.name],
-}
