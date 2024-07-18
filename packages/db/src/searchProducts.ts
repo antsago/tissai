@@ -30,7 +30,7 @@ export const buildSearchQuery = ({
         .selectFrom("products")
         .innerJoin("offers", "offers.product", "products.id")
         .leftJoin("attributes", "attributes.product", "products.id")
-        .select(({ fn, selectFrom, ref }) => [
+        .select(({ fn, selectFrom, ref, val }) => [
           "products.id",
           "products.title",
           sql<string>`${ref("products.images")}[1]`.as("image"),
@@ -41,16 +41,13 @@ export const buildSearchQuery = ({
             )
             .whereRef("brands.name", "=", "products.brand")
             .as("brand"),
+          fn<number>("ts_rank", [
+            fn("to_tsvector", [val("spanish"), "products.title"]),
+            fn("websearch_to_tsquery", [val("spanish"), val(searchQuery)]),
+          ]).as("rank"),
         ])
         .groupBy("products.id")
-        .orderBy(
-          ({ val, fn }) =>
-            fn<number>("ts_rank", [
-              fn("to_tsvector", [val("spanish"), "products.title"]),
-              fn("websearch_to_tsquery", [val("spanish"), val(searchQuery)]),
-            ]),
-          "desc",
-        )
+        .orderBy("rank", "desc")
         .limit(PRODUCT_LIMIT)
 
       query = query.where((eb) =>
@@ -131,7 +128,19 @@ export const buildSearchQuery = ({
       eb.fn
         .coalesce(
           eb
-            .selectFrom("results")
+            .selectFrom((eb) =>
+              eb
+                .selectFrom("results")
+                .select([
+                  "results.id",
+                  "results.title",
+                  "results.brand",
+                  "results.image",
+                  "results.price",
+                ])
+                .orderBy("rank")
+                .as("results"),
+            )
             .select(({ fn }) => [
               fn.jsonAgg("results").distinct().as("products"),
             ]),
