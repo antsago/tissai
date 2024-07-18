@@ -94,7 +94,6 @@ describe("index", () => {
       "@context": "https://schema.org",
       "@type": "Product",
       name: PRODUCT.title,
-      
     })
     const title2 = "Another product"
     const page2 = {
@@ -115,7 +114,7 @@ describe("index", () => {
     expect(mockDb).toHaveInserted(PRODUCTS, [title2])
   })
 
-  it("handles processsing errors", async ({ expect, mockDb, mockOra, mockPython }) => {
+  it("handles processsing errors", async ({ expect, mockDb, mockOra }) => {
     const error = new Error("Booh!")
     const title2 = "Another product"
     const page = pageWithSchema({

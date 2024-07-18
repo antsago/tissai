@@ -29,8 +29,7 @@ const Tables = (connection: Connection) => ({
         Object.values(tables).map((table) => table.initialize(connection)),
       )
 
-    const { sites, brands, sellers, pages, products, ...others } =
-      TABLE_MODULES
+    const { sites, brands, sellers, pages, products, ...others } = TABLE_MODULES
 
     await initializeInParalel({ sites, brands, sellers })
     await initializeInParalel({ pages, products })

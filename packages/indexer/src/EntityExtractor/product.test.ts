@@ -41,14 +41,7 @@ describe("products", () => {
       brand: BRAND.name,
     }
 
-    const result = await product(
-      JSON_LD,
-      HEAD,
-      OG,
-      TITLE,
-      db,
-      BRAND,
-    )
+    const result = await product(JSON_LD, HEAD, OG, TITLE, db, BRAND)
 
     expect(result).toStrictEqual(expected)
     expect(pg).toHaveInserted(PRODUCTS, [
