@@ -26,6 +26,22 @@ export const buildSearchQuery = ({
   const PRODUCT_LIMIT = 20
   const SUGGESTION_LIMIT = 4
 
+  type ProductResult = {
+    id: string
+    title: string
+    brand: {
+      logo: string
+      name: string
+    }
+    image: string
+    price: string
+  }
+  type Suggestion = {
+    frequency: number
+    label: string
+    values: string[]
+  }
+
   let fullQuery = builder
     .with("results", (db) => {
       let query = db
@@ -120,35 +136,24 @@ export const buildSearchQuery = ({
         .groupBy(["present_attributes.label", "present_attributes.tally"]),
     )
     .selectNoFrom((eb) => [
-      eb
-        .selectFrom("suggestions")
-        .select(({ fn, ref }) => [
-          fn
-            .jsonAgg(
-              sql<{
-                frequency: number
-                label: string
-                values: string[]
-              }>`"suggestions" ORDER BY ${ref("suggestions.frequency")} desc`,
-            )
-            .as("suggestions"),
-        ])
+      eb.fn
+        .coalesce(
+          eb.selectFrom("suggestions").select(({ fn, ref }) => [
+            fn
+              .jsonAgg(
+                sql<Suggestion>`"suggestions" ORDER BY ${ref("suggestions.frequency")} desc`,
+              )
+              .as("suggestions"),
+          ]),
+          sql<Suggestion[]>`'[]'`,
+        )
         .as("suggestions"),
       eb.fn
         .coalesce(
           eb.selectFrom("results").select(({ fn, ref }) =>
             fn
               .jsonAgg(
-                sql<{
-                  id: string
-                  title: string
-                  brand: {
-                    logo: string
-                    name: string
-                  }
-                  image: string
-                  price: string
-                }>`${toJsonb(
+                sql<ProductResult>`${toJsonb(
                   jsonBuildObject({
                     id: ref("results.id"),
                     title: ref("results.title"),
@@ -160,7 +165,7 @@ export const buildSearchQuery = ({
               )
               .as("products"),
           ),
-          eb.val([]),
+          sql<ProductResult[]>`'[]'`,
         )
         .as("products"),
     ])

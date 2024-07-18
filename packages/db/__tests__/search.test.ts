@@ -11,6 +11,7 @@ import {
   SELLER,
   ATTRIBUTE,
 } from "#mocks"
+import { m } from "vitest/dist/reporters-yx5ZTtEV.js"
 
 type Fixtures = { db: dbFixture }
 const it = test.extend<Fixtures>({
@@ -305,6 +306,18 @@ describe.concurrent("search", () => {
           values: [attribute2.value, attribute1.value],
         },
       ])
+    })
+  })
+
+  it("handles no results found", async ({ expect, db }) => {
+    const result = await db.searchProducts({
+      query: product1.title,
+      brand: "non-existing",
+    })
+
+    expect(result).toStrictEqual({
+      products: [],
+      suggestions: [],
     })
   })
 })
