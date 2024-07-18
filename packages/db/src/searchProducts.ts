@@ -99,7 +99,6 @@ export const buildSearchQuery = ({
           fn.count("results.id").as("tally"),
         ])
         .groupBy("attributes.label")
-        .whereRef("attributes.product", "=", "results.id")
         .orderBy("tally")
         .limit(SUGGESTION_LIMIT),
     )

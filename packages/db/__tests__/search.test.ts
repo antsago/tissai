@@ -283,5 +283,28 @@ describe.concurrent("search", () => {
         },
       ])
     })
+
+    it("ignores attributes not on returned products", async ({
+      expect,
+      db,
+    }) => {
+      const otherAttribute = {
+        id: "d50bc19c-14a6-4edd-890f-aab73fe6ce7f",
+        label: "foo",
+        value: "bar",
+        product: PRODUCT.id,
+      }
+      await db.load({ products: [PRODUCT], attributes: [otherAttribute] })
+
+      const result = await db.searchProducts({ query: product1.title })
+
+      expect(result.suggestions).toStrictEqual([
+        {
+          label: attribute1.label,
+          frequency: 1,
+          values: [attribute2.value, attribute1.value],
+        },
+      ])
+    })
   })
 })
