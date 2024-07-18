@@ -138,13 +138,15 @@ export const buildSearchQuery = ({
     .selectNoFrom((eb) => [
       eb.fn
         .coalesce(
-          eb.selectFrom("suggestions").select(({ fn, ref }) => [
-            fn
-              .jsonAgg(
-                sql<Suggestion>`"suggestions" ORDER BY ${ref("suggestions.frequency")} desc`,
-              )
-              .as("suggestions"),
-          ]),
+          eb
+            .selectFrom("suggestions")
+            .select(({ fn, ref }) => [
+              fn
+                .jsonAgg(
+                  sql<Suggestion>`"suggestions" ORDER BY ${ref("suggestions.frequency")} desc`,
+                )
+                .as("suggestions"),
+            ]),
           sql<Suggestion[]>`'[]'`,
         )
         .as("suggestions"),

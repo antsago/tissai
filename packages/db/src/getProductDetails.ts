@@ -11,11 +11,37 @@ const getProductDetails =
   (connection: Connection) => async (productId: Product["id"]) => {
     const [details] = await connection.query(
       builder
+        .with("similars", (db) =>
+          db
+            .selectFrom("products")
+            .select(({ ref }) => [
+              "id",
+              "title",
+              sql<string | undefined>`${ref("images")}[1]`.as("image"),
+            ])
+            .where("products.id", "!=", productId)
+            .orderBy(
+              ({ fn, val, ref, eb }) =>
+                fn("ts_rank_cd", [
+                  fn("to_tsvector", [val("spanish"), ref("products.title")]),
+                  sql`replace(${fn("plainto_tsquery", [
+                    val("spanish"),
+                    eb
+                      .selectFrom("products")
+                      .select("title")
+                      .where("products.id", "=", productId),
+                  ])}::text, '&', '|')::tsquery`,
+                ]),
+              "desc",
+            )
+            .limit(4),
+        )
         .selectFrom("products")
         .leftJoin("offers", "offers.product", "products.id")
         .innerJoin("sites", "offers.site", "sites.id")
         .leftJoin("brands", "brands.name", "products.brand")
         .leftJoin("attributes", "attributes.product", "products.id")
+        .leftJoin("similars", (join) => join.onTrue())
         .select(({ fn, ref }) => [
           "products.title",
           "products.description",
@@ -51,42 +77,13 @@ const getProductDetails =
             )
             .distinct()
             .as("offers"),
+          fn.jsonAgg("similars").distinct().as("similar"),
         ])
         .where("products.id", "=", productId)
         .groupBy("products.id")
         .compile(),
     )
-    const similar = await connection.query(
-      builder
-        .selectFrom("products")
-        .select(({ ref }) => [
-          "id",
-          "title",
-          sql<string | undefined>`${ref("images")}[1]`.as("image"),
-        ])
-        .where("products.id", "!=", productId)
-        .orderBy(
-          ({ fn, val, ref, eb }) =>
-            fn("ts_rank_cd", [
-              fn("to_tsvector", [val("spanish"), ref("products.title")]),
-              sql`replace(${fn("plainto_tsquery", [
-                val("spanish"),
-                eb
-                  .selectFrom("products")
-                  .select("title")
-                  .where("products.id", "=", productId),
-              ])}::text, '&', '|')::tsquery`,
-            ]),
-          "desc",
-        )
-        .limit(4)
-        .compile(),
-    )
-
-    return {
-      ...details,
-      similar,
-    }
+    return details
   }
 
 export type ProductDetails = Awaited<
