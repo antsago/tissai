@@ -17,4 +17,4 @@ export const STRING_ATTRIBUTE = {
   value: ATTRIBUTE.value,
 }
 export const BOOL_ATTRIBUTE = { label: "lavados", value: "lavados" }
-export const CAT_ATTRIBUTE = { label: "categoría", value: PRODUCT.category }
+export const CAT_ATTRIBUTE = { label: "categoría", value: "vaqueros" }
