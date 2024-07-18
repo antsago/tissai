@@ -13,11 +13,9 @@ describe("parseSearchParams", () => {
 
     expect(result).toStrictEqual({
       brand: undefined,
-      category: undefined,
       max: undefined,
       min: undefined,
       query: "",
-      tags: [],
       attributes: {},
     })
   })
@@ -26,14 +24,10 @@ describe("parseSearchParams", () => {
     const min = 11.1
     const max = 22.2
     const brand = "a brand"
-    const category = "the category"
-    const tag = "tag"
     params.append("q", QUERY)
     params.append("min", String(min))
     params.append("max", String(max))
     params.append("brand", brand)
-    params.append("category", category)
-    params.append("inc", tag)
     params.append(STRING_ATTRIBUTE.label, STRING_ATTRIBUTE.value)
 
     const result = parseSearchParams(params)
@@ -43,27 +37,10 @@ describe("parseSearchParams", () => {
       brand,
       min,
       max,
-      category,
-      tags: [tag],
       attributes: {
         [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value],
       },
     })
-  })
-
-  it("supports multiple tag filters", async () => {
-    const tag1 = "tag"
-    const tag2 = "myTag"
-    params.append("inc", tag1)
-    params.append("inc", tag2)
-
-    const result = parseSearchParams(params)
-
-    expect(result).toStrictEqual(
-      expect.objectContaining({
-        tags: [tag1, tag2],
-      }),
-    )
   })
 
   it("supports multiple attributes", async () => {
@@ -83,7 +60,7 @@ describe("parseSearchParams", () => {
   })
 
   it("supports multiple attribute values", async () => {
-    const otherValue = "myTag"
+    const otherValue = "myValue"
     params.append(STRING_ATTRIBUTE.label, STRING_ATTRIBUTE.value)
     params.append(STRING_ATTRIBUTE.label, otherValue)
 

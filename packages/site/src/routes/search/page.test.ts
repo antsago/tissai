@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, test, expect, afterEach, vi } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
-import { CATEGORY, MockPg, OFFER, TAG, mockDbFixture } from "@tissai/db/mocks"
+import { MockPg, OFFER, mockDbFixture } from "@tissai/db/mocks"
 import { Db } from "@tissai/db"
 import { QUERY, SIMILAR, BRAND } from "mocks"
 import * as stores from "$app/stores"

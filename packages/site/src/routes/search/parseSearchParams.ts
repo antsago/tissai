@@ -4,9 +4,7 @@ function parseSearchParams(params: URLSearchParams) {
   const defaultFilters: SearchParams = {
     query: "",
     attributes: {},
-    tags: [],
     brand: undefined,
-    category: undefined,
     max: undefined,
     min: undefined,
   }
@@ -23,11 +21,6 @@ function parseSearchParams(params: URLSearchParams) {
           ...filters,
           brand: value,
         }
-      case "category":
-        return {
-          ...filters,
-          category: value,
-        }
       case "min":
         return {
           ...filters,
@@ -37,11 +30,6 @@ function parseSearchParams(params: URLSearchParams) {
         return {
           ...filters,
           max: parseFloat(value),
-        }
-      case "inc":
-        return {
-          ...filters,
-          tags: [...(filters.tags ?? []), value],
         }
       default:
         return {
