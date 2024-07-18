@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto"
-import { describe, test, beforeEach } from "vitest"
+import { describe, test, beforeEach, vi } from "vitest"
 import {
   PRODUCT,
   BRAND,
@@ -58,6 +58,20 @@ describe.concurrent("search", () => {
     brand: BRAND,
     price: offer1.price,
   }
+  const product2Result = {
+    id: product2.id,
+    title: product2.title,
+    image: product2.images[0],
+    brand: null,
+    price: undefined,
+  }
+  const attribute1 = { ...ATTRIBUTE, product: product1.id }
+  const attribute2 = {
+    id: "3ac16032-426e-4db3-bd71-cb6c2567387c",
+    label: ATTRIBUTE.label,
+    value: "asdf",
+    product: product2.id,
+  }
   beforeEach<Fixtures>(async ({ db }) => {
     await db.load({
       sites: [SITE],
@@ -66,7 +80,7 @@ describe.concurrent("search", () => {
       brands: [BRAND],
       products: [product1, product2],
       offers: [offer1, offer2],
-      attributes: [{ ...ATTRIBUTE, product: product1.id }],
+      attributes: [attribute1, attribute2],
     })
   })
 
@@ -75,13 +89,7 @@ describe.concurrent("search", () => {
       const result = await db.searchProducts({ query: product2.title })
 
       expect(result.products).toStrictEqual([
-        {
-          id: product2.id,
-          title: product2.title,
-          image: product2.images[0],
-          brand: null,
-          price: undefined,
-        },
+        product2Result,
         product1Result,
       ])
     })
@@ -116,40 +124,27 @@ describe.concurrent("search", () => {
       it("filters by string attribute", async ({ expect, db }) => {
         const result = await db.searchProducts({
           query: product2.title,
-          attributes: { [ATTRIBUTE.label]: [ATTRIBUTE.value] },
+          attributes: { [attribute1.label]: [attribute1.value] },
         })
 
         expect(result.products).toStrictEqual([product1Result])
       })
 
       it("accepts multiple values", async ({ expect, db }) => {
-        const OTHER_ATTRIBUTE = {
-          id: randomUUID(),
-          label: ATTRIBUTE.label,
-          value: "asdf",
-          product: PRODUCT.id,
-        }
         await db.load({
           products: [PRODUCT],
           offers: [{ ...OFFER, seller: undefined }],
-          attributes: [OTHER_ATTRIBUTE],
         })
 
         const result = await db.searchProducts({
           query: PRODUCT.title,
           attributes: {
-            [ATTRIBUTE.label]: [OTHER_ATTRIBUTE.value, ATTRIBUTE.value],
+            [ATTRIBUTE.label]: [attribute2.value, attribute1.value],
           },
         })
 
         expect(result.products).toStrictEqual([
-          {
-            id: PRODUCT.id,
-            title: PRODUCT.title,
-            image: PRODUCT.images[0],
-            brand: BRAND,
-            price: OFFER.price,
-          },
+          product2Result,
           product1Result,
         ])
       })
@@ -217,7 +212,7 @@ describe.concurrent("search", () => {
         max: OFFER.price,
         min: offer1.price,
         tags: [TAG.name],
-        attributes: { [ATTRIBUTE.label]: [ATTRIBUTE.value] },
+        attributes: { [attribute1.label]: [attribute1.value] },
       })
 
       await expect(act).resolves.not.toThrow()
@@ -230,11 +225,27 @@ describe.concurrent("search", () => {
 
       expect(result.suggestions).toStrictEqual([
         {
-          label: ATTRIBUTE.label,
+          label: attribute1.label,
           frequency: 0.5,
-          values: [ATTRIBUTE.value],
+          values: [attribute2.value, attribute1.value],
         },
       ])
     })
+
+    // it("includes values from other attributes", async ({ expect, db }) => {
+    //   await db.load({
+    //     products: [PRODUCT],
+    //     // attributes: [{ id: }]
+    //   })
+    //   const result = await db.searchProducts({ query: product2.title })
+
+    //   expect(result.suggestions).toStrictEqual([
+    //     {
+    //       label: ATTRIBUTE.label,
+    //       frequency: 0.5,
+    //       values: [ATTRIBUTE.value],
+    //     },
+    //   ])
+    // })
   })
 })
