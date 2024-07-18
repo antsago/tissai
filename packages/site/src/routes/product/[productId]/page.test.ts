@@ -50,6 +50,7 @@ describe("Product details page", () => {
       },
       OFFER2,
     ],
+    similar: [SIMILAR],
   }
   async function loadAndRender(db: MockPg, sectionName: string, details = {}) {
     db.pool.query.mockResolvedValueOnce({
@@ -59,9 +60,6 @@ describe("Product details page", () => {
           ...details,
         },
       ],
-    })
-    db.pool.query.mockResolvedValueOnce({
-      rows: [SIMILAR],
     })
 
     render(page, {
