@@ -7,7 +7,6 @@ import { toJsonb } from "./getProductDetails.js"
 export type SearchParams = {
   query: string
   brand?: string
-  category?: string
   min?: number
   max?: number
   tags?: string[]
@@ -20,7 +19,6 @@ export const buildSearchQuery = ({
   max,
   tags = [],
   brand,
-  category,
   attributes = {},
 }: SearchParams) => {
   const PRODUCT_LIMIT = 20
@@ -82,10 +80,6 @@ export const buildSearchQuery = ({
           ),
         ),
       )
-      query =
-        category !== null && category !== undefined
-          ? query.where("products.category", "=", category)
-          : query
       query =
         brand !== null && brand !== undefined
           ? query.where("products.brand", "=", brand)

@@ -1,9 +1,8 @@
 import { randomUUID } from "node:crypto"
-import { describe, test, beforeEach, vi } from "vitest"
+import { describe, test, beforeEach } from "vitest"
 import {
   PRODUCT,
   BRAND,
-  CATEGORY,
   TAG,
   dbFixture,
   OFFER,
@@ -19,13 +18,11 @@ const it = test.extend<Fixtures>({
 })
 
 describe.concurrent("search", () => {
-  const category2 = { name: "anothercategory" }
   const tag2 = { name: "anothertag" }
   const product1 = {
     id: randomUUID(),
     title: "Pantalones ajustados",
     images: PRODUCT.images,
-    category: PRODUCT.category,
     brand: PRODUCT.brand,
     tags: [TAG.name, tag2.name],
   }
@@ -33,7 +30,6 @@ describe.concurrent("search", () => {
     id: randomUUID(),
     title: "Vaqueros prietos",
     images: PRODUCT.images,
-    category: category2.name,
     tags: [tag2.name],
   }
   const baseOffer = {
@@ -76,7 +72,6 @@ describe.concurrent("search", () => {
   beforeEach<Fixtures>(async ({ db }) => {
     await db.load({
       sites: [SITE],
-      categories: [CATEGORY, category2],
       tags: [TAG],
       brands: [BRAND],
       products: [product1, product2],
@@ -104,15 +99,6 @@ describe.concurrent("search", () => {
       const result = await db.searchProducts({
         query: product2.title,
         brand: BRAND.name,
-      })
-
-      expect(result.products).toStrictEqual([product1Result])
-    })
-
-    it("filters by category", async ({ expect, db }) => {
-      const result = await db.searchProducts({
-        query: product2.title,
-        category: CATEGORY.name,
       })
 
       expect(result.products).toStrictEqual([product1Result])
@@ -202,7 +188,6 @@ describe.concurrent("search", () => {
     it("handles all filters", async ({ expect, db }) => {
       const act = db.searchProducts({
         query: product2.title,
-        category: CATEGORY.name,
         brand: BRAND.name,
         max: OFFER.price,
         min: offer1.price,

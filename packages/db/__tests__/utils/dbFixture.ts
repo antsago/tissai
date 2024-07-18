@@ -3,7 +3,6 @@ import { TaskContext, TestContext } from "vitest"
 import {
   Attribute,
   Brand,
-  Category,
   Db,
   Offer,
   Page,
@@ -16,7 +15,6 @@ import {
 type State = Partial<{
   sites: Site[]
   pages: Page[]
-  categories: Category[]
   tags: Tag[]
   sellers: Seller[]
   brands: Brand[]
@@ -29,7 +27,6 @@ const load = (db: Db) => async (state: State) => {
   await Promise.all(
     [
       state.sites?.map((s) => db.sites.create(s)),
-      state.categories?.map((c) => db.categories.create(c)),
       state.tags?.map((t) => db.tags.create(t)),
       state.sellers?.map((s) => db.sellers.create(s)),
       state.brands?.map((b) => db.brands.create(b)),

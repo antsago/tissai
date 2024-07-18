@@ -1,7 +1,6 @@
 import { Connection } from "../Connection.js"
 import * as sellers from "./sellers.js"
 import * as brands from "./brands.js"
-import * as categories from "./categories.js"
 import * as tags from "./tags.js"
 import * as products from "./products.js"
 import * as offers from "./offers.js"
@@ -12,7 +11,6 @@ import * as attributes from "./attributes.js"
 const TABLE_MODULES = {
   attributes,
   brands,
-  categories,
   offers,
   pages,
   products,
@@ -33,10 +31,10 @@ const Tables = (connection: Connection) => ({
         Object.values(tables).map((table) => table.initialize(connection)),
       )
 
-    const { sites, categories, brands, sellers, pages, products, ...others } =
+    const { sites, brands, sellers, pages, products, ...others } =
       TABLE_MODULES
 
-    await initializeInParalel({ sites, categories, brands, sellers })
+    await initializeInParalel({ sites, brands, sellers })
     await initializeInParalel({ pages, products })
     await initializeInParalel(others)
   },

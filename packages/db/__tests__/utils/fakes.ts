@@ -17,10 +17,6 @@ export const BRAND = {
   logo: "https://example.com/EG.jpg",
 }
 
-export const CATEGORY = {
-  name: "vaquero",
-}
-
 export const TAG = {
   name: "ajustados",
 }
@@ -34,7 +30,6 @@ export const PRODUCT = {
     "https://example.com/product-image-2.jpg",
   ],
   brand: BRAND.name,
-  category: CATEGORY.name,
   tags: [TAG.name],
 }
 

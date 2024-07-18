@@ -1,5 +1,4 @@
 import type { Brand } from "./brands.js"
-import type { Category } from "./categories.js"
 import type { Product } from "./products.js"
 import type { Offer } from "./offers.js"
 import type { Page } from "./pages.js"
@@ -18,7 +17,6 @@ import {
 type Database = {
   attributes: Attribute
   brands: Brand
-  categories: Category
   offers: Offer
   pages: Page
   products: Product

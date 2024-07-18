@@ -1,5 +1,4 @@
 export { TABLE as BRANDS, Brand } from "./brands.js"
-export { TABLE as CATEGORIES, Category } from "./categories.js"
 export { TABLE as OFFERS, Offer } from "./offers.js"
 export { TABLE as PAGES, Page } from "./pages.js"
 export { TABLE as PRODUCTS, Product } from "./products.js"

@@ -1,12 +1,10 @@
 import { Connection } from "../Connection.js"
 import { TABLE as BRANDS } from "./brands.js"
-import { TABLE as CATEGORIES } from "./categories.js"
 import builder from "./queryBuilder.js"
 
 export type Product = {
   id: string
   title: string
-  category: string
   tags: string[]
   description?: string
   images?: string[]
@@ -18,7 +16,6 @@ export const TABLE = Object.assign("products", {
   description: "description",
   images: "images",
   brand: "brand",
-  category: "category",
   tags: "tags",
 })
 
@@ -27,7 +24,6 @@ export const initialize = (connection: Connection) =>
     CREATE TABLE IF NOT EXISTS ${TABLE} (
       ${TABLE.id}             uuid PRIMARY KEY,
       ${TABLE.title}          text NOT NULL,
-      ${TABLE.category}       text NOT NULL REFERENCES ${CATEGORIES},
       ${TABLE.tags}           text[] NOT NULL,
       ${TABLE.description}    text,
       ${TABLE.images}         text[],
