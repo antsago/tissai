@@ -7,7 +7,9 @@
 
 <div>
   <h3>{suggestion.label}</h3>
-  <a href="{baseUrl}&{suggestion.label}={suggestion.values[0]}">
-    {suggestion.values[0]}
-  </a>
+  {#each suggestion.values as value}
+    <a href="{baseUrl}&{suggestion.label}={value}">
+      {value}
+    </a>
+  {/each}
 </div>

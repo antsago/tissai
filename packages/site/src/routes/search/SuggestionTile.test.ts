@@ -29,4 +29,27 @@ describe("SuggestionTile", () => {
       `${BASE_URL}&${SUGGESTION.label}=${SUGGESTION.values[0]}`,
     )
   })
+
+  it("handles multiple values", async () => {
+    const otherValue = "otherValue"
+    render(SuggestionTile, {
+      baseUrl: BASE_URL,
+      suggestion: {
+        ...SUGGESTION,
+        values: [ATTRIBUTE.value, otherValue],
+      },
+    })
+
+    const chip1 = screen.getByRole("link", { name: ATTRIBUTE.value })
+    const chip2 = screen.getByRole("link", { name: otherValue })
+
+    expect(chip1).toHaveAttribute(
+      "href",
+      `${BASE_URL}&${SUGGESTION.label}=${ATTRIBUTE.value}`,
+    )
+    expect(chip2).toHaveAttribute(
+      "href",
+      `${BASE_URL}&${SUGGESTION.label}=${otherValue}`,
+    )
+  })
 })
