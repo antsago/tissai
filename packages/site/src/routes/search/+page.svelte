@@ -7,7 +7,8 @@
   import ProductTile from "./ProductTile.svelte"
   import SuggestionTile from "./SuggestionTile.svelte"
 
-  export let data: Search & {
+  export let data: {
+    tiles: (Search["products"][0]|Search["suggestions"][0])[]
     filters: Omit<SearchParams, "query">
   }
 </script>
@@ -17,7 +18,7 @@
 </Section>
 
 <Section label="Resultados de la búsqueda">
-  <Masonry class="content-center" tiles={[...data.products, ...data.suggestions]} let:tile={tile}>
+  <Masonry class="content-center" tiles={data.tiles} let:tile={tile}>
     {#if "title" in tile}
       <ProductTile product={tile} />
     {:else}

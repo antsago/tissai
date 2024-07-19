@@ -1,5 +1,6 @@
 import type { PageServerLoad } from "./$types"
 import parseSearchParams from "./parseSearchParams"
+import mergeTiles from "./mergeTiles"
 
 export const load: PageServerLoad = async ({ url, locals }) => {
   const { query, ...filters } = parseSearchParams(url.searchParams)
@@ -9,7 +10,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
   })
 
   return {
-    ...results,
+    tiles: mergeTiles(results),
     filters,
   }
 }
