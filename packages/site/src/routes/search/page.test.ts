@@ -30,12 +30,14 @@ describe("Search page", () => {
     db.pool.query.mockResolvedValueOnce({
       rows: [
         {
-          products: [{
-            ...SIMILAR,
-            brand: BRAND,
-            price: String(OFFER.price),
-            ...overwrite,
-          }],
+          products: [
+            {
+              ...SIMILAR,
+              brand: BRAND,
+              price: String(OFFER.price),
+              ...overwrite,
+            },
+          ],
           suggestions: [],
         },
       ],
