@@ -1,13 +1,12 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, afterEach } from "vitest"
 import { render, screen, cleanup } from "@testing-library/svelte"
-import { ATTRIBUTE } from "@tissai/db/mocks"
 import SuggestionTile from "./SuggestionTile.svelte"
 
 const SUGGESTION = {
   frequency: 1,
-  label: ATTRIBUTE.label,
-  values: [ATTRIBUTE.value],
+  label: "label",
+  values: ["value"],
 }
 const BASE_URL = "https://example.com/q=a%20search&foo=bar"
 
@@ -36,20 +35,38 @@ describe("SuggestionTile", () => {
       baseUrl: BASE_URL,
       suggestion: {
         ...SUGGESTION,
-        values: [ATTRIBUTE.value, otherValue],
+        values: [SUGGESTION.values[0], otherValue],
       },
     })
 
-    const chip1 = screen.getByRole("link", { name: ATTRIBUTE.value })
+    const chip1 = screen.getByRole("link", { name: SUGGESTION.values[0] })
     const chip2 = screen.getByRole("link", { name: otherValue })
 
     expect(chip1).toHaveAttribute(
       "href",
-      `${BASE_URL}&${SUGGESTION.label}=${ATTRIBUTE.value}`,
+      `${BASE_URL}&${SUGGESTION.label}=${SUGGESTION.values[0]}`,
     )
     expect(chip2).toHaveAttribute(
       "href",
       `${BASE_URL}&${SUGGESTION.label}=${otherValue}`,
+    )
+  })
+
+  it("url-encodes label and value", async () => {
+    render(SuggestionTile, {
+      baseUrl: BASE_URL,
+      suggestion: {
+        ...SUGGESTION,
+        label: "the label",
+        values: ["a value"],
+      },
+    })
+
+    const chip = screen.getByRole("link")
+
+    expect(chip).toHaveAttribute(
+      "href",
+      `${BASE_URL}&the%20label=a%20value`,
     )
   })
 })
