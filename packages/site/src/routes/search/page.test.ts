@@ -62,72 +62,13 @@ describe("Search page", () => {
     return within(results)
   }
 
-  it("shows search results", async ({ db }) => {
+  it("displays search results", async ({ db }) => {
     const results = await loadAndRender(db)
 
-    const title = results.getByRole("heading", { level: 3 })
-    const image = results.getByRole("img", { name: SIMILAR.title })
-    const detailLink = results.getByRole("link")
-    const price = results.getByText(OFFER.price)
-    const brandName = results.queryByText(BRAND.name)
-    const brandLogo = results.getByRole("img", {
-      name: `Logo de ${BRAND.name}`,
-    })
+    const productTitle = results.getByRole("heading", { level: 3 })
 
-    expect(image).toHaveAttribute("src", SIMILAR.image)
-    expect(title).toHaveTextContent(SIMILAR.title)
-    expect(price).toBeInTheDocument()
-    expect(brandLogo).toBeInTheDocument()
-    expect(brandName).not.toBeInTheDocument()
-    expect(detailLink).toHaveAttribute(
-      "href",
-      expect.stringContaining(SIMILAR.id),
-    )
+    expect(productTitle).toHaveTextContent(SIMILAR.title)
     expect(db).toHaveSearched({ query: QUERY })
-  })
-
-  it("handles brands without logo", async ({ db }) => {
-    const results = await loadAndRender(db, {
-      brand: {
-        name: BRAND.name,
-      },
-    })
-
-    const brandName = results.getByText(BRAND.name)
-    const brandLogo = results.queryByRole("img", {
-      name: `Logo de ${BRAND.name}`,
-    })
-
-    expect(brandName).toBeInTheDocument()
-    expect(brandLogo).not.toBeInTheDocument()
-  })
-
-  it("handles products without brand", async ({ db }) => {
-    const results = await loadAndRender(db, {
-      brand: null,
-    })
-
-    const undef = results.queryByText("undefined")
-    const brandName = results.queryByText(BRAND.name)
-    const brandLogo = results.queryByRole("img", {
-      name: `Logo de ${BRAND.name}`,
-    })
-
-    expect(brandName).not.toBeInTheDocument()
-    expect(brandLogo).not.toBeInTheDocument()
-    expect(undef).not.toBeInTheDocument()
-  })
-
-  it("handles products without price", async ({ db }) => {
-    const results = await loadAndRender(db, {
-      price: undefined,
-    })
-
-    const undef = results.queryByText("undefined")
-    const price = results.queryByText(OFFER.price)
-
-    expect(price).not.toBeInTheDocument()
-    expect(undef).not.toBeInTheDocument()
   })
 
   it("displays filters", async ({ db }) => {

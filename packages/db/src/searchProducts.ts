@@ -26,11 +26,11 @@ export const buildSearchQuery = ({
     id: string
     title: string
     brand: {
-      logo: string
+      logo?: string
       name: string
-    }
-    image: string
-    price: string
+    } | null
+    image?: string
+    price?: string
   }
   type Suggestion = {
     frequency: number
