@@ -65,8 +65,14 @@ describe("Search page", () => {
   it("displays search results", async ({ db }) => {
     const results = await loadAndRender(db)
 
-    const product = results.getByRole("heading", { level: 3, name: SIMILAR.title })
-    const suggestion = results.getByRole("heading", { level: 3, name: SUGGESTION.label })
+    const product = results.getByRole("heading", {
+      level: 3,
+      name: SIMILAR.title,
+    })
+    const suggestion = results.getByRole("heading", {
+      level: 3,
+      name: SUGGESTION.label,
+    })
 
     expect(product).toBeInTheDocument()
     expect(suggestion).toBeInTheDocument()

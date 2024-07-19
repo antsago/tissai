@@ -60,9 +60,6 @@ describe("SuggestionTile", () => {
 
     const chip = screen.getByRole("link")
 
-    expect(chip).toHaveAttribute(
-      "href",
-      `${BASE_URL}&the%20label=a%20value`,
-    )
+    expect(chip).toHaveAttribute("href", `${BASE_URL}&the%20label=a%20value`)
   })
 })

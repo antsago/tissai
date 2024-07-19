@@ -8,7 +8,11 @@
 <div>
   <h3>{suggestion.label}</h3>
   {#each suggestion.values as value}
-    <a href="{baseUrl}&{encodeURIComponent(suggestion.label)}={encodeURIComponent(value)}">
+    <a
+      href="{baseUrl}&{encodeURIComponent(
+        suggestion.label,
+      )}={encodeURIComponent(value)}"
+    >
       {value}
     </a>
   {/each}

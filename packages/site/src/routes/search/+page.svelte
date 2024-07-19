@@ -8,7 +8,7 @@
   import SuggestionTile from "./SuggestionTile.svelte"
 
   export let data: {
-    tiles: (Search["products"][0]|Search["suggestions"][0])[]
+    tiles: (Search["products"][0] | Search["suggestions"][0])[]
     filters: Omit<SearchParams, "query">
   }
 </script>
@@ -18,7 +18,7 @@
 </Section>
 
 <Section label="Resultados de la búsqueda">
-  <Masonry class="content-center" tiles={data.tiles} let:tile={tile}>
+  <Masonry class="content-center" tiles={data.tiles} let:tile>
     {#if "title" in tile}
       <ProductTile product={tile} />
     {:else}
