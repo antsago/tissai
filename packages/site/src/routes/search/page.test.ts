@@ -3,7 +3,7 @@ import { describe, test, expect, afterEach, vi } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
 import { MockPg, OFFER, mockDbFixture } from "@tissai/db/mocks"
 import { Db } from "@tissai/db"
-import { QUERY, SIMILAR, BRAND } from "mocks"
+import { QUERY, SIMILAR, BRAND, SUGGESTION } from "mocks"
 import * as stores from "$app/stores"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
@@ -38,7 +38,7 @@ describe("Search page", () => {
               ...overwrite,
             },
           ],
-          suggestions: [],
+          suggestions: [SUGGESTION],
         },
       ],
     })
@@ -65,9 +65,11 @@ describe("Search page", () => {
   it("displays search results", async ({ db }) => {
     const results = await loadAndRender(db)
 
-    const productTitle = results.getByRole("heading", { level: 3 })
+    const product = results.getByRole("heading", { level: 3, name: SIMILAR.title })
+    const suggestion = results.getByRole("heading", { level: 3, name: SUGGESTION.label })
 
-    expect(productTitle).toHaveTextContent(SIMILAR.title)
+    expect(product).toBeInTheDocument()
+    expect(suggestion).toBeInTheDocument()
     expect(db).toHaveSearched({ query: QUERY })
   })
 

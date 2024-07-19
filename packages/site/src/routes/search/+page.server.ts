@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
   })
 
   return {
-    products: results.products,
+    ...results,
     filters,
   }
 }

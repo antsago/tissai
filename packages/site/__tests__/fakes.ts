@@ -18,3 +18,8 @@ export const STRING_ATTRIBUTE = {
 }
 export const BOOL_ATTRIBUTE = { label: "lavados", value: "lavados" }
 export const CAT_ATTRIBUTE = { label: "categoría", value: "vaqueros" }
+export const SUGGESTION = {
+  frequency: 1,
+  label: "label",
+  values: ["value"],
+}

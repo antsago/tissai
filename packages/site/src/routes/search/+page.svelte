@@ -1,12 +1,13 @@
 <script lang="ts">
   import type { Search, SearchParams } from "@tissai/db"
+  import { page } from "$app/stores"
   import { Section } from "$lib/components"
   import Masonry from "./Masonry.svelte"
   import Filters from "./Filters.svelte"
   import ProductTile from "./ProductTile.svelte"
+  import SuggestionTile from "./SuggestionTile.svelte"
 
-  export let data: {
-    products: Search["products"]
+  export let data: Search & {
     filters: Omit<SearchParams, "query">
   }
 </script>
@@ -16,7 +17,11 @@
 </Section>
 
 <Section label="Resultados de la búsqueda">
-  <Masonry class="content-center" tiles={data.products} let:tile={product}>
-    <ProductTile {product} />
+  <Masonry class="content-center" tiles={[...data.products, ...data.suggestions]} let:tile={tile}>
+    {#if "title" in tile}
+      <ProductTile product={tile} />
+    {:else}
+      <SuggestionTile suggestion={tile} baseUrl={$page.url.href} />
+    {/if}
   </Masonry>
 </Section>

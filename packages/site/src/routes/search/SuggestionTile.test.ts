@@ -1,13 +1,9 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, afterEach } from "vitest"
 import { render, screen, cleanup } from "@testing-library/svelte"
+import { SUGGESTION } from "mocks"
 import SuggestionTile from "./SuggestionTile.svelte"
 
-const SUGGESTION = {
-  frequency: 1,
-  label: "label",
-  values: ["value"],
-}
 const BASE_URL = "https://example.com/q=a%20search&foo=bar"
 
 describe("SuggestionTile", () => {
