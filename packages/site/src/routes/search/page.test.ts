@@ -21,11 +21,7 @@ describe("Search page", () => {
 
   async function loadAndRender(
     db: MockPg,
-    {
-      queryParams,
-      sectionName = "Resultados de la búsqueda",
-      ...overwrite
-    } = {} as any,
+    { queryParams, sectionName = "Resultados de la búsqueda" } = {} as any,
   ) {
     db.pool.query.mockResolvedValueOnce({
       rows: [
@@ -35,8 +31,13 @@ describe("Search page", () => {
               ...SIMILAR,
               brand: BRAND,
               price: String(OFFER.price),
-              ...overwrite,
             },
+            ...new Array(4).fill(null).map((_, i) => ({
+              title: i,
+              id: i,
+              brand: BRAND,
+              price: undefined,
+            })),
           ],
           suggestions: [SUGGESTION],
         },
