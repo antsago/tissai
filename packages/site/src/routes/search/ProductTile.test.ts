@@ -16,7 +16,7 @@ describe("ProductTile", () => {
     cleanup()
   })
 
-  it("shows product details", async () => {
+  it("shows details", async () => {
     render(ProductTile, { product: SEARCH_RESULT })
 
     const title = screen.getByRole("heading", { level: 3 })
@@ -40,12 +40,14 @@ describe("ProductTile", () => {
   })
 
   it("handles brands without logo", async () => {
-    render(ProductTile, { product: {
-      ...SEARCH_RESULT,
-      brand: {
-        name: BRAND.name,
+    render(ProductTile, {
+      product: {
+        ...SEARCH_RESULT,
+        brand: {
+          name: BRAND.name,
+        },
       },
-    } })
+    })
 
     const brandName = screen.getByText(BRAND.name)
     const brandLogo = screen.queryByRole("img", {
@@ -57,10 +59,12 @@ describe("ProductTile", () => {
   })
 
   it("handles products without brand", async () => {
-    render(ProductTile, { product: {
-      ...SEARCH_RESULT,
-      brand: null,
-    } })
+    render(ProductTile, {
+      product: {
+        ...SEARCH_RESULT,
+        brand: null,
+      },
+    })
 
     const undef = screen.queryByText("undefined")
     const brandName = screen.queryByText(BRAND.name)
@@ -74,10 +78,12 @@ describe("ProductTile", () => {
   })
 
   it("handles products without price", async () => {
-    render(ProductTile, { product: {
-      ...SEARCH_RESULT,
-      price: undefined,
-    } })
+    render(ProductTile, {
+      product: {
+        ...SEARCH_RESULT,
+        price: undefined,
+      },
+    })
 
     const undef = screen.queryByText("undefined")
     const price = screen.queryByText(OFFER.price)
