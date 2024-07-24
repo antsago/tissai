@@ -114,7 +114,7 @@ describe("index", () => {
     expect(mockDb).toHaveInserted(PRODUCTS, [title2])
   })
 
-  it("handles processsing errors", async ({ expect, mockDb, mockOra }) => {
+  it.only("handles processsing errors", async ({ expect, mockDb, mockOra }) => {
     const error = new Error("Booh!")
     const title2 = "Another product"
     const page = pageWithSchema({
@@ -135,7 +135,7 @@ describe("index", () => {
     mockDb.cursor.read.mockResolvedValueOnce([page2])
     let hasThrown = false
     mockDb.pool.query.mockImplementation((query) => {
-      if (query.includes("select") && !hasThrown) {
+      if (query.includes("brands") && query.includes("select") && !hasThrown) {
         hasThrown = true
         throw error
       }

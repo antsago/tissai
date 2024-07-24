@@ -1,6 +1,6 @@
 import { dirname } from "node:path"
 import { fileURLToPath } from "node:url"
-import { Db, Page, PAGES } from "@tissai/db"
+import { Db, Page, builder } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "./Reporter.js"
 import parsedPage from "./parsedPage.js"
@@ -37,9 +37,9 @@ try {
 
   reporter.progress("Setting up page stream")
   const [{ count: totalPageCount }] = await db.raw<{ count: number }>(
-    `SELECT COUNT(id) FROM ${PAGES}`,
+    builder.selectFrom("pages").select(({ fn }) => fn.count("id").as("count")).compile().sql
   )
-  const pages = db.stream<Page>(`SELECT * FROM ${PAGES}`)
+  const pages = db.stream<Page>(builder.selectFrom("pages").selectAll().compile().sql)
   let index = 1
   for await (let page of pages) {
     try {
