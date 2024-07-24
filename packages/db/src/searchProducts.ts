@@ -102,7 +102,7 @@ export const buildSearchQuery = ({
           fn.count("results.id").as("tally"),
         ])
         .groupBy("attributes.label")
-        .orderBy("tally")
+        .orderBy("tally", "desc")
         .limit(SUGGESTION_LIMIT),
     )
     .with("suggestions", (db) =>

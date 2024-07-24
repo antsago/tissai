@@ -203,6 +203,48 @@ describe.concurrent("search", () => {
       ])
     })
 
+    it("only returns most frequent attributes", async ({ expect, db }) => {
+      await db.load({
+        attributes: [
+          {
+            id: "e62d7696-945f-4d1a-9486-3429b6e1df77",
+            label: "label1",
+            value: "value1",
+            product: product1.id,
+          },
+          {
+            id: "f6706010-9307-4972-aac3-1590a67d2383",
+            label: "label2",
+            value: "value2",
+            product: product1.id,
+          },
+          {
+            id: "03676c45-4715-4552-a054-6690b2196a10",
+            label: "label3",
+            value: "value3",
+            product: product1.id,
+          },
+          {
+            id: "b16108a4-cfb2-417b-a02b-3dc36219550c",
+            label: "label4",
+            value: "value4",
+            product: product1.id,
+          },
+        ],
+      })
+
+      const result = await db.searchProducts({
+        query: product1.title,
+      })
+
+      expect(result.suggestions).toHaveLength(4)
+      expect(result.suggestions[0]).toStrictEqual({
+        label: attribute1.label,
+        frequency: 1,
+        values: [attribute2.value, attribute1.value],
+      })
+    })
+
     it("calculates frequency", async ({ expect, db }) => {
       await db.load({ products: [PRODUCT], offers: [OFFER], sellers: [SELLER] })
 
