@@ -2,17 +2,7 @@ import { Connection } from "../Connection.js"
 import { TABLE as PRODUCTS } from "./products.js"
 import { TABLE as SELLERS } from "./sellers.js"
 import { TABLE as SITES } from "./sites.js"
-import builder from "./queryBuilder.js"
-
-export type Offer = {
-  id: string
-  url: string
-  site: string
-  product: string
-  seller?: string
-  price?: number
-  currency?: string
-}
+import builder, { type Offer } from "./queryBuilder.js"
 
 export const TABLE = Object.assign("offers", {
   id: "id",

@@ -1,13 +1,6 @@
 import { Connection } from "../Connection.js"
 import { TABLE as SITES } from "./sites.js"
-import builder from "./queryBuilder.js"
-
-export type Page = {
-  id: string
-  url: string
-  body: string
-  site: string
-}
+import builder, { type Page } from "./queryBuilder.js"
 
 export const TABLE = Object.assign("pages", {
   id: "id",

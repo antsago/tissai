@@ -1,15 +1,5 @@
 import { Connection } from "../Connection.js"
-import builder from "./queryBuilder.js"
-
-export type Site = {
-  id: string
-  name: string
-  icon: string
-  domain: string
-  sitemaps?: string[]
-  sitemapWhitelist?: string[]
-  urlKeywords?: string[]
-}
+import builder, { type Site } from "./queryBuilder.js"
 
 export const TABLE = Object.assign("sites", {
   id: "id",

@@ -1,13 +1,6 @@
 import { Connection } from "../Connection.js"
 import { TABLE as PRODUCTS } from "./products.js"
-import builder from "./queryBuilder.js"
-
-export type Attribute = {
-  id: string
-  label: string
-  value: string
-  product: string
-}
+import builder, { type Attribute } from "./queryBuilder.js"
 
 export const TABLE = Object.assign("attributes", {
   id: "id",

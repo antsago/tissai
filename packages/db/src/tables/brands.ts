@@ -1,10 +1,5 @@
 import { Connection } from "../Connection.js"
-import builder from "./queryBuilder.js"
-
-export type Brand = {
-  name: string
-  logo?: string
-}
+import builder, { type Brand } from "./queryBuilder.js"
 
 export const TABLE = Object.assign("brands", {
   name: "name",

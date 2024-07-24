@@ -1,9 +1,5 @@
 import { Connection } from "../Connection.js"
-import builder from "./queryBuilder.js"
-
-export type Seller = {
-  name: string
-}
+import builder, { type Seller } from "./queryBuilder.js"
 
 export const TABLE = Object.assign("sellers", {
   name: "name",

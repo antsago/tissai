@@ -9,7 +9,6 @@ import {
   SELLER,
   ATTRIBUTE,
 } from "#mocks"
-import { m } from "vitest/dist/reporters-yx5ZTtEV.js"
 
 type Fixtures = { db: dbFixture }
 const it = test.extend<Fixtures>({
