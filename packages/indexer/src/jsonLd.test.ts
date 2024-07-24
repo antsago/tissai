@@ -1,7 +1,7 @@
 import { expect, describe, it } from "vitest"
 import { PAGE, pageWithSchema } from "#mocks"
-import parsedPage from "./parsedPage"
-import jsonLd, { parseAndExpand } from "./jsonLd"
+import parsedPage from "./parsedPage.js"
+import jsonLd, { parseAndExpand } from "./jsonLd.js"
 
 describe("jsonLd", () => {
   const PRODUCT_SCHEMA = {

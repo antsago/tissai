@@ -1,7 +1,7 @@
 import { expect, describe, it } from "vitest"
 import { PAGE } from "#mocks"
-import parsedPage from "./parsedPage"
-import entries from "./opengraph"
+import parsedPage from "./parsedPage.js"
+import entries from "./opengraph.js"
 
 const BASE_DATA = {
   "og:title": "Friend Smash Coin",
