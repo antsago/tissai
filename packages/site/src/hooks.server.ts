@@ -1,4 +1,4 @@
-import type { Handle } from "./$types"
+import type { Handle } from "@sveltejs/kit"
 import { Db } from "@tissai/db"
 
 let db: Db

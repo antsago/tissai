@@ -1,4 +1,4 @@
-import type { Handle } from "./$types"
+import type { Handle } from "@sveltejs/kit"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 
 describe("Server hooks", () => {
