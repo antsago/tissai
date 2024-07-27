@@ -134,7 +134,7 @@ describe("index", () => {
     mockDb.cursor.read.mockResolvedValueOnce([page])
     mockDb.cursor.read.mockResolvedValueOnce([page2])
     let hasThrown = false
-    mockDb.pool.query.mockImplementation((query) => {
+    mockDb.pool.query.mockImplementation((query: any) => {
       if (query.includes("brands") && query.includes("select") && !hasThrown) {
         hasThrown = true
         throw error

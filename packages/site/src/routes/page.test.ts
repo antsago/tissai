@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom/vitest"
-import { describe, it, expect, vi, beforeEach } from "vitest"
-import { render, screen, cleanup, within } from "@testing-library/svelte"
+import { describe, it, expect, beforeEach } from "vitest"
+import { render, screen, cleanup } from "@testing-library/svelte"
 import page from "./+page.svelte"
 
 describe("Home page", () => {
