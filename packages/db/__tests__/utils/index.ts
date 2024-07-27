@@ -1,5 +1,6 @@
-export type { CustomMatchers } from "./customMatchers.js"
+import "./customMatchers.js"
 
+export type { CustomMatchers } from "./customMatchers.js"
 export * from "./MockPg.js"
 export * from "./mockDbFixture.js"
 export * from "./fakes.js"

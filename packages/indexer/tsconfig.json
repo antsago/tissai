@@ -2,9 +2,10 @@
   "extends": "@tsconfig/node20/tsconfig.json",
   "compilerOptions": {
     "rootDir": ".",
-    "outDir": "build"
+    "outDir": "build",
+    "composite": true,
+    "declarationMap": true,
   },
-  "references": [{ "path": "../db" }, { "path": "../pythonPool" }],
+  "references": [{ "path": "../db/tsconfig.json" }, { "path": "../pythonPool/tsconfig.json" }],
   "include": ["./src/**/*", "./__tests__/**/*"],
-  "exclude": ["**/*.test.ts"]
 }

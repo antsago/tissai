@@ -1,0 +1,8 @@
+{
+  "references": [
+    {"path": "./packages/db/tsconfig.json" },
+    {"path": "./packages/pythonPool/tsconfig.json" },
+    {"path": "./packages/indexer/tsconfig.json" },
+    {"path": "./packages/site/tsconfig.json" },
+  ],
+}
