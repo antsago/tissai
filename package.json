@@ -15,6 +15,7 @@
     "test": "yarn db test && yarn pp test && yarn ind test && yarn site test"
   },
   "devDependencies": {
+    "@tsconfig/node20": "20.1.4",
     "prettier": "3.3.0",
     "prettier-plugin-svelte": "3.2.3",
     "svelte": "4.2.17"

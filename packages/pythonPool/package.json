@@ -19,7 +19,6 @@
     "#mocks": "./__tests__/utils/index.ts"
   },
   "devDependencies": {
-    "@tsconfig/node20": "20.1.4",
     "@types/node": "20.12.7",
     "typescript": "5.4.5",
     "vitest": "1.5.0"

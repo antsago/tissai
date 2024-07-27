@@ -20,7 +20,6 @@
     "#mocks": "./__tests__/utils/index.ts"
   },
   "devDependencies": {
-    "@tsconfig/node20": "20.1.4",
     "@types/node": "20.14.1",
     "@types/pg": "^8",
     "@types/pg-cursor": "^2",

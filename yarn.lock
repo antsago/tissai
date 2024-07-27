@@ -809,7 +809,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tissai/db@workspace:packages/db"
   dependencies:
-    "@tsconfig/node20": "npm:20.1.4"
     "@types/node": "npm:20.14.1"
     "@types/pg": "npm:^8"
     "@types/pg-cursor": "npm:^2"
@@ -827,7 +826,6 @@ __metadata:
   dependencies:
     "@tissai/db": "workspace:*"
     "@tissai/python-pool": "workspace:*"
-    "@tsconfig/node20": "npm:20.1.4"
     "@types/he": "npm:^1"
     "@types/lodash": "npm:4.17.5"
     "@types/node": "npm:20.12.7"
@@ -846,7 +844,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tissai/python-pool@workspace:packages/pythonPool"
   dependencies:
-    "@tsconfig/node20": "npm:20.1.4"
     "@types/node": "npm:20.12.7"
     python-shell: "npm:5.0.0"
     typescript: "npm:5.4.5"
@@ -4927,6 +4924,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
+    "@tsconfig/node20": "npm:20.1.4"
     prettier: "npm:3.3.0"
     prettier-plugin-svelte: "npm:3.2.3"
     svelte: "npm:4.2.17"
