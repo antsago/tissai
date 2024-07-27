@@ -3,7 +3,7 @@ import type { SearchParams } from "../../src/index.js"
 import { expect } from "vitest"
 import { buildSearchQuery } from "../../src/searchProducts.js"
 
-interface CustomMatchers {
+export interface CustomMatchers {
   toHaveInserted: (table: string, values?: any[]) => void
   toHaveSearched: (searchParams: SearchParams) => void
 }
