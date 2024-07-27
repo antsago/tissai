@@ -10,7 +10,7 @@ const config = {
   kit: {
     adapter: adapter(),
     alias: {
-      mocks: "__tests__",
+      mocks: "tests",
     },
   },
 }
