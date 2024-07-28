@@ -1,6 +1,6 @@
 import { expect, describe, test, beforeEach } from "vitest"
 import { mockDbFixture } from "@tissai/db/mocks"
-import { Db, BRANDS } from "@tissai/db"
+import { Brand, Db, queries } from "@tissai/db"
 import brand from "./brand.js"
 
 type Fixtures = { pg: mockDbFixture }
@@ -25,7 +25,8 @@ describe("brands", () => {
       name: NAME,
       logo: LOGO,
     })
-    expect(pg).toHaveInserted(BRANDS, [NAME, LOGO])
+    const query = queries.brands.create(result as Brand)
+    expect(pg).toHaveExecuted(query.sql, query.parameters)
   })
 
   it("reuses existing brands", async ({ pg }) => {
@@ -35,7 +36,8 @@ describe("brands", () => {
     const result = await brand({ brandName: NAME.toLowerCase() }, db)
 
     expect(result).toStrictEqual(existing)
-    expect(pg).not.toHaveInserted(BRANDS)
+    const query = queries.brands.create(existing)
+    expect(pg).not.toHaveExecuted(query.sql, query.parameters)
   })
 
   it("updates missing information", async ({ pg }) => {
@@ -48,11 +50,8 @@ describe("brands", () => {
     )
 
     expect(result).toStrictEqual({ name: NAME, logo: LOGO })
-    expect(pg.pool.query).toHaveBeenCalledWith(
-      expect.stringContaining("update"),
-      expect.anything(),
-    )
-    expect(pg).not.toHaveInserted(BRANDS)
+    const query = queries.brands.update(result as Brand)
+    expect(pg).toHaveExecuted(query.sql, query.parameters)
   })
 
   it("handles new brands without logo", async () => {
@@ -68,6 +67,7 @@ describe("brands", () => {
     const result = await brand({}, db)
 
     expect(result).toBe(undefined)
-    expect(pg).not.toHaveInserted(BRANDS)
+    const query = queries.brands.create({} as Brand)
+    expect(pg).not.toHaveExecuted(query.sql, query.parameters)
   })
 })

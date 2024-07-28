@@ -6,6 +6,7 @@ import { buildSearchQuery } from "../../src/searchProducts.js"
 export interface CustomMatchers {
   toHaveInserted: (table: string, values?: any[]) => void
   toHaveSearched: (searchParams: SearchParams) => void
+  toHaveExecuted: (query: string, parameters?: readonly unknown[]) => void
 }
 
 declare module "vitest" {
@@ -30,7 +31,8 @@ function toHaveExecuted(
 }
 
 expect.extend({
-  toHaveInserted(pg: MockPg, table, values = []) {
+  toHaveExecuted,
+  toHaveInserted(pg: MockPg, table: string, values = []) {
     return toHaveExecuted.call(
       this,
       pg,

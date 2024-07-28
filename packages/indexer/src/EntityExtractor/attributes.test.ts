@@ -2,7 +2,7 @@ import { expect, describe, test, beforeEach } from "vitest"
 import { mockPythonFixture } from "@tissai/python-pool/mocks"
 import { PythonPool } from "@tissai/python-pool"
 import { mockDbFixture, PRODUCT } from "@tissai/db/mocks"
-import { Db, ATTRIBUTES } from "@tissai/db"
+import { Db, queries } from "@tissai/db"
 import attributes from "./attributes.js"
 
 type Fixtures = {
@@ -44,11 +44,8 @@ describe("attributes", () => {
       method: "attributes",
       input: TITLE,
     })
-    expect(pg).toHaveInserted(ATTRIBUTES, [
-      foundAttributes[0].label,
-      foundAttributes[0].value,
-      PRODUCT.id,
-    ])
+    const query = queries.attributes.create(result[0])
+    expect(pg).toHaveExecuted(query.sql, query.parameters)
   })
 
   it("extracts multiple attributes", async ({ mockPython, pg }) => {
@@ -75,8 +72,10 @@ describe("attributes", () => {
         value: foundAttributes[1].value,
       },
     ])
-    expect(pg).toHaveInserted(ATTRIBUTES, [foundAttributes[0].label])
-    expect(pg).toHaveInserted(ATTRIBUTES, [foundAttributes[1].label])
+    const query1 = queries.attributes.create(result[0])
+    expect(pg).toHaveExecuted(query1.sql, query1.parameters)
+    const query2 = queries.attributes.create(result[1])
+    expect(pg).toHaveExecuted(query2.sql, query2.parameters)
   })
 
   it("merges consecutive attributes with same label", async ({

@@ -14,13 +14,10 @@ export const initialize = (connection: Connection) =>
     );
   `)
 
-export const crud = (connection: Connection) => ({
-  create: (brand: Brand) =>
-    connection.query(builder.insertInto("brands").values(brand).compile()),
-  getAll: async () =>
-    connection.query(builder.selectFrom("brands").selectAll().compile()),
-  byName: async (name: string) => {
-    const query = builder
+export const queries = {
+  create: (brand: Brand) => builder.insertInto("brands").values(brand).compile(),
+  getAll: () => builder.selectFrom("brands").selectAll().compile(),
+  byName: (name: string) => builder
       .selectFrom("brands")
       .selectAll()
       .where(
@@ -29,16 +26,22 @@ export const crud = (connection: Connection) => ({
         1,
       )
       .limit(1)
-      .compile()
-    const [found] = await connection.query(query)
+      .compile(),
+  update: (brand: Brand) =>builder
+    .updateTable("brands")
+    .set(brand)
+    .where("name", "=", brand.name)
+    .compile(),
+}
+export const crud = (connection: Connection) => ({
+  create: (brand: Brand) =>
+    connection.query(queries.create(brand)),
+  getAll: async () =>
+    connection.query(queries.getAll()),
+  byName: async (name: string) => {
+    const [found] = await connection.query(queries.byName(name))
     return found
   },
   update: async (brand: Brand) =>
-    connection.query(
-      builder
-        .updateTable("brands")
-        .set(brand)
-        .where("name", "=", brand.name)
-        .compile(),
-    ),
+    connection.query(queries.update(brand)),
 })

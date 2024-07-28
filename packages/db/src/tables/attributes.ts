@@ -18,12 +18,12 @@ export const initialize = (connection: Connection) =>
       ${TABLE.product}        uuid NOT NULL REFERENCES ${PRODUCTS}
     );`)
 
-export const crud = (connection: Connection) => ({
+export const queries = {
   create: (attribute: Attribute) =>
-    connection.query(
-      builder.insertInto("attributes").values(attribute).compile(),
-    ),
-
-  getAll: async () =>
-    connection.query(builder.selectFrom("attributes").selectAll().compile()),
+    builder.insertInto("attributes").values(attribute).compile(),
+  getAll: () => builder.selectFrom("attributes").selectAll().compile(),
+}
+export const crud = (connection: Connection) => ({
+  create: (attribute: Attribute) => connection.query(queries.create(attribute)),
+  getAll: async () => connection.query(queries.getAll()),
 })
