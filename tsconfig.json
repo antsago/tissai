@@ -1,8 +1,8 @@
 {
   "references": [
-    {"path": "./packages/db/tsconfig.dev.json" },
-    {"path": "./packages/pythonPool/tsconfig.dev.json" },
-    {"path": "./packages/indexer/tsconfig.dev.json" },
-    {"path": "./packages/site/tsconfig.json" },
-  ],
+    { "path": "./packages/db/tsconfig.dev.json" },
+    { "path": "./packages/pythonPool/tsconfig.dev.json" },
+    { "path": "./packages/indexer/tsconfig.dev.json" },
+    { "path": "./packages/site/tsconfig.json" }
+  ]
 }

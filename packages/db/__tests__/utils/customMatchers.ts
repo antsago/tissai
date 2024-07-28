@@ -12,7 +12,11 @@ declare module "vitest" {
   interface Assertion extends CustomMatchers {}
 }
 
-function toHaveExecuted(pg: MockPg, query: string, parameters?: readonly unknown[]) {
+function toHaveExecuted(
+  pg: MockPg,
+  query: string,
+  parameters?: readonly unknown[],
+) {
   const { isNot, equals } = this
   const expected = expect.arrayContaining([[query, parameters]])
   const actual = pg.pool.query.mock.calls
@@ -27,7 +31,8 @@ function toHaveExecuted(pg: MockPg, query: string, parameters?: readonly unknown
 
 expect.extend({
   toHaveInserted(pg: MockPg, table, values = []) {
-    return toHaveExecuted.call(this,
+    return toHaveExecuted.call(
+      this,
       pg,
       expect.stringMatching(new RegExp(`INSERT INTO (\\")?${table}`, "i")),
       expect.arrayContaining(values),

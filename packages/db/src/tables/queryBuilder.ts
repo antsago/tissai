@@ -51,7 +51,6 @@ export type Site = {
   urlKeywords?: string[]
 }
 
-
 type Database = {
   attributes: Attribute
   brands: Brand

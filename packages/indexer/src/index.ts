@@ -37,9 +37,14 @@ try {
 
   reporter.progress("Setting up page stream")
   const [{ count: totalPageCount }] = await db.raw<{ count: number }>(
-    builder.selectFrom("pages").select(({ fn }) => fn.count("id").as("count")).compile().sql
+    builder
+      .selectFrom("pages")
+      .select(({ fn }) => fn.count("id").as("count"))
+      .compile().sql,
   )
-  const pages = db.stream<Page>(builder.selectFrom("pages").selectAll().compile().sql)
+  const pages = db.stream<Page>(
+    builder.selectFrom("pages").selectAll().compile().sql,
+  )
   let index = 1
   for await (let page of pages) {
     try {
