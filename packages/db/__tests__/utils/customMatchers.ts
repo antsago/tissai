@@ -6,7 +6,6 @@ import { expect } from "vitest"
 import { buildSearchQuery } from "../../src/searchProducts.js"
 
 export interface CustomMatchers {
-  toHaveInserted: (table: string, values?: any[]) => void
   toHaveSearched: (searchParams: SearchParams) => void
   toHaveExecuted: <T extends QueryResultRow>(query: CompiledQuery<T>) => void
 }
@@ -33,12 +32,6 @@ function toHaveExecuted<T extends QueryResultRow>(
 
 expect.extend({
   toHaveExecuted,
-  toHaveInserted(pg: MockPg, table: string, values = []) {
-    return toHaveExecuted.call(this, pg, {
-      sql: expect.stringMatching(new RegExp(`INSERT INTO (\\")?${table}`, "i")),
-      parameters: expect.arrayContaining(values),
-    })
-  },
   toHaveSearched(pg: MockPg, parameters: SearchParams) {
     const query = buildSearchQuery(parameters)
     return toHaveExecuted.call(this, pg, query)
