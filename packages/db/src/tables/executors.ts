@@ -1,47 +1,8 @@
 import type { CompiledQuery } from "kysely"
 import { Connection } from "../Connection.js"
-import * as sellers from "./sellers.js"
-import * as brands from "./brands.js"
-import * as products from "./products.js"
-import * as offers from "./offers.js"
-import * as sites from "./sites.js"
-import * as pages from "./pages.js"
-import * as attributes from "./attributes.js"
+import { QUERY_GROUPINGS } from "./queries.js"
 
-export const QUERY_GROUPINGS = {
-  attributes,
-  brands,
-  offers,
-  pages,
-  products,
-  sellers,
-  sites,
-}
-export type QUERY_GROUPINGS = typeof QUERY_GROUPINGS
-
-type Queries = {
-  [T in keyof QUERY_GROUPINGS]: {
-    [M in keyof QUERY_GROUPINGS[T]["queries"]]: QUERY_GROUPINGS[T]["queries"][M] extends {
-      query: infer Q
-      takeFirst: boolean
-    }
-      ? Q
-      : QUERY_GROUPINGS[T]["queries"][M]
-  }
-}
-export const queries = Object.fromEntries(
-  Object.entries(QUERY_GROUPINGS).map(([tableName, table]) => [
-    tableName,
-    Object.fromEntries(
-      Object.entries(table.queries).map(([methodName, query]) => [
-        methodName,
-        typeof query === "function" ? query : query.query,
-      ]),
-    ),
-  ]),
-) as Queries
-
-type Methods = {
+type Executors = {
   [T in keyof QUERY_GROUPINGS]: {
     [M in keyof QUERY_GROUPINGS[T]["queries"]]: QUERY_GROUPINGS[T]["queries"][M] extends {
       query: any
@@ -60,7 +21,7 @@ type Methods = {
   }
 }
 
-export const methods = (connection: Connection) =>
+const createExecutors = (connection: Connection) =>
   Object.fromEntries(
     Object.entries(QUERY_GROUPINGS).map(([tableName, table]) => [
       tableName,
@@ -79,4 +40,6 @@ export const methods = (connection: Connection) =>
         ]),
       ),
     ]),
-  ) as Methods
+  ) as Executors
+
+export default createExecutors

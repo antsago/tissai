@@ -1,5 +1,5 @@
 import { Connection } from "./Connection.js"
-import Tables, { methods } from "./tables/index.js"
+import Tables, { executors } from "./tables/index.js"
 import searchProducts from "./searchProducts.js"
 import getProductDetails from "./getProductDetails.js"
 
@@ -15,7 +15,7 @@ export const Db = (database?: string) => {
 
   return {
     ...connection,
-    ...methods(connection),
+    ...executors(connection),
     initialize,
     searchProducts: searchProducts(connection),
     getProductDetails: getProductDetails(connection),
