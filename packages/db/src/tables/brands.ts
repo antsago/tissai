@@ -18,17 +18,20 @@ export const queries = {
   create: (brand: Brand) =>
     builder.insertInto("brands").values(brand).compile(),
   getAll: () => builder.selectFrom("brands").selectAll().compile(),
-  byName: (name: string) =>
-    builder
-      .selectFrom("brands")
-      .selectAll()
-      .where(
-        ({ fn, val }) => fn<number>("similarity", ["name", val(name)]),
-        ">=",
-        1,
-      )
-      .limit(1)
-      .compile(),
+  byName: {
+    query: (name: string) =>
+      builder
+        .selectFrom("brands")
+        .selectAll()
+        .where(
+          ({ fn, val }) => fn<number>("similarity", ["name", val(name)]),
+          ">=",
+          1,
+        )
+        .limit(1)
+        .compile(),
+    takeFirst: true,
+  },
   update: (brand: Brand) =>
     builder
       .updateTable("brands")
@@ -36,12 +39,3 @@ export const queries = {
       .where("name", "=", brand.name)
       .compile(),
 }
-export const crud = (connection: Connection) => ({
-  create: (brand: Brand) => connection.query(queries.create(brand)),
-  getAll: async () => connection.query(queries.getAll()),
-  byName: async (name: string) => {
-    const [found] = await connection.query(queries.byName(name))
-    return found
-  },
-  update: async (brand: Brand) => connection.query(queries.update(brand)),
-})

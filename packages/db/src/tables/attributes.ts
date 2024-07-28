@@ -23,7 +23,3 @@ export const queries = {
     builder.insertInto("attributes").values(attribute).compile(),
   getAll: () => builder.selectFrom("attributes").selectAll().compile(),
 }
-export const crud = (connection: Connection) => ({
-  create: (attribute: Attribute) => connection.query(queries.create(attribute)),
-  getAll: async () => connection.query(queries.getAll()),
-})

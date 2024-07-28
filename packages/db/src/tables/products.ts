@@ -25,7 +25,3 @@ export const queries = {
     builder.insertInto("products").values(product).compile(),
   getAll: () => builder.selectFrom("products").selectAll().compile(),
 }
-export const crud = (connection: Connection) => ({
-  create: (product: Product) => connection.query(queries.create(product)),
-  getAll: () => connection.query(queries.getAll()),
-})

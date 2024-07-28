@@ -23,7 +23,3 @@ export const queries = {
   create: (page: Page) => builder.insertInto("pages").values(page).compile(),
   getAll: () => builder.selectFrom("pages").selectAll().compile(),
 }
-export const crud = (connection: Connection) => ({
-  create: (page: Page) => connection.query(queries.create(page)),
-  getAll: () => connection.query(queries.getAll()),
-})
