@@ -1,3 +1,4 @@
+import type { CompiledQuery } from "kysely"
 import { Connection } from "../Connection.js"
 import * as sellers from "./sellers.js"
 import * as brands from "./brands.js"
@@ -6,8 +7,6 @@ import * as offers from "./offers.js"
 import * as sites from "./sites.js"
 import * as pages from "./pages.js"
 import * as attributes from "./attributes.js"
-import { CompiledQuery } from "kysely"
-import { QueryResultRow } from "pg"
 
 const TABLE_MODULES = {
   attributes,
