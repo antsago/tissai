@@ -1,8 +1,7 @@
 import { describe, test, beforeEach, vi, afterEach } from "vitest"
-import { BRAND, mockDbFixture } from "@tissai/db/mocks"
+import { BRAND, mockDbFixture, queries } from "@tissai/db/mocks"
 import { mockPythonFixture } from "@tissai/python-pool/mocks"
 import { PRODUCT, pageWithSchema, mockOraFixture } from "#mocks"
-import { queries } from "@tissai/db"
 
 type Fixtures = {
   mockDb: mockDbFixture

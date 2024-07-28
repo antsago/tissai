@@ -1,8 +1,8 @@
 import { expect, describe, test, beforeEach } from "vitest"
 import { mockPythonFixture } from "@tissai/python-pool/mocks"
 import { PythonPool } from "@tissai/python-pool"
-import { mockDbFixture, PRODUCT } from "@tissai/db/mocks"
-import { Db, queries } from "@tissai/db"
+import { mockDbFixture, PRODUCT, queries } from "@tissai/db/mocks"
+import { Db } from "@tissai/db"
 import attributes from "./attributes.js"
 
 type Fixtures = {

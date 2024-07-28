@@ -1,6 +1,6 @@
 import { expect, describe, test, beforeEach } from "vitest"
-import { mockDbFixture } from "@tissai/db/mocks"
-import { Brand, Db, queries } from "@tissai/db"
+import { mockDbFixture, queries } from "@tissai/db/mocks"
+import { type Brand, Db } from "@tissai/db"
 import brand from "./brand.js"
 
 type Fixtures = { pg: mockDbFixture }
