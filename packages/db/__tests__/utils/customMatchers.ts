@@ -9,7 +9,7 @@ export interface CustomMatchers {
 }
 
 declare module "vitest" {
-  interface Assertion<T = any> extends CustomMatchers {}
+  interface Assertion extends CustomMatchers {}
 }
 
 expect.extend({
