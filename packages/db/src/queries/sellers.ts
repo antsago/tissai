@@ -1,5 +1,5 @@
 import type { Seller } from "../tables/index.js"
-import builder from "./queryBuilder.js"
+import builder from "./builder.js"
 
 export const queries = {
   create: (seller: Seller) =>

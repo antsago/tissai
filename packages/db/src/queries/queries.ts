@@ -1,5 +1,3 @@
-import type { CompiledQuery } from "kysely"
-import { Connection } from "../Connection.js"
 import * as sellers from "./sellers.js"
 import * as brands from "./brands.js"
 import * as products from "./products.js"
@@ -8,7 +6,7 @@ import * as sites from "./sites.js"
 import * as pages from "./pages.js"
 import * as attributes from "./attributes.js"
 
-export const QUERY_GROUPINGS = {
+export const Definitions = {
   attributes,
   brands,
   offers,
@@ -17,20 +15,21 @@ export const QUERY_GROUPINGS = {
   sellers,
   sites,
 }
-export type QUERY_GROUPINGS = typeof QUERY_GROUPINGS
+export type Definitions = typeof Definitions
 
 type Queries = {
-  [T in keyof QUERY_GROUPINGS]: {
-    [M in keyof QUERY_GROUPINGS[T]["queries"]]: QUERY_GROUPINGS[T]["queries"][M] extends {
+  [T in keyof Definitions]: {
+    [M in keyof Definitions[T]["queries"]]: Definitions[T]["queries"][M] extends {
       query: infer Q
       takeFirst: boolean
     }
       ? Q
-      : QUERY_GROUPINGS[T]["queries"][M]
+      : Definitions[T]["queries"][M]
   }
 }
-export const queries = Object.fromEntries(
-  Object.entries(QUERY_GROUPINGS).map(([tableName, table]) => [
+
+const builders = Object.fromEntries(
+  Object.entries(Definitions).map(([tableName, table]) => [
     tableName,
     Object.fromEntries(
       Object.entries(table.queries).map(([methodName, query]) => [
@@ -41,42 +40,4 @@ export const queries = Object.fromEntries(
   ]),
 ) as Queries
 
-type Methods = {
-  [T in keyof QUERY_GROUPINGS]: {
-    [M in keyof QUERY_GROUPINGS[T]["queries"]]: QUERY_GROUPINGS[T]["queries"][M] extends {
-      query: any
-      takeFirst: boolean
-    }
-      ? QUERY_GROUPINGS[T]["queries"][M]["query"] extends (
-          ...args: infer I
-        ) => CompiledQuery<infer R>
-        ? (...args: I) => Promise<R>
-        : never
-      : QUERY_GROUPINGS[T]["queries"][M] extends (
-            ...args: infer I
-          ) => CompiledQuery<infer R>
-        ? (...args: I) => Promise<R[]>
-        : never
-  }
-}
-
-export const methods = (connection: Connection) =>
-  Object.fromEntries(
-    Object.entries(QUERY_GROUPINGS).map(([tableName, table]) => [
-      tableName,
-      Object.fromEntries(
-        Object.entries(table.queries).map(([methodName, queryBuilder]) => [
-          methodName,
-          async (...args: any[]) => {
-            if ("takeFirst" in queryBuilder) {
-              const [result] = await connection.query(
-                queryBuilder.query(...args),
-              )
-              return result
-            }
-            return connection.query(queryBuilder(...args))
-          },
-        ]),
-      ),
-    ]),
-  ) as Methods
+export default builders

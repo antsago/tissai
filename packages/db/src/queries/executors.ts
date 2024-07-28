@@ -1,19 +1,19 @@
 import type { CompiledQuery } from "kysely"
 import { Connection } from "../Connection.js"
-import { QUERY_GROUPINGS } from "./queries.js"
+import { Definitions } from "./queries.js"
 
 type Executors = {
-  [T in keyof QUERY_GROUPINGS]: {
-    [M in keyof QUERY_GROUPINGS[T]["queries"]]: QUERY_GROUPINGS[T]["queries"][M] extends {
+  [T in keyof Definitions]: {
+    [M in keyof Definitions[T]["queries"]]: Definitions[T]["queries"][M] extends {
       query: any
       takeFirst: boolean
     }
-      ? QUERY_GROUPINGS[T]["queries"][M]["query"] extends (
+      ? Definitions[T]["queries"][M]["query"] extends (
           ...args: infer I
         ) => CompiledQuery<infer R>
         ? (...args: I) => Promise<R>
         : never
-      : QUERY_GROUPINGS[T]["queries"][M] extends (
+      : Definitions[T]["queries"][M] extends (
             ...args: infer I
           ) => CompiledQuery<infer R>
         ? (...args: I) => Promise<R[]>
@@ -23,7 +23,7 @@ type Executors = {
 
 const createExecutors = (connection: Connection) =>
   Object.fromEntries(
-    Object.entries(QUERY_GROUPINGS).map(([tableName, table]) => [
+    Object.entries(Definitions).map(([tableName, table]) => [
       tableName,
       Object.fromEntries(
         Object.entries(table.queries).map(([methodName, queryBuilder]) => [
