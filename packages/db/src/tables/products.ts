@@ -1,6 +1,5 @@
 import { Connection } from "../Connection.js"
 import { TABLE as BRANDS } from "./brands.js"
-import builder, { type Product } from "./queryBuilder.js"
 
 export const TABLE = Object.assign("products", {
   id: "id",
@@ -19,9 +18,3 @@ export const initialize = (connection: Connection) =>
       ${TABLE.images}         text[],
       ${TABLE.brand}          text REFERENCES ${BRANDS}
     );`)
-
-export const queries = {
-  create: (product: Product) =>
-    builder.insertInto("products").values(product).compile(),
-  getAll: () => builder.selectFrom("products").selectAll().compile(),
-}

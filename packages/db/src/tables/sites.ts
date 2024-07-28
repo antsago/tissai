@@ -1,5 +1,4 @@
 import { Connection } from "../Connection.js"
-import builder, { type Site } from "./queryBuilder.js"
 
 export const TABLE = Object.assign("sites", {
   id: "id",
@@ -23,8 +22,3 @@ export const initialize = (connection: Connection) =>
       ${TABLE.urlKeywords}          text[]
     );
   `)
-
-export const queries = {
-  create: (site: Site) => builder.insertInto("sites").values(site).compile(),
-  getAll: () => builder.selectFrom("sites").selectAll().compile(),
-}

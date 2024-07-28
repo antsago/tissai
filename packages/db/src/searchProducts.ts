@@ -1,7 +1,8 @@
+import type { Brand } from "./tables/index.js"
 import { sql } from "kysely"
 import { jsonBuildObject } from "kysely/helpers/postgres"
 import { Connection } from "./Connection.js"
-import { builder, Brand } from "./tables/index.js"
+import { builder } from "./queries/index.js"
 import { toJsonb } from "./getProductDetails.js"
 
 export type SearchParams = {

@@ -1,5 +1,6 @@
 import { Connection } from "./Connection.js"
-import Tables, { executors } from "./tables/index.js"
+import Tables from "./tables/index.js"
+import { executors } from "./queries/index.js"
 import searchProducts from "./searchProducts.js"
 import getProductDetails from "./getProductDetails.js"
 

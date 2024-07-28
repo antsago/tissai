@@ -1,6 +1,5 @@
 import { Connection } from "../Connection.js"
 import { TABLE as SITES } from "./sites.js"
-import builder, { type Page } from "./queryBuilder.js"
 
 export const TABLE = Object.assign("pages", {
   id: "id",
@@ -18,8 +17,3 @@ export const initialize = (connection: Connection) =>
       ${TABLE.site}     uuid NOT NULL REFERENCES ${SITES}
     );
   `)
-
-export const queries = {
-  create: (page: Page) => builder.insertInto("pages").values(page).compile(),
-  getAll: () => builder.selectFrom("pages").selectAll().compile(),
-}

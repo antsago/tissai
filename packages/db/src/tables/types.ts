@@ -1,11 +1,3 @@
-import {
-  DummyDriver,
-  Kysely,
-  PostgresAdapter,
-  PostgresIntrospector,
-  PostgresQueryCompiler,
-} from "kysely"
-
 export type Attribute = {
   id: string
   label: string
@@ -51,7 +43,7 @@ export type Site = {
   urlKeywords?: string[]
 }
 
-type Database = {
+export type Database = {
   attributes: Attribute
   brands: Brand
   offers: Offer
@@ -60,14 +52,3 @@ type Database = {
   sellers: Seller
   sites: Site
 }
-
-const builder = new Kysely<Database>({
-  dialect: {
-    createAdapter: () => new PostgresAdapter(),
-    createDriver: () => new DummyDriver(),
-    createIntrospector: (db) => new PostgresIntrospector(db),
-    createQueryCompiler: () => new PostgresQueryCompiler(),
-  },
-})
-
-export default builder
