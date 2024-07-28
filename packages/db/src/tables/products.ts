@@ -20,10 +20,13 @@ export const initialize = (connection: Connection) =>
       ${TABLE.brand}          text REFERENCES ${BRANDS}
     );`)
 
+export const queries = {
+  create: (product: Product) =>builder.insertInto("products").values(product).compile(),
+  getAll: () => builder.selectFrom("products").selectAll().compile(),
+}
 export const crud = (connection: Connection) => ({
   create: (product: Product) =>
-    connection.query(builder.insertInto("products").values(product).compile()),
+    connection.query(queries.create(product)),
 
-  getAll: async () =>
-    connection.query(builder.selectFrom("products").selectAll().compile()),
+  getAll: () => connection.query(queries.getAll()),
 })

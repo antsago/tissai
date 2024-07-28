@@ -2,7 +2,7 @@ import { describe, test, beforeEach, vi, afterEach } from "vitest"
 import { BRAND, mockDbFixture } from "@tissai/db/mocks"
 import { mockPythonFixture } from "@tissai/python-pool/mocks"
 import { PRODUCT, pageWithSchema, mockOraFixture } from "#mocks"
-import { PRODUCTS, queries } from "@tissai/db"
+import { queries } from "@tissai/db"
 
 type Fixtures = {
   mockDb: mockDbFixture
@@ -136,8 +136,14 @@ describe("index", () => {
 
     await import("./index.js")
 
-    expect(mockDb).toHaveInserted(PRODUCTS, [PRODUCT.title])
-    expect(mockDb).toHaveInserted(PRODUCTS, [title2])
+    expect(mockDb).toHaveExecuted(queries.products.create({
+      id: expect.any(String),
+      title: PRODUCT.title,
+    }))
+    expect(mockDb).toHaveExecuted(queries.products.create({
+      id: expect.any(String),
+      title: title2,
+    }))
   })
 
   it("handles processsing errors", async ({ expect, mockDb, mockOra }) => {
@@ -170,8 +176,14 @@ describe("index", () => {
 
     await import("./index.js")
 
-    expect(mockDb).not.toHaveInserted(PRODUCTS, [PRODUCT.title])
-    expect(mockDb).toHaveInserted(PRODUCTS, [title2])
+    expect(mockDb).not.toHaveExecuted(queries.products.create({
+      id: expect.any(String),
+      title: PRODUCT.title,
+    }))
+    expect(mockDb).toHaveExecuted(queries.products.create({
+      id: expect.any(String),
+      title: title2,
+    }))
     expect(mockOra.spinner.prefixText).toContain(error.message)
   })
 

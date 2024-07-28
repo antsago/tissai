@@ -1,7 +1,7 @@
 import { expect, describe, test, beforeEach } from "vitest"
 import { BRAND } from "#mocks"
 import { mockDbFixture } from "@tissai/db/mocks"
-import { Db, PRODUCTS } from "@tissai/db"
+import { Db, queries } from "@tissai/db"
 import product from "./product.js"
 
 type Fixtures = {
@@ -44,12 +44,7 @@ describe("products", () => {
     const result = await product(JSON_LD, HEAD, OG, TITLE, db, BRAND)
 
     expect(result).toStrictEqual(expected)
-    expect(pg).toHaveInserted(PRODUCTS, [
-      expected.title,
-      expected.images,
-      expected.description,
-      expected.brand,
-    ])
+    expect(pg).toHaveExecuted(queries.products.create(result))
   })
 
   it("handles title-only product", async () => {
