@@ -21,6 +21,17 @@ type TABLE_MODULES = typeof TABLE_MODULES
 type CRUD_METHODS = {
   [T in keyof TABLE_MODULES]: ReturnType<TABLE_MODULES[T]["crud"]>
 }
+type QUERIES = {
+  [T in keyof TABLE_MODULES]: TABLE_MODULES[T]["queries"]
+}
+
+export const queries = Object.entries(TABLE_MODULES).reduce(
+  (aggregate, [name, table]) => ({
+    ...aggregate,
+    [name]: table.queries,
+  }),
+  {} as QUERIES,
+)
 
 const Tables = (connection: Connection) => ({
   initialize: async () => {

@@ -24,10 +24,11 @@ export const initialize = (connection: Connection) =>
     );
   `)
 
+export const queries = {
+  create: (site: Site) => builder.insertInto("sites").values(site).compile(),
+  getAll: () => builder.selectFrom("sites").selectAll().compile(),
+}
 export const crud = (connection: Connection) => ({
-  create: (site: Site) =>
-    connection.query(builder.insertInto("sites").values(site).compile()),
-
-  getAll: async () =>
-    connection.query(builder.selectFrom("sites").selectAll().compile()),
+  create: (site: Site) => connection.query(queries.create(site)),
+  getAll: () => connection.query(queries.getAll()),
 })

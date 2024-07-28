@@ -27,6 +27,5 @@ export const queries = {
 }
 export const crud = (connection: Connection) => ({
   create: (product: Product) => connection.query(queries.create(product)),
-
   getAll: () => connection.query(queries.getAll()),
 })
