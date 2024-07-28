@@ -2,6 +2,10 @@ import { CompiledQuery } from "kysely"
 import { default as pg, QueryResultRow } from "pg"
 import PgCursor from "pg-cursor"
 
+pg.types.setTypeParser(pg.types.builtins.NUMERIC, (val: string) =>
+  parseFloat(val),
+)
+
 let { Pool } = pg
 let Cursor = PgCursor
 export function setPg(pool: typeof pg.Pool, cursor: typeof PgCursor) {

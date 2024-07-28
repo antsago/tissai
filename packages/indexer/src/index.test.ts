@@ -136,14 +136,18 @@ describe("index", () => {
 
     await import("./index.js")
 
-    expect(mockDb).toHaveExecuted(queries.products.create({
-      id: expect.any(String),
-      title: PRODUCT.title,
-    }))
-    expect(mockDb).toHaveExecuted(queries.products.create({
-      id: expect.any(String),
-      title: title2,
-    }))
+    expect(mockDb).toHaveExecuted(
+      queries.products.create({
+        id: expect.any(String),
+        title: PRODUCT.title,
+      }),
+    )
+    expect(mockDb).toHaveExecuted(
+      queries.products.create({
+        id: expect.any(String),
+        title: title2,
+      }),
+    )
   })
 
   it("handles processsing errors", async ({ expect, mockDb, mockOra }) => {
@@ -176,14 +180,18 @@ describe("index", () => {
 
     await import("./index.js")
 
-    expect(mockDb).not.toHaveExecuted(queries.products.create({
-      id: expect.any(String),
-      title: PRODUCT.title,
-    }))
-    expect(mockDb).toHaveExecuted(queries.products.create({
-      id: expect.any(String),
-      title: title2,
-    }))
+    expect(mockDb).not.toHaveExecuted(
+      queries.products.create({
+        id: expect.any(String),
+        title: PRODUCT.title,
+      }),
+    )
+    expect(mockDb).toHaveExecuted(
+      queries.products.create({
+        id: expect.any(String),
+        title: title2,
+      }),
+    )
     expect(mockOra.spinner.prefixText).toContain(error.message)
   })
 

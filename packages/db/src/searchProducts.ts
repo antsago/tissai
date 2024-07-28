@@ -167,13 +167,7 @@ const searchProducts =
   async (parameters: Parameters<typeof buildSearchQuery>[0]) => {
     const [response] = await connection.query(buildSearchQuery(parameters))
 
-    return {
-      ...response,
-      products: response.products?.map((p) => ({
-        ...p,
-        price: p.price ? parseFloat(p.price) : undefined,
-      })),
-    }
+    return response
   }
 
 export type Search = Awaited<ReturnType<ReturnType<typeof searchProducts>>>

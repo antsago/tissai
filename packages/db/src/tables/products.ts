@@ -21,12 +21,12 @@ export const initialize = (connection: Connection) =>
     );`)
 
 export const queries = {
-  create: (product: Product) =>builder.insertInto("products").values(product).compile(),
+  create: (product: Product) =>
+    builder.insertInto("products").values(product).compile(),
   getAll: () => builder.selectFrom("products").selectAll().compile(),
 }
 export const crud = (connection: Connection) => ({
-  create: (product: Product) =>
-    connection.query(queries.create(product)),
+  create: (product: Product) => connection.query(queries.create(product)),
 
   getAll: () => connection.query(queries.getAll()),
 })

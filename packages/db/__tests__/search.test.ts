@@ -55,7 +55,7 @@ describe.concurrent("search", () => {
     title: product2.title,
     image: product2.images[0],
     brand: null,
-    price: undefined,
+    price: null,
   }
   const attribute1 = { ...ATTRIBUTE, product: product1.id }
   const attribute2 = {

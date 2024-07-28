@@ -33,17 +33,5 @@ export const queries = {
 }
 export const crud = (connection: Connection) => ({
   create: (offer: Offer) => connection.query(queries.create(offer)),
-
-  getAll: async (): Promise<Offer[]> => {
-    const offers = await connection.query(queries.getAll())
-
-    return offers.map((o) =>
-      o.price
-        ? {
-            ...o,
-            price: parseInt(o.price as unknown as string, 10),
-          }
-        : o,
-    )
-  },
+  getAll: () => connection.query(queries.getAll()),
 })
