@@ -44,8 +44,7 @@ describe("attributes", () => {
       method: "attributes",
       input: TITLE,
     })
-    const query = queries.attributes.create(result[0])
-    expect(pg).toHaveExecuted(query.sql, query.parameters)
+    expect(pg).toHaveExecuted(queries.attributes.create(result[0]))
   })
 
   it("extracts multiple attributes", async ({ mockPython, pg }) => {
@@ -72,10 +71,8 @@ describe("attributes", () => {
         value: foundAttributes[1].value,
       },
     ])
-    const query1 = queries.attributes.create(result[0])
-    expect(pg).toHaveExecuted(query1.sql, query1.parameters)
-    const query2 = queries.attributes.create(result[1])
-    expect(pg).toHaveExecuted(query2.sql, query2.parameters)
+    expect(pg).toHaveExecuted(queries.attributes.create(result[0]))
+    expect(pg).toHaveExecuted(queries.attributes.create(result[1]))
   })
 
   it("merges consecutive attributes with same label", async ({

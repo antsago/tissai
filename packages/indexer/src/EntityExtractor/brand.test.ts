@@ -25,8 +25,7 @@ describe("brands", () => {
       name: NAME,
       logo: LOGO,
     })
-    const query = queries.brands.create(result as Brand)
-    expect(pg).toHaveExecuted(query.sql, query.parameters)
+    expect(pg).toHaveExecuted(queries.brands.create(result as Brand))
   })
 
   it("reuses existing brands", async ({ pg }) => {
@@ -36,8 +35,7 @@ describe("brands", () => {
     const result = await brand({ brandName: NAME.toLowerCase() }, db)
 
     expect(result).toStrictEqual(existing)
-    const query = queries.brands.create(existing)
-    expect(pg).not.toHaveExecuted(query.sql, query.parameters)
+    expect(pg).not.toHaveExecuted(queries.brands.create(existing))
   })
 
   it("updates missing information", async ({ pg }) => {
@@ -50,8 +48,7 @@ describe("brands", () => {
     )
 
     expect(result).toStrictEqual({ name: NAME, logo: LOGO })
-    const query = queries.brands.update(result as Brand)
-    expect(pg).toHaveExecuted(query.sql, query.parameters)
+    expect(pg).toHaveExecuted(queries.brands.update(result as Brand))
   })
 
   it("handles new brands without logo", async () => {
@@ -67,7 +64,6 @@ describe("brands", () => {
     const result = await brand({}, db)
 
     expect(result).toBe(undefined)
-    const query = queries.brands.create({} as Brand)
-    expect(pg).not.toHaveExecuted(query.sql, query.parameters)
+    expect(pg).not.toHaveExecuted(queries.brands.create({} as Brand))
   })
 })
