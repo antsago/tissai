@@ -12,37 +12,29 @@ declare module "vitest" {
   interface Assertion extends CustomMatchers {}
 }
 
+function toHaveExecuted(pg: MockPg, query: string, parameters?: readonly unknown[]) {
+  const { isNot, equals } = this
+  const expected = expect.arrayContaining([[query, parameters]])
+  const actual = pg.pool.query.mock.calls
+  return {
+    pass: equals(actual, expected),
+    message: () =>
+      isNot ? `Found unwanted query` : `Expected query not found`,
+    actual,
+    expected,
+  }
+}
+
 expect.extend({
   toHaveInserted(pg: MockPg, table, values = []) {
-    const { isNot, equals } = this
-    const expected = expect.arrayContaining([
-      [
-        expect.stringMatching(new RegExp(`INSERT INTO (\\")?${table}`, "i")),
-        expect.arrayContaining(values),
-      ],
-    ])
-    const actual = pg.pool.query.mock.calls
-    return {
-      pass: equals(actual, expected),
-      message: () =>
-        isNot
-          ? `Found insertion into "${table}"`
-          : `Expected insertion into "${table}"`,
-      actual,
-      expected,
-    }
+    return toHaveExecuted.call(this,
+      pg,
+      expect.stringMatching(new RegExp(`INSERT INTO (\\")?${table}`, "i")),
+      expect.arrayContaining(values),
+    )
   },
   toHaveSearched(pg: MockPg, parameters: SearchParams) {
-    const { isNot, equals } = this
     const query = buildSearchQuery(parameters)
-    const expected = expect.arrayContaining([[query.sql, query.parameters]])
-    const actual = pg.pool.query.mock.calls
-    return {
-      pass: equals(actual, expected),
-      message: () =>
-        isNot ? `Found unwanted search` : `Expected search not found`,
-      actual,
-      expected,
-    }
+    return toHaveExecuted.call(this, pg, query.sql, query.parameters)
   },
 })
