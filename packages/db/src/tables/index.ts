@@ -1,12 +1,13 @@
 import { queries as attributes } from "./attributes.js"
 import { queries as brands } from "./brands.js"
+import { queries as offers } from "./offers.js"
 
 export const queries = {
   attributes,
   brands,
+  offers,
 }
 
-export { TABLE as OFFERS } from "./offers.js"
 export { TABLE as PRODUCTS } from "./products.js"
 export { TABLE as SELLERS } from "./sellers.js"
 

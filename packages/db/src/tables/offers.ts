@@ -26,15 +26,17 @@ export const initialize = (connection: Connection) =>
       ${TABLE.currency}       text
     );`)
 
+export const queries = {
+  create: (offer: Offer) => builder.insertInto("offers").values(offer).compile(),
+  getAll: () => builder.selectFrom("offers").selectAll().compile(),
+}
 export const crud = (connection: Connection) => ({
   create: (offer: Offer) =>
-    connection.query(builder.insertInto("offers").values(offer).compile()),
-
+    connection.query(queries.create(offer)),
+  
   getAll: async (): Promise<Offer[]> => {
-    const offers = await connection.query(
-      builder.selectFrom("offers").selectAll().compile(),
-    )
-
+    const offers = await connection.query(queries.getAll())
+  
     return offers.map((o) =>
       o.price
         ? {

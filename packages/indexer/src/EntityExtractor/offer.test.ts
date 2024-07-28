@@ -1,6 +1,6 @@
 import { expect, describe, test, beforeEach } from "vitest"
 import { PAGE, PRODUCT, SELLER, mockDbFixture } from "@tissai/db/mocks"
-import { Db, OFFERS } from "@tissai/db"
+import { Db, queries } from "@tissai/db"
 import offer from "./offer.js"
 
 type Fixtures = { pg: mockDbFixture }
@@ -33,14 +33,7 @@ describe("offer", () => {
       currency: OFFER.currency,
       seller: SELLER.name,
     })
-    expect(pg).toHaveInserted(OFFERS, [
-      PAGE.url,
-      PAGE.site,
-      PRODUCT.id,
-      OFFER.price,
-      OFFER.currency,
-      SELLER.name,
-    ])
+    expect(pg).toHaveExecuted(queries.offers.create(result))
   })
 
   it("handles offers without sellers", async () => {

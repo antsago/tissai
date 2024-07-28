@@ -2,7 +2,7 @@ import { describe, test, beforeEach, vi, afterEach } from "vitest"
 import { BRAND, mockDbFixture } from "@tissai/db/mocks"
 import { mockPythonFixture } from "@tissai/python-pool/mocks"
 import { PRODUCT, pageWithSchema, mockOraFixture } from "#mocks"
-import { OFFERS, PRODUCTS, SELLERS } from "@tissai/db"
+import { PRODUCTS, queries, SELLERS } from "@tissai/db"
 
 type Fixtures = {
   mockDb: mockDbFixture
@@ -72,8 +72,22 @@ describe("index", () => {
 
     await import("./index.js")
 
-    expect(mockDb).toHaveInserted(OFFERS, [offer1.price])
-    expect(mockDb).toHaveInserted(OFFERS, [offer2.price])
+    expect(mockDb).toHaveExecuted(queries.offers.create({
+      id: expect.any(String),
+      url: page.url,
+      site: page.site,
+      product: expect.any(String),
+      price: offer1.price,
+      seller: offer1.seller.name,
+    }))
+    expect(mockDb).toHaveExecuted(queries.offers.create({
+      id: expect.any(String),
+      url: page.url,
+      site: page.site,
+      product: expect.any(String),
+      price: offer2.price,
+      seller: offer2.seller.name,
+    }))
     expect(mockDb).toHaveInserted(SELLERS, [offer1.seller.name])
     expect(mockDb).toHaveInserted(SELLERS, [offer2.seller.name])
   })
