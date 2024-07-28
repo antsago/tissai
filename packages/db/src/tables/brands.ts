@@ -15,9 +15,11 @@ export const initialize = (connection: Connection) =>
   `)
 
 export const queries = {
-  create: (brand: Brand) => builder.insertInto("brands").values(brand).compile(),
+  create: (brand: Brand) =>
+    builder.insertInto("brands").values(brand).compile(),
   getAll: () => builder.selectFrom("brands").selectAll().compile(),
-  byName: (name: string) => builder
+  byName: (name: string) =>
+    builder
       .selectFrom("brands")
       .selectAll()
       .where(
@@ -27,21 +29,19 @@ export const queries = {
       )
       .limit(1)
       .compile(),
-  update: (brand: Brand) =>builder
-    .updateTable("brands")
-    .set(brand)
-    .where("name", "=", brand.name)
-    .compile(),
+  update: (brand: Brand) =>
+    builder
+      .updateTable("brands")
+      .set(brand)
+      .where("name", "=", brand.name)
+      .compile(),
 }
 export const crud = (connection: Connection) => ({
-  create: (brand: Brand) =>
-    connection.query(queries.create(brand)),
-  getAll: async () =>
-    connection.query(queries.getAll()),
+  create: (brand: Brand) => connection.query(queries.create(brand)),
+  getAll: async () => connection.query(queries.getAll()),
   byName: async (name: string) => {
     const [found] = await connection.query(queries.byName(name))
     return found
   },
-  update: async (brand: Brand) =>
-    connection.query(queries.update(brand)),
+  update: async (brand: Brand) => connection.query(queries.update(brand)),
 })

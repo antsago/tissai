@@ -34,12 +34,10 @@ function toHaveExecuted<T extends QueryResultRow>(
 expect.extend({
   toHaveExecuted,
   toHaveInserted(pg: MockPg, table: string, values = []) {
-    return toHaveExecuted.call(
-      this,
-      pg,
-      { sql: expect.stringMatching(new RegExp(`INSERT INTO (\\")?${table}`, "i")),
-       parameters: expect.arrayContaining(values) },
-    )
+    return toHaveExecuted.call(this, pg, {
+      sql: expect.stringMatching(new RegExp(`INSERT INTO (\\")?${table}`, "i")),
+      parameters: expect.arrayContaining(values),
+    })
   },
   toHaveSearched(pg: MockPg, parameters: SearchParams) {
     const query = buildSearchQuery(parameters)

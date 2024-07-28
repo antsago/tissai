@@ -11,16 +11,17 @@ export const initialize = (connection: Connection) =>
       ${TABLE.name}   text PRIMARY KEY
     );`)
 
-export const crud = (connection: Connection) => ({
+export const queries = {
   create: (seller: Seller) =>
-    connection.query(
-      builder
-        .insertInto("sellers")
-        .onConflict((oc) => oc.doNothing())
-        .values(seller)
-        .compile(),
-    ),
+    builder
+      .insertInto("sellers")
+      .onConflict((oc) => oc.doNothing())
+      .values(seller)
+      .compile(),
+  getAll: () => builder.selectFrom("sellers").selectAll().compile(),
+}
+export const crud = (connection: Connection) => ({
+  create: (seller: Seller) => connection.query(queries.create(seller)),
 
-  getAll: async () =>
-    connection.query(builder.selectFrom("sellers").selectAll().compile()),
+  getAll: () => connection.query(queries.getAll()),
 })

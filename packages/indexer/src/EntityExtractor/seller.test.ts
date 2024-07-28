@@ -1,6 +1,6 @@
 import { expect, describe, test, beforeEach } from "vitest"
 import { mockDbFixture } from "@tissai/db/mocks"
-import { Db, SELLERS } from "@tissai/db"
+import { Db, queries, type Seller } from "@tissai/db"
 import seller from "./seller.js"
 
 type Fixtures = { pg: mockDbFixture }
@@ -21,7 +21,7 @@ describe("seller", () => {
     const result = await seller({ seller: NAME }, db)
 
     expect(result).toStrictEqual({ name: NAME })
-    expect(pg).toHaveInserted(SELLERS, [NAME])
+    expect(pg).toHaveExecuted(queries.sellers.create(result as Seller))
   })
 
   it("turns name to lowercase", async () => {
