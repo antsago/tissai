@@ -104,7 +104,6 @@ const products = await db.stream(
 )
 
 for await (let product of products) {
-  console.log(product.id)
   const schema = createSchema(product.attributes)
 
   if (!schema) {
