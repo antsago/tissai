@@ -1,5 +1,5 @@
-import type { TableNames, Database } from "../types.js"
-import builder from "./builder.js"
+import type { TableNames, Database } from "../../types.js"
+import builder from "../builder.js"
 
 function sharedQueries<Table extends Database[TableNames]>(table: TableNames) {
   return {

@@ -1,5 +1,5 @@
-import type { Brand } from "../types.js"
-import builder from "./builder.js"
+import type { Brand } from "../../types.js"
+import builder from "../builder.js"
 
 export const byName = {
   takeFirst: true,

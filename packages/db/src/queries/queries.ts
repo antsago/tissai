@@ -1,4 +1,4 @@
-import { Definitions } from "./definitions.js"
+import { Definitions } from "./definitions/index.js"
 
 type Queries = {
   [T in keyof Definitions]: {

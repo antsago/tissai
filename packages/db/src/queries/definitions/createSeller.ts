@@ -1,5 +1,5 @@
-import type { Seller } from "../types.js"
-import builder from "./builder.js"
+import type { Seller } from "../../types.js"
+import builder from "../builder.js"
 
 const createSeller = (seller: Seller) =>
   builder

@@ -6,7 +6,7 @@ import type {
   Attribute,
   Seller,
   Site,
-} from "../types.js"
+} from "../../types.js"
 import sharedQueries from "./sharedQueries.js"
 import createSeller from "./createSeller.js"
 import * as brands from "./brands.js"

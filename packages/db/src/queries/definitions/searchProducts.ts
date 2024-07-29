@@ -1,7 +1,7 @@
-import type { Brand } from "../types.js"
+import type { Brand } from "../../types.js"
 import { type CompiledQuery, sql } from "kysely"
 import { jsonBuildObject } from "kysely/helpers/postgres"
-import builder, { toJsonb } from "./builder.js"
+import builder, { toJsonb } from "../builder.js"
 
 export type SearchParams = {
   query: string

@@ -1,6 +1,6 @@
 import type { CompiledQuery } from "kysely"
 import { Connection } from "../Connection.js"
-import { Definitions } from "./definitions.js"
+import { Definitions } from "./definitions/index.js"
 
 type Executors = {
   [T in keyof Definitions]: {
