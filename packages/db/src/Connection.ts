@@ -30,13 +30,10 @@ export const Connection = (database?: string) => {
   }
 
   const ONE_ROW = 1
-  async function* stream<T extends QueryResultRow>(
-    queryString: string,
-    values?: any[],
-  ) {
+  async function* stream<T extends QueryResultRow>(query: CompiledQuery<T>) {
     const client = await pool.connect()
     const cursor = await client.query<PgCursor<T>>(
-      new Cursor(queryString, values),
+      new Cursor(query.sql, query.parameters as any[]),
     )
 
     let rows = await cursor.read(ONE_ROW)
