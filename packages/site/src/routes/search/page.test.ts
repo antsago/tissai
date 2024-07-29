@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, test, expect, afterEach, vi } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
-import { MockPg, OFFER, mockDbFixture } from "@tissai/db/mocks"
+import { MockPg, OFFER, mockDbFixture, queries } from "@tissai/db/mocks"
 import { Db } from "@tissai/db"
 import { QUERY, SIMILAR, BRAND, SUGGESTION } from "mocks"
 import * as stores from "$app/stores"
@@ -77,7 +77,7 @@ describe("Search page", () => {
 
     expect(product).toBeInTheDocument()
     expect(suggestion).toBeInTheDocument()
-    expect(db).toHaveSearched({ query: QUERY })
+    expect(db).toHaveExecuted(queries.products.search({ query: QUERY }))
   })
 
   it("displays filters", async ({ db }) => {
@@ -89,6 +89,8 @@ describe("Search page", () => {
     const brandName = results.getByText(BRAND.name, { exact: false })
 
     expect(brandName).toBeInTheDocument()
-    expect(db).toHaveSearched({ query: QUERY, brand: BRAND.name })
+    expect(db).toHaveExecuted(
+      queries.products.search({ query: QUERY, brand: BRAND.name }),
+    )
   })
 })
