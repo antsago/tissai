@@ -1,9 +1,9 @@
 import { Attribute, Db, query } from "@tissai/db"
 
-const BOOLEAN = 'boolean'
-const STRING = 'string'
+const BOOLEAN = "boolean"
+const STRING = "string"
 type BaseSchema = Record<string, string>
-type Schema = Record<string, string|string[]>
+type Schema = Record<string, string | string[]>
 const SCHEMAS = {} as Record<string, Schema>
 
 function createSchema(attributes: Attribute[]) {
@@ -16,7 +16,8 @@ function createSchema(attributes: Attribute[]) {
   return attributes.reduce((schema, attribute) => {
     return {
       ...schema,
-      [attribute.label]: attribute.label === attribute.value ? BOOLEAN : attribute.value
+      [attribute.label]:
+        attribute.label === attribute.value ? BOOLEAN : attribute.value,
     }
   }, {} as BaseSchema)
 }
@@ -46,7 +47,7 @@ function mergeSchemas(newSchema: BaseSchema, oldSchema: Schema) {
       return merged
     }
 
-    if(!Array.isArray(oldType)) {
+    if (!Array.isArray(oldType)) {
       if (newType === BOOLEAN) {
         return {
           ...merged,
@@ -60,11 +61,14 @@ function mergeSchemas(newSchema: BaseSchema, oldSchema: Schema) {
       }
     }
 
-    if ((newType === BOOLEAN && oldType.includes(label)) || oldType.includes(newType)) {
+    if (
+      (newType === BOOLEAN && oldType.includes(label)) ||
+      oldType.includes(newType)
+    ) {
       return merged
     }
 
-    if(newType.length > 5) {
+    if (newType.length > 5) {
       return {
         ...merged,
         [label]: STRING,
@@ -74,7 +78,7 @@ function mergeSchemas(newSchema: BaseSchema, oldSchema: Schema) {
     if (newType === BOOLEAN) {
       return {
         ...merged,
-        [label]: [...oldType, label]
+        [label]: [...oldType, label],
       }
     }
 
@@ -96,7 +100,7 @@ const products = await db.stream(
       fn.jsonAgg("attributes").as("attributes"),
     ])
     .groupBy("products.id")
-    .compile()
+    .compile(),
 )
 
 for await (let product of products) {
@@ -110,7 +114,9 @@ for await (let product of products) {
   const { categoría, ...newSchema } = schema
   const oldSchema = SCHEMAS[categoría]
 
-  SCHEMAS[categoría] = !oldSchema ? newSchema : mergeSchemas(newSchema, oldSchema)
+  SCHEMAS[categoría] = !oldSchema
+    ? newSchema
+    : mergeSchemas(newSchema, oldSchema)
 }
 
 console.log(JSON.stringify(SCHEMAS))
