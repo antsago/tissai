@@ -93,7 +93,7 @@ describe.concurrent("db", () => {
       attributes: [ATTRIBUTE],
     })
 
-    const result = await db.getProductDetails(PRODUCT.id)
+    const result = await db.products.getDetails(PRODUCT.id)
 
     expect(result).toStrictEqual({
       title: PRODUCT.title,

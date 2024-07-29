@@ -8,8 +8,9 @@ import type {
   Site,
 } from "../types.js"
 import sharedQueries from "./sharedQueries.js"
-import * as sellers from "./sellers.js"
+import createSeller from "./createSeller.js"
 import * as brands from "./brands.js"
+import getProductDetails from "./getProductDetails.js"
 
 export const Definitions = {
   attributes: sharedQueries<Attribute>("attributes"),
@@ -19,10 +20,13 @@ export const Definitions = {
   },
   offers: sharedQueries<Offer>("offers"),
   pages: sharedQueries<Page>("pages"),
-  products: sharedQueries<Product>("products"),
+  products: {
+    ...sharedQueries<Product>("products"),
+    getDetails: getProductDetails,
+  },
   sellers: {
     ...sharedQueries<Seller>("sellers"),
-    ...sellers,
+    create: createSeller,
   },
   sites: sharedQueries<Site>("sites"),
 }

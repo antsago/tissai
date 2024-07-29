@@ -3,7 +3,7 @@ import { sql } from "kysely"
 import { jsonBuildObject } from "kysely/helpers/postgres"
 import { Connection } from "./Connection.js"
 import { builder } from "./queries/index.js"
-import { toJsonb } from "./getProductDetails.js"
+import { toJsonb } from "./queries/getProductDetails.js"
 
 export type SearchParams = {
   query: string
