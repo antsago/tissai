@@ -6,10 +6,16 @@ type BaseSchema = Record<string, string>
 type Schema = Record<string, string | string[]>
 const SCHEMAS = {} as Record<string, Schema>
 
-function createSchema(attributes: Attribute[]) {
-  const categoría = attributes.filter(({ label }) => label === "categoría")
+const normalizeString = (str: string) =>
+  str
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase()
 
-  if (categoría.length !== 1) {
+function createSchema(attributes: Attribute[]) {
+  const categoria = attributes.filter(({ label }) => label === "categoria")
+
+  if (categoria.length !== 1) {
     return
   }
 
@@ -104,16 +110,22 @@ const products = await db.stream(
 )
 
 for await (let product of products) {
-  const schema = createSchema(product.attributes)
+  const normalized = product.attributes.map((a) => ({
+    id: a.id,
+    product: a.product,
+    label: normalizeString(a.label),
+    value: normalizeString(a.value),
+  }))
+  const schema = createSchema(normalized)
 
   if (!schema) {
     continue
   }
 
-  const { categoría, ...newSchema } = schema
-  const oldSchema = SCHEMAS[categoría]
+  const { categoria, ...newSchema } = schema
+  const oldSchema = SCHEMAS[categoria]
 
-  SCHEMAS[categoría] = !oldSchema
+  SCHEMAS[categoria] = !oldSchema
     ? newSchema
     : mergeSchemas(newSchema, oldSchema)
 }
