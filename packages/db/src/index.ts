@@ -1,7 +1,6 @@
 export type { ProductDetails } from "./getProductDetails.js"
 export type { Search, SearchParams } from "./searchProducts.js"
+export type * from "./tables/index.js"
 
-export { setPg } from "./Connection.js"
 export { Db } from "./Db.js"
-export * from "./tables/index.js"
-export { builder } from "./queries/index.js"
+export { builder as query } from "./queries/index.js"

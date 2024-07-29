@@ -1,5 +1,5 @@
 import { vi } from "vitest"
-import { setPg } from "../../src/index.js"
+import { setPg } from "../../src/Connection.js"
 
 function mockedCursor() {
   const close = vi.fn()
