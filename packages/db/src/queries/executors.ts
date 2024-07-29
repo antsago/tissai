@@ -4,16 +4,16 @@ import { Definitions } from "./queries.js"
 
 type Executors = {
   [T in keyof Definitions]: {
-    [M in keyof Definitions[T]["queries"]]: Definitions[T]["queries"][M] extends {
+    [M in keyof Definitions[T]]: Definitions[T][M] extends {
       query: any
       takeFirst: boolean
     }
-      ? Definitions[T]["queries"][M]["query"] extends (
+      ? Definitions[T][M]["query"] extends (
           ...args: infer I
         ) => CompiledQuery<infer R>
         ? (...args: I) => Promise<R>
         : never
-      : Definitions[T]["queries"][M] extends (
+      : Definitions[T][M] extends (
             ...args: infer I
           ) => CompiledQuery<infer R>
         ? (...args: I) => Promise<R[]>
@@ -26,7 +26,7 @@ const createExecutors = (connection: Connection) =>
     Object.entries(Definitions).map(([tableName, table]) => [
       tableName,
       Object.fromEntries(
-        Object.entries(table.queries).map(([methodName, queryBuilder]) => [
+        Object.entries(table).map(([methodName, queryBuilder]) => [
           methodName,
           async (...args: any[]) => {
             if ("takeFirst" in queryBuilder) {
