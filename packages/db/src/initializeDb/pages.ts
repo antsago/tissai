@@ -1,7 +1,7 @@
 import { Connection } from "../Connection.js"
-import { TABLE as SITES } from "./sites.js"
+import { SITES } from "./sites.js"
 
-export const TABLE = Object.assign("pages", {
+export const PAGES = Object.assign("pages", {
   id: "id",
   url: "url",
   body: "body",
@@ -10,10 +10,10 @@ export const TABLE = Object.assign("pages", {
 
 export const initialize = (connection: Connection) =>
   connection.raw(`
-    CREATE TABLE IF NOT EXISTS ${TABLE} (
-      ${TABLE.id}       uuid PRIMARY KEY,
-      ${TABLE.url}      text UNIQUE NOT NULL,
-      ${TABLE.body}     text NOT NULL,
-      ${TABLE.site}     uuid NOT NULL REFERENCES ${SITES}
+    CREATE TABLE IF NOT EXISTS ${PAGES} (
+      ${PAGES.id}       uuid PRIMARY KEY,
+      ${PAGES.url}      text UNIQUE NOT NULL,
+      ${PAGES.body}     text NOT NULL,
+      ${PAGES.site}     uuid NOT NULL REFERENCES ${SITES}
     );
   `)

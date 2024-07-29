@@ -1,9 +1,9 @@
 import { Connection } from "../Connection.js"
-import { TABLE as PRODUCTS } from "./products.js"
-import { TABLE as SELLERS } from "./sellers.js"
-import { TABLE as SITES } from "./sites.js"
+import { PRODUCTS } from "./products.js"
+import { SELLERS } from "./sellers.js"
+import { SITES } from "./sites.js"
 
-export const TABLE = Object.assign("offers", {
+export const OFFERS = Object.assign("offers", {
   id: "id",
   url: "url",
   site: "site",
@@ -15,12 +15,12 @@ export const TABLE = Object.assign("offers", {
 
 export const initialize = (connection: Connection) =>
   connection.raw(`
-    CREATE TABLE IF NOT EXISTS ${TABLE} (
-      ${TABLE.id}             uuid PRIMARY KEY,
-      ${TABLE.url}            text NOT NULL,
-      ${TABLE.site}           uuid NOT NULL REFERENCES ${SITES},
-      ${TABLE.product}        uuid NOT NULL REFERENCES ${PRODUCTS},
-      ${TABLE.seller}         text REFERENCES ${SELLERS},
-      ${TABLE.price}          numeric,
-      ${TABLE.currency}       text
+    CREATE TABLE IF NOT EXISTS ${OFFERS} (
+      ${OFFERS.id}             uuid PRIMARY KEY,
+      ${OFFERS.url}            text NOT NULL,
+      ${OFFERS.site}           uuid NOT NULL REFERENCES ${SITES},
+      ${OFFERS.product}        uuid NOT NULL REFERENCES ${PRODUCTS},
+      ${OFFERS.seller}         text REFERENCES ${SELLERS},
+      ${OFFERS.price}          numeric,
+      ${OFFERS.currency}       text
     );`)

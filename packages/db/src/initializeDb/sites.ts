@@ -1,6 +1,6 @@
 import { Connection } from "../Connection.js"
 
-export const TABLE = Object.assign("sites", {
+export const SITES = Object.assign("sites", {
   id: "id",
   name: "name",
   icon: "icon",
@@ -12,13 +12,13 @@ export const TABLE = Object.assign("sites", {
 
 export const initialize = (connection: Connection) =>
   connection.raw(`
-    CREATE TABLE IF NOT EXISTS ${TABLE} (
-      ${TABLE.id}                   uuid PRIMARY KEY,
-      ${TABLE.name}                 text NOT NULL,
-      ${TABLE.icon}                 text NOT NULL,
-      ${TABLE.domain}               text UNIQUE NOT NULL,
-      ${TABLE.sitemaps}             text[],
-      ${TABLE.sitemapWhitelist}     text[],
-      ${TABLE.urlKeywords}          text[]
+    CREATE TABLE IF NOT EXISTS ${SITES} (
+      ${SITES.id}                   uuid PRIMARY KEY,
+      ${SITES.name}                 text NOT NULL,
+      ${SITES.icon}                 text NOT NULL,
+      ${SITES.domain}               text UNIQUE NOT NULL,
+      ${SITES.sitemaps}             text[],
+      ${SITES.sitemapWhitelist}     text[],
+      ${SITES.urlKeywords}          text[]
     );
   `)

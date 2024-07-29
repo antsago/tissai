@@ -1,11 +1,11 @@
 import { Connection } from "../Connection.js"
 
-export const TABLE = Object.assign("sellers", {
+export const SELLERS = Object.assign("sellers", {
   name: "name",
 })
 
 export const initialize = (connection: Connection) =>
   connection.raw(`
-    CREATE TABLE IF NOT EXISTS ${TABLE} (
-      ${TABLE.name}   text PRIMARY KEY
+    CREATE TABLE IF NOT EXISTS ${SELLERS} (
+      ${SELLERS.name}   text PRIMARY KEY
     );`)

@@ -1,7 +1,7 @@
 import { Connection } from "../Connection.js"
-import { TABLE as PRODUCTS } from "./products.js"
+import { PRODUCTS } from "./products.js"
 
-export const TABLE = Object.assign("attributes", {
+export const ATTRIBUTES = Object.assign("attributes", {
   id: "id",
   label: "label",
   value: "value",
@@ -10,9 +10,9 @@ export const TABLE = Object.assign("attributes", {
 
 export const initialize = (connection: Connection) =>
   connection.raw(`
-    CREATE TABLE IF NOT EXISTS ${TABLE} (
-      ${TABLE.id}             uuid PRIMARY KEY,
-      ${TABLE.label}          text NOT NULL,
-      ${TABLE.value}          text NOT NULL,
-      ${TABLE.product}        uuid NOT NULL REFERENCES ${PRODUCTS}
+    CREATE TABLE IF NOT EXISTS ${ATTRIBUTES} (
+      ${ATTRIBUTES.id}             uuid PRIMARY KEY,
+      ${ATTRIBUTES.label}          text NOT NULL,
+      ${ATTRIBUTES.value}          text NOT NULL,
+      ${ATTRIBUTES.product}        uuid NOT NULL REFERENCES ${PRODUCTS}
     );`)
