@@ -52,3 +52,6 @@ export type Database = {
   sellers: Seller
   sites: Site
 }
+
+export type TableNames = keyof Database
+export type Entities = Database[TableNames]

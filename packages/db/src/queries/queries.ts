@@ -1,19 +1,30 @@
-import { queries as sellers } from "./sellers.js"
-import { queries as brands } from "./brands.js"
-import { queries as products } from "./products.js"
-import { queries as offers } from "./offers.js"
-import { queries as sites } from "./sites.js"
-import { queries as pages } from "./pages.js"
-import { queries as attributes } from "./attributes.js"
+import type {
+  Brand,
+  Offer,
+  Page,
+  Product,
+  Attribute,
+  Seller,
+  Site,
+} from "../types.js"
+import sharedQueries from "./sharedQueries.js"
+import * as sellers from "./sellers.js"
+import * as brands from "./brands.js"
 
 export const Definitions = {
-  attributes,
-  brands,
-  offers,
-  pages,
-  products,
-  sellers,
-  sites,
+  attributes: sharedQueries<Attribute>("attributes"),
+  brands: {
+    ...sharedQueries<Brand>("brands"),
+    ...brands,
+  },
+  offers: sharedQueries<Offer>("offers"),
+  pages: sharedQueries<Page>("pages"),
+  products: sharedQueries<Product>("products"),
+  sellers: {
+    ...sharedQueries<Seller>("sellers"),
+    ...sellers,
+  },
+  sites: sharedQueries<Site>("sites"),
 }
 export type Definitions = typeof Definitions
 

@@ -13,9 +13,7 @@ type Executors = {
         ) => CompiledQuery<infer R>
         ? (...args: I) => Promise<R>
         : never
-      : Definitions[T][M] extends (
-            ...args: infer I
-          ) => CompiledQuery<infer R>
+      : Definitions[T][M] extends (...args: infer I) => CompiledQuery<infer R>
         ? (...args: I) => Promise<R[]>
         : never
   }
