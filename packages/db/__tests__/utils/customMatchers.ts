@@ -3,7 +3,7 @@ import type { QueryResultRow } from "pg"
 import type { MockPg } from "./MockPg.js"
 import type { SearchParams } from "../../src/index.js"
 import { expect } from "vitest"
-import { buildSearchQuery } from "../../src/searchProducts.js"
+import searchProducts from "../../src/queries/searchProducts.js"
 
 export interface CustomMatchers {
   toHaveSearched: (searchParams: SearchParams) => void
@@ -33,7 +33,7 @@ function toHaveExecuted<T extends QueryResultRow>(
 expect.extend({
   toHaveExecuted,
   toHaveSearched(pg: MockPg, parameters: SearchParams) {
-    const query = buildSearchQuery(parameters)
+    const query = searchProducts.query(parameters)
     return toHaveExecuted.call(this, pg, query)
   },
 })

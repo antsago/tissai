@@ -1,11 +1,7 @@
-import { sql, RawBuilder, CompiledQuery } from "kysely"
+import { type CompiledQuery, sql } from "kysely"
 import { jsonBuildObject } from "kysely/helpers/postgres"
 import { Product, Brand } from "../types.js"
-import builder from "./builder.js"
-
-export function toJsonb<T>(value: RawBuilder<T>): RawBuilder<T> {
-  return sql<T>`to_jsonb(${value})`
-}
+import builder, { toJsonb } from "./builder.js"
 
 const getDetails = {
   takeFirst: true,

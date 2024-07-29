@@ -11,6 +11,7 @@ import sharedQueries from "./sharedQueries.js"
 import createSeller from "./createSeller.js"
 import * as brands from "./brands.js"
 import getProductDetails from "./getProductDetails.js"
+import searchProducts from "./searchProducts.js"
 
 export const Definitions = {
   attributes: sharedQueries<Attribute>("attributes"),
@@ -23,6 +24,7 @@ export const Definitions = {
   products: {
     ...sharedQueries<Product>("products"),
     getDetails: getProductDetails,
+    search: searchProducts,
   },
   sellers: {
     ...sharedQueries<Seller>("sellers"),

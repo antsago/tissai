@@ -76,7 +76,7 @@ describe.concurrent("search", () => {
 
   describe("products", () => {
     it("retrieves results", async ({ expect, db }) => {
-      const result = await db.searchProducts({ query: product2.title })
+      const result = await db.products.search({ query: product2.title })
 
       expect(result.products).toStrictEqual([product2Result, product1Result])
     })
@@ -84,13 +84,13 @@ describe.concurrent("search", () => {
     it("ignores products without offers", async ({ expect, db }) => {
       await db.load({ products: [PRODUCT] })
 
-      const result = await db.searchProducts({ query: product2.title })
+      const result = await db.products.search({ query: product2.title })
 
       expect(result.products.length).toBe(2)
     })
 
     it("filters by brand", async ({ expect, db }) => {
-      const result = await db.searchProducts({
+      const result = await db.products.search({
         query: product2.title,
         brand: BRAND.name,
       })
@@ -100,7 +100,7 @@ describe.concurrent("search", () => {
 
     describe("attributes", () => {
       it("filters by string attribute", async ({ expect, db }) => {
-        const result = await db.searchProducts({
+        const result = await db.products.search({
           query: product2.title,
           attributes: { [attribute1.label]: [attribute1.value] },
         })
@@ -114,7 +114,7 @@ describe.concurrent("search", () => {
           offers: [{ ...OFFER, seller: undefined }],
         })
 
-        const result = await db.searchProducts({
+        const result = await db.products.search({
           query: product2.title,
           attributes: {
             [ATTRIBUTE.label]: [attribute2.value, attribute1.value],
@@ -128,7 +128,7 @@ describe.concurrent("search", () => {
     it("filters by min price", async ({ expect, db }) => {
       await db.load({ products: [PRODUCT], offers: [OFFER], sellers: [SELLER] })
 
-      const result = await db.searchProducts({
+      const result = await db.products.search({
         query: product2.title,
         min: OFFER.price,
       })
@@ -147,7 +147,7 @@ describe.concurrent("search", () => {
     it("filters by max price", async ({ expect, db }) => {
       await db.load({ products: [PRODUCT], offers: [OFFER], sellers: [SELLER] })
 
-      const result = await db.searchProducts({
+      const result = await db.products.search({
         query: product2.title,
         max: offer1.price,
       })
@@ -156,13 +156,13 @@ describe.concurrent("search", () => {
     })
 
     it("handles empty filters", async ({ expect, db }) => {
-      const results = await db.searchProducts({ query: "" })
+      const results = await db.products.search({ query: "" })
 
       expect(results.products.length).toBe(2)
     })
 
     it("handles all filters", async ({ expect, db }) => {
-      const act = db.searchProducts({
+      const act = db.products.search({
         query: product2.title,
         brand: BRAND.name,
         max: OFFER.price,
@@ -176,7 +176,7 @@ describe.concurrent("search", () => {
 
   describe("suggestions", () => {
     it("retrieves suggestions", async ({ expect, db }) => {
-      const result = await db.searchProducts({ query: product2.title })
+      const result = await db.products.search({ query: product2.title })
 
       expect(result.suggestions).toStrictEqual([
         {
@@ -188,7 +188,7 @@ describe.concurrent("search", () => {
     })
 
     it("includes values from other attributes", async ({ expect, db }) => {
-      const result = await db.searchProducts({
+      const result = await db.products.search({
         query: product1.title,
         brand: product1.brand,
       })
@@ -232,7 +232,7 @@ describe.concurrent("search", () => {
         ],
       })
 
-      const result = await db.searchProducts({
+      const result = await db.products.search({
         query: product1.title,
       })
 
@@ -247,7 +247,7 @@ describe.concurrent("search", () => {
     it("calculates frequency", async ({ expect, db }) => {
       await db.load({ products: [PRODUCT], offers: [OFFER], sellers: [SELLER] })
 
-      const result = await db.searchProducts({
+      const result = await db.products.search({
         query: product1.title,
         brand: product1.brand,
       })
@@ -271,7 +271,7 @@ describe.concurrent("search", () => {
 
       await db.load({ attributes: [otherAttribute] })
 
-      const result = await db.searchProducts({ query: product1.title })
+      const result = await db.products.search({ query: product1.title })
 
       expect(result.suggestions).toStrictEqual([
         {
@@ -299,7 +299,7 @@ describe.concurrent("search", () => {
       }
       await db.load({ products: [PRODUCT], attributes: [otherAttribute] })
 
-      const result = await db.searchProducts({ query: product1.title })
+      const result = await db.products.search({ query: product1.title })
 
       expect(result.suggestions).toStrictEqual([
         {
@@ -312,7 +312,7 @@ describe.concurrent("search", () => {
   })
 
   it("handles no results found", async ({ expect, db }) => {
-    const result = await db.searchProducts({
+    const result = await db.products.search({
       query: product1.title,
       brand: "non-existing",
     })

@@ -1,7 +1,6 @@
 import { Connection } from "./Connection.js"
 import initialize from "./initializeDb/index.js"
 import { executors } from "./queries/index.js"
-import searchProducts from "./searchProducts.js"
 
 export const Db = (database?: string) => {
   const connection = Connection(database)
@@ -10,7 +9,6 @@ export const Db = (database?: string) => {
     ...connection,
     ...executors(connection),
     initialize: () => initialize(connection),
-    searchProducts: searchProducts(connection),
   }
 }
 

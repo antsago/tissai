@@ -4,7 +4,7 @@ import mergeTiles from "./mergeTiles"
 
 export const load: PageServerLoad = async ({ url, locals }) => {
   const { query, ...filters } = parseSearchParams(url.searchParams)
-  const results = await locals.db.searchProducts({
+  const results = await locals.db.products.search({
     query,
     ...filters,
   })
