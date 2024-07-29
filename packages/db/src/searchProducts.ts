@@ -1,4 +1,4 @@
-import type { Brand } from "./tables/index.js"
+import type { Brand } from "./types.js"
 import { sql } from "kysely"
 import { jsonBuildObject } from "kysely/helpers/postgres"
 import { Connection } from "./Connection.js"

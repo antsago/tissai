@@ -1,4 +1,4 @@
-import type { Page } from "../tables/index.js"
+import type { Page } from "../types.js"
 import builder from "./builder.js"
 
 export const queries = {

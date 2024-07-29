@@ -1,4 +1,4 @@
-import type { Product } from "../tables/index.js"
+import type { Product } from "../types.js"
 import builder from "./builder.js"
 
 export const queries = {

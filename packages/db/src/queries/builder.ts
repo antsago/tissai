@@ -1,4 +1,4 @@
-import type { Database } from "../tables/index.js"
+import type { Database } from "../types.js"
 import {
   DummyDriver,
   Kysely,

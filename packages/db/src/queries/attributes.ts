@@ -1,4 +1,4 @@
-import type { Attribute } from "../tables/index.js"
+import type { Attribute } from "../types.js"
 import builder from "./builder.js"
 
 export const queries = {

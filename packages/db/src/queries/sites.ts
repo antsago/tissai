@@ -1,4 +1,4 @@
-import type { Site } from "../tables/index.js"
+import type { Site } from "../types.js"
 import builder from "./builder.js"
 
 export const queries = {
