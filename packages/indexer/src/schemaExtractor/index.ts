@@ -70,6 +70,6 @@ for await (let { attributes } of products) {
     : mergeSchemas(newSchema, oldSchema)
 }
 
-console.log(JSON.stringify({ SCHEMAS, LABEL_VOCABULARY: VALUE_VOCABULARY }))
+console.log(JSON.stringify({ SCHEMAS, VALUE_VOCABULARY }))
 
 await db.close()
