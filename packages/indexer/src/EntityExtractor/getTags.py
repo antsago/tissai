@@ -2,7 +2,14 @@ import spacy
 
 nlp = spacy.load(
     "es_core_news_sm",
-    exclude=["morphologizer", "parser", "attribute_ruler", "lemmatizer", "ner"],
+    exclude=[
+        "tok2vec",
+        "morphologizer",
+        "parser",
+        "attribute_ruler",
+        "lemmatizer",
+        "ner",
+    ],
 )
 
 isMeaningful = lambda token: not (
