@@ -7,6 +7,7 @@ export type Vocabulary = {
     value: number
     label: number
   }
+  labels: Record<string, number>
 }
 
 const normalizeString = (str: string) =>
@@ -38,6 +39,7 @@ const normalizeValue = (
         value: 1,
         label: 0,
       },
+      labels: {},
     }
   }
 
@@ -60,6 +62,7 @@ const normalizeLabel = (
         value: 0,
         label: 1,
       },
+      labels: {},
     }
   }
 
@@ -70,11 +73,19 @@ function normalize(
   attributes: Attribute[],
   vocabulary: Record<string, Vocabulary>,
 ) {
-  return attributes.map((a) => ({
+  const normalized = attributes.map((a) => ({
     ...a,
     label: normalizeLabel(a.label, vocabulary),
     value: normalizeValue(a.value, vocabulary),
   }))
+
+  normalized.forEach(
+    (a) =>
+      (vocabulary[a.value].labels[a.label] =
+        1 + (vocabulary[a.value].labels[a.label] ?? 0)),
+  )
+
+  return normalized
 }
 
 export default normalize
