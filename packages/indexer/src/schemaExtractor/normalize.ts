@@ -1,4 +1,5 @@
-import { Attribute } from "@tissai/db"
+import type { Attribute } from "@tissai/db"
+import type { Token } from "./matchLabels.js"
 
 export type Vocabulary = {
   canonical: string
@@ -8,6 +9,7 @@ export type Vocabulary = {
     label: number
   }
   labels: Record<string, number>
+  tokens?: Token[]
 }
 
 const normalizeString = (str: string) =>
@@ -70,7 +72,7 @@ const normalizeLabel = (
 }
 
 function normalize(
-  attributes: Attribute[],
+  attributes: (Pick<Attribute, "label" | "value"> & { tokens: Token[] })[],
   vocabulary: Record<string, Vocabulary>,
 ) {
   const normalized = attributes.map((a) => ({
@@ -79,11 +81,11 @@ function normalize(
     value: normalizeValue(a.value, vocabulary),
   }))
 
-  normalized.forEach(
-    (a) =>
-      (vocabulary[a.value].labels[a.label] =
-        1 + (vocabulary[a.value].labels[a.label] ?? 0)),
-  )
+  normalized.forEach((a) => {
+    vocabulary[a.value].labels[a.label] =
+      1 + (vocabulary[a.value].labels[a.label] ?? 0)
+    vocabulary[a.value].tokens = a.tokens
+  })
 
   return normalized
 }

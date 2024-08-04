@@ -27,5 +27,12 @@ isMeaningful = lambda token: not (
 
 for rawQuery in sys.stdin:
     title = json.loads(rawQuery)
-    tokens = [token.text for token in nlp(title) if isMeaningful(token)]
+    tokens = [
+        {
+            "text": token.text,
+            "isMeaningful": isMeaningful(token),
+            "trailing": token.whitespace_,
+        }
+        for token in nlp(title)
+    ]
     print(json.dumps(tokens, separators=(",", ":")))

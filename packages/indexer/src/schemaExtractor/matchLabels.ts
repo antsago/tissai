@@ -53,4 +53,27 @@ const matchLabels = (tokens: string[], attributes: PartialAttribute[]) => {
   return mapping
 }
 
+export type Token = { text: string; isMeaningful: boolean; trailing: string }
+export const matchTokens = (tokens: Token[], attributes: Attribute[]) => {
+  const mappings = matchLabels(
+    tokens.filter((t) => t.isMeaningful).map((t) => t.text),
+    attributes,
+  )
+  let fillerTokens = 0
+  const foo = tokens.map((t) => {
+    const matched = {
+      ...t,
+      label: t.isMeaningful ? mappings[fillerTokens].label : undefined,
+    }
+
+    if (t.isMeaningful) {
+      fillerTokens += 1
+    }
+
+    return matched
+  })
+
+  return foo
+}
+
 export default matchLabels

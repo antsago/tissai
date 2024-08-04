@@ -6,7 +6,7 @@ export type Schema = Record<string, string | string[]>
 const BOOLEAN = "boolean"
 const STRING = "string"
 
-export function createSchema(attributes: Attribute[]) {
+export function createSchema(attributes: Pick<Attribute, "label" | "value">[]) {
   const categoria = attributes.filter(({ label }) => label === "categoria")
 
   if (categoria.length !== 1) {
