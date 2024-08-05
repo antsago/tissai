@@ -97,11 +97,7 @@ for await (let { title, attributes } of products) {
     }
 
     const { categoria, ...newSchema } = schema
-    const oldSchema = SCHEMAS[categoria]
-
-    SCHEMAS[categoria] = !oldSchema
-      ? newSchema
-      : mergeSchemas(newSchema, oldSchema)
+    SCHEMAS[categoria] = mergeSchemas(newSchema, SCHEMAS[categoria])
   } catch (err) {
     skippedProducts += 1
   }
