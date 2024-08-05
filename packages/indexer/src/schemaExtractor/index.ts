@@ -9,8 +9,25 @@ import normalize, { type Vocabulary } from "./normalize.js"
 const SCHEMAS = {} as Record<string, Schema>
 const VOCABULARY = {} as Record<string, Vocabulary>
 
-type Mapping = Record<string, number>
-const TOKEN_LABEL_MAPPING = {} as Record<string, Mapping>
+type LabelCount = Record<string, number>
+const TOKEN_LABEL_MAPPING = {} as Record<string, LabelCount>
+let MAPPINGS!: Record<string, Record<string, string[]>>
+
+function schemaToMapping(schema: Schema) {
+  const mapping = {} as Record<string, string[]>
+
+  Object.entries(schema).forEach(([label, values]) => {
+    values.forEach((value) => {
+      if (!mapping[value]) {
+        mapping[value] = [label]
+      } else if (!mapping[value].includes(label)) {
+        mapping[value] = [...mapping[value], label]
+      }
+    })
+  })
+
+  return mapping
+}
 
 const currentDirectory = dirname(fileURLToPath(import.meta.url))
 const python: PythonPool<string, Token[]> = PythonPool(
@@ -63,13 +80,25 @@ for await (let { title, attributes } of products) {
 
     const { categoria, ...newSchema } = schema
     SCHEMAS[categoria] = mergeSchemas(newSchema, SCHEMAS[categoria])
+    MAPPINGS = Object.fromEntries(
+      Object.entries(SCHEMAS).map(([categoria, schema]) => [
+        categoria,
+        schemaToMapping(schema),
+      ]),
+    )
   } catch (err) {
     skippedProducts += 1
   }
 }
 
 console.log(
-  JSON.stringify({ VOCABULARY, TOKEN_LABEL_MAPPING, SCHEMAS, skippedProducts }),
+  JSON.stringify({
+    MAPPINGS,
+    VOCABULARY,
+    TOKEN_LABEL_MAPPING,
+    SCHEMAS,
+    skippedProducts,
+  }),
 )
 
 await db.close()
