@@ -54,7 +54,7 @@ const matchLabels = (tokens: string[], attributes: PartialAttribute[]) => {
 }
 
 export type Token = { text: string; isMeaningful: boolean; trailing: string }
-export const matchTokens = (tokens: Token[], attributes: Attribute[]) => {
+const matchTokens = (tokens: Token[], attributes: Attribute[]) => {
   const mappings = matchLabels(
     tokens.filter((t) => t.isMeaningful).map((t) => t.text),
     attributes,
@@ -74,6 +74,48 @@ export const matchTokens = (tokens: Token[], attributes: Attribute[]) => {
   })
 
   return foo
+}
+
+function* extractAttributes(tokens: ReturnType<typeof matchTokens>) {
+  const words = tokens
+    .map((t, i) => ({ ...t, fullIndex: i }))
+    .filter((t) => t.isMeaningful)
+  const getFragment = (start: number, end: number) => {
+    const initialW = words.at(start)
+    const finalW = words.at(end)
+
+    const valueTokens = tokens.slice(initialW!.fullIndex, finalW!.fullIndex + 1)
+
+    return {
+      label: finalW!.label!,
+      tokens: valueTokens,
+      value: valueTokens
+        .map((t, ind) =>
+          ind === valueTokens.length - 1 ? t.text : `${t.text}${t.trailing}`,
+        )
+        .join(""),
+    }
+  }
+
+  let yieldFrom = 0
+  for (const [index, word] of words.entries()) {
+    if (index === 0 || words[index - 1].label === word.label) {
+      continue
+    }
+
+    yield getFragment(yieldFrom, index - 1)
+    yieldFrom = index
+  }
+
+  yield getFragment(yieldFrom, words.length - 1)
+}
+
+export const tokenizeAttributes = (
+  tokens: Token[],
+  attributes: Attribute[],
+) => {
+  const matched = matchTokens(tokens, attributes)
+  return [...extractAttributes(matched)]
 }
 
 export default matchLabels

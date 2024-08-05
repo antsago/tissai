@@ -2,7 +2,7 @@ import { dirname } from "node:path"
 import { fileURLToPath } from "node:url"
 import { Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
-import matchLabels, { type Token, matchTokens } from "./matchLabels.js"
+import matchLabels, { type Token, tokenizeAttributes } from "./matchLabels.js"
 import { type Schema, mergeSchemas, createSchema } from "./mergeSchemas.js"
 import normalize, { type Vocabulary } from "./normalize.js"
 
@@ -33,40 +33,6 @@ const products = await db.stream(
     .compile(),
 )
 
-function* extractAttributes(tokens: ReturnType<typeof matchTokens>) {
-  const words = tokens
-    .map((t, i) => ({ ...t, fullIndex: i }))
-    .filter((t) => t.isMeaningful)
-  const getFragment = (start: number, end: number) => {
-    const initialW = words.at(start)
-    const finalW = words.at(end)
-
-    const valueTokens = tokens.slice(initialW!.fullIndex, finalW!.fullIndex + 1)
-
-    return {
-      label: finalW!.label!,
-      tokens: valueTokens,
-      value: valueTokens
-        .map((t, ind) =>
-          ind === valueTokens.length - 1 ? t.text : `${t.text}${t.trailing}`,
-        )
-        .join(""),
-    }
-  }
-
-  let yieldFrom = 0
-  for (const [index, word] of words.entries()) {
-    if (index === 0 || words[index - 1].label === word.label) {
-      continue
-    }
-
-    yield getFragment(yieldFrom, index - 1)
-    yieldFrom = index
-  }
-
-  yield getFragment(yieldFrom, words.length - 1)
-}
-
 let skippedProducts = 0
 for await (let { title, attributes } of products) {
   try {
@@ -86,14 +52,13 @@ for await (let { title, attributes } of products) {
       }
     })
 
-    const matched = matchTokens(tokens, attributes)
-    const tokenizedAttributes = [...extractAttributes(matched)]
+    const tokenizedAttributes = tokenizeAttributes(tokens, attributes)
 
     const normalized = normalize(tokenizedAttributes, VOCABULARY)
     const schema = createSchema(normalized)
 
     if (!schema) {
-      throw new Error("Product withouth schema")
+      throw new Error("Product without schema")
     }
 
     const { categoria, ...newSchema } = schema
