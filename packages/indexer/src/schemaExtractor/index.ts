@@ -2,13 +2,15 @@ import { dirname } from "node:path"
 import { fileURLToPath } from "node:url"
 import { Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
-import { type Token, matchTokens } from "./matchLabels.js"
+import matchLabels, { type Token, matchTokens } from "./matchLabels.js"
 import { type Schema, mergeSchemas, createSchema } from "./mergeSchemas.js"
 import normalize, { type Vocabulary } from "./normalize.js"
-import _ from "lodash"
 
 const SCHEMAS = {} as Record<string, Schema>
 const VOCABULARY = {} as Record<string, Vocabulary>
+
+type Mapping = Record<string, number>
+const TOKEN_LABEL_MAPPING = {} as Record<string, Mapping>
 
 const currentDirectory = dirname(fileURLToPath(import.meta.url))
 const python: PythonPool<string, Token[]> = PythonPool(
@@ -69,6 +71,21 @@ let skippedProducts = 0
 for await (let { title, attributes } of products) {
   try {
     const tokens = await python.send(title)
+
+    const mappings = matchLabels(
+      tokens.map((t) => t.text),
+      attributes,
+    )
+    mappings.forEach(({ token, label }) => {
+      if (!(token in TOKEN_LABEL_MAPPING)) {
+        TOKEN_LABEL_MAPPING[token] = { [label]: 1 }
+      } else if (label in TOKEN_LABEL_MAPPING[token]) {
+        TOKEN_LABEL_MAPPING[token][label] += 1
+      } else {
+        TOKEN_LABEL_MAPPING[token][label] = 1
+      }
+    })
+
     const matched = matchTokens(tokens, attributes)
     const tokenizedAttributes = [...extractAttributes(matched)]
 
@@ -90,7 +107,9 @@ for await (let { title, attributes } of products) {
   }
 }
 
-console.log(JSON.stringify({ VOCABULARY, SCHEMAS, skippedProducts }))
+console.log(
+  JSON.stringify({ VOCABULARY, TOKEN_LABEL_MAPPING, SCHEMAS, skippedProducts }),
+)
 
 await db.close()
 await python.close()
