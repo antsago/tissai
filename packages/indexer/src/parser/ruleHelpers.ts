@@ -3,7 +3,7 @@ import type TokenReader from "./tokenReader.js"
 export const minOf =
   <T>(minAmount: number, check: (reader: TokenReader) => T) =>
   (reader: TokenReader) => {
-    reader.pushState()
+    reader.savePosition()
 
     const results = []
 
@@ -12,7 +12,7 @@ export const minOf =
 
       if (!result) {
         if (results.length < minAmount) {
-          reader.restoreState()
+          reader.restoreSave()
           return null
         }
 
@@ -22,12 +22,12 @@ export const minOf =
       results.push(result)
     }
 
-    reader.popState()
+    reader.discardSave()
     return results
   }
 
 export const token = (type: string) => (reader: TokenReader) => {
-  if (reader.isLabel([type])) {
+  if (reader.hasLabel([type])) {
     const result = reader.get()
 
     reader.next()

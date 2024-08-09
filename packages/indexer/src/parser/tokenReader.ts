@@ -6,23 +6,23 @@ class TokenReader {
 
   constructor(readonly tokens: Token[]) {}
 
-  pushState() {
+  savePosition() {
     this.stateStack.push(this.position)
   }
 
-  restoreState() {
-    this.position = this.popState()
+  restoreSave() {
+    this.position = this.discardSave() ?? this.position
   }
 
-  popState() {
+  discardSave() {
     return this.stateStack.pop()!
   }
 
-  isLabel(labels: string[]) {
-    return this.hasNext() && labels.some(label => this.geLabels().includes(label))
+  hasLabel(desiredLabels: string[]) {
+    return this.getLabels().some(tokenLabel => desiredLabels.includes(tokenLabel))
   }
 
-  geLabels() {
+  getLabels() {
     return this.get().label
   }
 
@@ -39,7 +39,7 @@ class TokenReader {
   }
 
   hasNext() {
-    return this.position < this.tokens.length
+    return this.position < this.tokens.length - 1
   }
 }
 

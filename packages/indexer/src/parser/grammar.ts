@@ -16,17 +16,17 @@ const Attribute = (reader: TokenReader) => {
 
   let values = [label]
   while (true) {
-    reader.pushState()
+    reader.savePosition()
     const filler = minOf(0, Filler)(reader) ?? []
     const nextLabel = Label(reader, label.label)
 
     if (!nextLabel) {
-      reader.restoreState()
+      reader.restoreSave()
       break
     }
 
     values = [...values, ...filler, nextLabel]
-    reader.popState()
+    reader.discardSave()
   }
 
   return {
@@ -38,7 +38,7 @@ const Attribute = (reader: TokenReader) => {
 
 const Label = (reader: TokenReader, labels?: string[]) => {
   const isDesiredLabel =
-    labels === undefined ? !reader.isLabel(["filler"]) : reader.isLabel(labels)
+    labels === undefined ? !reader.hasLabel(["filler"]) : reader.hasLabel(labels)
 
   if (isDesiredLabel) {
     const result = reader.get()
