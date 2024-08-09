@@ -15,7 +15,7 @@ class TokenReader {
   }
 
   discardSave() {
-    return this.stateStack.pop()!
+    return this.stateStack.pop()
   }
 
   hasLabel(desiredLabels: string[]) {
@@ -39,7 +39,7 @@ class TokenReader {
   }
 
   hasNext() {
-    return this.position < this.tokens.length - 1
+    return this.position < this.tokens.length
   }
 }
 

@@ -1,11 +1,10 @@
 import { expect, describe, it } from "vitest"
-import TokenReader from "./tokenReader.js"
+import TokenReader from "./TokenReader.js"
 
 describe("TokenReader", () => {
   const TOKENS = [{ label: ["label1", "label2"], text: "a" }, { label: ["label"], text: "token" }]
 
   it("offers getters", () => {
-
     const reader = new TokenReader(TOKENS)
 
     expect(reader.get()).toStrictEqual(TOKENS[0])
@@ -18,9 +17,10 @@ describe("TokenReader", () => {
     expect(reader.hasNext()).toBe(true)
     
     reader.next()
+    reader.next()
     
     expect(reader.hasNext()).toBe(false)
-    expect(reader.get()).toStrictEqual(TOKENS[1])
+    expect(reader.get()).toStrictEqual(undefined)
   })
 
   describe("isLabel", () => {
@@ -59,7 +59,7 @@ describe("TokenReader", () => {
     expect(reader.get()).toBe(TOKENS[0])
   })
 
-  it("preserved position when discarding save", () => {
+  it("preserves position when discarding save", () => {
     const reader = new TokenReader(TOKENS)
     
     reader.savePosition()
