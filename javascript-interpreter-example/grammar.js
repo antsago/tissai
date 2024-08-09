@@ -14,13 +14,13 @@ const Attribute = rule(
 // Attribute -> Label (Filler* Label)*
 const AttributeCrem = rule(
     () => exactly(Cremallera, minOf(0, exactly(minOf(0, Filler), Cremallera))),
-    ([label, filler]) => ({ type: 'attribute', label: 'cremallera', tokens: [label, ...filler.flat(Infinity)] })
+    ([label, filler]) => ({ type: 'attribute', label: label.type, tokens: [label, ...filler.flat(Infinity)] })
 )
 
 // Attribute -> Label (Filler* Label)*
 const AttributeCat = rule(
     () => exactly(Categoria, minOf(0, exactly(minOf(0, Filler), Categoria))),
-    ([label, filler]) => ({ type: 'attribute', label: 'categoria', value: [label, ...filler.flat(Infinity)] })
+    ([label, filler]) => ({ type: 'attribute', label: label.type, value: [label, ...filler.flat(Infinity)] })
 )
 
 const Filler = token('filler', 'con')
