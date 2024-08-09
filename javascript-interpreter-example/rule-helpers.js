@@ -112,12 +112,10 @@ const minOf = (minAmount, check) => reader => {
 
     const results = [];
 
-    let result = null;
-
     while (true) {
         // we run checks as many times
         // as we can in this loop.
-        result = check(reader);
+        const result = check(reader);
 
         if (!result) {
             if (results.length < minAmount) {

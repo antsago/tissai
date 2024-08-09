@@ -4,6 +4,9 @@
 // Run the lexer
 const tokens = [
   { type: 'categoria', value: 'pantalones' },
+  { type: 'deporte', value: 'esquí' },
+  { type: 'filler', value: 'y' },
+  { type: 'deporte', value: 'nieve' },
   { type: 'filler', value: 'con' },
   { type: 'cremallera', value: 'cremallera' },
 ]
