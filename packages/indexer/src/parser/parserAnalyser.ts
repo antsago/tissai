@@ -1,4 +1,4 @@
-import TokenReader, { type Token } from "./tokenReader.js"
+import TokenReader, { type Token } from "./TokenReader.js"
 import parseGrammar from "./grammar.js"
 
 const parseTokens = (tokens: Token[]) => {

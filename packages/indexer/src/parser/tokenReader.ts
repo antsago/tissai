@@ -1,10 +1,10 @@
-export type Token = { label: string[]; text: string }
+export type Token = { labels: string[], isMeaningful: boolean, text: string }
 
-class TokenReader {
+class TokenReader<T> {
   private position = 0
   private stateStack = [] as number[]
 
-  constructor(readonly tokens: Token[]) {}
+  constructor(readonly tokens: T[]) {}
 
   savePosition() {
     this.stateStack.push(this.position)
@@ -16,14 +16,6 @@ class TokenReader {
 
   discardSave() {
     return this.stateStack.pop()
-  }
-
-  hasLabel(desiredLabels: string[]) {
-    return this.getLabels().some(tokenLabel => desiredLabels.includes(tokenLabel))
-  }
-
-  getLabels() {
-    return this.get().label
   }
 
   get() {

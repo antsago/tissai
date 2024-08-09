@@ -1,8 +1,8 @@
-import type TokenReader from "./tokenReader.js"
+import type TokenReader from "./TokenReader.js"
 
 export const minOf =
-  <T>(minAmount: number, check: (reader: TokenReader) => T) =>
-  (reader: TokenReader) => {
+  <T, Token>(minAmount: number, check: (reader: TokenReader<Token>) => T) =>
+  (reader: TokenReader<Token>) => {
     reader.savePosition()
 
     const results = []
@@ -26,14 +26,3 @@ export const minOf =
     return results
   }
 
-export const token = (type: string) => (reader: TokenReader) => {
-  if (reader.hasLabel([type])) {
-    const result = reader.get()
-
-    reader.next()
-
-    return result
-  }
-
-  return null
-}

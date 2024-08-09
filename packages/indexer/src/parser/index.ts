@@ -4,10 +4,10 @@ import { normalizeString } from "../schemaExtractor/normalize.js";
 
 type SpacyTokens = { isMeaningful: boolean; text: string }
 
-const labeler = (tokens: SpacyTokens[]) =>
+const labeler = <T extends SpacyTokens>(tokens: T[]) =>
   tokens.map((t) => ({
     ...t,
-    label: t.isMeaningful ? Object.keys(mapping[t.text]) : ["filler"],
+    labels: t.isMeaningful ? Object.keys(mapping[t.text]) : ["filler"],
   }))
 const normalizer = (tokens: SpacyTokens[]) => tokens.map(({ text, ...rest }) => ({
   text: normalizeString(text),

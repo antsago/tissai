@@ -2,14 +2,16 @@ import { expect, describe, it } from "vitest"
 import TokenReader from "./TokenReader.js"
 
 describe("TokenReader", () => {
-  const TOKENS = [{ label: ["label1", "label2"], text: "a" }, { label: ["label"], text: "token" }]
+  const TOKENS = [
+    { labels: ["label1", "label2"], isMeaningful: true, text: "a" },
+    { labels: ["label"], isMeaningful: true, text: "token" },
+  ]
 
-  it("offers getters", () => {
+  it("retrieves tokens", () => {
     const reader = new TokenReader(TOKENS)
 
     expect(reader.get()).toStrictEqual(TOKENS[0])
     expect(reader.getLastToken()).toStrictEqual(TOKENS[1])
-    expect(reader.getLabels()).toStrictEqual(TOKENS[0].label)
   })
 
   it("changes position", () => {
@@ -21,32 +23,6 @@ describe("TokenReader", () => {
     
     expect(reader.hasNext()).toBe(false)
     expect(reader.get()).toStrictEqual(undefined)
-  })
-
-  describe("isLabel", () => {
-    it("returns true if current token has one desired label", () => {
-      const reader = new TokenReader(TOKENS)
-      
-      const result = reader.hasLabel(["foo", TOKENS[0].label[0]])
-      
-      expect(result).toBe(true)
-    })
-
-    it("returns false if no label overlaps", () => {
-      const reader = new TokenReader(TOKENS)
-      
-      const result = reader.hasLabel(TOKENS[1].label)
-      
-      expect(result).toBe(false)
-    })
-
-    it("returns false if no label overlaps", () => {
-      const reader = new TokenReader(TOKENS)
-      
-      const result = reader.hasLabel(TOKENS[1].label)
-      
-      expect(result).toBe(false)
-    })
   })
 
   it("resets position when restoring save", () => {

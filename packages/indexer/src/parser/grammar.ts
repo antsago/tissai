@@ -1,13 +1,15 @@
-import type TokenReader from "./tokenReader.js"
-import { minOf, token } from "./ruleHelpers.js"
+import type TokenReader from "./TokenReader.js"
+import { type Token } from "./TokenReader.js"
+import { minOf } from "./ruleHelpers.js"
+import Filler from "./Filler.js"
 
 // ProductPart -> Attribute | Filler
-const ProductPart = (reader: TokenReader) => {
+const ProductPart = <T extends Token>(reader: TokenReader<T>) => {
   return Attribute(reader) ?? Filler(reader)
 }
 
 // AttributeL -> LabelL (Filler* LabelL)*
-const Attribute = (reader: TokenReader) => {
+const Attribute = <T extends Token>(reader: TokenReader<T>) => {
   const label = Label(reader)
 
   if (!label) {
@@ -18,7 +20,7 @@ const Attribute = (reader: TokenReader) => {
   while (true) {
     reader.savePosition()
     const filler = minOf(0, Filler)(reader) ?? []
-    const nextLabel = Label(reader, label.label)
+    const nextLabel = Label(reader, label.labels)
 
     if (!nextLabel) {
       reader.restoreSave()
@@ -31,16 +33,18 @@ const Attribute = (reader: TokenReader) => {
 
   return {
     type: "attribute",
-    label: label.label,
+    labels: label.labels,
     value: values.flat(Infinity),
   }
 }
 
-const Label = (reader: TokenReader, labels?: string[]) => {
-  const isDesiredLabel =
-    labels === undefined ? !reader.hasLabel(["filler"]) : reader.hasLabel(labels)
+const Label = (reader: TokenReader<Token>, desiredLabels?: string[]) => {
+  const nextToken = reader.get()
+  
+  const hasDesiredLabels = 
+    desiredLabels === undefined ? true : desiredLabels.some(desiredLabel => nextToken.labels.includes(desiredLabel))
 
-  if (isDesiredLabel) {
+  if (nextToken.isMeaningful && hasDesiredLabels) {
     const result = reader.get()
     reader.next()
     return result
@@ -48,7 +52,5 @@ const Label = (reader: TokenReader, labels?: string[]) => {
 
   return null
 }
-
-const Filler = token("filler")
 
 export default ProductPart
