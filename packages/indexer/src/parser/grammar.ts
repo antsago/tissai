@@ -1,12 +1,13 @@
-import { minOf, token } from './rule-helpers.js'
+import type TokenReader from "./tokenReader.js"
+import { minOf, token } from './ruleHelpers.js'
 
 // ProductPart -> Attribute | Filler
-const ProductPart = (reader) => {
+const ProductPart = (reader: TokenReader) => {
     return Attribute(reader) ?? Filler(reader)
 }
 
 // AttributeL -> LabelL (Filler* LabelL)*
-const Attribute = (reader) => {
+const Attribute = (reader: TokenReader) => {
     const label = Label(reader)
 
     if(!label) {
@@ -16,7 +17,7 @@ const Attribute = (reader) => {
     let values = [label]
     while(true) {
         reader.pushState();
-        const filler = minOf(0, Filler)(reader)
+        const filler = minOf(0, Filler)(reader) ?? []
         const nextLabel = Label(reader, label.type)
 
         if (!nextLabel) {
@@ -35,7 +36,7 @@ const Attribute = (reader) => {
     }
 }
 
-const Label = (reader, type) => {
+const Label = (reader: TokenReader, type?: string) => {
     const isDesiredLabel = type === undefined ? !reader.isType("filler") : reader.isType(type)
 
     if (isDesiredLabel) {

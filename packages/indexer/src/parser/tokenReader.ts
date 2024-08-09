@@ -1,9 +1,10 @@
+export type Token = { type: string, value: string }
+
 class TokenReader {
-    constructor(tokens) {
-        this.tokens = tokens;
-        this.position = 0;
-        this.stateStack = [];
-    }
+    private position = 0
+    private stateStack = [] as number[]
+
+    constructor(readonly tokens: Token[]) {}
 
     pushState() {
         this.stateStack.push(this.position);
@@ -14,23 +15,15 @@ class TokenReader {
     }
 
     popState() {
-        return this.stateStack.pop();
+        return this.stateStack.pop()!;
     }
 
-    isType(type) {
+    isType(type: string) {
         return this.hasNext() && this.getType() === type;
     }
 
     getType() {
         return this.get().type;
-    }
-
-    getValue() {
-        return this.get()?.value;
-    }
-
-    isValue(value) {
-        return this.getValue() === value;
     }
 
     get() {

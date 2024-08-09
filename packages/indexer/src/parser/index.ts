@@ -1,4 +1,4 @@
-import parseTokens from './parser-analyser.js'
+import parseTokens from './parserAnalyser.js'
 
 const tokens = [
   { type: 'categoria', value: 'pantalones' },

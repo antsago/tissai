@@ -1,4 +1,6 @@
-export const minOf = (minAmount, check) => reader => {
+import type TokenReader from "./tokenReader.js";
+
+export const minOf = <T>(minAmount: number, check: (reader: TokenReader) => T) => (reader: TokenReader) => {
     reader.pushState();
 
     const results = [];
@@ -22,10 +24,8 @@ export const minOf = (minAmount, check) => reader => {
     return results;
 };
 
-export const token = (type, value = null) => reader => {
-    let valueMatches = value ? reader.isValue(value) : true;
-
-    if (reader.isType(type) && valueMatches) {
+export const token = (type: string) => (reader: TokenReader) => {
+    if (reader.isType(type)) {
         const result = reader.get();
 
         reader.next();
