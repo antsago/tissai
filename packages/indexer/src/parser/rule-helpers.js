@@ -1,4 +1,4 @@
-const minOf = (minAmount, check) => reader => {
+export const minOf = (minAmount, check) => reader => {
     reader.pushState();
 
     const results = [];
@@ -22,7 +22,7 @@ const minOf = (minAmount, check) => reader => {
     return results;
 };
 
-const token = (type, value = null) => reader => {
+export const token = (type, value = null) => reader => {
     let valueMatches = value ? reader.isValue(value) : true;
 
     if (reader.isType(type) && valueMatches) {
@@ -34,9 +34,4 @@ const token = (type, value = null) => reader => {
     };
 
     return null;
-};
-
-module.exports = {
-    minOf,
-    token,
 };

@@ -1,4 +1,4 @@
-const { minOf, token } = require('./rule-helpers');
+import { minOf, token } from './rule-helpers.js'
 
 // ProductPart -> Attribute | Filler
 const ProductPart = (reader) => {
@@ -49,4 +49,4 @@ const Label = (reader, type) => {
 
 const Filler = token('filler')
 
-module.exports = ProductPart;
+export default ProductPart

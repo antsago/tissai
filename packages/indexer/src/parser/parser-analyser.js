@@ -1,5 +1,5 @@
-const parseGrammar = require('./grammar');
-const TokenReader = require('./token-reader');
+import TokenReader from './token-reader.js'
+import parseGrammar from './grammar.js'
 
 const parseTokens = tokens => {
     const reader = new TokenReader(tokens);
@@ -21,4 +21,4 @@ const parseTokens = tokens => {
     return statements;
 };
 
-module.exports = parseTokens;
+export default parseTokens

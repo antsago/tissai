@@ -50,4 +50,4 @@ class TokenReader {
     }
 }
 
-module.exports = TokenReader;
+export default TokenReader
