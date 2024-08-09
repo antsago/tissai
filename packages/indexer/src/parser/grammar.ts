@@ -36,9 +36,9 @@ const Attribute = (reader: TokenReader) => {
   }
 }
 
-const Label = (reader: TokenReader, type?: string) => {
+const Label = (reader: TokenReader, labels?: string[]) => {
   const isDesiredLabel =
-    type === undefined ? !reader.isLabel("filler") : reader.isLabel(type)
+    labels === undefined ? !reader.isLabel(["filler"]) : reader.isLabel(labels)
 
   if (isDesiredLabel) {
     const result = reader.get()

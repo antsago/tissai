@@ -7,7 +7,7 @@ type SpacyTokens = { isMeaningful: boolean; text: string }
 const labeler = (tokens: SpacyTokens[]) =>
   tokens.map((t) => ({
     ...t,
-    label: t.isMeaningful ? Object.keys(mapping[t.text])[0] : "filler",
+    label: t.isMeaningful ? Object.keys(mapping[t.text]) : ["filler"],
   }))
 const normalizer = (tokens: SpacyTokens[]) => tokens.map(({ text, ...rest }) => ({
   text: normalizeString(text),
