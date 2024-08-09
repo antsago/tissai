@@ -27,7 +27,7 @@ export const minOf =
   }
 
 export const token = (type: string) => (reader: TokenReader) => {
-  if (reader.isType(type)) {
+  if (reader.isLabel(type)) {
     const result = reader.get()
 
     reader.next()

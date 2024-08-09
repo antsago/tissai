@@ -1,12 +1,12 @@
 import parseTokens from "./parserAnalyser.js"
 
 const tokens = [
-  { type: "categoria", value: "pantalones" },
-  { type: "deporte", value: "esquí" },
-  { type: "filler", value: "y" },
-  { type: "deporte", value: "nieve" },
-  { type: "filler", value: "con" },
-  { type: "cremallera", value: "cremallera" },
+  { label: "categoria", text: "pantalones" },
+  { label: "deporte", text: "esquí" },
+  { label: "filler", text: "y" },
+  { label: "deporte", text: "nieve" },
+  { label: "filler", text: "con" },
+  { label: "cremallera", text: "cremallera" },
 ]
 
 const statements = parseTokens(tokens)

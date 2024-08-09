@@ -1,4 +1,4 @@
-export type Token = { type: string; value: string }
+export type Token = { label: string; text: string }
 
 class TokenReader {
   private position = 0
@@ -18,12 +18,12 @@ class TokenReader {
     return this.stateStack.pop()!
   }
 
-  isType(type: string) {
-    return this.hasNext() && this.getType() === type
+  isLabel(label: string) {
+    return this.hasNext() && this.geLabel() === label
   }
 
-  getType() {
-    return this.get().type
+  geLabel() {
+    return this.get().label
   }
 
   get() {
