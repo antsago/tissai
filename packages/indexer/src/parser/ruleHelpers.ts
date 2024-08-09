@@ -1,37 +1,39 @@
-import type TokenReader from "./tokenReader.js";
+import type TokenReader from "./tokenReader.js"
 
-export const minOf = <T>(minAmount: number, check: (reader: TokenReader) => T) => (reader: TokenReader) => {
-    reader.pushState();
+export const minOf =
+  <T>(minAmount: number, check: (reader: TokenReader) => T) =>
+  (reader: TokenReader) => {
+    reader.pushState()
 
-    const results = [];
+    const results = []
 
     while (true) {
-        const result = check(reader);
+      const result = check(reader)
 
-        if (!result) {
-            if (results.length < minAmount) {
-                reader.restoreState();
-                return null;
-            }
-
-            break;
+      if (!result) {
+        if (results.length < minAmount) {
+          reader.restoreState()
+          return null
         }
 
-        results.push(result);
+        break
+      }
+
+      results.push(result)
     }
 
-    reader.popState();
-    return results;
-};
+    reader.popState()
+    return results
+  }
 
 export const token = (type: string) => (reader: TokenReader) => {
-    if (reader.isType(type)) {
-        const result = reader.get();
+  if (reader.isType(type)) {
+    const result = reader.get()
 
-        reader.next();
+    reader.next()
 
-        return result;
-    };
+    return result
+  }
 
-    return null;
-};
+  return null
+}
