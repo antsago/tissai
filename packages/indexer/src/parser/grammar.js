@@ -1,4 +1,4 @@
-const { rule, either, exactly, optional, minOf, token } = require('./rule-helpers');
+const { minOf, token } = require('./rule-helpers');
 
 // ProductPart -> Attribute | Filler
 const ProductPart = (reader) => {
