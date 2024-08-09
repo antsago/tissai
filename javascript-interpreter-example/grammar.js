@@ -6,22 +6,42 @@ const ProductPart = rule(
     part => part
 );
 
-// Attribute -> Label WithFiller*
 const Attribute = rule(
-    () => exactly(Label, minOf(0, WithFiller)),
-    ([label, filler]) => ({ type: 'attribute', tokens: [label, ...filler.flat()] })
+    () => either(AttributeCat, AttributeCrem),
+    (attribute) => attribute
+)
+
+// Attribute -> Label WithFiller*
+const AttributeCrem = rule(
+    () => exactly(Cremallera, minOf(0, WithFillerCrem)),
+    ([label, filler]) => ({ type: 'attribute', label: 'cremallera', tokens: [label, ...filler.flat()] })
 )
 
 // WithFiller -> Filler* Label
-const WithFiller = rule(
-    () => exactly(minOf(0, Filler), Label),
+const WithFillerCrem = rule(
+    () => exactly(minOf(0, Filler), Cremallera),
     (tokens) => tokens.flat()
 )
 
-const Filler = token('filler', 'con')
+// Attribute -> Label WithFiller*
+const AttributeCat = rule(
+    () => exactly(Categoria, minOf(0, WithFillerCat)),
+    ([label, filler]) => ({ type: 'attribute', label: 'categoria', value: [label, ...filler.flat()] })
+)
+
+// WithFiller -> Filler* Label
+const WithFillerCat = rule(
+    () => exactly(minOf(0, Filler), Categoria),
+    (tokens) => tokens.flat()
+)
+
 const Label = rule(
-    () => either(token('categoria', 'pantalones'), token('cremallera', 'cremallera')),
+    () => either(Categoria, Cremallera),
     (token) => token
 )
+
+const Filler = token('filler', 'con')
+const Categoria = token('categoria', 'pantalones')
+const Cremallera = token('cremallera', 'cremallera')
 
 module.exports = ProductPart;
