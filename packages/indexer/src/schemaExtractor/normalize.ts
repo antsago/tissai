@@ -12,7 +12,7 @@ export type Vocabulary = {
   tokens?: Token[]
 }
 
-const normalizeString = (str: string) =>
+export const normalizeString = (str: string) =>
   str
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")

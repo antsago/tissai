@@ -2,9 +2,9 @@ import { dirname } from "node:path"
 import { fileURLToPath } from "node:url"
 import { Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
-import matchLabels, { type Token, tokenizeAttributes } from "./matchLabels.js"
+import { type Token, tokenizeAttributes } from "./matchLabels.js"
 import { type Schema, mergeSchemas, createSchema } from "./mergeSchemas.js"
-import normalize, { type Vocabulary } from "./normalize.js"
+import normalize, { type Vocabulary, normalizeString } from "./normalize.js"
 
 const SCHEMAS = {} as Record<string, Schema>
 const VOCABULARY = {} as Record<string, Vocabulary>
@@ -50,28 +50,31 @@ const products = await db.stream(
     .compile(),
 )
 
+function mapTokens(attributes: ReturnType<typeof tokenizeAttributes>) {
+  attributes.forEach(({ tokens }) => {
+    tokens
+      .filter(({ label }) => !!label)
+      .forEach(({ label: rawLabel, text: rawText }) => {
+        const label = normalizeString(rawLabel!)
+        const text = normalizeString(rawText)
+
+        TOKEN_LABEL_MAPPING[text] = {
+          ...(TOKEN_LABEL_MAPPING[text] ?? {}),
+          [label]: (TOKEN_LABEL_MAPPING[text]?.[label] ?? 0) + 1,
+        }
+      })
+  })
+}
+
 let skippedProducts = 0
 for await (let { title, attributes } of products) {
   try {
     const tokens = await python.send(title)
 
-    const mappings = matchLabels(
-      tokens.map((t) => t.text),
-      attributes,
-    )
-    mappings.forEach(({ token, label }) => {
-      if (!(token in TOKEN_LABEL_MAPPING)) {
-        TOKEN_LABEL_MAPPING[token] = { [label]: 1 }
-      } else if (label in TOKEN_LABEL_MAPPING[token]) {
-        TOKEN_LABEL_MAPPING[token][label] += 1
-      } else {
-        TOKEN_LABEL_MAPPING[token][label] = 1
-      }
-    })
-
     const tokenizedAttributes = tokenizeAttributes(tokens, attributes)
-
+    mapTokens(tokenizedAttributes)
     const normalized = normalize(tokenizedAttributes, VOCABULARY)
+
     const schema = createSchema(normalized)
 
     if (!schema) {

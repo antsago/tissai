@@ -59,8 +59,9 @@ const matchTokens = (tokens: Token[], attributes: Attribute[]) => {
     tokens.filter((t) => t.isMeaningful).map((t) => t.text),
     attributes,
   )
+
   let fillerTokens = 0
-  const foo = tokens.map((t) => {
+  return tokens.map((t) => {
     const matched = {
       ...t,
       label: t.isMeaningful ? mappings[fillerTokens].label : undefined,
@@ -72,8 +73,6 @@ const matchTokens = (tokens: Token[], attributes: Attribute[]) => {
 
     return matched
   })
-
-  return foo
 }
 
 function* extractAttributes(tokens: ReturnType<typeof matchTokens>) {
@@ -117,5 +116,3 @@ export const tokenizeAttributes = (
   const matched = matchTokens(tokens, attributes)
   return [...extractAttributes(matched)]
 }
-
-export default matchLabels
