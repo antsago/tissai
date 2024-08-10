@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "poetry run node build/src/index.js",
+    "parse": "poetry run node ./build/src/parser/index.js",
+    "train": "poetry run node ./build/src/trainer/index.js",
     "build": "rm -rf ./build && tsc --build && cp --parents -R **/*.py build/",
     "test": "poetry run vitest run",
     "test:integration": "poetry run vitest run __tests__"
