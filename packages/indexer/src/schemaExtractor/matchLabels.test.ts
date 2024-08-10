@@ -1,5 +1,5 @@
 import { expect, describe, it } from "vitest"
-import matchLabels from "./matchLabels.js"
+import { matchLabels } from "./matchLabels.js"
 
 describe("matchLabels", () => {
   it("matches full tokens", () => {

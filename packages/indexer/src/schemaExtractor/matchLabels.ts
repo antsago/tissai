@@ -2,7 +2,7 @@ import { Attribute } from "@tissai/db"
 
 type PartialAttribute = Pick<Attribute, "label" | "value">
 
-const matchLabels = (tokens: string[], attributes: PartialAttribute[]) => {
+export const matchLabels = (tokens: string[], attributes: PartialAttribute[]) => {
   const mapping = []
   let match: undefined | ({ tokens: string[] } & PartialAttribute)
   for (const token of tokens) {
