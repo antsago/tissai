@@ -1,5 +1,5 @@
 import { Db, query } from "@tissai/db"
-import Lexer from "../parser/lexer/index.js"
+import Lexer from "../lexer/index.js"
 
 const TOKEN_LABEL_MAPPING = {} as Record<string, Record<string, number>>
 
