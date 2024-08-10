@@ -1,1 +1,1 @@
-export { normalizer, type SpacyTokens } from "./normalizer.js"
+export { normalizer, normalizeString, type SpacyTokens } from "./normalizer.js"

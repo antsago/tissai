@@ -1,4 +1,5 @@
 import type { Attribute } from "@tissai/db"
+import { normalizeString } from "../parser/lexer/index.js"
 import type { Token } from "./matchLabels.js"
 
 export type Vocabulary = {
@@ -11,12 +12,6 @@ export type Vocabulary = {
   labels: Record<string, number>
   tokens?: Token[]
 }
-
-export const normalizeString = (str: string) =>
-  str
-    .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "")
-    .toLowerCase()
 
 const normalizeValue = (
   value: string,
