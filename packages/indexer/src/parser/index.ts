@@ -1,6 +1,6 @@
 import parser from "./parser/index.js"
 import mapping from "./mapping.js"
-import normalizer, { type SpacyTokens } from "./lexer.js";
+import { type SpacyTokens, normalizer } from "./lexer/index.js";
 
 const labeler = <T extends SpacyTokens>(tokens: T[]) =>
   tokens.map((t) => ({
