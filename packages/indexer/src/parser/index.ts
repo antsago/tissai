@@ -1,4 +1,4 @@
-import parseTokens from "./parserAnalyser.js"
+import parser from "./parser/index.js"
 import mapping from "./mapping.js"
 import { normalizeString } from "../schemaExtractor/normalize.js";
 
@@ -26,6 +26,6 @@ const tokens = [
 
 const normalized = normalizer(tokens)
 const labeled = labeler(normalized)
-const attributes = parseTokens(labeled)
+const attributes = parser(labeled)
 
 console.dir(attributes, { depth: null })
