@@ -1,5 +1,6 @@
 import TokenReader, { type Token } from "./TokenReader.js"
-import parseGrammar from "./grammar.js"
+import Filler from "./Filler.js"
+import Attribute from "./Attribute.js"
 
 const parseTokens = (tokens: Token[]) => {
   const reader = new TokenReader(tokens)
@@ -7,14 +8,14 @@ const parseTokens = (tokens: Token[]) => {
   const statements = []
 
   while (reader.hasNext()) {
-    const statement = parseGrammar(reader)
+    const segment = Attribute(reader) ?? Filler(reader)
 
-    if (statement) {
-      statements.push(statement)
+    if (segment) {
+      statements.push(segment)
       continue
     }
 
-    throw new Error("Syntax Error")
+    throw new Error("Should never happen")
   }
 
   return statements
