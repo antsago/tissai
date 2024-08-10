@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import type TokenReader from "./TokenReader.js"
 import { type Token } from "./TokenReader.js"
 import Filler from "./Filler.js"
@@ -30,11 +31,12 @@ const Attribute = (reader: TokenReader<Token>) => {
   }
 
   let values = [label]
+  let types = label.labels
   while (reader.hasNext()) {
     reader.savePosition()
 
     const filler = any(Filler)(reader)
-    const nextLabel = Label(reader, label.labels)
+    const nextLabel = Label(reader, types)
 
     if (!nextLabel) {
       reader.restoreSave()
@@ -42,12 +44,13 @@ const Attribute = (reader: TokenReader<Token>) => {
     }
 
     values = [...values, ...filler, nextLabel]
+    types = _.intersection(types, nextLabel.labels)
     reader.discardSave()
   }
 
   return {
     type: "attribute",
-    labels: label.labels,
+    labels: types,
     value: values.flat(Infinity),
   }
 }

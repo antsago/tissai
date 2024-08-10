@@ -59,6 +59,39 @@ describe("Attribute", () => {
     expect(reader.get()).toStrictEqual(tokens[2])
   })
 
+  it("recognizes minimum common labels", () => {
+    const tokens = [
+      { labels: ["label1", "label2"], isMeaningful: true, text: "token" },
+      { labels: ["label1"], isMeaningful: true, text: "token" },
+    ]
+    const reader = new TokenReader(tokens)
+
+    const result = Attribute(reader)
+
+    expect(result).toStrictEqual({
+      type: "attribute",
+      labels: ["label1"],
+      value: tokens,
+    })
+  })
+
+  it("build minimum common labels iteratively", () => {
+    const tokens = [
+      { labels: ["label1", "label2"], isMeaningful: true, text: "token" },
+      { labels: ["label1"], isMeaningful: true, text: "token" },
+      { labels: ["label2"], isMeaningful: true, text: "token" },
+    ]
+    const reader = new TokenReader(tokens)
+
+    const result = Attribute(reader)
+
+    expect(result).toStrictEqual({
+      type: "attribute",
+      labels: ["label1"],
+      value: tokens.slice(0, 2),
+    })
+  })
+
   it("accepts inbetween filler", () => {
     const tokens = [
       { labels: ["label"], isMeaningful: true, text: "token" },
