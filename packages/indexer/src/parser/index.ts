@@ -1,22 +1,22 @@
 import parser from "./parser/index.js"
 import mapping from "./mapping.js"
-import { type Token, normalizer, Scanner } from "./lexer/index.js";
+import { type Token } from "./lexer/index.js"
+import { Lexer } from "./Lexer.js"
 
-const labeler = <T extends Token>(tokens: T[]) =>
+const labeler = (tokens: Token[]) =>
   tokens.map((t) => ({
     ...t,
     labels: t.isMeaningful ? Object.keys(mapping[t.text]) : ["filler"],
   }))
 
-const scanner = Scanner()
+const lexer = Lexer()
 
 const title = "Pantalones esquí y nieve con CREMALLERA"
 
-const tokens = await scanner.tokenize(title)
-const normalized = normalizer(tokens)
-const labeled = labeler(normalized)
+const tokens = await lexer.tokenize(title)
+const labeled = labeler(tokens)
 const attributes = parser(labeled)
 
-await scanner.close()
+await lexer.close()
 
 console.dir(attributes, { depth: null })
