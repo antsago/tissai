@@ -2,7 +2,7 @@ import TokenReader, { type Token } from "./TokenReader.js"
 import Filler from "./Filler.js"
 import Attribute from "./Attribute.js"
 
-const parseTokens = (tokens: Token[]) => {
+const parser = (tokens: Token[]) => {
   const reader = new TokenReader(tokens)
 
   const statements = []
@@ -21,4 +21,4 @@ const parseTokens = (tokens: Token[]) => {
   return statements
 }
 
-export default parseTokens
+export default parser
