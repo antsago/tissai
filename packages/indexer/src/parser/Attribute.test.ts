@@ -78,6 +78,26 @@ describe("Attribute", () => {
     expect(reader.get()).toStrictEqual(tokens[3])
   })
 
+  it("accepts multiple infiller", () => {
+    const tokens = [
+      { labels: ["label"], isMeaningful: true, text: "token" },
+      { labels: ["filler"], isMeaningful: false, text: "a" },
+      { labels: ["filler"], isMeaningful: false, text: "a" },
+      { labels: ["label"], isMeaningful: true, text: "token" },
+      { labels: ["filler"], isMeaningful: false, text: "a" },
+    ]
+    const reader = new TokenReader(tokens)
+
+    const result = Attribute(reader)
+
+    expect(result).toStrictEqual({
+      type: "attribute",
+      labels: tokens[0].labels,
+      value: tokens.slice(0, 4),
+    })
+    expect(reader.get()).toStrictEqual(tokens[4])
+  })
+
   it("does not append different labels", () => {
     const tokens = [
       { labels: ["label"], isMeaningful: true, text: "token" },
