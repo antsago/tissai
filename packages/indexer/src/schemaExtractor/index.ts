@@ -1,9 +1,8 @@
 import { Db, query } from "@tissai/db"
-import { normalizeString } from "../parser/lexer/index.js"
+import { normalizeString, Scanner } from "../parser/lexer/index.js"
 import { tokenizeAttributes } from "./matchLabels.js"
 import { type Schema, mergeSchemas, createSchema } from "./mergeSchemas.js"
 import normalize, { type Vocabulary } from "./normalize.js"
-import { Scanner } from "../parser/lexer/index.js"
 
 const SCHEMAS = {} as Record<string, Schema>
 const VOCABULARY = {} as Record<string, Vocabulary>
