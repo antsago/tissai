@@ -1,19 +1,12 @@
 import parser from "./parser/index.js"
 import mapping from "./mapping.js"
-import { normalizeString } from "../schemaExtractor/normalize.js";
-
-type SpacyTokens = { isMeaningful: boolean; text: string }
+import normalizer, { type SpacyTokens } from "./lexer.js";
 
 const labeler = <T extends SpacyTokens>(tokens: T[]) =>
   tokens.map((t) => ({
     ...t,
     labels: t.isMeaningful ? Object.keys(mapping[t.text]) : ["filler"],
   }))
-const normalizer = (tokens: SpacyTokens[]) => tokens.map(({ text, ...rest }) => ({
-  text: normalizeString(text),
-  originalText: text,
-  ...rest,
-}))
 
 const tokens = [
   { isMeaningful: true, text: "Pantalones" },
