@@ -1,11 +1,9 @@
-import { dirname } from "node:path"
-import { fileURLToPath } from "node:url"
 import { Db, query } from "@tissai/db"
-import { PythonPool } from "@tissai/python-pool"
 import { normalizeString } from "../parser/lexer/index.js"
-import { type Token, tokenizeAttributes } from "./matchLabels.js"
+import { tokenizeAttributes } from "./matchLabels.js"
 import { type Schema, mergeSchemas, createSchema } from "./mergeSchemas.js"
 import normalize, { type Vocabulary } from "./normalize.js"
+import { Scanner } from "./Scanner.js"
 
 const SCHEMAS = {} as Record<string, Schema>
 const VOCABULARY = {} as Record<string, Vocabulary>
@@ -30,11 +28,7 @@ function schemaToMapping(schema: Schema) {
   return mapping
 }
 
-const currentDirectory = dirname(fileURLToPath(import.meta.url))
-const python: PythonPool<string, Token[]> = PythonPool(
-  `${currentDirectory}/tissaiTokenizer.py`,
-  console,
-)
+const scanner = Scanner()
 
 const db = Db()
 
@@ -70,7 +64,7 @@ function mapTokens(attributes: ReturnType<typeof tokenizeAttributes>) {
 let skippedProducts = 0
 for await (let { title, attributes } of products) {
   try {
-    const tokens = await python.send(title)
+    const tokens = await scanner.tokenize(title)
 
     const tokenizedAttributes = tokenizeAttributes(tokens, attributes)
     mapTokens(tokenizedAttributes)
@@ -106,4 +100,4 @@ console.log(
 )
 
 await db.close()
-await python.close()
+await scanner.close()
