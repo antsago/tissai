@@ -6,7 +6,7 @@ const Filler = (reader: TokenReader<Token>) => {
   if (!nextToken || nextToken.isMeaningful) {
     return null
   }
-  
+
   reader.next()
   return nextToken
 }

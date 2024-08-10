@@ -1,5 +1,5 @@
-import { Scanner } from "./Scanner.js";
-import { normalizer } from "./normalizer.js";
+import { Scanner } from "./Scanner.js"
+import { normalizer } from "./normalizer.js"
 
 export function Lexer() {
   const scanner = Scanner()

@@ -1,5 +1,5 @@
 import { expect, describe, it } from "vitest"
-import parser from './parser.js'
+import parser from "./parser.js"
 
 describe("parser", () => {
   it("handles empty tokens", () => {
@@ -9,23 +9,21 @@ describe("parser", () => {
   })
 
   it("recognizes top-level attributes", () => {
-    const tokens = [
-      { labels: ["label"], isMeaningful: true, text: "token" },
-    ]
+    const tokens = [{ labels: ["label"], isMeaningful: true, text: "token" }]
 
     const result = parser(tokens)
 
-    expect(result).toStrictEqual([{
-      type: "attribute",
-      labels: ["label"],
-      value: tokens,
-    }])
+    expect(result).toStrictEqual([
+      {
+        type: "attribute",
+        labels: ["label"],
+        value: tokens,
+      },
+    ])
   })
 
   it("recognizes top-level filler", () => {
-    const tokens = [
-      { labels: ["filler"], isMeaningful: false, text: "token" },
-    ]
+    const tokens = [{ labels: ["filler"], isMeaningful: false, text: "token" }]
 
     const result = parser(tokens)
 

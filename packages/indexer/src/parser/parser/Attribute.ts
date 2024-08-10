@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _ from "lodash"
 import type TokenReader from "./TokenReader.js"
 import { type Token } from "./TokenReader.js"
 import Filler from "./Filler.js"

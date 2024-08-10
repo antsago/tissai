@@ -10,7 +10,7 @@ describe("Attribute", () => {
 
     expect(result).toBe(null)
   })
-  
+
   it("rejects starting fillers", () => {
     const tokens = [
       { labels: ["filler"], isMeaningful: false, text: "a" },

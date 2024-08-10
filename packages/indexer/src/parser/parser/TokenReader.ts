@@ -1,4 +1,4 @@
-export type Token = { labels: string[], isMeaningful: boolean, text: string }
+export type Token = { labels: string[]; isMeaningful: boolean; text: string }
 
 class TokenReader<T> {
   private position = 0
@@ -18,7 +18,7 @@ class TokenReader<T> {
     return this.stateStack.pop()
   }
 
-  get(): T|undefined {
+  get(): T | undefined {
     return this.tokens[this.position]
   }
 
