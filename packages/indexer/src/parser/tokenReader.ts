@@ -18,7 +18,7 @@ class TokenReader<T> {
     return this.stateStack.pop()
   }
 
-  get() {
+  get(): T|undefined {
     return this.tokens[this.position]
   }
 

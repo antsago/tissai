@@ -3,7 +3,7 @@ import { type Token } from "./TokenReader.js"
 
 const Filler = (reader: TokenReader<Token>) => {
   const nextToken = reader.get()
-  if (nextToken.isMeaningful) {
+  if (!nextToken || nextToken.isMeaningful) {
     return null
   }
   

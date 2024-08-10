@@ -3,9 +3,17 @@ import TokenReader from "./TokenReader.js"
 import Label from "./Label.js"
 
 describe("Label", () => {
+  it("returns null if no next token", () => {
+    const reader = new TokenReader([])
+
+    const result = Label(reader)
+
+    expect(result).toBe(null)
+  })
+
   it("returns null if the next token is not meaningful", () => {
     const TOKENS = [
-      { labels: ["label1", "label2"], isMeaningful: false, text: "a" },
+      { labels: ["filler"], isMeaningful: false, text: "a" },
       { labels: ["label"], isMeaningful: true, text: "token" },
     ]
     const reader = new TokenReader(TOKENS)

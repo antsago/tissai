@@ -5,9 +5,9 @@ const Label = (reader: TokenReader<Token>, desiredLabels?: string[]) => {
   const nextToken = reader.get()
   
   const hasDesiredLabels = 
-    desiredLabels === undefined ? true : desiredLabels.some(desiredLabel => nextToken.labels.includes(desiredLabel))
+    desiredLabels === undefined ? true : desiredLabels.some(desiredLabel => nextToken?.labels.includes(desiredLabel))
 
-  if (nextToken.isMeaningful && hasDesiredLabels) {
+  if (nextToken?.isMeaningful && hasDesiredLabels) {
     const result = reader.get()
     reader.next()
     return result
