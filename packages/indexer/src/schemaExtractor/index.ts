@@ -2,9 +2,10 @@ import { dirname } from "node:path"
 import { fileURLToPath } from "node:url"
 import { Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
+import { normalizeString } from "../parser/lexer/index.js"
 import { type Token, tokenizeAttributes } from "./matchLabels.js"
 import { type Schema, mergeSchemas, createSchema } from "./mergeSchemas.js"
-import normalize, { type Vocabulary, normalizeString } from "./normalize.js"
+import normalize, { type Vocabulary } from "./normalize.js"
 
 const SCHEMAS = {} as Record<string, Schema>
 const VOCABULARY = {} as Record<string, Vocabulary>
