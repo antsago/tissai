@@ -3,12 +3,12 @@ import { type Token } from "./TokenReader.js"
 
 const Filler = (reader: TokenReader<Token>) => {
   const nextToken = reader.get()
-  if (!nextToken.isMeaningful) {
-    reader.next()
-    return nextToken
+  if (nextToken.isMeaningful) {
+    return null
   }
-
-  return null
+  
+  reader.next()
+  return nextToken
 }
 
 export default Filler
