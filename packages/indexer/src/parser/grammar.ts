@@ -2,6 +2,7 @@ import type TokenReader from "./TokenReader.js"
 import { type Token } from "./TokenReader.js"
 import { minOf } from "./ruleHelpers.js"
 import Filler from "./Filler.js"
+import Label from "./Label.js"
 
 // ProductPart -> Attribute | Filler
 const ProductPart = <T extends Token>(reader: TokenReader<T>) => {
@@ -36,21 +37,6 @@ const Attribute = <T extends Token>(reader: TokenReader<T>) => {
     labels: label.labels,
     value: values.flat(Infinity),
   }
-}
-
-const Label = (reader: TokenReader<Token>, desiredLabels?: string[]) => {
-  const nextToken = reader.get()
-  
-  const hasDesiredLabels = 
-    desiredLabels === undefined ? true : desiredLabels.some(desiredLabel => nextToken.labels.includes(desiredLabel))
-
-  if (nextToken.isMeaningful && hasDesiredLabels) {
-    const result = reader.get()
-    reader.next()
-    return result
-  }
-
-  return null
 }
 
 export default ProductPart
