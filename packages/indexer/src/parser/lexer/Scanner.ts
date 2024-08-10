@@ -1,7 +1,8 @@
 import { dirname } from "node:path"
 import { fileURLToPath } from "node:url"
 import { PythonPool } from "@tissai/python-pool"
-import { type Token } from "../../schemaExtractor/matchLabels.js"
+
+export type Token = { text: string; isMeaningful: boolean; trailing: string }
 
 export function Scanner() {
   const currentDirectory = dirname(fileURLToPath(import.meta.url))

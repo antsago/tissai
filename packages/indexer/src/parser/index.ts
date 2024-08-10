@@ -1,8 +1,8 @@
 import parser from "./parser/index.js"
 import mapping from "./mapping.js"
-import { type SpacyTokens, normalizer } from "./lexer/index.js";
+import { type Token, normalizer } from "./lexer/index.js";
 
-const labeler = <T extends SpacyTokens>(tokens: T[]) =>
+const labeler = <T extends Token>(tokens: T[]) =>
   tokens.map((t) => ({
     ...t,
     labels: t.isMeaningful ? Object.keys(mapping[t.text]) : ["filler"],
@@ -15,7 +15,7 @@ const tokens = [
   { isMeaningful: true, text: "nieve" },
   { isMeaningful: false, text: "con" },
   { isMeaningful: true, text: "CREMALLERA" },
-]
+] as Token[]
 
 const normalized = normalizer(tokens)
 const labeled = labeler(normalized)

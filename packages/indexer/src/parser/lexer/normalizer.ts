@@ -1,4 +1,4 @@
-export type SpacyTokens = { isMeaningful: boolean; text: string }
+import { type Token } from "./Scanner.js";
 
 export const normalizeString = (str: string) =>
   str
@@ -6,7 +6,7 @@ export const normalizeString = (str: string) =>
     .replace(/\p{Diacritic}/gu, "")
     .toLowerCase()
 
-export const normalizer = (tokens: SpacyTokens[]) => tokens.map(({ text, ...rest }) => ({
+export const normalizer = (tokens: Token[]) => tokens.map(({ text, ...rest }) => ({
   text: normalizeString(text),
   originalText: text,
   ...rest,
