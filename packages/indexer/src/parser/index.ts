@@ -1,7 +1,6 @@
 import parser from "./parser/index.js"
 import mapping from "./mapping.js"
-import { type Token } from "./lexer/index.js"
-import { Lexer } from "./Lexer.js"
+import Lexer, { type Token } from "./lexer/index.js"
 
 const labeler = (tokens: Token[]) =>
   tokens.map((t) => ({
