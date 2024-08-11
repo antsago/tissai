@@ -9,9 +9,9 @@ model = AutoModelForCausalLM.from_pretrained(modelName)
 
 
 def getPrompt(title, labels):
-    labeled = "\n    ".join(
-        [f"""{token} <> {label}""" for (token, label) in labels]
-    )[:-1]
+    labeled = "\n    ".join([f"""{token} <> {label}""" for (token, label) in labels])[
+        :-1
+    ]
     return f"""Dados los nombres de los productos siguientes, etiqueta cada palabra con el nombre de los atributos que representa:
   Conjunto de cazadora y pantalón | Total look de hombre | SPF
     Conjunto <> categoría

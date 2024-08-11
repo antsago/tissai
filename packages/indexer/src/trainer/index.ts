@@ -30,45 +30,47 @@ const products = await db.stream(
 let index = 1
 for await (let { id, title } of products) {
   try {
-      reporter.progress(
-        `Processing product ${index}/${productCount}: ${id} (${title})`,
-      )
-  const tokens = await lexer.tokenize(title)
+    reporter.progress(
+      `Processing product ${index}/${productCount}: ${id} (${title})`,
+    )
+    const tokens = await lexer.tokenize(title)
 
-  const words = tokens.filter((t) => t.isMeaningful).map((t) => t.originalText)
-  const labels = await python.send({ title, words })
+    const words = tokens
+      .filter((t) => t.isMeaningful)
+      .map((t) => t.originalText)
+    const labels = await python.send({ title, words })
 
-  let labelsIndex = 0
-  const labeled = tokens.map((t) => {
-    if (!t.isMeaningful) {
+    let labelsIndex = 0
+    const labeled = tokens.map((t) => {
+      if (!t.isMeaningful) {
+        return {
+          ...t,
+          label: undefined,
+        }
+      }
+
+      const label = labels[labelsIndex]
+      if (label.value !== t.originalText) {
+        throw new Error(
+          `With title "${title}", expected to match ${label.value} with ${t.originalText}`,
+        )
+      }
+      labelsIndex += 1
+
       return {
         ...t,
-        label: undefined,
-      }
-    }
-
-    const label = labels[labelsIndex]
-    if (label.value !== t.originalText) {
-      throw new Error(
-        `With title "${title}", expected to match ${label.value} with ${t.originalText}`,
-      )
-    }
-    labelsIndex += 1
-
-    return {
-      ...t,
-      label: label.label,
-    }
-  })
-
-  labeled
-    .filter((t) => !!t.label)
-    .forEach(({ label, text }) => {
-      TOKEN_LABEL_MAPPING[text] = {
-        ...(TOKEN_LABEL_MAPPING[text] ?? {}),
-        [label!]: (TOKEN_LABEL_MAPPING[text]?.[label!] ?? 0) + 1,
+        label: label.label,
       }
     })
+
+    labeled
+      .filter((t) => !!t.label)
+      .forEach(({ label, text }) => {
+        TOKEN_LABEL_MAPPING[text] = {
+          ...(TOKEN_LABEL_MAPPING[text] ?? {}),
+          [label!]: (TOKEN_LABEL_MAPPING[text]?.[label!] ?? 0) + 1,
+        }
+      })
 
     index += 1
   } catch (err) {
