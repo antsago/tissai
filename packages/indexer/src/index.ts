@@ -24,7 +24,7 @@ let python!: PythonPool<
 >
 try {
   db = Db()
-  python = PythonPool('./EntityExtractor/parseTitle.py', reporter)
+  python = PythonPool("./EntityExtractor/parseTitle.py", reporter)
 
   reporter.progress("Initializing database")
   await db.initialize()

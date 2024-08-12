@@ -4,7 +4,7 @@ export type RawToken = { text: string; isMeaningful: boolean; trailing: string }
 
 export function Scanner() {
   const python: PythonPool<string, RawToken[]> = PythonPool(
-    './scanner.py',
+    "./scanner.py",
     console,
   )
 

@@ -12,7 +12,9 @@ describe("getCallerFilePath", () => {
   })
 
   it("handles stacks with naming information", () => {
-    function foo() { return getCallerFilePath() }
+    function foo() {
+      return getCallerFilePath()
+    }
     const result = foo()
     expect(result).toBe(FILENAME)
   })

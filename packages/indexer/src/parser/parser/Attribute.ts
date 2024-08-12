@@ -13,7 +13,7 @@ const any =
 
     while (reader.hasNext()) {
       reader.savePosition()
-      
+
       const result = check(reader)
       if (!result) {
         reader.restoreSave()
@@ -27,23 +27,30 @@ const any =
     return results
   }
 
-type CheckToResult<T extends Check<unknown>[]> = { [K in keyof T]: T[K] extends Check<infer I> ? NonNullable<I> : never }
-const and = <T extends Check<unknown>[]>(...checks: T) => (reader: TokenReader<Token>) => {
-  const result = [] as CheckToResult<T>
+type CheckToResult<T extends Check<unknown>[]> = {
+  [K in keyof T]: T[K] extends Check<infer I> ? NonNullable<I> : never
+}
+const and =
+  <T extends Check<unknown>[]>(...checks: T) =>
+  (reader: TokenReader<Token>) => {
+    const result = [] as CheckToResult<T>
 
-  for (const check of checks) {
-    const match = check(reader)
-    if (!match) {
-      return null
+    for (const check of checks) {
+      const match = check(reader)
+      if (!match) {
+        return null
+      }
+
+      result.push(match)
     }
 
-    result.push(match)
+    return result
   }
 
-  return result
-}
-
-const labelWithFiller = (reader: TokenReader<Token>, initialTypes: string[]) => {
+const labelWithFiller = (
+  reader: TokenReader<Token>,
+  initialTypes: string[],
+) => {
   let values = [] as Token[]
   let types = [...initialTypes]
   while (reader.hasNext()) {
