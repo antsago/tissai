@@ -1,9 +1,9 @@
 import type TokenReader from "./TokenReader.js"
 import { type Token } from "./TokenReader.js"
 
-export const MatchToken = (check: (nextToken: Token|undefined) => boolean) => (reader: TokenReader<Token>) => {
+export const MatchToken = (check: (nextToken: Token) => boolean) => (reader: TokenReader<Token>) => {
   const nextToken = reader.get()
-  if (check(nextToken)) {
+  if (nextToken && check(nextToken)) {
     reader.next()
     return nextToken
   }
@@ -11,6 +11,6 @@ export const MatchToken = (check: (nextToken: Token|undefined) => boolean) => (r
   return null
 }
 
-const Filler = MatchToken((nextToken) => !!nextToken && !nextToken.isMeaningful)
+const Filler = MatchToken((nextToken) => !nextToken.isMeaningful)
 
 export default Filler

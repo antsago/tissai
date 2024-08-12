@@ -6,10 +6,10 @@ const Label = (desiredLabels?: string[]) =>
       desiredLabels === undefined
         ? true
         : desiredLabels.some((desiredLabel) =>
-            nextToken?.labels.includes(desiredLabel),
+            nextToken.labels.includes(desiredLabel),
           )
 
-    return !!nextToken?.isMeaningful && hasDesiredLabels
+    return nextToken.isMeaningful && hasDesiredLabels
   })
 
 export default Label
