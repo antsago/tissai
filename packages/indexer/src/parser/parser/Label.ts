@@ -12,9 +12,8 @@ const Label = (reader: TokenReader<Token>, desiredLabels?: string[]) => {
         )
 
   if (nextToken?.isMeaningful && hasDesiredLabels) {
-    const result = reader.get()
     reader.next()
-    return result
+    return nextToken
   }
 
   return null

@@ -10,13 +10,16 @@ const any =
     const results = []
 
     while (reader.hasNext()) {
+      reader.savePosition()
+      
       const result = check(reader)
-
       if (!result) {
+        reader.restoreSave()
         break
       }
 
       results.push(result)
+      reader.discardSave()
     }
 
     return results
