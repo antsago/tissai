@@ -1,3 +1,4 @@
+import path from "node:path"
 import { expect, describe, test, beforeEach, afterEach, vi } from "vitest"
 import { PythonShellError } from "python-shell"
 import { mockPythonFixture } from "#mocks"
@@ -9,7 +10,7 @@ const it = test.extend<Fixtures>({
 })
 
 describe("PythonPool", () => {
-  const SCRIPT_PATH = "/foo/bar.py"
+  const SCRIPT_PATH = "./foo/bar.py"
   const QUERY = "A query"
   const RESPONSE = { the: "response" }
 
@@ -23,8 +24,10 @@ describe("PythonPool", () => {
   })
 
   it("starts script on initialization", async ({ python }) => {
+    const expectedScriptPath = path.resolve(import.meta.dirname, SCRIPT_PATH)
+
     expect(python.PythonShell).toHaveBeenCalledWith(
-      SCRIPT_PATH,
+      expectedScriptPath,
       expect.anything(),
     )
   })

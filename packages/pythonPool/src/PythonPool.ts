@@ -1,4 +1,5 @@
 import { PythonShell as PShell } from "python-shell"
+import { resolveRelativePath } from "./pathUtils.js"
 
 let PythonShell = PShell
 export function setPShell(mock: typeof PShell) {
@@ -14,7 +15,7 @@ export function PythonPool<Input extends string | Object, Output>(
   const resolvers: Resolver<Output>[] = []
   let expectExit = false
 
-  const worker = new PythonShell(scriptPath, {
+  const worker = new PythonShell(resolveRelativePath(scriptPath), {
     mode: "json",
     pythonOptions: ["-u"], // get print results in real-time
   })

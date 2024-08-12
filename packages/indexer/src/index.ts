@@ -1,5 +1,3 @@
-import { dirname } from "node:path"
-import { fileURLToPath } from "node:url"
 import { type Page, Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "./Reporter.js"
@@ -25,12 +23,8 @@ let python!: PythonPool<
   }
 >
 try {
-  const currentDirectory = dirname(fileURLToPath(import.meta.url))
   db = Db()
-  python = PythonPool(
-    `${currentDirectory}/EntityExtractor/parseTitle.py`,
-    reporter,
-  )
+  python = PythonPool('./EntityExtractor/parseTitle.py', reporter)
 
   reporter.progress("Initializing database")
   await db.initialize()

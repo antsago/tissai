@@ -1,5 +1,3 @@
-import { dirname } from "node:path"
-import { fileURLToPath } from "node:url"
 import { Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
@@ -11,11 +9,10 @@ reporter.progress("Initializing database and pools")
 
 const db = Db()
 const lexer = Lexer()
-const currentDirectory = dirname(fileURLToPath(import.meta.url))
 const python = PythonPool<
   { title: string; words: string[] },
   { label: string; value: string }[]
->(`${currentDirectory}/labelWords.py`, reporter)
+>(`./labelWords.py`, reporter)
 
 const [{ count: productCount }] = await db.query(
   query
