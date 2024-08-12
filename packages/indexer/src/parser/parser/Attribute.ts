@@ -25,16 +25,9 @@ const any =
     return results
   }
 
-// AttributeL -> LabelL (Filler* LabelL)*
-const Attribute = (reader: TokenReader<Token>) => {
-  const label = Label()(reader)
-
-  if (!label) {
-    return null
-  }
-
-  let values = [label]
-  let types = label.labels
+const labelWithFiller = (reader: TokenReader<Token>, initialTypes: string[]) => {
+  let values = [] as Token[]
+  let types = [...initialTypes]
   while (reader.hasNext()) {
     reader.savePosition()
 
@@ -51,10 +44,22 @@ const Attribute = (reader: TokenReader<Token>) => {
     reader.discardSave()
   }
 
+  return [values, types]
+}
+
+const Attribute = (reader: TokenReader<Token>) => {
+  const label = Label()(reader)
+
+  if (!label) {
+    return null
+  }
+
+  const [values, types] = labelWithFiller(reader, label.labels)
+
   return {
     type: "attribute",
     labels: types,
-    value: values.flat(Infinity),
+    value: [label, values].flat(Infinity),
   }
 }
 
