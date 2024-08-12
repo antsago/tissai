@@ -2,14 +2,13 @@ import { MatchToken } from "./Filler.js"
 
 const Label = (desiredLabels?: string[]) => 
   MatchToken((nextToken) => {
-    const hasDesiredLabels =
-      desiredLabels === undefined
-        ? true
-        : desiredLabels.some((desiredLabel) =>
-            nextToken.labels.includes(desiredLabel),
-          )
+    if (!nextToken.isMeaningful) {
+      return false
+    }
 
-    return nextToken.isMeaningful && hasDesiredLabels
+    return !desiredLabels || desiredLabels.some((desiredLabel) =>
+      nextToken.labels.includes(desiredLabel),
+    )
   })
 
 export default Label
