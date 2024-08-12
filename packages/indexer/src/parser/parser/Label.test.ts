@@ -6,7 +6,7 @@ describe("Label", () => {
   it("returns null if no next token", () => {
     const reader = new TokenReader([])
 
-    const result = Label(reader)
+    const result = Label()(reader)
 
     expect(result).toBe(null)
   })
@@ -18,7 +18,7 @@ describe("Label", () => {
     ]
     const reader = new TokenReader(TOKENS)
 
-    const result = Label(reader)
+    const result = Label()(reader)
 
     expect(result).toBe(null)
     expect(reader.get()).toStrictEqual(TOKENS[0])
@@ -31,7 +31,7 @@ describe("Label", () => {
     ]
     const reader = new TokenReader(TOKENS)
 
-    const result = Label(reader, TOKENS[1].labels)
+    const result = Label(TOKENS[1].labels)(reader)
 
     expect(result).toBe(null)
     expect(reader.get()).toStrictEqual(TOKENS[0])
@@ -44,7 +44,7 @@ describe("Label", () => {
     ]
     const reader = new TokenReader(TOKENS)
 
-    const result = Label(reader)
+    const result = Label()(reader)
 
     expect(result).toStrictEqual(TOKENS[0])
     expect(reader.get()).toStrictEqual(TOKENS[1])
@@ -57,7 +57,7 @@ describe("Label", () => {
     ]
     const reader = new TokenReader(TOKENS)
 
-    const result = Label(reader, ["foo", TOKENS[0].labels[0]])
+    const result = Label(["foo", TOKENS[0].labels[0]])(reader)
 
     expect(result).toStrictEqual(TOKENS[0])
     expect(reader.get()).toStrictEqual(TOKENS[1])

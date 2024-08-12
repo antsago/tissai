@@ -1,22 +1,15 @@
-import type TokenReader from "./TokenReader.js"
-import { type Token } from "./TokenReader.js"
+import { MatchToken } from "./Filler.js"
 
-const Label = (reader: TokenReader<Token>, desiredLabels?: string[]) => {
-  const nextToken = reader.get()
+const Label = (desiredLabels?: string[]) => 
+  MatchToken((nextToken) => {
+    const hasDesiredLabels =
+      desiredLabels === undefined
+        ? true
+        : desiredLabels.some((desiredLabel) =>
+            nextToken?.labels.includes(desiredLabel),
+          )
 
-  const hasDesiredLabels =
-    desiredLabels === undefined
-      ? true
-      : desiredLabels.some((desiredLabel) =>
-          nextToken?.labels.includes(desiredLabel),
-        )
-
-  if (nextToken?.isMeaningful && hasDesiredLabels) {
-    reader.next()
-    return nextToken
-  }
-
-  return null
-}
+    return !!nextToken?.isMeaningful && hasDesiredLabels
+  })
 
 export default Label

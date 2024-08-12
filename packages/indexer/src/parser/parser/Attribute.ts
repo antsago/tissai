@@ -27,7 +27,7 @@ const any =
 
 // AttributeL -> LabelL (Filler* LabelL)*
 const Attribute = (reader: TokenReader<Token>) => {
-  const label = Label(reader)
+  const label = Label()(reader)
 
   if (!label) {
     return null
@@ -39,7 +39,7 @@ const Attribute = (reader: TokenReader<Token>) => {
     reader.savePosition()
 
     const filler = any(Filler)(reader)
-    const nextLabel = Label(reader, types)
+    const nextLabel = Label(types)(reader)
 
     if (!nextLabel) {
       reader.restoreSave()
