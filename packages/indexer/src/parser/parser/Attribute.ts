@@ -48,40 +48,31 @@ const and =
     return result
   }
 
-const labelWithFiller = (reader: TokenReader<Token>, context: Context) => {
-  let values = [] as Token[]
-  while (reader.hasNext()) {
-    reader.savePosition()
+const withL =
+  <T>(checkFactory: (l: Context) => Check<T>) =>
+  (reader: TokenReader<Token>) => {
+    const context = new Context()
 
-    const results = and(any(Filler), Label(context))(reader)
+    const check = checkFactory(context) 
 
-    if (!results) {
-      reader.restoreSave()
-      break
-    }
+    const result = check(reader)
 
-    const [filler, label] = results
-    values = [...values, ...filler, label]
-    reader.discardSave()
+    return { result, context }
   }
 
-  return values
-}
-
 const Attribute = (reader: TokenReader<Token>) => {
-  const context = new Context()
-  const label = Label(context)(reader)
+  const { result, context } = withL(l => and(Label(l), any(and(any(Filler), Label(l)))))(reader)
 
-  if (!label) {
+  if (!result) {
     return null
   }
 
-  const values = labelWithFiller(reader, context)
+  const values = result.flat(Infinity)
 
   return {
     type: "attribute",
     labels: context.labels!,
-    value: [label, values].flat(Infinity),
+    value: values,
   }
 }
 
