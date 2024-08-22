@@ -2,7 +2,7 @@ import _ from "lodash"
 import type TokenReader from "./TokenReader.js"
 import { type Token } from "./TokenReader.js"
 import type Context from "./Context.js"
-import { withL, and, any, MatchToken } from "./operators.js"
+import { withL, and, any, or, MatchToken } from "./operators.js"
 
 export const Filler = MatchToken((nextToken) => !nextToken.isMeaningful)
 
@@ -29,3 +29,5 @@ export const Attribute = (reader: TokenReader<Token>) => {
     value: values,
   }
 }
+
+export const Product = any(or(Attribute, Filler))
