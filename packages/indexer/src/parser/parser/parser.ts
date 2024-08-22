@@ -1,24 +1,12 @@
 import TokenReader, { type Token } from "./TokenReader.js"
-import Filler from "./Filler.js"
-import Attribute from "./Attribute.js"
+import { Attribute, Filler } from "./Attribute.js"
+import { any, or } from "./operators.js"
 
 const parser = (tokens: Token[]) => {
   const reader = new TokenReader(tokens)
 
-  const statements = []
-
-  while (reader.hasNext()) {
-    const segment = Attribute(reader) ?? Filler(reader)
-
-    if (segment) {
-      statements.push(segment)
-      continue
-    }
-
-    throw new Error("Should never happen")
-  }
-
-  return statements
+  const attributes = any(or(Attribute, Filler))(reader)
+  return attributes
 }
 
 export default parser

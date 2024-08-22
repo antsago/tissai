@@ -1,6 +1,6 @@
 import { expect, describe, it } from "vitest"
 import TokenReader from "./TokenReader.js"
-import Filler from "./Filler.js"
+import { Filler } from "./Attribute.js"
 
 describe("Filler", () => {
   it("returns null if no next token", () => {
