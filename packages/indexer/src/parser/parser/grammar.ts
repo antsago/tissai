@@ -1,6 +1,6 @@
 import _ from "lodash"
-import type TokenReader from "./TokenReader.js"
-import { type Token } from "./TokenReader.js"
+import type TokenReader from "../TokenReader.js"
+import { type Token } from "../TokenReader.js"
 import type Context from "./Context.js"
 import { withL, and, any, or, MatchToken } from "./operators.js"
 

@@ -1,5 +1,5 @@
-import type TokenReader from "./TokenReader.js"
-import { type Token } from "./TokenReader.js"
+import type TokenReader from "../TokenReader.js"
+import { type Token } from "../TokenReader.js"
 import Context from "./Context.js"
 
 type Rule<T> = (reader: TokenReader<Token>) => T

@@ -1,5 +1,5 @@
 import { expect, describe, it } from "vitest"
-import TokenReader from "./TokenReader.js"
+import TokenReader from "../TokenReader.js"
 import Context from "./Context.js"
 import { Label } from "./grammar.js"
 

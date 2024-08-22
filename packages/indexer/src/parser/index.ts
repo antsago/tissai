@@ -1,4 +1,5 @@
-import { TokenReader, Product, Token as GrammarToken } from "./parser/index.js"
+import { Product } from "./parser/index.js"
+import TokenReader, { type Token as GrammarToken } from "./TokenReader.js"
 import mapping from "./mapping.js"
 import Lexer, { type Token } from "../lexer/index.js"
 

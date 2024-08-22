@@ -1,6 +1,6 @@
 import { expect, describe, it } from "vitest"
 import { Product } from "./grammar.js"
-import TokenReader from "./TokenReader.js"
+import TokenReader from "../TokenReader.js"
 
 describe("Product", () => {
   it("handles empty tokens", () => {

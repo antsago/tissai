@@ -1,5 +1,5 @@
 import { expect, describe, it } from "vitest"
-import TokenReader from "./TokenReader.js"
+import TokenReader from "../TokenReader.js"
 import { Filler } from "./grammar.js"
 
 describe("Filler", () => {
