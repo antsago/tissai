@@ -49,18 +49,18 @@ export const or =
   <T extends Check<unknown>[]>(...checks: T) =>
   (reader: TokenReader<Token>) => {
     for (const check of checks) {
-      reader.savePosition();
+      reader.savePosition()
 
-      const match = check(reader);
+      const match = check(reader) as CheckToResult<T>[number]
       if (match) {
-          reader.discardSave();
-          return match;
+        reader.discardSave()
+        return match
       }
 
-      reader.restoreSave();
+      reader.restoreSave()
     }
 
-    return null;
+    return null
   }
 
 export const withL =
@@ -68,7 +68,7 @@ export const withL =
   (reader: TokenReader<Token>) => {
     const context = new Context()
 
-    const check = checkFactory(context) 
+    const check = checkFactory(context)
 
     const result = check(reader)
 

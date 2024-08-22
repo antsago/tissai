@@ -13,7 +13,9 @@ export const Label = (context: Context) =>
   )
 
 export const Attribute = (reader: TokenReader<Token>) => {
-  const { result, context } = withL(l => and(Label(l), any(and(any(Filler), Label(l)))))(reader)
+  const { result, context } = withL((l) =>
+    and(Label(l), any(and(any(Filler), Label(l)))),
+  )(reader)
 
   if (!result) {
     return null
