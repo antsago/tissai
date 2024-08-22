@@ -1,6 +1,12 @@
-import parser from "./parser/index.js"
+import { TokenReader, Product, Token as GrammarToken } from "./parser/index.js"
 import mapping from "./mapping.js"
 import Lexer, { type Token } from "../lexer/index.js"
+
+const parser = (tokens: GrammarToken[]) => {
+  const reader = new TokenReader(tokens)
+
+  return Product(reader)
+}
 
 const labeler = (tokens: Token[]) =>
   tokens.map((t) => ({

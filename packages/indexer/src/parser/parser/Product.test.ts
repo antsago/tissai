@@ -1,17 +1,21 @@
 import { expect, describe, it } from "vitest"
-import parser from "./parser.js"
+import { Product } from "./grammar.js"
+import TokenReader from "./TokenReader.js"
 
-describe("parser", () => {
+describe("Product", () => {
   it("handles empty tokens", () => {
-    const result = parser([])
+    const reader = new TokenReader([])
+
+    const result = Product(reader)
 
     expect(result).toStrictEqual([])
   })
 
   it("recognizes top-level attributes", () => {
     const tokens = [{ labels: ["label"], isMeaningful: true, text: "token" }]
+    const reader = new TokenReader(tokens)
 
-    const result = parser(tokens)
+    const result = Product(reader)
 
     expect(result).toStrictEqual([
       {
@@ -24,8 +28,9 @@ describe("parser", () => {
 
   it("recognizes top-level filler", () => {
     const tokens = [{ labels: ["filler"], isMeaningful: false, text: "token" }]
+    const reader = new TokenReader(tokens)
 
-    const result = parser(tokens)
+    const result = Product(reader)
 
     expect(result).toStrictEqual(tokens)
   })
@@ -35,8 +40,9 @@ describe("parser", () => {
       { labels: ["label"], isMeaningful: true, text: "token" },
       { labels: ["filler"], isMeaningful: false, text: "token" },
     ]
+    const reader = new TokenReader(tokens)
 
-    const result = parser(tokens)
+    const result = Product(reader)
 
     expect(result).toStrictEqual([
       {

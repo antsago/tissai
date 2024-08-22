@@ -2,10 +2,10 @@ import type TokenReader from "./TokenReader.js"
 import { type Token } from "./TokenReader.js"
 import Context from "./Context.js"
 
-type Check<T> = (reader: TokenReader<Token>) => T
+type Rule<T> = (reader: TokenReader<Token>) => T
 
 export const any =
-  <T>(check: Check<T>) =>
+  <T>(check: Rule<T>) =>
   (reader: TokenReader<Token>) => {
     const results = [] as NonNullable<T>[]
 
@@ -25,13 +25,16 @@ export const any =
     return results
   }
 
-type CheckToResult<T extends Check<unknown>[]> = {
-  [K in keyof T]: T[K] extends Check<infer I> ? NonNullable<I> : never
+type RuleResult<T extends Rule<unknown>> =
+  T extends Rule<infer I> ? NonNullable<I> : never
+
+type AndResult<T extends Rule<unknown>[]> = {
+  [K in keyof T]: RuleResult<T[K]>
 }
 export const and =
-  <T extends Check<unknown>[]>(...checks: T) =>
+  <T extends Rule<unknown>[]>(...checks: T) =>
   (reader: TokenReader<Token>) => {
-    const result = [] as CheckToResult<T>
+    const result = [] as AndResult<T>
 
     for (const check of checks) {
       const match = check(reader)
@@ -46,12 +49,12 @@ export const and =
   }
 
 export const or =
-  <T extends Check<unknown>[]>(...checks: T) =>
+  <T extends Rule<unknown>[]>(...checks: T) =>
   (reader: TokenReader<Token>) => {
     for (const check of checks) {
       reader.savePosition()
 
-      const match = check(reader) as CheckToResult<T>[number]
+      const match = check(reader) as RuleResult<T[number]>
       if (match) {
         reader.discardSave()
         return match
@@ -64,7 +67,7 @@ export const or =
   }
 
 export const withL =
-  <T>(checkFactory: (l: Context) => Check<T>) =>
+  <T>(checkFactory: (l: Context) => Rule<T>) =>
   (reader: TokenReader<Token>) => {
     const context = new Context()
 
