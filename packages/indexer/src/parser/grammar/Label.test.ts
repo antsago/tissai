@@ -1,7 +1,7 @@
 import { expect, describe, it } from "vitest"
 import TokenReader from "../TokenReader.js"
-import { Context } from "../operators"
-import { Label } from "./grammar.js"
+import { Context } from "../operators/index.js"
+import Label from "./Label.js"
 
 describe("Label", () => {
   it("returns null if no next token", () => {

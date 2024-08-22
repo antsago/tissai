@@ -1,5 +1,5 @@
 import { expect, describe, it } from "vitest"
-import { Product } from "./grammar.js"
+import Product from "./Product.js"
 import TokenReader from "../TokenReader.js"
 
 describe("Product", () => {

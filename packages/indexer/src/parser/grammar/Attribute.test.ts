@@ -1,6 +1,6 @@
 import { expect, describe, it } from "vitest"
 import TokenReader from "../TokenReader.js"
-import { Attribute } from "./grammar.js"
+import Attribute from "./Attribute.js"
 
 describe("Attribute", () => {
   it("returns null if no next token", () => {
