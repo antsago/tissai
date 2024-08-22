@@ -27,5 +27,3 @@ export const Attribute = (reader: TokenReader<Token>) => {
     value: values,
   }
 }
-
-export default Attribute

@@ -1,5 +1,5 @@
 import TokenReader, { type Token } from "./TokenReader.js"
-import { Attribute, Filler } from "./Attribute.js"
+import { Attribute, Filler } from "./grammar.js"
 import { any, or } from "./operators.js"
 
 const parser = (tokens: Token[]) => {
