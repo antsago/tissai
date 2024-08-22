@@ -71,11 +71,9 @@ export const withL =
   (reader: TokenReader<Token>) => {
     const context = new Context()
 
-    const check = checkFactory(context)
+    const result = checkFactory(context)(reader)
 
-    const result = check(reader)
-
-    return { result, context }
+    return result === null ? null : { result, context }
   }
 
 export const MatchToken =

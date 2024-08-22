@@ -13,21 +13,17 @@ export const Label = (context: Context) =>
   )
 
 export const Attribute = (reader: TokenReader<Token>) => {
-  const { result, context } = withL((l) =>
-    and(Label(l), any(and(any(Filler), Label(l)))),
-  )(reader)
+  const match = withL((l) => and(Label(l), any(and(any(Filler), Label(l)))))(
+    reader,
+  )
 
-  if (!result) {
-    return null
-  }
-
-  const values = result.flat(Infinity)
-
-  return {
-    type: "attribute",
-    labels: context.labels!,
-    value: values,
-  }
+  return match === null
+    ? null
+    : {
+        type: "attribute",
+        labels: match.context.labels!,
+        value: match.result.flat(Infinity),
+      }
 }
 
 export const Product = any(or(Attribute, Filler))
