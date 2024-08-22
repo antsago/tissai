@@ -3,6 +3,7 @@ import type TokenReader from "./TokenReader.js"
 import { type Token } from "./TokenReader.js"
 import Filler from "./Filler.js"
 import Label from "./Label.js"
+import Context from "./Context.js"
 
 type Check<T> = (reader: TokenReader<Token>) => T
 
@@ -47,16 +48,12 @@ const and =
     return result
   }
 
-const labelWithFiller = (
-  reader: TokenReader<Token>,
-  initialTypes: string[],
-) => {
+const labelWithFiller = (reader: TokenReader<Token>, context: Context) => {
   let values = [] as Token[]
-  let types = [...initialTypes]
   while (reader.hasNext()) {
     reader.savePosition()
 
-    const results = and(any(Filler), Label(types))(reader)
+    const results = and(any(Filler), Label(context))(reader)
 
     if (!results) {
       reader.restoreSave()
@@ -65,25 +62,25 @@ const labelWithFiller = (
 
     const [filler, label] = results
     values = [...values, ...filler, label]
-    types = _.intersection(types, label.labels)
     reader.discardSave()
   }
 
-  return [values, types]
+  return values
 }
 
 const Attribute = (reader: TokenReader<Token>) => {
-  const label = Label()(reader)
+  const context = new Context()
+  const label = Label(context)(reader)
 
   if (!label) {
     return null
   }
 
-  const [values, types] = labelWithFiller(reader, label.labels)
+  const values = labelWithFiller(reader, context)
 
   return {
     type: "attribute",
-    labels: types,
+    labels: context.labels!,
     value: [label, values].flat(Infinity),
   }
 }

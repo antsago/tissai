@@ -1,12 +1,14 @@
 import { expect, describe, it } from "vitest"
-import TokenReader from "./TokenReader.js"
+import TokenReader, { Token } from "./TokenReader.js"
+import Context from "./Context.js"
 import Label from "./Label.js"
 
 describe("Label", () => {
   it("returns null if no next token", () => {
     const reader = new TokenReader([])
+    const context = new Context()
 
-    const result = Label()(reader)
+    const result = Label(context)(reader)
 
     expect(result).toBe(null)
   })
@@ -17,8 +19,9 @@ describe("Label", () => {
       { labels: ["label"], isMeaningful: true, text: "token" },
     ]
     const reader = new TokenReader(TOKENS)
+    const context = new Context()
 
-    const result = Label()(reader)
+    const result = Label(context)(reader)
 
     expect(result).toBe(null)
     expect(reader.get()).toStrictEqual(TOKENS[0])
@@ -30,8 +33,10 @@ describe("Label", () => {
       { labels: ["label"], isMeaningful: true, text: "token" },
     ]
     const reader = new TokenReader(TOKENS)
+    const context = new Context()
+    context.narrow(TOKENS[1].labels)
 
-    const result = Label(TOKENS[1].labels)(reader)
+    const result = Label(context)(reader)
 
     expect(result).toBe(null)
     expect(reader.get()).toStrictEqual(TOKENS[0])
@@ -43,8 +48,9 @@ describe("Label", () => {
       { labels: ["label"], isMeaningful: true, text: "token" },
     ]
     const reader = new TokenReader(TOKENS)
+    const context = new Context()
 
-    const result = Label()(reader)
+    const result = Label(context)(reader)
 
     expect(result).toStrictEqual(TOKENS[0])
     expect(reader.get()).toStrictEqual(TOKENS[1])
@@ -56,10 +62,13 @@ describe("Label", () => {
       { labels: ["label"], isMeaningful: true, text: "token" },
     ]
     const reader = new TokenReader(TOKENS)
+    const context = new Context()
+    context.narrow(["foo", TOKENS[0].labels[0]])
 
-    const result = Label(["foo", TOKENS[0].labels[0]])(reader)
+    const result = Label(context)(reader)
 
     expect(result).toStrictEqual(TOKENS[0])
     expect(reader.get()).toStrictEqual(TOKENS[1])
+    expect(context.labels).toStrictEqual([TOKENS[0].labels[0]])
   })
 })

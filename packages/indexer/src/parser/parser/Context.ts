@@ -5,7 +5,7 @@ class Context {
 
   narrow(newLabels: string[]) {
     if (this.labels === undefined) {
-      return this.labels = newLabels
+      return (this.labels = newLabels)
     }
 
     const intersect = _.intersection(newLabels, this.labels)
@@ -14,7 +14,7 @@ class Context {
       return null
     }
 
-    return this.labels = intersect
+    return (this.labels = intersect)
   }
 }
 

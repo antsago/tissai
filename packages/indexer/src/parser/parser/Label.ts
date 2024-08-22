@@ -1,13 +1,10 @@
+import type Context from "./Context.js"
 import { MatchToken } from "./Filler.js"
 
-const Label = (desiredLabels?: string[]) =>
+const Label = (context: Context) =>
   MatchToken(
     (nextToken) =>
-      nextToken.isMeaningful &&
-      (!desiredLabels ||
-        desiredLabels.some((desiredLabel) =>
-          nextToken.labels.includes(desiredLabel),
-        )),
+      nextToken.isMeaningful && context.narrow(nextToken.labels) !== null,
   )
 
 export default Label
