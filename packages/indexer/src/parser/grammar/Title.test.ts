@@ -1,12 +1,12 @@
 import { expect, describe, it } from "vitest"
-import Product from "./Product.js"
 import TokenReader from "../TokenReader.js"
+import { Title } from "./index.js"
 
-describe("Product", () => {
+describe("Title", () => {
   it("handles empty tokens", () => {
     const reader = new TokenReader([])
 
-    const result = Product(reader)
+    const result = Title(reader)
 
     expect(result).toStrictEqual([])
   })
@@ -15,7 +15,7 @@ describe("Product", () => {
     const tokens = [{ labels: ["label"], isMeaningful: true, text: "token" }]
     const reader = new TokenReader(tokens)
 
-    const result = Product(reader)
+    const result = Title(reader)
 
     expect(result).toStrictEqual([
       {
@@ -30,7 +30,7 @@ describe("Product", () => {
     const tokens = [{ labels: ["filler"], isMeaningful: false, text: "token" }]
     const reader = new TokenReader(tokens)
 
-    const result = Product(reader)
+    const result = Title(reader)
 
     expect(result).toStrictEqual(tokens)
   })
@@ -42,7 +42,7 @@ describe("Product", () => {
     ]
     const reader = new TokenReader(tokens)
 
-    const result = Product(reader)
+    const result = Title(reader)
 
     expect(result).toStrictEqual([
       {
