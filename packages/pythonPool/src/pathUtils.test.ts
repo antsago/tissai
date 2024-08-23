@@ -1,31 +1,34 @@
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { expect, describe, it } from "vitest"
-import { getCallerFilePath, resolveRelativePath } from "./pathUtils.js"
+import { resolveRelativePath, extractDirectory } from "./pathUtils.js"
 
-const FILENAME = fileURLToPath(import.meta.url)
-
-describe("getCallerFilePath", () => {
-  it("handles stacks without naming information", () => {
-    const result = getCallerFilePath()
-    expect(result).toBe(FILENAME)
-  })
-
-  it("handles stacks with naming information", () => {
-    function foo() {
-      return getCallerFilePath()
-    }
-    const result = foo()
-    expect(result).toBe(FILENAME)
-  })
-
-  it("allows specifying caller depth", () => {
-    const result = getCallerFilePath(0)
-    expect(result).not.toBe(FILENAME)
+describe("extractDirectory", () => {
+  const DIRECTORY = "/parent/folder"
+  it.each([
+    {
+      title: "handles naming and file url",
+      line: `    at caller (file://${DIRECTORY}/file.js:3:17)`,
+    },
+    {
+      title: "handles naming and file path",
+      line: `    at caller (${DIRECTORY}/file.js:3:17)`,
+    },
+    {
+      title: "handles no naming and file url",
+      line: `    at file://${DIRECTORY}/file.js:3:17`,
+    },
+    {
+      title: "handles no naming and file path",
+      line: `    at ${DIRECTORY}/file.js:3:17`,
+    },
+  ])("$title", ({ line }) => {
+    const result = extractDirectory(line)
+    expect(result).toBe(DIRECTORY)
   })
 })
 
-describe("absolutePath", () => {
+describe("resolveRelativePath", () => {
   const FILEPATH = "./foo.js"
   const resolvePath = () => resolveRelativePath(FILEPATH)
 

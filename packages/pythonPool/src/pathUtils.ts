@@ -1,11 +1,19 @@
 import path from "node:path"
 
-export function getCallerFilePath(depth = 1) {
-  let stack = new Error().stack!.split("\n")
-  return stack[1 + depth].split(":")[0].split(" ").at(-1)!.split("(").at(-1)!
+export function extractDirectory(stackLine: string) {
+  const filepath = stackLine
+    .split(" ")
+    .at(-1)!
+    .split("//")
+    .at(-1)!
+    .split("(")
+    .at(-1)!
+
+  return path.dirname(filepath)
 }
 
 export function resolveRelativePath(filepath: string) {
-  const directory = path.dirname(getCallerFilePath(3))
+  const stack = new Error().stack!.split("\n")
+  const directory = extractDirectory(stack[3])
   return path.resolve(directory, filepath)
 }
