@@ -2,12 +2,12 @@ export type Token = { labels: string[]; isMeaningful: boolean; text: string }
 
 class TokenReader<T> {
   private position = 0
-  private stateStack = [] as number[]
+  private positionStack = [] as number[]
 
   constructor(readonly tokens: T[]) {}
 
   savePosition() {
-    this.stateStack.push(this.position)
+    this.positionStack.push(this.position)
   }
 
   restoreSave() {
@@ -15,7 +15,7 @@ class TokenReader<T> {
   }
 
   discardSave() {
-    return this.stateStack.pop()
+    return this.positionStack.pop()
   }
 
   get(): T | undefined {
