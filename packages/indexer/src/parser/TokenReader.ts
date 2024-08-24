@@ -1,4 +1,5 @@
 export type WordToken = { labels: string[]; isMeaningful: boolean; text: string }
+export type EntityToken = string | symbol
 
 export function TokenReader<T>(tokens: T[]) {
   let position = 0

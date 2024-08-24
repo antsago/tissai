@@ -1,5 +1,5 @@
 import { Attributes } from "./grammar/index.js"
-import { TokenReader, WordToken } from "./TokenReader.js"
+import { TokenReader, type WordToken, type EntityToken } from "./TokenReader.js"
 import mapping from "./mapping.js"
 import Lexer, { type Token as LexerToken } from "../lexer/index.js"
 import { Rule } from "./operators/Rule.js"
@@ -30,8 +30,6 @@ import { and, any, or, withL } from "./operators/index.js"
 const Equals = Symbol('Key-Value assignment')
 const ValueSeparator = Symbol('Value separator')
 const PropertyEnd = Symbol('Property end')
-
-type EntityToken = string | symbol
 
 const IsSymbol = (symbol: symbol) => (reader: TokenReader<EntityToken>) => {
   const nextToken = reader.get()
