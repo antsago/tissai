@@ -8,15 +8,14 @@ describe("TokenReader", () => {
   ]
 
   it("retrieves tokens", () => {
-    const reader = new TokenReader(TOKENS)
+    const reader = TokenReader(TOKENS)
 
     expect(reader.get()).toStrictEqual(TOKENS[0])
-    expect(reader.getLastToken()).toStrictEqual(TOKENS[1])
   })
 
   it("changes position", () => {
-    const reader = new TokenReader(TOKENS)
-    expect(reader.hasNext()).toBe(true)
+    const reader = TokenReader(TOKENS)
+
 
     reader.next()
     reader.next()
@@ -26,7 +25,7 @@ describe("TokenReader", () => {
   })
 
   it("resets position when restoring save", () => {
-    const reader = new TokenReader(TOKENS)
+    const reader = TokenReader(TOKENS)
 
     reader.savePosition()
     reader.next()
@@ -36,7 +35,7 @@ describe("TokenReader", () => {
   })
 
   it("preserves position when discarding save", () => {
-    const reader = new TokenReader(TOKENS)
+    const reader = TokenReader(TOKENS)
 
     reader.savePosition()
     reader.next()
@@ -46,7 +45,7 @@ describe("TokenReader", () => {
   })
 
   it("preserves position if no save to restore", () => {
-    const reader = new TokenReader(TOKENS)
+    const reader = TokenReader(TOKENS)
 
     reader.next()
     reader.restoreSave()

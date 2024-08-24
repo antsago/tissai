@@ -1,9 +1,8 @@
-import type TokenReader from "../TokenReader.js"
-import { type Token } from "../TokenReader.js"
+import { type Token, type TokenReader } from "../TokenReader.js"
 import { type Rule, type RuleResult } from "./Rule.js"
 
 type AndResult<T extends Rule<unknown>[]> = {
-  [K in keyof T]: RuleResult<T[K]>
+  [K in keyof T]: NonNullable<RuleResult<T[K]>>
 }
 
 const and =

@@ -1,38 +1,29 @@
 export type Token = { labels: string[]; isMeaningful: boolean; text: string }
 
-class TokenReader<T> {
-  private position = 0
-  private positionStack = [] as number[]
+export function TokenReader<T>(tokens: T[]) {
+  let position = 0
+  let positionStack = [] as number[]
 
-  constructor(readonly tokens: T[]) {}
-
+  return {
   savePosition() {
-    this.positionStack.push(this.position)
-  }
-
+    positionStack.push(position)
+  },
   restoreSave() {
-    this.position = this.discardSave() ?? this.position
-  }
-
+    position = this.discardSave() ?? position
+  },
   discardSave() {
-    return this.positionStack.pop()
-  }
-
+    return positionStack.pop()
+  },
   get(): T | undefined {
-    return this.tokens[this.position]
-  }
-
-  getLastToken() {
-    return this.tokens[this.tokens.length - 1]
-  }
-
+    return tokens[position]
+  },
   next() {
-    this.position++
-  }
-
+    position++
+  },
   hasNext() {
-    return this.position < this.tokens.length
+    return position < tokens.length
+  }
   }
 }
 
-export default TokenReader
+export type TokenReader<T> = ReturnType<typeof TokenReader<T>>
