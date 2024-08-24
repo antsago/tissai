@@ -1,6 +1,6 @@
 import { type Token, type TokenReader } from "../TokenReader.js"
 
-const MatchToken =
+const Word =
   (check: (nextToken: Token) => boolean) => (reader: TokenReader<Token>) => {
     const nextToken = reader.get()
     if (nextToken && check(nextToken)) {
@@ -11,4 +11,4 @@ const MatchToken =
     return null
   }
 
-export default MatchToken
+export default Word

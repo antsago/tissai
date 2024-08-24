@@ -29,8 +29,7 @@ async function parseTitle(title: string) {
 
 parseTitle("Pantalones esquí y nieve con CREMALLERA")
 
-import { MatchToken, Context, and, any, or, withL } from "./operators/index.js"
-import { Rule } from "./operators/Rule.js"
+import { and, any, or, withL } from "./operators/index.js"
 
 const PRODUCT_SCHEMA = {
   "@context": "https://schema.org/",
@@ -63,7 +62,7 @@ const EQ = IsSymbol(Equals)
 const VS = IsSymbol(ValueSeparator)
 const PE = IsSymbol(PropertyEnd)
 
-const Word = (word?: string) => (reader: TokenReader<string | symbol>) => {
+const Token = (word?: string) => (reader: TokenReader<string | symbol>) => {
   const nextToken = reader.get()
   if (nextToken && typeof nextToken !== 'symbol' && nextToken === word) {
     reader.next()
@@ -73,10 +72,12 @@ const Word = (word?: string) => (reader: TokenReader<string | symbol>) => {
   return null
 }
 
-const ArrayValue = and(Word(), any(and(VS, Word())), PE)
-const Property = (key: string) => and(Word(key), EQ, ArrayValue)
+const ArrayValue = and(Token(), any(and(VS, Token())), PE)
+const Property = (key: string) => and(Token(key), EQ, ArrayValue)
 const TitleValue = and(ParsedValue, PE)
-const Title = and(Word('name'), EQ, TitleValue)
+const Title = and(Token('name'), EQ, TitleValue)
 const Product = any(or(Title, Property('description'), Property("image")))
 
 const reader = TokenReader(ProductTokens)
+
+const result = Product(reader)
