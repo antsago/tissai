@@ -38,9 +38,11 @@ export const productGrammar = (compileGrammar: Compiler["compile"]) => {
     and(IsString(key), EQ, ArrayValue),
     ([key, , value]) => ({ key, value }),
   )
+
+  const Entity = (properties: string[]) => any(or(...properties.map(name => Property(name))))
   // const TitleValue = parseAs(compileGrammar(Attributes))
   // const Title = and(IsString("name"), EQ, TitleValue, PE)
-  const Product = any(or(Property("name"), Property("description"), Property("image")))
+  const Product = Entity(["name", "description", "image"])
 
   return Product
 }
