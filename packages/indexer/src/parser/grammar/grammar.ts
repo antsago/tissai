@@ -24,26 +24,28 @@ export const productGrammar = (compileGrammar: Compiler["compile"]) => {
     )
   const IsSymbol = (symbol: symbol) =>
     Token((token: EntityToken) => token === symbol)
+  const Value = parseAs(compileGrammar(Attributes))
   
   const EQ = IsSymbol(Equals)
   const VS = IsSymbol(ValueSeparator)
   const PE = IsSymbol(PropertyEnd)
 
-  const ArrayValue = restructure(
-    and(IsString(), any(and(VS, IsString())), PE),
-    (tokens) => {
-      const value = tokens.flat(Infinity).filter(t => typeof t !== "symbol")
+  const Array = <Output>(Value: Rule<EntityToken, Output>) => {
+    return restructure(
+      and(Value, any(and(VS, Value)), PE),
+      (tokens) => {
+        const value = tokens.flat(Infinity).filter(t => typeof t !== "symbol")
 
-      return value?.length === 1 ? value[0] : value 
-    },
-  )
-  const ParsedValue = and(parseAs(compileGrammar(Attributes)), PE)
+        return value?.length === 1 ? value[0] : value
+      }
+    )
+  }
 
   type PropertyDefinition = { key: string, parse: boolean }
   type Schema = Record<string, string | PropertyDefinition>
 
   const Property = ({ key, parse}: PropertyDefinition) => restructure(
-    and(IsString(key), EQ, parse ? ParsedValue : ArrayValue),
+    and(IsString(key), EQ, parse ? Array(Value) : Array(IsString())),
     ([,, value]) => [key, value]
   )
 
