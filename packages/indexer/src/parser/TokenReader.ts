@@ -1,4 +1,4 @@
-export type Token = { labels: string[]; isMeaningful: boolean; text: string }
+export type WordToken = { labels: string[]; isMeaningful: boolean; text: string }
 
 export function TokenReader<T>(tokens: T[]) {
   let position = 0

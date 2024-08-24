@@ -1,9 +1,9 @@
 import { Title as ParsedValue } from "./grammar/index.js"
-import { type Token as GrammarToken, TokenReader } from "./TokenReader.js"
+import { type WordToken, TokenReader } from "./TokenReader.js"
 import mapping from "./mapping.js"
 import Lexer, { type Token as LexerToken } from "../lexer/index.js"
 
-const parser = (tokens: GrammarToken[]) => {
+const parser = (tokens: WordToken[]) => {
   const reader = TokenReader(tokens)
 
   return ParsedValue(reader)
@@ -62,7 +62,7 @@ const EQ = IsSymbol(Equals)
 const VS = IsSymbol(ValueSeparator)
 const PE = IsSymbol(PropertyEnd)
 
-const Token = (token?: string) => (reader: TokenReader<string | symbol>) => {
+const IsString = (token?: string) => (reader: TokenReader<string | symbol>) => {
   const nextToken = reader.get()
   if (nextToken && typeof nextToken !== 'symbol' && nextToken === token) {
     reader.next()
@@ -72,10 +72,10 @@ const Token = (token?: string) => (reader: TokenReader<string | symbol>) => {
   return null
 }
 
-const ArrayValue = and(Token(), any(and(VS, Token())), PE)
-const Property = (key: string) => and(Token(key), EQ, ArrayValue)
+const ArrayValue = and(IsString(), any(and(VS, IsString())), PE)
+const Property = (key: string) => and(IsString(key), EQ, ArrayValue)
 const TitleValue = and(ParsedValue, PE)
-const Title = and(Token('name'), EQ, TitleValue)
+const Title = and(IsString('name'), EQ, TitleValue)
 const Product = any(or(Title, Property('description'), Property("image")))
 
 const reader = TokenReader(ProductTokens)

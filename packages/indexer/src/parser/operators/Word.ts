@@ -1,11 +1,11 @@
-import { type Token, type TokenReader } from "../TokenReader.js"
+import { type WordToken, type TokenReader } from "../TokenReader.js"
 
 const Word =
-  (check: (nextToken: Token) => boolean) => (reader: TokenReader<Token>) => {
-    const nextToken = reader.get()
-    if (nextToken && check(nextToken)) {
+  (check: (word: WordToken) => boolean) => (reader: TokenReader<WordToken>) => {
+    const word = reader.get()
+    if (word && check(word)) {
       reader.next()
-      return nextToken
+      return word
     }
 
     return null
