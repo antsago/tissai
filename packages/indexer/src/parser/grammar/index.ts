@@ -1,8 +1,9 @@
-import { withL, and, any, or, Word, type Context } from "../operators/index.js"
+import { withL, and, any, or, Token, type Context } from "../operators/index.js"
+import type { WordToken } from "../types.js"
 
-export const Filler = Word((word) => !word.isMeaningful)
+export const Filler = Token((word: WordToken) => !word.isMeaningful)
 export const Label = (context: Context) =>
-  Word((word) => word.isMeaningful && context.narrow(word.labels) !== null)
+  Token((word: WordToken) => word.isMeaningful && context.narrow(word.labels) !== null)
 export const Attribute = withL((l) =>
   and(Label(l), any(and(any(Filler), Label(l)))),
 )

@@ -1,7 +1,8 @@
+import type { EntityToken } from "./types.js"
 import { Attributes } from "./grammar/index.js"
 import { TokenReader } from "./TokenReader.js"
 import mapping from "./mapping.js"
-import { and, any, or, IsSymbol, IsString, parseAs } from "./operators/index.js"
+import { and, any, or, Token, parseAs } from "./operators/index.js"
 import { Compiler } from "./Compiler.js"
 
 const Equals = Symbol("Key-Value assignment")
@@ -9,9 +10,16 @@ const ValueSeparator = Symbol("Value separator")
 const PropertyEnd = Symbol("Property end")
 
 const attributesCompiler = Compiler(mapping, Attributes)
+
+const IsString =
+  (word?: string) => Token((token: EntityToken) => typeof token !== "symbol" &&
+      (word === undefined || token === word))
+const IsSymbol = (symbol: symbol) => Token((token: EntityToken) => token === symbol)
+
 const EQ = IsSymbol(Equals)
 const VS = IsSymbol(ValueSeparator)
 const PE = IsSymbol(PropertyEnd)
+
 const ArrayValue = and(IsString(), any(and(VS, IsString())), PE)
 const Property = (key: string) => and(IsString(key), EQ, ArrayValue)
 const TitleValue = parseAs(attributesCompiler)
