@@ -39,20 +39,29 @@ export const productGrammar = (compileGrammar: Compiler["compile"]) => {
     ([key, , value]) => ({ key, value: value?.length === 1 ? value[0] : value }),
   )
 
-  const Entity = (schema: Record<string, string>) => {
-    const keysMap = Object.fromEntries(Object.entries(schema).map(([k, v]) => [v, k]))
-    const properties = Object.keys(keysMap)
+  type Schema = Record<string, string | { key: string, parse: boolean }>
+  const Entity = (rawSchema: Schema) => {
+    const schema = Object.fromEntries(Object.entries(rawSchema).map(([k, v]) => [k, typeof v === "string" ? { key: v, parse: false } : v ]))
+    const keysMap = Object.fromEntries(Object.entries(schema).map(([k, v]) => [v.key, k]))
+    const properties = Object.values(schema).map(({ key, parse }) => parse
+      ? restructure(
+          and(IsString(key), EQ, parseAs(compileGrammar(Attributes)), PE),
+          (attributes) => ({ key, value: attributes })
+      )
+      : Property(key)
+    )
 
     return restructure(
-      any(or(...properties.map(name => Property(name)))),
+      any(or(...properties)),
       (keyValues) => Object.fromEntries(keyValues.map(({key, value}) => [keysMap[key as string], value])),
     )
   }
 
-  // const TitleValue = parseAs(compileGrammar(Attributes))
-  // const Title = and(IsString("name"), EQ, TitleValue, PE)
   const Product = Entity({
-    title: "name",
+    title: {
+      key: "name",
+      parse: true,
+    },
     description: "description",
     images: "image",
   })
