@@ -39,14 +39,23 @@ export const productGrammar = (compileGrammar: Compiler["compile"]) => {
     ([key, , value]) => ({ key, value: value?.length === 1 ? value[0] : value }),
   )
 
-  const Entity = (properties: string[]) => restructure(
-    any(or(...properties.map(name => Property(name)))),
-    (keyValues) => Object.fromEntries(keyValues.map(({key, value}) => [key, value])),
-  )
+  const Entity = (schema: Record<string, string>) => {
+    const keysMap = Object.fromEntries(Object.entries(schema).map(([k, v]) => [v, k]))
+    const properties = Object.keys(keysMap)
+
+    return restructure(
+      any(or(...properties.map(name => Property(name)))),
+      (keyValues) => Object.fromEntries(keyValues.map(({key, value}) => [keysMap[key as string], value])),
+    )
+  }
 
   // const TitleValue = parseAs(compileGrammar(Attributes))
   // const Title = and(IsString("name"), EQ, TitleValue, PE)
-  const Product = Entity(["name", "description", "image"])
+  const Product = Entity({
+    title: "name",
+    description: "description",
+    images: "image",
+  })
 
   return Product
 }
