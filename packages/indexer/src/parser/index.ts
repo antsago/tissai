@@ -1,33 +1,8 @@
 import { Attributes } from "./grammar/index.js"
 import { TokenReader, type WordToken, type EntityToken } from "./TokenReader.js"
 import mapping from "./mapping.js"
-import Lexer, { type Token as LexerToken } from "../lexer/index.js"
 import { and, any, or, IsSymbol, IsString } from "./operators/index.js"
-import { Rule } from "./operators/Rule.js"
-
-type LabelMap = Record<string, Record<string, number>>
-const labeler = (map: LabelMap) => (tokens: LexerToken[]) =>
-  tokens.map((t) => ({
-    ...t,
-    labels: t.isMeaningful && t.text in map? Object.keys(map[t.text]) : ["filler"],
-  }))
-
-function Compiler<Output>(map: LabelMap, grammar: Rule<WordToken, Output>) {
-  const lexer = Lexer()
-  const label = labeler(map)
-
-  const compile = async (title: string) => {
-    const tokens = await lexer.tokenize(title)
-    const labeled = label(tokens)
-    return grammar(TokenReader(labeled))
-  }
-
-  return {
-    compile,
-    close: () => lexer.close(),
-  }
-}
-type Compiler<Output> = ReturnType<typeof Compiler<Output>>
+import { Compiler } from "./Compiler.js"
 
 const Equals = Symbol('Key-Value assignment')
 const ValueSeparator = Symbol('Value separator')
