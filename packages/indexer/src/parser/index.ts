@@ -25,21 +25,12 @@ const compile = <Output>(check: Rule<WordToken, Output>) => async (title: string
 // const attributes = await compile(Attributes)("Pantalones esquí y nieve con CREMALLERA")
 // console.dir(attributes, { depth: null })
 
-import { and, any, or, withL } from "./operators/index.js"
+import { and, any, or, IsSymbol } from "./operators/index.js"
 
 const Equals = Symbol('Key-Value assignment')
 const ValueSeparator = Symbol('Value separator')
 const PropertyEnd = Symbol('Property end')
 
-const IsSymbol = (symbol: symbol) => (reader: TokenReader<EntityToken>) => {
-  const nextToken = reader.get()
-  if (nextToken && nextToken === symbol) {
-    reader.next()
-    return nextToken
-  }
-
-  return null
-}
 const IsString = (token?: string) => (reader: TokenReader<EntityToken>) => {
   const nextToken = reader.get()
   if (nextToken && typeof nextToken !== 'symbol' && (token === undefined || nextToken === token)) {
