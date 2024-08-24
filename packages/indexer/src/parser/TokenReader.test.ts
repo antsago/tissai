@@ -16,7 +16,6 @@ describe("TokenReader", () => {
   it("changes position", () => {
     const reader = TokenReader(TOKENS)
 
-
     reader.next()
     reader.next()
 

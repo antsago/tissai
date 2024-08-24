@@ -1,6 +1,10 @@
 import type { TokenReader } from "./TokenReader.js"
 
-export type WordToken = { labels: string[]; isMeaningful: boolean; text: string }
+export type WordToken = {
+  labels: string[]
+  isMeaningful: boolean
+  text: string
+}
 export type EntityToken = string | symbol
 
 export type Rule<Token, Output> = (reader: TokenReader<Token>) => Output

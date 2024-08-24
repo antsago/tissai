@@ -3,24 +3,24 @@ export function TokenReader<T>(tokens: T[]) {
   let positionStack = [] as number[]
 
   return {
-  savePosition() {
-    positionStack.push(position)
-  },
-  restoreSave() {
-    position = this.discardSave() ?? position
-  },
-  discardSave() {
-    return positionStack.pop()
-  },
-  get(): T | undefined {
-    return tokens[position]
-  },
-  next() {
-    position++
-  },
-  hasNext() {
-    return position < tokens.length
-  }
+    savePosition() {
+      positionStack.push(position)
+    },
+    restoreSave() {
+      position = this.discardSave() ?? position
+    },
+    discardSave() {
+      return positionStack.pop()
+    },
+    get(): T | undefined {
+      return tokens[position]
+    },
+    next() {
+      position++
+    },
+    hasNext() {
+      return position < tokens.length
+    },
   }
 }
 

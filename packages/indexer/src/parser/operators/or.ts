@@ -6,7 +6,7 @@ const or =
     for (const check of checks) {
       reader.savePosition()
 
-      const match = await check(reader) as RuleResult<I[number]>
+      const match = await (check(reader) as RuleResult<I[number]>)
       if (match) {
         reader.discardSave()
         return match

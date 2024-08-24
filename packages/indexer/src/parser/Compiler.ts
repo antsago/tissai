@@ -6,10 +6,14 @@ type LabelMap = Record<string, Record<string, number>>
 const labeler = (map: LabelMap) => (tokens: LexerToken[]) =>
   tokens.map((t) => ({
     ...t,
-    labels: t.isMeaningful && t.text in map? Object.keys(map[t.text]) : ["filler"],
+    labels:
+      t.isMeaningful && t.text in map ? Object.keys(map[t.text]) : ["filler"],
   }))
 
-export function Compiler<Output>(map: LabelMap, grammar: Rule<WordToken, Output>) {
+export function Compiler<Output>(
+  map: LabelMap,
+  grammar: Rule<WordToken, Output>,
+) {
   const lexer = Lexer()
   const label = labeler(map)
 

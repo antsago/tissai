@@ -8,7 +8,7 @@ const any =
     while (reader.hasNext()) {
       reader.savePosition()
 
-      const result = await check(reader) as RuleResult<R>
+      const result = await (check(reader) as RuleResult<R>)
       if (!result) {
         reader.restoreSave()
         break

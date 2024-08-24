@@ -6,7 +6,7 @@ const withL =
   async (reader: RuleReader<R>) => {
     const context = new Context()
 
-    const result = await checkFactory(context)(reader) as RuleResult<R>
+    const result = await (checkFactory(context)(reader) as RuleResult<R>)
 
     return result === null ? null : { result, context }
   }

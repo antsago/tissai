@@ -1,7 +1,7 @@
 import type { Rule, RuleResult, RuleReader } from "../types.js"
 
 type AndResults<T extends Rule<never, unknown>[]> = {
-  [K in keyof T]: NonNullable<RuleResult<T[K]>>
+  [K in keyof T]: Awaited<NonNullable<RuleResult<T[K]>>>
 }
 
 const and =
