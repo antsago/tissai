@@ -1,9 +1,8 @@
 import type { EntityToken } from "../types.js"
 import type { TokenReader } from "../TokenReader.js"
-import { Compiler } from "../Compiler.js"
 
 export const parseAs =
-  <Output>(compiler: Compiler<Output>) =>
+  <Output>(parse: (text: string) => Output) =>
   async (reader: TokenReader<EntityToken>) => {
     const nextToken = reader.get()
 
@@ -11,7 +10,7 @@ export const parseAs =
       return null
     }
 
-    const match = await compiler.compile(nextToken)
+    const match = await parse(nextToken)
     if (match === null) {
       return null
     }

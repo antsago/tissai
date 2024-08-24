@@ -9,25 +9,27 @@ const Equals = Symbol("Key-Value assignment")
 const ValueSeparator = Symbol("Value separator")
 const PropertyEnd = Symbol("Property end")
 
-const attributesCompiler = Compiler(mapping, Attributes)
+const productGrammar = (compileGrammar: Compiler["compile"]) => {
+  const IsString = (text?: string) =>
+    Token(
+      (token: EntityToken) =>
+        typeof token !== "symbol" && (text === undefined || token === text),
+    )
+  const IsSymbol = (symbol: symbol) =>
+    Token((token: EntityToken) => token === symbol)
+  
+  const EQ = IsSymbol(Equals)
+  const VS = IsSymbol(ValueSeparator)
+  const PE = IsSymbol(PropertyEnd)
+  
+  const ArrayValue = and(IsString(), any(and(VS, IsString())), PE)
+  const Property = (key: string) => and(IsString(key), EQ, ArrayValue)
+  const TitleValue = parseAs(compileGrammar(Attributes))
+  const Title = and(IsString("name"), EQ, TitleValue, PE)
+  const Product = any(or(Title, Property("description"), Property("image")))
 
-const IsString = (text?: string) =>
-  Token(
-    (token: EntityToken) =>
-      typeof token !== "symbol" && (text === undefined || token === text),
-  )
-const IsSymbol = (symbol: symbol) =>
-  Token((token: EntityToken) => token === symbol)
-
-const EQ = IsSymbol(Equals)
-const VS = IsSymbol(ValueSeparator)
-const PE = IsSymbol(PropertyEnd)
-
-const ArrayValue = and(IsString(), any(and(VS, IsString())), PE)
-const Property = (key: string) => and(IsString(key), EQ, ArrayValue)
-const TitleValue = parseAs(attributesCompiler)
-const Title = and(IsString("name"), EQ, TitleValue, PE)
-const Product = any(or(Title, Property("description"), Property("image")))
+  return Product
+}
 
 const PRODUCT_SCHEMA = {
   "@context": "https://schema.org/",
@@ -55,6 +57,7 @@ const ProductTokens = [
   PropertyEnd,
 ]
 const reader = TokenReader(ProductTokens)
-const result = await Product(reader)
-await attributesCompiler.close()
+const compiler = await Compiler(mapping)
+const result = await productGrammar(compiler.compile)(reader)
+await compiler.close()
 console.dir(result, { depth: null })
