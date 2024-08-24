@@ -1,3 +1,6 @@
+export * from "./symbols.js"
+export { productGrammar as Grammar } from "./grammar.js"
+
 import { withL, and, any, or, Token, type Context } from "../operators/index.js"
 import type { WordToken } from "../types.js"
 
