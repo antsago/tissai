@@ -2,28 +2,12 @@ import type { EntityToken } from "./types.js"
 import { Attributes } from "./grammar/index.js"
 import { TokenReader } from "./TokenReader.js"
 import mapping from "./mapping.js"
-import { and, any, or, IsSymbol, IsString } from "./operators/index.js"
+import { and, any, or, IsSymbol, IsString, parseAs } from "./operators/index.js"
 import { Compiler } from "./Compiler.js"
 
 const Equals = Symbol('Key-Value assignment')
 const ValueSeparator = Symbol('Value separator')
 const PropertyEnd = Symbol('Property end')
-
-const parseAs = <Output>(compiler: Compiler<Output>) => async (reader: TokenReader<EntityToken>) => {
-  const nextToken = reader.get()
-  
-  if (!nextToken || typeof nextToken === 'symbol') {
-    return null
-  }
-
-  const match = await compiler.compile(nextToken)
-  if (match === null) {
-    return null
-  }
-
-  reader.next()
-  return match
-}
 
 const attributesCompiler = Compiler(mapping, Attributes)
 const EQ = IsSymbol(Equals)
