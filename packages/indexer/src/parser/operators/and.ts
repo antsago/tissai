@@ -1,14 +1,13 @@
-import { type Token, type TokenReader } from "../TokenReader.js"
-import { type Rule, type RuleResult } from "./Rule.js"
+import { type Rule, type RuleResult, type RuleReader } from "./Rule.js"
 
-type AndResult<T extends Rule<unknown>[]> = {
+type AndResults<T extends Rule<never, unknown>[]> = {
   [K in keyof T]: NonNullable<RuleResult<T[K]>>
 }
 
 const and =
-  <T extends Rule<unknown>[]>(...checks: T) =>
-  (reader: TokenReader<Token>) => {
-    const result = [] as AndResult<T>
+  <I extends Rule<never, unknown>[]>(...checks: I) =>
+  (reader: RuleReader<I[number]>) => {
+    const result = [] as AndResults<I>
 
     for (const check of checks) {
       const match = check(reader)

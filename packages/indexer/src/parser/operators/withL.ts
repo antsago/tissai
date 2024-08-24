@@ -1,10 +1,9 @@
-import { type Token, type TokenReader } from "../TokenReader.js"
-import { type Rule } from "./Rule.js"
+import { type Rule, RuleReader } from "./Rule.js"
 import Context from "./Context.js"
 
 const withL =
-  <T>(checkFactory: (l: Context) => Rule<T>) =>
-  (reader: TokenReader<Token>) => {
+  <R extends Rule<never, unknown>>(checkFactory: (l: Context) => R) =>
+  (reader: RuleReader<R>) => {
     const context = new Context()
 
     const result = checkFactory(context)(reader)

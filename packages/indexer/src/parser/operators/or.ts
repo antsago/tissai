@@ -1,13 +1,12 @@
-import { type Token, type TokenReader } from "../TokenReader.js"
-import { type Rule, type RuleResult } from "./Rule.js"
+import { type Rule, type RuleResult, type RuleReader } from "./Rule.js"
 
 const or =
-  <T extends Rule<unknown>[]>(...checks: T) =>
-  (reader: TokenReader<Token>) => {
+  <I extends Rule<never, unknown>[]>(...checks: I) =>
+  (reader: RuleReader<I[number]>) => {
     for (const check of checks) {
       reader.savePosition()
 
-      const match = check(reader) as RuleResult<T[number]>
+      const match = check(reader) as RuleResult<I[number]>
       if (match) {
         reader.discardSave()
         return match

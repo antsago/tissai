@@ -1,5 +1,7 @@
-import { type Token, type TokenReader } from "../TokenReader.js"
+import { type TokenReader } from "../TokenReader.js"
 
-export type Rule<T> = (reader: TokenReader<Token>) => T
-export type RuleResult<T extends Rule<unknown>> =
-  T extends Rule<infer I> ? I : never
+export type Rule<Token, Output> = (reader: TokenReader<Token>) => Output
+export type RuleResult<R extends Rule<never, unknown>> =
+  R extends Rule<never, infer O> ? O : never
+export type RuleReader<R extends Rule<never, unknown>> =
+  R extends Rule<infer T, unknown> ? TokenReader<T> : never

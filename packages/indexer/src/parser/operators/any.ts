@@ -1,15 +1,14 @@
-import { type Token, type TokenReader } from "../TokenReader.js"
-import { type Rule } from "./Rule.js"
+import { type RuleResult, type Rule, type RuleReader } from "./Rule.js"
 
 const any =
-  <T>(check: Rule<T>) =>
-  (reader: TokenReader<Token>) => {
-    const results = [] as NonNullable<T>[]
+  <R extends Rule<never, unknown>>(check: R) =>
+  (reader: RuleReader<R>) => {
+    const results = []
 
     while (reader.hasNext()) {
       reader.savePosition()
 
-      const result = check(reader)
+      const result = check(reader) as RuleResult<R>
       if (!result) {
         reader.restoreSave()
         break
