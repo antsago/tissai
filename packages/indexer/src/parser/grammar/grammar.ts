@@ -48,7 +48,10 @@ export const productGrammar = (compileGrammar: Compiler["compile"]) => {
     (tokens) => tokens.flat(Infinity).filter(t => typeof t !== "symbol"),
   )
 
-  const Property = (key: string) => and(IsString(key), EQ, ArrayValue)
+  const Property = (key: string) => rule(
+    and(IsString(key), EQ, ArrayValue),
+    ([key, , value]) => ({ key, value }),
+  )
   // const TitleValue = parseAs(compileGrammar(Attributes))
   // const Title = and(IsString("name"), EQ, TitleValue, PE)
   const Product = any(or(Property("name"), Property("description"), Property("image")))
