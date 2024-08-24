@@ -11,10 +11,13 @@ const PropertyEnd = Symbol("Property end")
 
 const attributesCompiler = Compiler(mapping, Attributes)
 
-const IsString =
-  (word?: string) => Token((token: EntityToken) => typeof token !== "symbol" &&
-      (word === undefined || token === word))
-const IsSymbol = (symbol: symbol) => Token((token: EntityToken) => token === symbol)
+const IsString = (text?: string) =>
+  Token(
+    (token: EntityToken) =>
+      typeof token !== "symbol" && (text === undefined || token === text),
+  )
+const IsSymbol = (symbol: symbol) =>
+  Token((token: EntityToken) => token === symbol)
 
 const EQ = IsSymbol(Equals)
 const VS = IsSymbol(ValueSeparator)
