@@ -42,9 +42,9 @@ export const productGrammar = (compileGrammar: Compiler["compile"]) => {
   type PropertyDefinition = { key: string, parse: boolean }
   type Schema = Record<string, string | PropertyDefinition>
 
-  const Property = (definition: PropertyDefinition) => restructure(
-    and(IsString(definition.key), EQ, definition.parse ? ParsedValue : ArrayValue),
-    ([key, , value]) => ({ key, value }),
+  const Property = ({ key, parse}: PropertyDefinition) => restructure(
+    and(IsString(key), EQ, parse ? ParsedValue : ArrayValue),
+    ([,, value]) => [key, value]
   )
 
   const Entity = (rawSchema: Schema) => {
@@ -54,7 +54,7 @@ export const productGrammar = (compileGrammar: Compiler["compile"]) => {
 
     return restructure(
       any(or(...properties)),
-      (keyValues) => Object.fromEntries(keyValues.map(({key, value}) => [keysMap[key as string], value])),
+      (entries) => Object.fromEntries(entries),
     )
   }
 
