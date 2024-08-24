@@ -31,25 +31,26 @@ export const productGrammar = (compileGrammar: Compiler["compile"]) => {
 
   const ArrayValue = restructure(
     and(IsString(), any(and(VS, IsString())), PE),
-    (tokens) => tokens.flat(Infinity).filter(t => typeof t !== "symbol"),
+    (tokens) => {
+      const value = tokens.flat(Infinity).filter(t => typeof t !== "symbol")
+
+      return value?.length === 1 ? value[0] : value 
+    },
+  )
+  const ParsedValue = and(parseAs(compileGrammar(Attributes)), PE)
+
+  type PropertyDefinition = { key: string, parse: boolean }
+  type Schema = Record<string, string | PropertyDefinition>
+
+  const Property = (definition: PropertyDefinition) => restructure(
+    and(IsString(definition.key), EQ, definition.parse ? ParsedValue : ArrayValue),
+    ([key, , value]) => ({ key, value }),
   )
 
-  const Property = (key: string) => restructure(
-    and(IsString(key), EQ, ArrayValue),
-    ([key, , value]) => ({ key, value: value?.length === 1 ? value[0] : value }),
-  )
-
-  type Schema = Record<string, string | { key: string, parse: boolean }>
   const Entity = (rawSchema: Schema) => {
     const schema = Object.fromEntries(Object.entries(rawSchema).map(([k, v]) => [k, typeof v === "string" ? { key: v, parse: false } : v ]))
     const keysMap = Object.fromEntries(Object.entries(schema).map(([k, v]) => [v.key, k]))
-    const properties = Object.values(schema).map(({ key, parse }) => parse
-      ? restructure(
-          and(IsString(key), EQ, parseAs(compileGrammar(Attributes)), PE),
-          (attributes) => ({ key, value: attributes })
-      )
-      : Property(key)
-    )
+    const properties = Object.values(schema).map(Property)
 
     return restructure(
       any(or(...properties)),
