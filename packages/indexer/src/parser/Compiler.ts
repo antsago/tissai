@@ -10,17 +10,17 @@ const labeler = (map: LabelMap) => (tokens: LexerToken[]) =>
       t.isMeaningful && t.text in map ? Object.keys(map[t.text]) : ["filler"],
   }))
 
-export function Compiler(
-  map: LabelMap,
-) {
+export function Compiler(map: LabelMap) {
   const lexer = Lexer()
   const label = labeler(map)
 
-  const compile = <Output>(grammar: Rule<WordToken, Output>) => async (title: string) => {
-    const tokens = await lexer.tokenize(title)
-    const labeled = label(tokens)
-    return grammar(TokenReader(labeled))
-  }
+  const compile =
+    <Output>(grammar: Rule<WordToken, Output>) =>
+    async (title: string) => {
+      const tokens = await lexer.tokenize(title)
+      const labeled = label(tokens)
+      return grammar(TokenReader(labeled))
+    }
 
   return {
     compile,

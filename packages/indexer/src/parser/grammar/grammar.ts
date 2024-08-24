@@ -1,6 +1,15 @@
-import type { EntityToken, WordToken, Rule, RuleResult, RuleReader } from "../types.js"
+import type { EntityToken, WordToken, Rule } from "../types.js"
 import type { Compiler } from "../Compiler.js"
-import { withL, and, any, or, Token, parseAs, restructure, type Context } from "../operators/index.js"
+import {
+  withL,
+  and,
+  any,
+  or,
+  Token,
+  parseAs,
+  restructure,
+  type Context,
+} from "../operators/index.js"
 import { Equals, ValueSeparator, PropertyEnd } from "./index.js"
 
 export const productGrammar = (compileGrammar: Compiler["compile"]) => {
@@ -13,9 +22,11 @@ export const productGrammar = (compileGrammar: Compiler["compile"]) => {
     )
   const Attribute = restructure(
     withL((l) => and(Label(l), any(and(any(Filler), Label(l))))),
-    ({result, context}) => {
-      const text = (result.flat(Infinity) as WordToken[]).map((t: WordToken) => t.text).join(" ")
-      return ({ text, labels: context.labels })
+    ({ result, context }) => {
+      const text = (result.flat(Infinity) as WordToken[])
+        .map((t: WordToken) => t.text)
+        .join(" ")
+      return { text, labels: context.labels }
     },
   )
   const Attributes = any(or(Attribute, Filler))
@@ -29,38 +40,39 @@ export const productGrammar = (compileGrammar: Compiler["compile"]) => {
   const IsSymbol = (symbol: symbol) =>
     Token((token: EntityToken) => token === symbol)
   const Value = parseAs(compileGrammar(Attributes))
-  
+
   const EQ = IsSymbol(Equals)
   const VS = IsSymbol(ValueSeparator)
   const PE = IsSymbol(PropertyEnd)
 
   const Array = <Output>(Value: Rule<EntityToken, Output>) => {
-    return restructure(
-      and(Value, any(and(VS, Value)), PE),
-      (tokens) => {
-        const value = tokens.flat(Infinity).filter(t => typeof t !== "symbol")
+    return restructure(and(Value, any(and(VS, Value)), PE), (tokens) => {
+      const value = tokens.flat(Infinity).filter((t) => typeof t !== "symbol")
 
-        return value?.length === 1 ? value[0] : value
-      }
-    )
+      return value?.length === 1 ? value[0] : value
+    })
   }
 
-  type PropertyDefinition = { key: string, parse: boolean }
+  type PropertyDefinition = { key: string; parse: boolean }
   type Schema = Record<string, string | PropertyDefinition>
 
-  const Property = ({ key, parse}: PropertyDefinition) => restructure(
-    and(IsString(key), EQ, parse ? Array(Value) : Array(IsString())),
-    ([,, value]) => [key, value]
-  )
+  const Property = ({ key, parse }: PropertyDefinition) =>
+    restructure(
+      and(IsString(key), EQ, parse ? Array(Value) : Array(IsString())),
+      ([, , value]) => [key, value],
+    )
 
   const Entity = (rawSchema: Schema) => {
-    const schema = Object.fromEntries(Object.entries(rawSchema).map(([k, v]) => [k, typeof v === "string" ? { key: v, parse: false } : v ]))
-    const keysMap = Object.fromEntries(Object.entries(schema).map(([k, v]) => [v.key, k]))
+    const schema = Object.fromEntries(
+      Object.entries(rawSchema).map(([k, v]) => [
+        k,
+        typeof v === "string" ? { key: v, parse: false } : v,
+      ]),
+    )
     const properties = Object.values(schema).map(Property)
 
-    return restructure(
-      any(or(...properties)),
-      (entries) => Object.fromEntries(entries),
+    return restructure(any(or(...properties)), (entries) =>
+      Object.fromEntries(entries),
     )
   }
 

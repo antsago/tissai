@@ -1,7 +1,12 @@
 import { TokenReader } from "./TokenReader.js"
 import mapping from "./mapping.js"
 import { Compiler } from "./Compiler.js"
-import { Grammar, Equals, ValueSeparator, PropertyEnd } from "./grammar/index.js"
+import {
+  Grammar,
+  Equals,
+  ValueSeparator,
+  PropertyEnd,
+} from "./grammar/index.js"
 
 const PRODUCT_SCHEMA = {
   "@context": "https://schema.org/",
