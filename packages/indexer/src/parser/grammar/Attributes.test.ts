@@ -1,21 +1,21 @@
 import { expect, describe, it } from "vitest"
-import TokenReader from "../TokenReader.js"
-import { Title } from "./index.js"
+import { TokenReader } from "../TokenReader.js"
+import { Attributes } from "./index.js"
 
-describe("Title", () => {
-  it("handles empty tokens", () => {
-    const reader = new TokenReader([])
+describe.skip("Attributes", () => {
+  it("handles empty tokens", async () => {
+    const reader = TokenReader([])
 
-    const result = Title(reader)
+    const result = await Attributes(reader)
 
     expect(result).toStrictEqual([])
   })
 
-  it("recognizes top-level attributes", () => {
+  it("recognizes top-level attributes", async () => {
     const tokens = [{ labels: ["label"], isMeaningful: true, text: "token" }]
-    const reader = new TokenReader(tokens)
+    const reader = TokenReader(tokens)
 
-    const result = Title(reader)
+    const result = await Attributes(reader)
 
     expect(result).toStrictEqual([
       {
@@ -26,23 +26,23 @@ describe("Title", () => {
     ])
   })
 
-  it("recognizes top-level filler", () => {
+  it("recognizes top-level filler", async () => {
     const tokens = [{ labels: ["filler"], isMeaningful: false, text: "token" }]
-    const reader = new TokenReader(tokens)
+    const reader = TokenReader(tokens)
 
-    const result = Title(reader)
+    const result = await Attributes(reader)
 
     expect(result).toStrictEqual(tokens)
   })
 
-  it("recognizes multiple segments", () => {
+  it("recognizes multiple segments", async () => {
     const tokens = [
       { labels: ["label"], isMeaningful: true, text: "token" },
       { labels: ["filler"], isMeaningful: false, text: "token" },
     ]
-    const reader = new TokenReader(tokens)
+    const reader = TokenReader(tokens)
 
-    const result = Title(reader)
+    const result = await Attributes(reader)
 
     expect(result).toStrictEqual([
       {

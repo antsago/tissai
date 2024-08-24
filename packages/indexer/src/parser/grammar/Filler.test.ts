@@ -1,10 +1,10 @@
 import { expect, describe, it } from "vitest"
-import TokenReader from "../TokenReader.js"
+import {TokenReader } from "../TokenReader.js"
 import { Filler } from "./index.js"
 
 describe("Filler", () => {
   it("returns null if no next token", () => {
-    const reader = new TokenReader([])
+    const reader = TokenReader([])
 
     const result = Filler(reader)
 
@@ -16,7 +16,7 @@ describe("Filler", () => {
       { labels: ["label1", "label2"], isMeaningful: true, text: "a" },
       { labels: ["label"], isMeaningful: true, text: "token" },
     ]
-    const reader = new TokenReader(TOKENS)
+    const reader = TokenReader(TOKENS)
 
     const result = Filler(reader)
 
@@ -29,7 +29,7 @@ describe("Filler", () => {
       { labels: ["filler"], isMeaningful: false, text: "a" },
       { labels: ["label"], isMeaningful: true, text: "token" },
     ]
-    const reader = new TokenReader(TOKENS)
+    const reader = TokenReader(TOKENS)
 
     const result = Filler(reader)
 
