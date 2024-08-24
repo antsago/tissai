@@ -4,15 +4,19 @@ import { withL, and, any, or, Token, parseAs, restructure, type Context } from "
 import { Equals, ValueSeparator, PropertyEnd } from "./index.js"
 
 export const productGrammar = (compileGrammar: Compiler["compile"]) => {
-  // Attributes Grammar
+  // Attributes SubGrammar
   const Filler = Token((word: WordToken) => !word.isMeaningful)
   const Label = (context: Context) =>
     Token(
       (word: WordToken) =>
         word.isMeaningful && context.narrow(word.labels) !== null,
     )
-  const Attribute = withL((l) =>
-    and(Label(l), any(and(any(Filler), Label(l)))),
+  const Attribute = restructure(
+    withL((l) => and(Label(l), any(and(any(Filler), Label(l))))),
+    ({result, context}) => {
+      const text = (result.flat(Infinity) as WordToken[]).map((t: WordToken) => t.text).join(" ")
+      return ({ text, labels: context.labels })
+    },
   )
   const Attributes = any(or(Attribute, Filler))
 
