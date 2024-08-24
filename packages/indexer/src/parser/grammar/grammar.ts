@@ -39,7 +39,7 @@ export const productGrammar = (compileGrammar: Compiler["compile"]) => {
     )
   const IsSymbol = (symbol: symbol) =>
     Token((token: EntityToken) => token === symbol)
-  const Value = parseAs(compileGrammar(Attributes))
+  const ParsedValue = parseAs(compileGrammar(Attributes))
 
   const EQ = IsSymbol(Equals)
   const VS = IsSymbol(ValueSeparator)
@@ -58,7 +58,7 @@ export const productGrammar = (compileGrammar: Compiler["compile"]) => {
 
   const Property = (key: string, definition: PropertyDefinition) =>
     restructure(
-      and(IsString(definition.key), EQ, definition.parse ? Array(Value) : Array(IsString())),
+      and(IsString(definition.key), EQ, definition.parse ? Array(ParsedValue) : Array(IsString())),
       ([, , value]) => [key, value],
     )
 
