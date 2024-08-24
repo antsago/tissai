@@ -1,4 +1,5 @@
-import { type WordToken, type TokenReader } from "../TokenReader.js"
+import type { TokenReader } from "../TokenReader.js"
+import type { WordToken } from "../types.js"
 
 const Word =
   (check: (word: WordToken) => boolean) => (reader: TokenReader<WordToken>) => {

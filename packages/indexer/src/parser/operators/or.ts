@@ -1,4 +1,4 @@
-import { type Rule, type RuleResult, type RuleReader } from "./Rule.js"
+import type { Rule, RuleResult, RuleReader } from "../types.js"
 
 const or =
   <I extends Rule<never, unknown>[]>(...checks: I) =>

@@ -1,4 +1,4 @@
-import { type RuleResult, type Rule, type RuleReader } from "./Rule.js"
+import type { RuleResult, Rule, RuleReader } from "../types.js"
 
 const any =
   <R extends Rule<never, unknown>>(check: R) =>

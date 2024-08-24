@@ -1,4 +1,4 @@
-import { type Rule, type RuleReader, type RuleResult } from "./Rule.js"
+import type { Rule, RuleReader, RuleResult } from "../types.js"
 import Context from "./Context.js"
 
 const withL =

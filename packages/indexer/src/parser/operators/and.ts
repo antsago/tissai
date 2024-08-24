@@ -1,4 +1,4 @@
-import { type Rule, type RuleResult, type RuleReader } from "./Rule.js"
+import type { Rule, RuleResult, RuleReader } from "../types.js"
 
 type AndResults<T extends Rule<never, unknown>[]> = {
   [K in keyof T]: NonNullable<RuleResult<T[K]>>
