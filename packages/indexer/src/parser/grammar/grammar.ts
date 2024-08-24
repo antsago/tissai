@@ -1,21 +1,7 @@
 import type { EntityToken, WordToken, Rule, RuleResult, RuleReader } from "../types.js"
 import type { Compiler } from "../Compiler.js"
-import { withL, and, any, or, Token, parseAs, type Context } from "../operators/index.js"
+import { withL, and, any, or, Token, parseAs, restructure, type Context } from "../operators/index.js"
 import { Equals, ValueSeparator, PropertyEnd } from "./index.js"
-
-const restructure = <R extends Rule<never, unknown>, O>(
-  check: R,
-  transform: (ruleOutput: NonNullable<Awaited<RuleResult<R>>>) => O,
-) =>
-  async (reader: RuleReader<R>) => {
-    const match = await (check(reader) as RuleResult<R>)
-
-    if (!match) {
-      return null
-    }
-
-    return transform(match)
-  }
 
 export const productGrammar = (compileGrammar: Compiler["compile"]) => {
   // Attributes Grammar
