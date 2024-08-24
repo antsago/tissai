@@ -26,23 +26,9 @@ console.dir(attributes, { depth: null })
 
 import { and, any, or, withL } from "./operators/index.js"
 
-const PRODUCT_SCHEMA = {
-  "@context": "https://schema.org/",
-  "@type": "Product",
-  name: "The name of the product",
-  productID: "121230",
-  description: "The description",
-  image: "https://example.com/image.jpg",
-}
 const Equals = Symbol('Key-Value assignment')
 const ValueSeparator = Symbol('Value separator')
 const PropertyEnd = Symbol('Property end')
-const ProductTokens = [
-  "type", Equals, "Product", PropertyEnd,
-  "name", Equals, "The name of the product", PropertyEnd,
-  "description", Equals, "The description", PropertyEnd,
-  "image", Equals, "https://example.com/image.jpg", ValueSeparator, "https://example.com/image2.jpg", PropertyEnd,
-]
 
 const IsSymbol = (symbol: symbol) => (reader: TokenReader<string|symbol>) => {
   const nextToken = reader.get()
@@ -53,10 +39,6 @@ const IsSymbol = (symbol: symbol) => (reader: TokenReader<string|symbol>) => {
 
   return null
 }
-const EQ = IsSymbol(Equals)
-const VS = IsSymbol(ValueSeparator)
-const PE = IsSymbol(PropertyEnd)
-
 const IsString = (token?: string) => (reader: TokenReader<string | symbol>) => {
   const nextToken = reader.get()
   if (nextToken && typeof nextToken !== 'symbol' && nextToken === token) {
@@ -67,12 +49,28 @@ const IsString = (token?: string) => (reader: TokenReader<string | symbol>) => {
   return null
 }
 
+const EQ = IsSymbol(Equals)
+const VS = IsSymbol(ValueSeparator)
+const PE = IsSymbol(PropertyEnd)
 const ArrayValue = and(IsString(), any(and(VS, IsString())), PE)
 const Property = (key: string) => and(IsString(key), EQ, ArrayValue)
 const TitleValue = and(Attributes, PE)
 const Title = and(IsString('name'), EQ, TitleValue)
 const Product = any(or(Title, Property('description'), Property("image")))
 
+const PRODUCT_SCHEMA = {
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  name: "The name of the product",
+  productID: "121230",
+  description: "The description",
+  image: "https://example.com/image.jpg",
+}
+const ProductTokens = [
+  "type", Equals, "Product", PropertyEnd,
+  "name", Equals, "The name of the product", PropertyEnd,
+  "description", Equals, "The description", PropertyEnd,
+  "image", Equals, "https://example.com/image.jpg", ValueSeparator, "https://example.com/image2.jpg", PropertyEnd,
+]
 const reader = TokenReader(ProductTokens)
-
 const result = Product(reader)
