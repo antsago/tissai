@@ -7,4 +7,4 @@ export const Label = (context: Context) =>
       word.isMeaningful && context.narrow(word.labels) !== null,
   )
 export const Attribute = withL((l) => and(Label(l), any(and(any(Filler), Label(l)))))
-export const Title = any(or(Attribute, Filler))
+export const Attributes = any(or(Attribute, Filler))

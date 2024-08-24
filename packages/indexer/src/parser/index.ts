@@ -1,13 +1,7 @@
-import { Title as ParsedValue } from "./grammar/index.js"
-import { type WordToken, TokenReader } from "./TokenReader.js"
+import { Attributes } from "./grammar/index.js"
+import { TokenReader } from "./TokenReader.js"
 import mapping from "./mapping.js"
 import Lexer, { type Token as LexerToken } from "../lexer/index.js"
-
-const parser = (tokens: WordToken[]) => {
-  const reader = TokenReader(tokens)
-
-  return ParsedValue(reader)
-}
 
 const labeler = (tokens: LexerToken[]) =>
   tokens.map((t) => ({
@@ -15,19 +9,20 @@ const labeler = (tokens: LexerToken[]) =>
     labels: t.isMeaningful ? Object.keys(mapping[t.text]) : ["filler"],
   }))
 
-async function parseTitle(title: string) {
+async function compileAttributes(title: string) {
   const lexer = Lexer()
 
   const tokens = await lexer.tokenize(title)
   const labeled = labeler(tokens)
-  const attributes = parser(labeled)
-  
+  const attributes = Attributes(TokenReader(labeled))
+
   await lexer.close()
   
-  console.dir(attributes, { depth: null })
+  return attributes
 }
 
-parseTitle("Pantalones esquí y nieve con CREMALLERA")
+const attributes = compileAttributes("Pantalones esquí y nieve con CREMALLERA")
+console.dir(attributes, { depth: null })
 
 import { and, any, or, withL } from "./operators/index.js"
 
@@ -74,7 +69,7 @@ const IsString = (token?: string) => (reader: TokenReader<string | symbol>) => {
 
 const ArrayValue = and(IsString(), any(and(VS, IsString())), PE)
 const Property = (key: string) => and(IsString(key), EQ, ArrayValue)
-const TitleValue = and(ParsedValue, PE)
+const TitleValue = and(Attributes, PE)
 const Title = and(IsString('name'), EQ, TitleValue)
 const Product = any(or(Title, Property('description'), Property("image")))
 
