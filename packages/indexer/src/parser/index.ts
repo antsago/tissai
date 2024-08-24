@@ -62,9 +62,9 @@ const EQ = IsSymbol(Equals)
 const VS = IsSymbol(ValueSeparator)
 const PE = IsSymbol(PropertyEnd)
 
-const Token = (word?: string) => (reader: TokenReader<string | symbol>) => {
+const Token = (token?: string) => (reader: TokenReader<string | symbol>) => {
   const nextToken = reader.get()
-  if (nextToken && typeof nextToken !== 'symbol' && nextToken === word) {
+  if (nextToken && typeof nextToken !== 'symbol' && nextToken === token) {
     reader.next()
     return nextToken
   }
