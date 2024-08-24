@@ -1,4 +1,3 @@
-import type { EntityToken } from "./types.js"
 import { Attributes } from "./grammar/index.js"
 import { TokenReader } from "./TokenReader.js"
 import mapping from "./mapping.js"
