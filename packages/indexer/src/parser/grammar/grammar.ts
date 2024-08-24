@@ -3,7 +3,7 @@ import type { Compiler } from "../Compiler.js"
 import { withL, and, any, or, Token, parseAs, type Context } from "../operators/index.js"
 import { Equals, ValueSeparator, PropertyEnd } from "./index.js"
 
-const rule = <R extends Rule<never, unknown>, O>(
+const restructure = <R extends Rule<never, unknown>, O>(
   check: R,
   transform: (ruleOutput: NonNullable<Awaited<RuleResult<R>>>) => O,
 ) =>
@@ -43,12 +43,12 @@ export const productGrammar = (compileGrammar: Compiler["compile"]) => {
   const VS = IsSymbol(ValueSeparator)
   const PE = IsSymbol(PropertyEnd)
 
-  const ArrayValue = rule(
+  const ArrayValue = restructure(
     and(IsString(), any(and(VS, IsString())), PE),
     (tokens) => tokens.flat(Infinity).filter(t => typeof t !== "symbol"),
   )
 
-  const Property = (key: string) => rule(
+  const Property = (key: string) => restructure(
     and(IsString(key), EQ, ArrayValue),
     ([key, , value]) => ({ key, value }),
   )
