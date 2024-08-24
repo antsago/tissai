@@ -6,11 +6,11 @@ type AndResults<T extends Rule<never, unknown>[]> = {
 
 const and =
   <I extends Rule<never, unknown>[]>(...checks: I) =>
-  (reader: RuleReader<I[number]>) => {
+  async (reader: RuleReader<I[number]>) => {
     const result = [] as AndResults<I>
 
     for (const check of checks) {
-      const match = check(reader)
+      const match = await check(reader)
       if (!match) {
         return null
       }

@@ -2,11 +2,11 @@ import { type Rule, type RuleResult, type RuleReader } from "./Rule.js"
 
 const or =
   <I extends Rule<never, unknown>[]>(...checks: I) =>
-  (reader: RuleReader<I[number]>) => {
+  async (reader: RuleReader<I[number]>) => {
     for (const check of checks) {
       reader.savePosition()
 
-      const match = check(reader) as RuleResult<I[number]>
+      const match = await check(reader) as RuleResult<I[number]>
       if (match) {
         reader.discardSave()
         return match
