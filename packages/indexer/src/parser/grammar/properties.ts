@@ -35,14 +35,17 @@ const PropertyOfType = <Output>(
   )
 
 type BaseDefinition = {
-  key: string|symbol
+  key: string | symbol
   name: string
 }
 type StringDefinition = BaseDefinition & {
   value?: string
 }
 export const StringProperty = ({ key, name, value }: StringDefinition) =>
-  restructure(PropertyOfType(IsString(value), name), (value) => ({ key, value }))
+  restructure(PropertyOfType(IsString(value), name), (value) => ({
+    key,
+    value,
+  }))
 
 type ReferenceDefinition = BaseDefinition & {
   isReference: true
