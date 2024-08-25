@@ -16,18 +16,7 @@ import {
   PropertyStart,
   Id,
 } from "./symbols.js"
-
-const IsString = (text?: string) =>
-  Token(
-    (token: EntityToken) =>
-      typeof token !== "symbol" && (text === undefined || token === text),
-  )
-const IsSymbol = (symbol: symbol) =>
-  Token((token: EntityToken) => token === symbol)
-const IsAny = Token(
-  (token: EntityToken) =>
-    token === Id || token === ValueSeparator || typeof token === "string",
-)
+import { IsString, IsSymbol, IsAny } from "./values.js"
 
 const PropertyValue = <Output>(Type: Rule<EntityToken, Output>) => {
   return restructure(
