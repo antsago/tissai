@@ -56,13 +56,26 @@ export const productGrammar = (compileGrammar: Compiler["compile"]) => {
   type PropertyDefinition = { key: string; parseAs: string }
   type Schema = Record<string, string | PropertyDefinition>
 
-  const Property = (key: string, definition: PropertyDefinition) =>
+  const StringProperty = (key: string, definition: PropertyDefinition) =>
     restructure(
-      and(IsString(definition.key), EQ, definition.parseAs ? Array(ParsedValue) : Array(IsString())),
-      ([, , value]) => definition.parseAs 
-        ? [{key, value: (value as { token: string }).token}, { key: definition.parseAs, value: (value as { parsed: any }).parsed}]
-        : {key, value},
+      and(IsString(definition.key), EQ, Array(IsString())),
+      ([, , value]) => ({ key, value }),
     )
+  const ParsedProperty = (key: string, definition: PropertyDefinition) =>
+    restructure(
+      and(IsString(definition.key), EQ, Array(ParsedValue)),
+      ([, , value]) => [
+        { key, value: (value as { token: string }).token },
+        {
+          key: definition.parseAs,
+          value: (value as { parsed: any }).parsed,
+        },
+      ],
+    )
+  const Property = (key: string, definition: PropertyDefinition) =>
+    definition.parseAs
+      ? ParsedProperty(key, definition)
+      : StringProperty(key, definition)
 
   const Entity = (rawSchema: Schema) => {
     const schema = Object.fromEntries(
