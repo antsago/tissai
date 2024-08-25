@@ -42,18 +42,18 @@ type StringDefinition = BaseDefinition & {
   value?: string
 }
 export const StringProperty = ({ key, name, value }: StringDefinition) =>
-  restructure(PropertyOfType(IsString(value), name), (value) => ({
+  restructure(PropertyOfType(IsString(value), name), (texts) => ({
     key,
-    value,
+    value: texts,
   }))
 
 type ReferenceDefinition = BaseDefinition & {
   isReference: true
 }
 export const ReferenceProperty = ({ key, name }: ReferenceDefinition) =>
-  restructure(PropertyOfType(and(IsSymbol(Id), IsString()), name), (value) => ({
+  restructure(PropertyOfType(and(IsSymbol(Id), IsString()), name), (references) => ({
     key,
-    value,
+    value: references.map(r => ({ [Id]: r })),
   }))
 
 type ParsedDefinition = BaseDefinition & {
@@ -61,14 +61,14 @@ type ParsedDefinition = BaseDefinition & {
 }
 
 export const ParsedProperty = ({ key, name, parse }: ParsedDefinition) =>
-  restructure(PropertyOfType(IsParsed(parse.with), name), (value) => [
+  restructure(PropertyOfType(IsParsed(parse.with), name), (values) => [
     {
       key: key,
-      value: value.map(({ token }) => token),
+      value: values.map(({ token }) => token),
     },
     {
       key: parse.as,
-      value: value.map(({ parsed }) => parsed),
+      value: values.map(({ parsed }) => parsed),
     },
   ])
 
