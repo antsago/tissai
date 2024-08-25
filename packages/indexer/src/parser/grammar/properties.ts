@@ -42,7 +42,7 @@ type StringDefinition = BaseDefinition & {
   value?: string
 }
 export const StringProperty = ({ key, name, value }: StringDefinition) =>
-  restructure(PropertyOfType(IsString(), name), (value) => ({ key, value }))
+  restructure(PropertyOfType(IsString(value), name), (value) => ({ key, value }))
 
 type ReferenceDefinition = BaseDefinition & {
   isReference: true
