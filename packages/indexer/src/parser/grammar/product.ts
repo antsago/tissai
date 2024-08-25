@@ -11,39 +11,37 @@ import {
 import { Equals, ValueSeparator, PropertyEnd } from "./index.js"
 import { Attributes } from "./attribute.js"
 
+const IsString = (text?: string) =>
+  Token(
+    (token: EntityToken) =>
+      typeof token !== "symbol" && (text === undefined || token === text),
+  )
+const IsSymbol = (symbol: symbol) =>
+  Token((token: EntityToken) => token === symbol)
+
+const Array = <Output>(Value: Rule<EntityToken, Output>) => {
+  return restructure(and(Value, any(and(IsSymbol(ValueSeparator), Value)), IsSymbol(PropertyEnd)), (tokens) => {
+    const value = tokens.flat(Infinity).filter((t) => typeof t !== "symbol")
+
+    return value?.length === 1 ? value[0] : value
+  })
+}
+
+type PropertyDefinition = { key: string; parseAs: string }
+type Schema = Record<string, string | PropertyDefinition>
+
+const StringProperty = (key: string, definition: PropertyDefinition) =>
+  restructure(
+    and(IsString(definition.key), IsSymbol(Equals), Array(IsString())),
+    ([, , value]) => ({ key, value }),
+  )
+
 export const productGrammar = (compileGrammar: Compiler["compile"]) => {
-  const IsString = (text?: string) =>
-    Token(
-      (token: EntityToken) =>
-        typeof token !== "symbol" && (text === undefined || token === text),
-    )
-  const IsSymbol = (symbol: symbol) =>
-    Token((token: EntityToken) => token === symbol)
   const ParsedValue = parseAs(compileGrammar(Attributes))
 
-  const EQ = IsSymbol(Equals)
-  const VS = IsSymbol(ValueSeparator)
-  const PE = IsSymbol(PropertyEnd)
-
-  const Array = <Output>(Value: Rule<EntityToken, Output>) => {
-    return restructure(and(Value, any(and(VS, Value)), PE), (tokens) => {
-      const value = tokens.flat(Infinity).filter((t) => typeof t !== "symbol")
-
-      return value?.length === 1 ? value[0] : value
-    })
-  }
-
-  type PropertyDefinition = { key: string; parseAs: string }
-  type Schema = Record<string, string | PropertyDefinition>
-
-  const StringProperty = (key: string, definition: PropertyDefinition) =>
-    restructure(
-      and(IsString(definition.key), EQ, Array(IsString())),
-      ([, , value]) => ({ key, value }),
-    )
   const ParsedProperty = (key: string, definition: PropertyDefinition) =>
     restructure(
-      and(IsString(definition.key), EQ, Array(ParsedValue)),
+      and(IsString(definition.key), IsSymbol(Equals), Array(ParsedValue)),
       ([, , value]) => [
         { key, value: (value as { token: string }).token },
         {
@@ -52,6 +50,7 @@ export const productGrammar = (compileGrammar: Compiler["compile"]) => {
         },
       ],
     )
+
   const Property = (key: string, definition: PropertyDefinition) =>
     definition.parseAs
       ? ParsedProperty(key, definition)
