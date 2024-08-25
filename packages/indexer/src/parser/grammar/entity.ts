@@ -1,4 +1,4 @@
-import { and, any, or, restructure, given } from "../operators/index.js"
+import { and, any, or, restructure, given, unless } from "../operators/index.js"
 import { EntityStart, EntityEnd, Id, Required } from "./symbols.js"
 import { IsString, IsSymbol } from "./values.js"
 import {
@@ -32,7 +32,7 @@ const Properties = (schema: Schema) => {
   const definedProperties = definitions(schema).map(Property)
 
   return restructure(
-    given(requiredProperty, any(or(...definedProperties, AnyProperty))),
+    given(unless(IsSymbol(EntityEnd), requiredProperty), any(or(...definedProperties, AnyProperty))),
     (properties) =>
       Object.fromEntries(
         properties
