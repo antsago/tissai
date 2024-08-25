@@ -7,7 +7,7 @@ import {
   PropertyStart,
   Id,
 } from "./symbols.js"
-import { IsString, IsSymbol, IsAny } from "./values.js"
+import { IsString, IsSymbol, IsAny, IsParsed } from "./values.js"
 
 const PropertyValue = <Output>(Type: Rule<EntityToken, Output>) => {
   return restructure(
@@ -59,24 +59,18 @@ export const ReferenceProperty = ({ key, name }: ReferenceDefinition) =>
 type ParsedDefinition = BaseDefinition & {
   parse: { as: string; with: (text: string) => any }
 }
-export const ParsedProperty = (definition: ParsedDefinition) =>
-  restructure(
-    PropertyOfType(
-      restructure(IsString(), async (token) => {
-        const parsed = await definition.parse.with(token as string)
-        return { token, parsed }
-      }), definition.name),
-    (value) => [
-      {
-        key: definition.key,
-        value: value.map(({ token }) => token),
-      },
-      {
-        key: definition.parse.as,
-        value: value.map(({ parsed }) => parsed),
-      },
-    ],
-  )
+
+export const ParsedProperty = ({ key, name, parse }: ParsedDefinition) =>
+  restructure(PropertyOfType(IsParsed(parse.with), name), (value) => [
+    {
+      key: key,
+      value: value.map(({ token }) => token),
+    },
+    {
+      key: parse.as,
+      value: value.map(({ parsed }) => parsed),
+    },
+  ])
 
 export const AnyProperty = restructure(PropertyOfType(any(IsAny)), (value) => ({
   key: undefined,
