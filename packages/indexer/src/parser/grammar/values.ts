@@ -1,11 +1,6 @@
 import type { EntityToken } from "../types.js"
-import {
-  Token,
-} from "../operators/index.js"
-import {
-  ValueSeparator,
-  Id,
-} from "./symbols.js"
+import { Token } from "../operators/index.js"
+import { ValueSeparator, Id } from "./symbols.js"
 
 export const IsString = (text?: string) =>
   Token(

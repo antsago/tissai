@@ -1,10 +1,5 @@
 import type { EntityToken, Rule } from "../types.js"
-import {
-  and,
-  any,
-  parseAs,
-  restructure,
-} from "../operators/index.js"
+import { and, any, parseAs, restructure } from "../operators/index.js"
 import {
   Equals,
   ValueSeparator,
@@ -24,7 +19,10 @@ const PropertyValue = <Output>(Type: Rule<EntityToken, Output>) => {
   )
 }
 
-const PropertyOfType = <Output>(Type: Rule<EntityToken, Output>, name?: string) =>
+const PropertyOfType = <Output>(
+  Type: Rule<EntityToken, Output>,
+  name?: string,
+) =>
   restructure(
     and(
       IsSymbol(PropertyStart),
@@ -36,30 +34,31 @@ const PropertyOfType = <Output>(Type: Rule<EntityToken, Output>, name?: string) 
     ([s, n, eq, value, e]) => value,
   )
 
-type StringDefinition = { name: string }
-const StringProperty = (key: string, { name }: StringDefinition) =>
+type StringDefinition = {
+  key: string
+  name: string
+}
+export const StringProperty = ({ key, name }: StringDefinition) =>
   restructure(PropertyOfType(IsString(), name), (value) => ({ key, value }))
 
-type ReferenceDefinition = {
-  name: string
+type ReferenceDefinition = StringDefinition & {
   isReference: true
 }
-const ReferenceProperty = (key: string, { name }: ReferenceDefinition) =>
+export const ReferenceProperty = ({ key, name }: ReferenceDefinition) =>
   restructure(PropertyOfType(and(IsSymbol(Id), IsString()), name), (value) => ({
     key,
     value,
   }))
 
-type ParsedDefinition = {
-  name: string
+type ParsedDefinition = StringDefinition & {
   parse: { as: string; with: (text: string) => any }
 }
-const ParsedProperty = (key: string, definition: ParsedDefinition) =>
+export const ParsedProperty = (definition: ParsedDefinition) =>
   restructure(
     PropertyOfType(parseAs(definition.parse.with), definition.name),
     (value) => [
       {
-        key,
+        key: definition.key,
         value: value.map(({ token }) => token),
       },
       {
@@ -79,9 +78,9 @@ export type PropertyDefinition =
   | ParsedDefinition
   | ReferenceDefinition
 
-export const Property = (key: string, definition: PropertyDefinition) =>
+export const Property = (definition: PropertyDefinition) =>
   "parse" in definition
-    ? ParsedProperty(key, definition)
+    ? ParsedProperty(definition)
     : "isReference" in definition
-      ? ReferenceProperty(key, definition)
-      : StringProperty(key, definition)
+      ? ReferenceProperty(definition)
+      : StringProperty(definition)
