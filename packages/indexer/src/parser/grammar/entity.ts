@@ -7,7 +7,7 @@ import {
   parseAs,
   restructure,
 } from "../operators/index.js"
-import { Equals, ValueSeparator, PropertyEnd } from "./index.js"
+import { Equals, ValueSeparator, PropertyEnd, EntityStart, EntityEnd } from "./index.js"
 
 const IsString = (text?: string) =>
   Token(
@@ -86,7 +86,9 @@ export const Entity = (rawSchema: Schema) => {
   const schema = normalizeSchema(rawSchema)
   const properties = Object.entries(schema).map(([k, d]) => Property(k, d))
 
-  return restructure(any(or(...properties, StringProperty())), (entries) =>
+  return restructure(
+    and(IsSymbol(EntityStart), any(or(...properties, StringProperty())), IsSymbol(EntityEnd)),
+    ([s,entries,e]) =>
     Object.fromEntries(
       entries
         .flat()
