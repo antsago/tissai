@@ -1,8 +1,8 @@
 import { expect, describe, it } from "vitest"
 import { TokenReader } from "../TokenReader.js"
-import { Attributes } from "./index.js"
+import { Attributes } from "./attributes.js"
 
-describe.skip("Attributes", () => {
+describe("Attributes", () => {
   it("handles empty tokens", async () => {
     const reader = TokenReader([])
 
@@ -19,9 +19,8 @@ describe.skip("Attributes", () => {
 
     expect(result).toStrictEqual([
       {
-        type: "attribute",
         labels: ["label"],
-        value: tokens,
+        value: tokens[0].text,
       },
     ])
   })
@@ -46,9 +45,8 @@ describe.skip("Attributes", () => {
 
     expect(result).toStrictEqual([
       {
-        type: "attribute",
         labels: ["label"],
-        value: [tokens[0]],
+        value: tokens[0].text,
       },
       tokens[1],
     ])
