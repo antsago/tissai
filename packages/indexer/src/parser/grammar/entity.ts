@@ -32,7 +32,10 @@ const Properties = (schema: Schema) => {
   const definedProperties = definitions(schema).map(Property)
 
   return restructure(
-    given(unless(IsSymbol(EntityEnd), requiredProperty), any(or(...definedProperties, AnyProperty))),
+    given(
+      unless(IsSymbol(EntityEnd), requiredProperty),
+      any(or(...definedProperties, AnyProperty)),
+    ),
     (properties) =>
       Object.fromEntries(
         properties

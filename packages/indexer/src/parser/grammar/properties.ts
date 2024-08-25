@@ -72,10 +72,13 @@ export const ParsedProperty = ({ key, name, parse }: ParsedDefinition) =>
     },
   ])
 
-export const AnyProperty = restructure(PropertyOfType(any(IsValue)), (value) => ({
-  key: undefined,
-  value,
-}))
+export const AnyProperty = restructure(
+  PropertyOfType(any(IsValue)),
+  (value) => ({
+    key: undefined,
+    value,
+  }),
+)
 
 export type PropertyDefinition =
   | StringDefinition
