@@ -1,13 +1,7 @@
 import { and, any, or, restructure } from "../operators/index.js"
 import { EntityStart, EntityEnd, Id } from "./symbols.js"
 import { IsString, IsSymbol } from "./values.js"
-import {
-  type PropertyDefinition,
-  Property,
-  AnyProperty,
-  StringProperty,
-  ParsedProperty,
-} from "./properties.js"
+import { type PropertyDefinition, Property, AnyProperty } from "./properties.js"
 
 type DistributiveOmit<T, K extends keyof any> = T extends any
   ? Omit<T, K>
@@ -24,8 +18,8 @@ const definitions = (inputSchema: Schema): PropertyDefinition[] =>
     ...(typeof v === "string" ? { name: v } : v),
   }))
 
-type ParsedProperty = { key?: string; value: any[] }
-const reduceProperties = (properties: (ParsedProperty | ParsedProperty[])[]) =>
+type PropertyResult = { key?: string; value: any[] }
+const reduceProperties = (properties: (PropertyResult | PropertyResult[])[]) =>
   Object.fromEntries(
     properties
       .flat()
