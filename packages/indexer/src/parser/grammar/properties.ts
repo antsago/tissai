@@ -1,5 +1,5 @@
 import type { EntityToken, Rule } from "../types.js"
-import { and, any, parseAs, restructure } from "../operators/index.js"
+import { and, any, restructure } from "../operators/index.js"
 import {
   Equals,
   ValueSeparator,
@@ -61,7 +61,11 @@ type ParsedDefinition = BaseDefinition & {
 }
 export const ParsedProperty = (definition: ParsedDefinition) =>
   restructure(
-    PropertyOfType(parseAs(definition.parse.with), definition.name),
+    PropertyOfType(
+      restructure(IsString(), async (token) => {
+        const parsed = await definition.parse.with(token as string)
+        return { token, parsed }
+      }), definition.name),
     (value) => [
       {
         key: definition.key,

@@ -7,5 +7,5 @@ export const restructure =
   ) =>
   async (reader: RuleReader<R>) => {
     const match = await (check(reader) as RuleResult<R>)
-    return match ? transform(match) : null
+    return match ? await transform(match) : null
   }
