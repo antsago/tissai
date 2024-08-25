@@ -33,17 +33,17 @@ const reduceProperties = (properties: (ParsedProperty | ParsedProperty[])[]) =>
       .map(({ key, value }) => [key, value.length === 1 ? value[0] : value]),
   )
 export const Entity = (schema: Schema) => {
-  const properties = definitions(schema).map(Property)
+  const definedProperties = definitions(schema).map(Property)
 
   return restructure(
     and(
       IsSymbol(EntityStart),
       IsString(),
-      any(or(...properties, AnyProperty)),
+      any(or(...definedProperties, AnyProperty)),
       IsSymbol(EntityEnd),
     ),
-    ([s, id, entries, e]) => ({
-      ...reduceProperties(entries),
+    ([s, id, parsedProperties, e]) => ({
+      ...reduceProperties(parsedProperties),
       [Id]: id,
     }),
   )
