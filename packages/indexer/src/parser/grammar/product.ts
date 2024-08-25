@@ -20,60 +20,83 @@ const IsSymbol = (symbol: symbol) =>
   Token((token: EntityToken) => token === symbol)
 
 const Array = <Output>(Value: Rule<EntityToken, Output>) => {
-  return restructure(and(Value, any(and(IsSymbol(ValueSeparator), Value)), IsSymbol(PropertyEnd)), (tokens) => {
-    const value = tokens.flat(Infinity).filter((t) => typeof t !== "symbol")
+  return restructure(
+    and(
+      Value,
+      any(and(IsSymbol(ValueSeparator), Value)),
+      IsSymbol(PropertyEnd),
+    ),
+    (tokens) => {
+      const value = tokens.flat(Infinity).filter((t) => typeof t !== "symbol")
 
-    return value?.length === 1 ? value[0] : value
-  })
+      return value?.length === 1 ? value[0] : value
+    },
+  )
 }
 
-type PropertyDefinition = { key: string; parseAs: string }
+type PropertyDefinition = {
+  key: string
+  parse?: { as: string; with: (text: string) => any }
+}
 type Schema = Record<string, string | PropertyDefinition>
 
-const StringProperty = (key: string, definition: PropertyDefinition) =>
-  restructure(
-    and(IsString(definition.key), IsSymbol(Equals), Array(IsString())),
-    ([, , value]) => ({ key, value }),
+const normalizeSchema = (
+  inputSchema: Schema,
+): Record<string, PropertyDefinition> =>
+  Object.fromEntries(
+    Object.entries(inputSchema).map(([k, v]) => [
+      k,
+      typeof v === "string" ? { key: v } : v,
+    ]),
   )
 
+const StringProperty = (key: string, propertyName: string) =>
+  restructure(
+    and(IsString(propertyName), IsSymbol(Equals), Array(IsString())),
+    ([k, eq, value]) => ({ key, value }),
+  )
+
+const ParsedProperty = (
+  key: string,
+  definition: Required<PropertyDefinition>,
+) =>
+  restructure(
+    and(
+      IsString(definition.key),
+      IsSymbol(Equals),
+      Array(parseAs(definition.parse.with)),
+    ),
+    ([k, eq, value]) => [
+      { key, value: (value as { token: string }).token },
+      {
+        key: definition.parse.as,
+        value: (value as { parsed: any }).parsed,
+      },
+    ],
+  )
+
+const Property = (key: string, definition: PropertyDefinition) =>
+  definition.parse !== undefined
+    ? ParsedProperty(key, definition as Required<PropertyDefinition>)
+    : StringProperty(key, definition.key)
+
+const Entity = (rawSchema: Schema) => {
+  const schema = normalizeSchema(rawSchema)
+  const properties = Object.entries(schema).map(([k, d]) => Property(k, d))
+
+  return restructure(any(or(...properties)), (entries) =>
+    Object.fromEntries(entries.flat().map(({ key, value }) => [key, value])),
+  )
+}
+
 export const productGrammar = (compileGrammar: Compiler["compile"]) => {
-  const ParsedValue = parseAs(compileGrammar(Attributes))
-
-  const ParsedProperty = (key: string, definition: PropertyDefinition) =>
-    restructure(
-      and(IsString(definition.key), IsSymbol(Equals), Array(ParsedValue)),
-      ([, , value]) => [
-        { key, value: (value as { token: string }).token },
-        {
-          key: definition.parseAs,
-          value: (value as { parsed: any }).parsed,
-        },
-      ],
-    )
-
-  const Property = (key: string, definition: PropertyDefinition) =>
-    definition.parseAs
-      ? ParsedProperty(key, definition)
-      : StringProperty(key, definition)
-
-  const Entity = (rawSchema: Schema) => {
-    const schema = Object.fromEntries(
-      Object.entries(rawSchema).map(([k, v]) => [
-        k,
-        typeof v === "string" ? { key: v, parseAs: "" } : v,
-      ]),
-    )
-    const properties = Object.entries(schema).map(([k, d]) => Property(k, d))
-
-    return restructure(any(or(...properties)), (entries) =>
-      Object.fromEntries(entries.flat().map(({ key, value }) => [key, value])),
-    )
-  }
-
   const Product = Entity({
     title: {
       key: "name",
-      parseAs: "attributes",
+      parse: {
+        as: "attributes",
+        with: compileGrammar(Attributes),
+      },
     },
     description: "description",
     images: "image",
