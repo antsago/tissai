@@ -51,10 +51,13 @@ type ReferenceDefinition = BaseDefinition & {
   isReference: true
 }
 export const ReferenceProperty = ({ key, name }: ReferenceDefinition) =>
-  restructure(PropertyOfType(and(IsSymbol(Id), IsString()), name), (references) => ({
-    key,
-    value: references.map(r => ({ [Id]: r })),
-  }))
+  restructure(
+    PropertyOfType(and(IsSymbol(Id), IsString()), name),
+    (references) => ({
+      key,
+      value: references.map((r) => ({ [Id]: r })),
+    }),
+  )
 
 type ParsedDefinition = BaseDefinition & {
   parse: { as: string; with: (text: string) => any }

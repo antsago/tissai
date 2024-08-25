@@ -62,3 +62,5 @@ export const Entity = (schema: Schema) =>
       [Id]: id,
     }),
   )
+
+export const Ontology = (schemas: Schema[]) => any(or(...schemas.map(Entity)))

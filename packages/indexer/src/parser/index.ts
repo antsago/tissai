@@ -5,16 +5,14 @@ import {
   Equals,
   ValueSeparator,
   PropertyEnd,
-  Entity,
+  Ontology,
   Attributes,
   EntityStart,
   EntityEnd,
   PropertyStart,
   Id,
   Required,
-  Schema,
 } from "./grammar/index.js"
-import { or, any } from "./operators/index.js"
 
 const ProductLd = {
   "@context": "https://schema.org/",
@@ -85,7 +83,6 @@ const TokenizedLd = [
 const reader = TokenReader(TokenizedLd)
 const compiler = await Compiler(mapping)
 
-const Ontology = (schemas: Schema[]) => any(or(...schemas.map(Entity)))
 const Product = Ontology([
   {
     [Required]: {
@@ -113,7 +110,7 @@ const Product = Ontology([
     },
     name: "name",
     icon: "image",
-  }
+  },
 ])
 
 const result = await Product(reader)
