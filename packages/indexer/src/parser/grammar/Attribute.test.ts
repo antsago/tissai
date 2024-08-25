@@ -1,8 +1,11 @@
 import { expect, describe, it } from "vitest"
+import type { WordToken } from "../types.js"
 import { TokenReader } from "../TokenReader.js"
-import { Attribute } from "./index.js"
+import { Attribute } from "./attributes.js"
 
-describe.skip("Attribute", () => {
+describe("Attribute", () => {
+  const getText = (tokens: WordToken[]) => tokens.map(t => t.text).join(" ") 
+
   it("returns null if no next token", async () => {
     const reader = TokenReader([])
 
@@ -34,9 +37,8 @@ describe.skip("Attribute", () => {
     const result = await Attribute(reader)
 
     expect(result).toStrictEqual({
-      type: "attribute",
       labels: tokens[0].labels,
-      value: tokens.slice(0, 1),
+      value: getText(tokens.slice(0, 1))
     })
     expect(reader.get()).toStrictEqual(tokens[1])
   })
@@ -52,9 +54,8 @@ describe.skip("Attribute", () => {
     const result = await Attribute(reader)
 
     expect(result).toStrictEqual({
-      type: "attribute",
       labels: tokens[0].labels,
-      value: tokens.slice(0, 2),
+      value: getText(tokens.slice(0, 2))
     })
     expect(reader.get()).toStrictEqual(tokens[2])
   })
@@ -69,9 +70,8 @@ describe.skip("Attribute", () => {
     const result = await Attribute(reader)
 
     expect(result).toStrictEqual({
-      type: "attribute",
       labels: ["label1"],
-      value: tokens,
+      value: getText(tokens),
     })
   })
 
@@ -86,9 +86,8 @@ describe.skip("Attribute", () => {
     const result = await Attribute(reader)
 
     expect(result).toStrictEqual({
-      type: "attribute",
       labels: ["label1"],
-      value: tokens.slice(0, 2),
+      value: getText(tokens.slice(0, 2)),
     })
   })
 
@@ -104,9 +103,8 @@ describe.skip("Attribute", () => {
     const result = await Attribute(reader)
 
     expect(result).toStrictEqual({
-      type: "attribute",
       labels: tokens[0].labels,
-      value: tokens.slice(0, 3),
+      value: getText(tokens.slice(0, 3)),
     })
     expect(reader.get()).toStrictEqual(tokens[3])
   })
@@ -124,9 +122,8 @@ describe.skip("Attribute", () => {
     const result = await Attribute(reader)
 
     expect(result).toStrictEqual({
-      type: "attribute",
       labels: tokens[0].labels,
-      value: tokens.slice(0, 4),
+      value: getText(tokens.slice(0, 4)),
     })
     expect(reader.get()).toStrictEqual(tokens[4])
   })
@@ -143,9 +140,8 @@ describe.skip("Attribute", () => {
     const result = await Attribute(reader)
 
     expect(result).toStrictEqual({
-      type: "attribute",
       labels: tokens[0].labels,
-      value: tokens.slice(0, 1),
+      value: tokens[0].text,
     })
     expect(reader.get()).toStrictEqual(tokens[1])
   })

@@ -20,10 +20,10 @@ export const Label = (context: Context) =>
 export const Attribute = restructure(
   withL((l) => and(Label(l), any(and(any(Filler), Label(l))))),
   ({ result, context }) => {
-    const text = (result.flat(Infinity) as WordToken[])
+    const value = (result.flat(Infinity) as WordToken[])
       .map((t: WordToken) => t.text)
       .join(" ")
-    return { text, labels: context.labels }
+    return { value, labels: context.labels }
   },
 )
 
