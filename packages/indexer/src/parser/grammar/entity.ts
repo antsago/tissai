@@ -7,7 +7,7 @@ import {
   parseAs,
   restructure,
 } from "../operators/index.js"
-import { Equals, ValueSeparator, PropertyEnd, EntityStart, EntityEnd } from "./index.js"
+import { Equals, ValueSeparator, PropertyEnd, EntityStart, EntityEnd, PropertyStart } from "./index.js"
 
 const IsString = (text?: string) =>
   Token(
@@ -46,12 +46,13 @@ const normalizeSchema = (
 const Property = <Output>(Type: Rule<EntityToken, Output>, name?: string) =>
   restructure(
     and(
+      IsSymbol(PropertyStart),
       IsString(name),
       IsSymbol(Equals),
       Value(Type),
       IsSymbol(PropertyEnd),
     ),
-    ([k, eq, value]) => value,
+    ([s, n, eq, value, e]) => value,
   )
 const StringProperty = (key?: string, propertyName?: string) =>
   restructure(
