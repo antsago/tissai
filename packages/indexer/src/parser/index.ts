@@ -17,15 +17,28 @@ import { EntityToken } from "./types.js"
 import { expandEntry } from "../jsonLd.js"
 
 type LD = {
-  [key: string]: string
+  [key: string]: string | string[]
+}
+type Expanded = {
+  [key: string]: string[]
 }
 
-const tokenizeJson = (json: LD): EntityToken[] => [
-  EntityStart,
-  "enitity-0",
-  Object.entries(json).map(([key, value]) => [PropertyStart, key, Equals, value, PropertyEnd]),
-  EntityEnd,
-].flat(2)
+const tokenizeJson = (json: LD): EntityToken[] =>
+  [
+    EntityStart,
+    "enitity-0",
+    Object.entries(expandEntry(json) as Expanded).map(([key, values]) => [
+      PropertyStart,
+      key,
+      Equals,
+      values
+        .map((value) => [value, ValueSeparator])
+        .flat()
+        .slice(0, -1),
+      PropertyEnd,
+    ]),
+    EntityEnd,
+  ].flat(3)
 
 const ProductLd = {
   // "@context": "https://schema.org/",
@@ -33,7 +46,7 @@ const ProductLd = {
   // name: "The name of the product",
   productID: "121230",
   // description: "The description",
-  image: "https://example.com/image.jpg",
+  image: ["https://example.com/image.jpg","https://example.com/image2.jpg"]
   // brand: {
   //   "@type": "Brand",
   //   name: "WEDZE",

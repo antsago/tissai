@@ -14,10 +14,11 @@ export type JsonLD = Partial<{
   }>[]
 }>
 
-function expandEntry(linkedData: any): any {
+export function expandEntry(linkedData: any): any {
   if (typeof linkedData !== "object") {
     return linkedData
   }
+
   if (Array.isArray(linkedData)) {
     return linkedData.map((v) => expandEntry(v))
   }
