@@ -16,14 +16,11 @@ import {
 import { EntityToken } from "./types.js"
 import { expandEntry } from "../jsonLd.js"
 
-type LD = {
-  [key: string]: string | string[]
-}
 type Expanded = {
-  [key: string]: string[]
+  [key: string]: (string | number | boolean)[]
 }
 
-const tokenizeJson = (json: LD): EntityToken[] =>
+const tokenizeJson = (json: any): EntityToken[] =>
   [
     EntityStart,
     "enitity-0",
@@ -46,7 +43,7 @@ const ProductLd = {
   // name: "The name of the product",
   productID: "121230",
   // description: "The description",
-  image: ["https://example.com/image.jpg","https://example.com/image2.jpg"]
+  image: ["https://example.com/image.jpg","https://example.com/image2.jpg", 2]
   // brand: {
   //   "@type": "Brand",
   //   name: "WEDZE",

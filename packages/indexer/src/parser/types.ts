@@ -5,7 +5,8 @@ export type WordToken = {
   isMeaningful: boolean
   text: string
 }
-export type EntityToken = string | symbol
+export type EntityToken = string | symbol | number | boolean
+export type DataToken = Exclude<EntityToken, symbol>
 
 export type Rule<Token, Output> = (reader: TokenReader<Token>) => Output
 export type RuleResult<R extends Rule<never, unknown>> =

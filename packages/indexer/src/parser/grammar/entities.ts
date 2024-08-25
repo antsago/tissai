@@ -1,11 +1,11 @@
 import { and, any, or, restructure, given, unless } from "../operators/index.js"
 import { EntityStart, EntityEnd, Id, Required } from "./symbols.js"
-import { IsString, IsSymbol } from "./values.js"
+import { IsData, IsSymbol } from "./values.js"
 import {
   type PropertyDefinition,
   Property,
   AnyProperty,
-  StringProperty,
+  DataProperty,
 } from "./properties.js"
 
 type DistributiveOmit<T, K extends keyof any> = T extends any
@@ -23,8 +23,8 @@ const definitions = (inputSchema: Schema): PropertyDefinition[] =>
     ...(typeof v === "string" ? { name: v } : v),
   }))
 
-const Properties = (schema: Schema) => {
-  const requiredProperty = StringProperty({
+export const Properties = (schema: Schema) => {
+  const requiredProperty = DataProperty({
     key: Required,
     name: schema[Required].key,
     value: schema[Required].value,
@@ -53,7 +53,7 @@ export const Entity = (schema: Schema) =>
   restructure(
     and(
       IsSymbol(EntityStart),
-      IsString(),
+      IsData(),
       Properties(schema),
       IsSymbol(EntityEnd),
     ),

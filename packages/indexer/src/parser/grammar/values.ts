@@ -1,11 +1,11 @@
-import type { EntityToken } from "../types.js"
+import type { EntityToken, DataToken } from "../types.js"
 import { Token, restructure } from "../operators/index.js"
 import { ValueSeparator, Id } from "./symbols.js"
 
-export const IsString = (text?: string) =>
+export const IsData = (data?: DataToken) =>
   Token(
     (token: EntityToken) =>
-      typeof token !== "symbol" && (text === undefined || token === text),
+      typeof token !== "symbol" && (data === undefined || token === data),
   )
 
 export const IsSymbol = (symbol: symbol) =>
@@ -13,11 +13,11 @@ export const IsSymbol = (symbol: symbol) =>
 
 export const IsValue = Token(
   (token: EntityToken) =>
-    token === Id || token === ValueSeparator || typeof token === "string",
+    token === Id || token === ValueSeparator || typeof token !== "symbol",
 )
 
 export const IsParsed = <Output>(parse: (text: string) => Output) =>
-  restructure(IsString(), async (token) => {
+  restructure(IsData(), async (token) => {
     const parsed = await parse(token as string)
     return { token, parsed }
   })

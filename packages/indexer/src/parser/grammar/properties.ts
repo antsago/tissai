@@ -1,4 +1,4 @@
-import type { EntityToken, Rule } from "../types.js"
+import type { DataToken, EntityToken, Rule } from "../types.js"
 import { and, any, restructure } from "../operators/index.js"
 import {
   Equals,
@@ -7,7 +7,7 @@ import {
   PropertyStart,
   Id,
 } from "./symbols.js"
-import { IsString, IsSymbol, IsValue, IsParsed } from "./values.js"
+import { IsData, IsSymbol, IsValue, IsParsed } from "./values.js"
 
 const PropertyValue = <Output>(Type: Rule<EntityToken, Output>) => {
   return restructure(
@@ -26,7 +26,7 @@ const PropertyOfType = <Output>(
   restructure(
     and(
       IsSymbol(PropertyStart),
-      IsString(name),
+      IsData(name),
       IsSymbol(Equals),
       PropertyValue(Type),
       IsSymbol(PropertyEnd),
@@ -38,13 +38,13 @@ type BaseDefinition = {
   key: string | symbol
   name: string
 }
-type StringDefinition = BaseDefinition & {
-  value?: string
+type DataDefinition = BaseDefinition & {
+  value?: DataToken
 }
-export const StringProperty = ({ key, name, value }: StringDefinition) =>
-  restructure(PropertyOfType(IsString(value), name), (texts) => ({
+export const DataProperty = ({ key, name, value }: DataDefinition) =>
+  restructure(PropertyOfType(IsData(value), name), (dataValues) => ({
     key,
-    value: texts,
+    value: dataValues,
   }))
 
 type ReferenceDefinition = BaseDefinition & {
@@ -52,7 +52,7 @@ type ReferenceDefinition = BaseDefinition & {
 }
 export const ReferenceProperty = ({ key, name }: ReferenceDefinition) =>
   restructure(
-    PropertyOfType(and(IsSymbol(Id), IsString()), name),
+    PropertyOfType(and(IsSymbol(Id), IsData()), name),
     (references) => ({
       key,
       value: references.map((r) => ({ [Id]: r })),
@@ -84,7 +84,7 @@ export const AnyProperty = restructure(
 )
 
 export type PropertyDefinition =
-  | StringDefinition
+  | DataDefinition
   | ParsedDefinition
   | ReferenceDefinition
 
@@ -93,4 +93,4 @@ export const Property = (definition: PropertyDefinition) =>
     ? ParsedProperty(definition)
     : "isReference" in definition
       ? ReferenceProperty(definition)
-      : StringProperty(definition)
+      : DataProperty(definition)
