@@ -7,7 +7,7 @@ import {
   parseAs,
   restructure,
 } from "../operators/index.js"
-import { Equals, ValueSeparator, PropertyEnd, EntityStart, EntityEnd, PropertyStart } from "./index.js"
+import { Equals, ValueSeparator, PropertyEnd, EntityStart, EntityEnd, PropertyStart, Id } from "./symbols.js"
 
 const IsString = (text?: string) =>
   Token(
@@ -54,6 +54,7 @@ const Property = <Output>(Type: Rule<EntityToken, Output>, name?: string) =>
     ),
     ([s, n, eq, value, e]) => value,
   )
+
 const StringProperty = (key?: string, propertyName?: string) =>
   restructure(
     Property(IsString(), propertyName),
@@ -88,13 +89,15 @@ export const Entity = (rawSchema: Schema) => {
   const properties = Object.entries(schema).map(([k, d]) => DefinedProperty(k, d))
 
   return restructure(
-    and(IsSymbol(EntityStart), any(or(...properties, StringProperty())), IsSymbol(EntityEnd)),
-    ([s,entries,e]) =>
-    Object.fromEntries(
-      entries
-        .flat()
-        .filter(({ key }) => !!key)
-        .map(({ key, value }) => [key, value.length === 1 ? value[0] : value]),
-    ),
+    and(IsSymbol(EntityStart), IsString(), any(or(...properties, StringProperty())), IsSymbol(EntityEnd)),
+    ([s, id, entries, e]) => ({
+      ...Object.fromEntries(
+        entries
+          .flat()
+          .filter(({ key }) => !!key)
+          .map(({ key, value }) => [key, value.length === 1 ? value[0] : value]),
+      ),
+      [Id]: id, 
+    }),
   )
 }
