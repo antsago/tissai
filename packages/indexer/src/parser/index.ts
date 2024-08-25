@@ -19,7 +19,10 @@ const PRODUCT_SCHEMA = {
 }
 
 const ProductTokens = [
-  // "type", Equals, "Product", PropertyEnd,
+  "type",
+  Equals,
+  "Product",
+  PropertyEnd,
   "name",
   Equals,
   "The name of the product",

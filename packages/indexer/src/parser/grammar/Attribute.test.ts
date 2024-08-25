@@ -4,7 +4,7 @@ import { TokenReader } from "../TokenReader.js"
 import { Attribute } from "./attributes.js"
 
 describe("Attribute", () => {
-  const getText = (tokens: WordToken[]) => tokens.map(t => t.text).join(" ") 
+  const getText = (tokens: WordToken[]) => tokens.map((t) => t.text).join(" ")
 
   it("returns null if no next token", async () => {
     const reader = TokenReader([])
@@ -38,7 +38,7 @@ describe("Attribute", () => {
 
     expect(result).toStrictEqual({
       labels: tokens[0].labels,
-      value: getText(tokens.slice(0, 1))
+      value: getText(tokens.slice(0, 1)),
     })
     expect(reader.get()).toStrictEqual(tokens[1])
   })
@@ -55,7 +55,7 @@ describe("Attribute", () => {
 
     expect(result).toStrictEqual({
       labels: tokens[0].labels,
-      value: getText(tokens.slice(0, 2))
+      value: getText(tokens.slice(0, 2)),
     })
     expect(reader.get()).toStrictEqual(tokens[2])
   })

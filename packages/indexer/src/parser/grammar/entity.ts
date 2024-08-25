@@ -43,7 +43,7 @@ const normalizeSchema = (
     ]),
   )
 
-const StringProperty = (key: string, propertyName: string) =>
+const StringProperty = (key?: string, propertyName?: string) =>
   restructure(
     and(
       IsString(propertyName),
@@ -86,10 +86,11 @@ export const Entity = (rawSchema: Schema) => {
   const schema = normalizeSchema(rawSchema)
   const properties = Object.entries(schema).map(([k, d]) => Property(k, d))
 
-  return restructure(any(or(...properties)), (entries) =>
+  return restructure(any(or(...properties, StringProperty())), (entries) =>
     Object.fromEntries(
       entries
         .flat()
+        .filter(({ key }) => !!key)
         .map(({ key, value }) => [key, value.length === 1 ? value[0] : value]),
     ),
   )
