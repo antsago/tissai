@@ -24,7 +24,6 @@ const Array = <Output>(Value: Rule<EntityToken, Output>) => {
     and(
       Value,
       any(and(IsSymbol(ValueSeparator), Value)),
-      IsSymbol(PropertyEnd),
     ),
     (tokens) => {
       const value = tokens.flat(Infinity).filter((t) => typeof t !== "symbol")
@@ -52,7 +51,7 @@ const normalizeSchema = (
 
 const StringProperty = (key: string, propertyName: string) =>
   restructure(
-    and(IsString(propertyName), IsSymbol(Equals), Array(IsString())),
+    and(IsString(propertyName), IsSymbol(Equals), Array(IsString()), IsSymbol(PropertyEnd)),
     ([k, eq, value]) => ({ key, value }),
   )
 
@@ -65,6 +64,7 @@ const ParsedProperty = (
       IsString(definition.key),
       IsSymbol(Equals),
       Array(parseAs(definition.parse.with)),
+      IsSymbol(PropertyEnd),
     ),
     ([k, eq, value]) => [
       { key, value: (value as { token: string }).token },
