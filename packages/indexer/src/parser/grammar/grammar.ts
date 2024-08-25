@@ -39,9 +39,7 @@ export const productGrammar = (compileGrammar: Compiler["compile"]) => {
     )
   const IsSymbol = (symbol: symbol) =>
     Token((token: EntityToken) => token === symbol)
-  const ParsedValue = restructure(parseAs(compileGrammar(Attributes)),
-    ({ parsed: attributes, token: text }) => ({ text, attributes })
-  )
+  const ParsedValue = parseAs(compileGrammar(Attributes))
 
   const EQ = IsSymbol(Equals)
   const VS = IsSymbol(ValueSeparator)
@@ -55,33 +53,35 @@ export const productGrammar = (compileGrammar: Compiler["compile"]) => {
     })
   }
 
-  type PropertyDefinition = { key: string; parse: boolean }
+  type PropertyDefinition = { key: string; parseAs: string }
   type Schema = Record<string, string | PropertyDefinition>
 
   const Property = (key: string, definition: PropertyDefinition) =>
     restructure(
-      and(IsString(definition.key), EQ, definition.parse ? Array(ParsedValue) : Array(IsString())),
-      ([, , value]) => [key, value],
+      and(IsString(definition.key), EQ, definition.parseAs ? Array(ParsedValue) : Array(IsString())),
+      ([, , value]) => definition.parseAs 
+        ? [{key, value: (value as { token: string }).token}, { key: definition.parseAs, value: (value as { parsed: any }).parsed}]
+        : {key, value},
     )
 
   const Entity = (rawSchema: Schema) => {
     const schema = Object.fromEntries(
       Object.entries(rawSchema).map(([k, v]) => [
         k,
-        typeof v === "string" ? { key: v, parse: false } : v,
+        typeof v === "string" ? { key: v, parseAs: "" } : v,
       ]),
     )
     const properties = Object.entries(schema).map(([k, d]) => Property(k, d))
 
     return restructure(any(or(...properties)), (entries) =>
-      Object.fromEntries(entries),
+      Object.fromEntries(entries.flat().map(({ key, value }) => [key, value])),
     )
   }
 
   const Product = Entity({
     title: {
       key: "name",
-      parse: true,
+      parseAs: "attributes",
     },
     description: "description",
     images: "image",
