@@ -11,7 +11,7 @@ export const IsString = (text?: string) =>
 export const IsSymbol = (symbol: symbol) =>
   Token((token: EntityToken) => token === symbol)
 
-export const IsAny = Token(
+export const IsValue = Token(
   (token: EntityToken) =>
     token === Id || token === ValueSeparator || typeof token === "string",
 )

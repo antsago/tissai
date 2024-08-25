@@ -7,7 +7,7 @@ import {
   PropertyStart,
   Id,
 } from "./symbols.js"
-import { IsString, IsSymbol, IsAny, IsParsed } from "./values.js"
+import { IsString, IsSymbol, IsValue, IsParsed } from "./values.js"
 
 const PropertyValue = <Output>(Type: Rule<EntityToken, Output>) => {
   return restructure(
@@ -72,7 +72,7 @@ export const ParsedProperty = ({ key, name, parse }: ParsedDefinition) =>
     },
   ])
 
-export const AnyProperty = restructure(PropertyOfType(any(IsAny)), (value) => ({
+export const AnyProperty = restructure(PropertyOfType(any(IsValue)), (value) => ({
   key: undefined,
   value,
 }))
