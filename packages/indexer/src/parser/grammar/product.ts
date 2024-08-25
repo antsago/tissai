@@ -1,37 +1,17 @@
-import type { EntityToken, WordToken, Rule } from "../types.js"
+import type { EntityToken, Rule } from "../types.js"
 import type { Compiler } from "../Compiler.js"
 import {
-  withL,
   and,
   any,
   or,
   Token,
   parseAs,
   restructure,
-  type Context,
 } from "../operators/index.js"
 import { Equals, ValueSeparator, PropertyEnd } from "./index.js"
+import { Attributes } from "./attribute.js"
 
 export const productGrammar = (compileGrammar: Compiler["compile"]) => {
-  // Attributes SubGrammar
-  const Filler = Token((word: WordToken) => !word.isMeaningful)
-  const Label = (context: Context) =>
-    Token(
-      (word: WordToken) =>
-        word.isMeaningful && context.narrow(word.labels) !== null,
-    )
-  const Attribute = restructure(
-    withL((l) => and(Label(l), any(and(any(Filler), Label(l))))),
-    ({ result, context }) => {
-      const text = (result.flat(Infinity) as WordToken[])
-        .map((t: WordToken) => t.text)
-        .join(" ")
-      return { text, labels: context.labels }
-    },
-  )
-  const Attributes = any(or(Attribute, Filler))
-
-  // ProductGrammar
   const IsString = (text?: string) =>
     Token(
       (token: EntityToken) =>
