@@ -12,7 +12,7 @@ type DistributiveOmit<T, K extends keyof any> = T extends any
   ? Omit<T, K>
   : never
 
-type Schema = Record<
+export type Schema = Record<
   string,
   string | DistributiveOmit<PropertyDefinition, "key">
 > & { [Required]: { key: string; value: string } }

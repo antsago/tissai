@@ -12,7 +12,9 @@ import {
   PropertyStart,
   Id,
   Required,
+  Schema,
 } from "./grammar/index.js"
+import { or, any } from "./operators/index.js"
 
 const ProductLd = {
   "@context": "https://schema.org/",
@@ -62,6 +64,7 @@ const TokenizedLd = [
   EntityEnd,
   EntityStart,
   "entity-1",
+  PropertyStart,
   "@type",
   Equals,
   "Brand",
@@ -82,25 +85,36 @@ const TokenizedLd = [
 const reader = TokenReader(TokenizedLd)
 const compiler = await Compiler(mapping)
 
-const Product = Entity({
-  [Required]: {
-    key: "@type",
-    value: "Product",
-  },
-  title: {
-    name: "name",
-    parse: {
-      as: "attributes",
-      with: compiler.compile(Attributes),
+const Ontology = (schemas: Schema[]) => any(or(...schemas.map(Entity)))
+const Product = Ontology([
+  {
+    [Required]: {
+      key: "@type",
+      value: "Product",
     },
+    title: {
+      name: "name",
+      parse: {
+        as: "attributes",
+        with: compiler.compile(Attributes),
+      },
+    },
+    brand: {
+      name: "brand",
+      isReference: true,
+    },
+    description: "description",
+    images: "image",
   },
-  brand: {
-    name: "brand",
-    isReference: true,
-  },
-  description: "description",
-  images: "image",
-})
+  {
+    [Required]: {
+      key: "@type",
+      value: "Brand",
+    },
+    name: "name",
+    icon: "image",
+  }
+])
 
 const result = await Product(reader)
 
