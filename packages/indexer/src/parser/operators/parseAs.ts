@@ -16,5 +16,5 @@ export const parseAs =
     }
 
     reader.next()
-    return match
+    return { token: nextToken, parsed: match }
   }
