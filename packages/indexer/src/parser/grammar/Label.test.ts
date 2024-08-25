@@ -1,11 +1,11 @@
 import { expect, describe, it } from "vitest"
 import { TokenReader } from "../TokenReader.js"
 import { Context } from "../operators/index.js"
-import { Label } from "./index.js"
+import { Label } from "./attributes.js"
 
 describe("Label", () => {
   it("returns null if no next token", () => {
-    const reader = new TokenReader([])
+    const reader = TokenReader([])
     const context = new Context()
 
     const result = Label(context)(reader)
@@ -18,7 +18,7 @@ describe("Label", () => {
       { labels: ["filler"], isMeaningful: false, text: "a" },
       { labels: ["label"], isMeaningful: true, text: "token" },
     ]
-    const reader = new TokenReader(TOKENS)
+    const reader = TokenReader(TOKENS)
     const context = new Context()
 
     const result = Label(context)(reader)
@@ -32,7 +32,7 @@ describe("Label", () => {
       { labels: ["label1", "label2"], isMeaningful: true, text: "a" },
       { labels: ["label"], isMeaningful: true, text: "token" },
     ]
-    const reader = new TokenReader(TOKENS)
+    const reader = TokenReader(TOKENS)
     const context = new Context()
     context.narrow(TOKENS[1].labels)
 
@@ -47,7 +47,7 @@ describe("Label", () => {
       { labels: ["label1", "label2"], isMeaningful: true, text: "a" },
       { labels: ["label"], isMeaningful: true, text: "token" },
     ]
-    const reader = new TokenReader(TOKENS)
+    const reader = TokenReader(TOKENS)
     const context = new Context()
 
     const result = Label(context)(reader)
@@ -61,7 +61,7 @@ describe("Label", () => {
       { labels: ["label1", "label2"], isMeaningful: true, text: "a" },
       { labels: ["label"], isMeaningful: true, text: "token" },
     ]
-    const reader = new TokenReader(TOKENS)
+    const reader = TokenReader(TOKENS)
     const context = new Context()
     context.narrow(["foo", TOKENS[0].labels[0]])
 
