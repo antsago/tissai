@@ -34,14 +34,17 @@ const PropertyOfType = <Output>(
     ([s, n, eq, value, e]) => value,
   )
 
-type StringDefinition = {
-  key: string
+type BaseDefinition = {
+  key: string|symbol
   name: string
 }
-export const StringProperty = ({ key, name }: StringDefinition) =>
+type StringDefinition = BaseDefinition & {
+  value?: string
+}
+export const StringProperty = ({ key, name, value }: StringDefinition) =>
   restructure(PropertyOfType(IsString(), name), (value) => ({ key, value }))
 
-type ReferenceDefinition = StringDefinition & {
+type ReferenceDefinition = BaseDefinition & {
   isReference: true
 }
 export const ReferenceProperty = ({ key, name }: ReferenceDefinition) =>
@@ -50,7 +53,7 @@ export const ReferenceProperty = ({ key, name }: ReferenceDefinition) =>
     value,
   }))
 
-type ParsedDefinition = StringDefinition & {
+type ParsedDefinition = BaseDefinition & {
   parse: { as: string; with: (text: string) => any }
 }
 export const ParsedProperty = (definition: ParsedDefinition) =>

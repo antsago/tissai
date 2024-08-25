@@ -11,6 +11,7 @@ import {
   EntityEnd,
   PropertyStart,
   Id,
+  Required,
 } from "./grammar/index.js"
 
 const ProductLd = {
@@ -82,6 +83,10 @@ const reader = TokenReader(TokenizedLd)
 const compiler = await Compiler(mapping)
 
 const Product = Entity({
+  [Required]: {
+    key: "@type",
+    value: "Product",
+  },
   title: {
     name: "name",
     parse: {
