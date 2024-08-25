@@ -10,6 +10,7 @@ import {
   EntityStart,
   EntityEnd,
   PropertyStart,
+  Id,
 } from "./grammar/index.js"
 
 const ProductLd = {
@@ -51,10 +52,12 @@ const TokenizedLd = [
   ValueSeparator,
   "https://example.com/image2.jpg",
   PropertyEnd,
-  // PropertyStart,
-  // "brand",
-  // Equals,
-  // PropertyEnd,
+  PropertyStart,
+  "brand",
+  Equals,
+  Id,
+  "entity-1",
+  PropertyEnd,
   EntityEnd,
   EntityStart,
   "entity-1",

@@ -16,8 +16,9 @@ const IsString = (text?: string) =>
   )
 const IsSymbol = (symbol: symbol) =>
   Token((token: EntityToken) => token === symbol)
+const IsAny = Token((token: EntityToken) => token === Id || token === ValueSeparator || typeof token === 'string')
 
-const Value = <Output>(Type: Rule<EntityToken, Output>) => {
+const PropertyValue = <Output>(Type: Rule<EntityToken, Output>) => {
   return restructure(
     and(Type, any(and(IsSymbol(ValueSeparator), Type))),
     (tokens) =>
@@ -49,16 +50,22 @@ const Property = <Output>(Type: Rule<EntityToken, Output>, name?: string) =>
       IsSymbol(PropertyStart),
       IsString(name),
       IsSymbol(Equals),
-      Value(Type),
+      PropertyValue(Type),
       IsSymbol(PropertyEnd),
     ),
     ([s, n, eq, value, e]) => value,
   )
 
-const StringProperty = (key?: string, propertyName?: string) =>
+const StringProperty = (key: string, propertyName: string) =>
   restructure(
     Property(IsString(), propertyName),
     (value) => ({ key, value }),
+  )
+
+const AnyProperty =
+  restructure(
+    Property(any(IsAny)),
+    (value) => ({ key: undefined, value }),
   )
 
 const ParsedProperty = (
@@ -89,7 +96,7 @@ export const Entity = (rawSchema: Schema) => {
   const properties = Object.entries(schema).map(([k, d]) => DefinedProperty(k, d))
 
   return restructure(
-    and(IsSymbol(EntityStart), IsString(), any(or(...properties, StringProperty())), IsSymbol(EntityEnd)),
+    and(IsSymbol(EntityStart), IsString(), any(or(...properties, AnyProperty)), IsSymbol(EntityEnd)),
     ([s, id, entries, e]) => ({
       ...Object.fromEntries(
         entries
