@@ -1,2 +1,3 @@
 export * from "./symbols.js"
-export { productGrammar as Grammar } from "./product.js"
+export { Entity } from "./entity.js"
+export { Attributes } from "./attributes.js"

@@ -9,7 +9,7 @@ import {
   restructure,
 } from "../operators/index.js"
 import { Equals, ValueSeparator, PropertyEnd } from "./index.js"
-import { Attributes } from "./attribute.js"
+import { Attributes } from "./attributes.js"
 
 const IsString = (text?: string) =>
   Token(
@@ -80,27 +80,11 @@ const Property = (key: string, definition: PropertyDefinition) =>
     ? ParsedProperty(key, definition as Required<PropertyDefinition>)
     : StringProperty(key, definition.key)
 
-const Entity = (rawSchema: Schema) => {
+export const Entity = (rawSchema: Schema) => {
   const schema = normalizeSchema(rawSchema)
   const properties = Object.entries(schema).map(([k, d]) => Property(k, d))
 
   return restructure(any(or(...properties)), (entries) =>
     Object.fromEntries(entries.flat().map(({ key, value }) => [key, value])),
   )
-}
-
-export const productGrammar = (compileGrammar: Compiler["compile"]) => {
-  const Product = Entity({
-    title: {
-      key: "name",
-      parse: {
-        as: "attributes",
-        with: compileGrammar(Attributes),
-      },
-    },
-    description: "description",
-    images: "image",
-  })
-
-  return Product
 }

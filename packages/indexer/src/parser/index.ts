@@ -2,11 +2,13 @@ import { TokenReader } from "./TokenReader.js"
 import mapping from "./mapping.js"
 import { Compiler } from "./Compiler.js"
 import {
-  Grammar,
   Equals,
   ValueSeparator,
   PropertyEnd,
+  Entity,
+  Attributes,
 } from "./grammar/index.js"
+
 
 const PRODUCT_SCHEMA = {
   "@context": "https://schema.org/",
@@ -38,7 +40,19 @@ const ProductTokens = [
 const reader = TokenReader(ProductTokens)
 const compiler = await Compiler(mapping)
 
-const result = await Grammar(compiler.compile)(reader)
+const Product = Entity({
+  title: {
+    key: "name",
+    parse: {
+      as: "attributes",
+      with: compiler.compile(Attributes),
+    },
+  },
+  description: "description",
+  images: "image",
+})
+
+const result = await Product(reader)
 
 await compiler.close()
 console.dir(result, { depth: null })
