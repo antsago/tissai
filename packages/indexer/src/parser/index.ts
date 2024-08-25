@@ -70,7 +70,7 @@ const compiler = await Compiler(mapping)
 
 const Product = Entity({
   title: {
-    key: "name",
+    name: "name",
     parse: {
       as: "attributes",
       with: compiler.compile(Attributes),

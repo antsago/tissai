@@ -17,9 +17,9 @@ const IsString = (text?: string) =>
 const IsSymbol = (symbol: symbol) =>
   Token((token: EntityToken) => token === symbol)
 
-const Multiple = <Output>(Value: Rule<EntityToken, Output>) => {
+const Value = <Output>(Type: Rule<EntityToken, Output>) => {
   return restructure(
-    and(Value, any(and(IsSymbol(ValueSeparator), Value))),
+    and(Type, any(and(IsSymbol(ValueSeparator), Type))),
     (tokens) =>
       tokens.flat(Infinity).filter((t) => typeof t !== "symbol") as NonNullable<
         Awaited<Output>
@@ -28,7 +28,7 @@ const Multiple = <Output>(Value: Rule<EntityToken, Output>) => {
 }
 
 type PropertyDefinition = {
-  key: string
+  name: string
   parse?: { as: string; with: (text: string) => any }
 }
 type Schema = Record<string, string | PropertyDefinition>
@@ -39,19 +39,24 @@ const normalizeSchema = (
   Object.fromEntries(
     Object.entries(inputSchema).map(([k, v]) => [
       k,
-      typeof v === "string" ? { key: v } : v,
+      typeof v === "string" ? { name: v } : v,
     ]),
   )
 
-const StringProperty = (key?: string, propertyName?: string) =>
+const Property = <Output>(Type: Rule<EntityToken, Output>, name?: string) =>
   restructure(
     and(
-      IsString(propertyName),
+      IsString(name),
       IsSymbol(Equals),
-      Multiple(IsString()),
+      Value(Type),
       IsSymbol(PropertyEnd),
     ),
-    ([k, eq, value]) => ({ key, value }),
+    ([k, eq, value]) => value,
+  )
+const StringProperty = (key?: string, propertyName?: string) =>
+  restructure(
+    Property(IsString(), propertyName),
+    (value) => ({ key, value }),
   )
 
 const ParsedProperty = (
@@ -59,13 +64,8 @@ const ParsedProperty = (
   definition: Required<PropertyDefinition>,
 ) =>
   restructure(
-    and(
-      IsString(definition.key),
-      IsSymbol(Equals),
-      Multiple(parseAs(definition.parse.with)),
-      IsSymbol(PropertyEnd),
-    ),
-    ([k, eq, value]) => [
+    Property(parseAs(definition.parse.with), definition.name),
+    (value) => [
       {
         key,
         value: value.map(({ token }) => token),
@@ -77,14 +77,14 @@ const ParsedProperty = (
     ],
   )
 
-const Property = (key: string, definition: PropertyDefinition) =>
+const DefinedProperty = (key: string, definition: PropertyDefinition) =>
   definition.parse !== undefined
     ? ParsedProperty(key, definition as Required<PropertyDefinition>)
-    : StringProperty(key, definition.key)
+    : StringProperty(key, definition.name)
 
 export const Entity = (rawSchema: Schema) => {
   const schema = normalizeSchema(rawSchema)
-  const properties = Object.entries(schema).map(([k, d]) => Property(k, d))
+  const properties = Object.entries(schema).map(([k, d]) => DefinedProperty(k, d))
 
   return restructure(
     and(IsSymbol(EntityStart), any(or(...properties, StringProperty())), IsSymbol(EntityEnd)),
