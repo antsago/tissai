@@ -1,5 +1,4 @@
 import type { EntityToken, Rule } from "../types.js"
-import type { Compiler } from "../Compiler.js"
 import {
   and,
   any,
@@ -9,7 +8,6 @@ import {
   restructure,
 } from "../operators/index.js"
 import { Equals, ValueSeparator, PropertyEnd } from "./index.js"
-import { Attributes } from "./attributes.js"
 
 const IsString = (text?: string) =>
   Token(
@@ -19,17 +17,13 @@ const IsString = (text?: string) =>
 const IsSymbol = (symbol: symbol) =>
   Token((token: EntityToken) => token === symbol)
 
-const Array = <Output>(Value: Rule<EntityToken, Output>) => {
+const Multiple = <Output>(Value: Rule<EntityToken, Output>) => {
   return restructure(
-    and(
-      Value,
-      any(and(IsSymbol(ValueSeparator), Value)),
-    ),
-    (tokens) => {
-      const value = tokens.flat(Infinity).filter((t) => typeof t !== "symbol")
-
-      return value?.length === 1 ? value[0] : value
-    },
+    and(Value, any(and(IsSymbol(ValueSeparator), Value))),
+    (tokens) =>
+      tokens.flat(Infinity).filter((t) => typeof t !== "symbol") as NonNullable<
+        Awaited<Output>
+      >[],
   )
 }
 
@@ -51,7 +45,12 @@ const normalizeSchema = (
 
 const StringProperty = (key: string, propertyName: string) =>
   restructure(
-    and(IsString(propertyName), IsSymbol(Equals), Array(IsString()), IsSymbol(PropertyEnd)),
+    and(
+      IsString(propertyName),
+      IsSymbol(Equals),
+      Multiple(IsString()),
+      IsSymbol(PropertyEnd),
+    ),
     ([k, eq, value]) => ({ key, value }),
   )
 
@@ -63,14 +62,17 @@ const ParsedProperty = (
     and(
       IsString(definition.key),
       IsSymbol(Equals),
-      Array(parseAs(definition.parse.with)),
+      Multiple(parseAs(definition.parse.with)),
       IsSymbol(PropertyEnd),
     ),
     ([k, eq, value]) => [
-      { key, value: (value as { token: string }).token },
+      {
+        key,
+        value: value.map(({ token }) => token),
+      },
       {
         key: definition.parse.as,
-        value: (value as { parsed: any }).parsed,
+        value: value.map(({ parsed }) => parsed),
       },
     ],
   )
@@ -85,6 +87,10 @@ export const Entity = (rawSchema: Schema) => {
   const properties = Object.entries(schema).map(([k, d]) => Property(k, d))
 
   return restructure(any(or(...properties)), (entries) =>
-    Object.fromEntries(entries.flat().map(({ key, value }) => [key, value])),
+    Object.fromEntries(
+      entries
+        .flat()
+        .map(({ key, value }) => [key, value.length === 1 ? value[0] : value]),
+    ),
   )
 }

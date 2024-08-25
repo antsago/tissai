@@ -9,7 +9,6 @@ import {
   Attributes,
 } from "./grammar/index.js"
 
-
 const PRODUCT_SCHEMA = {
   "@context": "https://schema.org/",
   "@type": "Product",
