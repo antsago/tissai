@@ -7,7 +7,15 @@ import {
   parseAs,
   restructure,
 } from "../operators/index.js"
-import { Equals, ValueSeparator, PropertyEnd, EntityStart, EntityEnd, PropertyStart, Id } from "./symbols.js"
+import {
+  Equals,
+  ValueSeparator,
+  PropertyEnd,
+  EntityStart,
+  EntityEnd,
+  PropertyStart,
+  Id,
+} from "./symbols.js"
 
 const IsString = (text?: string) =>
   Token(
@@ -16,7 +24,10 @@ const IsString = (text?: string) =>
   )
 const IsSymbol = (symbol: symbol) =>
   Token((token: EntityToken) => token === symbol)
-const IsAny = Token((token: EntityToken) => token === Id || token === ValueSeparator || typeof token === 'string')
+const IsAny = Token(
+  (token: EntityToken) =>
+    token === Id || token === ValueSeparator || typeof token === "string",
+)
 
 const PropertyValue = <Output>(Type: Rule<EntityToken, Output>) => {
   return restructure(
@@ -28,10 +39,19 @@ const PropertyValue = <Output>(Type: Rule<EntityToken, Output>) => {
   )
 }
 
-type PropertyDefinition = {
+type StringDefinition = { name: string }
+type ParsedDefintion = {
   name: string
-  parse?: { as: string; with: (text: string) => any }
+  parse: { as: string; with: (text: string) => any }
 }
+type ReferenceDefinition = {
+  name: string
+  isReference: true
+}
+type PropertyDefinition =
+  | StringDefinition
+  | ParsedDefintion
+  | ReferenceDefinition
 type Schema = Record<string, string | PropertyDefinition>
 
 const normalizeSchema = (
@@ -56,22 +76,21 @@ const Property = <Output>(Type: Rule<EntityToken, Output>, name?: string) =>
     ([s, n, eq, value, e]) => value,
   )
 
-const StringProperty = (key: string, propertyName: string) =>
-  restructure(
-    Property(IsString(), propertyName),
-    (value) => ({ key, value }),
-  )
+const StringProperty = (key: string, { name }: StringDefinition) =>
+  restructure(Property(IsString(), name), (value) => ({ key, value }))
 
-const AnyProperty =
-  restructure(
-    Property(any(IsAny)),
-    (value) => ({ key: undefined, value }),
-  )
+const ReferenceProperty = (key: string, { name }: ReferenceDefinition) =>
+  restructure(Property(and(IsSymbol(Id), IsString()), name), (value) => ({
+    key,
+    value,
+  }))
 
-const ParsedProperty = (
-  key: string,
-  definition: Required<PropertyDefinition>,
-) =>
+const AnyProperty = restructure(Property(any(IsAny)), (value) => ({
+  key: undefined,
+  value,
+}))
+
+const ParsedProperty = (key: string, definition: ParsedDefintion) =>
   restructure(
     Property(parseAs(definition.parse.with), definition.name),
     (value) => [
@@ -87,24 +106,36 @@ const ParsedProperty = (
   )
 
 const DefinedProperty = (key: string, definition: PropertyDefinition) =>
-  definition.parse !== undefined
-    ? ParsedProperty(key, definition as Required<PropertyDefinition>)
-    : StringProperty(key, definition.name)
+  "parse" in definition
+    ? ParsedProperty(key, definition)
+    : "isReference" in definition
+      ? ReferenceProperty(key, definition)
+      : StringProperty(key, definition)
 
 export const Entity = (rawSchema: Schema) => {
   const schema = normalizeSchema(rawSchema)
-  const properties = Object.entries(schema).map(([k, d]) => DefinedProperty(k, d))
+  const properties = Object.entries(schema).map(([k, d]) =>
+    DefinedProperty(k, d),
+  )
 
   return restructure(
-    and(IsSymbol(EntityStart), IsString(), any(or(...properties, AnyProperty)), IsSymbol(EntityEnd)),
+    and(
+      IsSymbol(EntityStart),
+      IsString(),
+      any(or(...properties, AnyProperty)),
+      IsSymbol(EntityEnd),
+    ),
     ([s, id, entries, e]) => ({
       ...Object.fromEntries(
         entries
           .flat()
           .filter(({ key }) => !!key)
-          .map(({ key, value }) => [key, value.length === 1 ? value[0] : value]),
+          .map(({ key, value }) => [
+            key,
+            value.length === 1 ? value[0] : value,
+          ]),
       ),
-      [Id]: id, 
+      [Id]: id,
     }),
   )
 }

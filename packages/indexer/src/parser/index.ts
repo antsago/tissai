@@ -89,6 +89,10 @@ const Product = Entity({
       with: compiler.compile(Attributes),
     },
   },
+  brand: {
+    name: "brand",
+    isReference: true,
+  },
   description: "description",
   images: "image",
 })
