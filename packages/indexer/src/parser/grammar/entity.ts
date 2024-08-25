@@ -40,7 +40,7 @@ const PropertyValue = <Output>(Type: Rule<EntityToken, Output>) => {
 }
 
 type StringDefinition = { name: string }
-type ParsedDefintion = {
+type ParsedDefinition = {
   name: string
   parse: { as: string; with: (text: string) => any }
 }
@@ -50,7 +50,7 @@ type ReferenceDefinition = {
 }
 type PropertyDefinition =
   | StringDefinition
-  | ParsedDefintion
+  | ParsedDefinition
   | ReferenceDefinition
 type Schema = Record<string, string | PropertyDefinition>
 
@@ -90,7 +90,7 @@ const AnyProperty = restructure(Property(any(IsAny)), (value) => ({
   value,
 }))
 
-const ParsedProperty = (key: string, definition: ParsedDefintion) =>
+const ParsedProperty = (key: string, definition: ParsedDefinition) =>
   restructure(
     Property(parseAs(definition.parse.with), definition.name),
     (value) => [
