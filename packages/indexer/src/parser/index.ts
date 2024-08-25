@@ -7,19 +7,27 @@ import {
   PropertyEnd,
   Entity,
   Attributes,
+  EntityStart,
+  EntityEnd,
 } from "./grammar/index.js"
 
-const PRODUCT_SCHEMA = {
+const ProductLd = {
   "@context": "https://schema.org/",
   "@type": "Product",
   name: "The name of the product",
   productID: "121230",
   description: "The description",
   image: "https://example.com/image.jpg",
+  brand: {
+    "@type": "Brand",
+    name: "WEDZE",
+    image: ["https://brand.com/image.jpg"],
+  },
 }
 
-const ProductTokens = [
-  "type",
+const TokenizedLd = [
+  EntityStart,
+  "@type",
   Equals,
   "Product",
   PropertyEnd,
@@ -37,9 +45,27 @@ const ProductTokens = [
   ValueSeparator,
   "https://example.com/image2.jpg",
   PropertyEnd,
+  "brand",
+  Equals,
+  EntityStart,
+  "@type",
+  Equals,
+  "Brand",
+  PropertyEnd,
+  "name",
+  Equals,
+  "WEDZE",
+  PropertyEnd,
+  "image",
+  Equals,
+  "https://brand.com/image.jpg",
+  PropertyEnd,
+  EntityEnd,
+  PropertyEnd,
+  EntityEnd,
 ]
 
-const reader = TokenReader(ProductTokens)
+const reader = TokenReader(TokenizedLd)
 const compiler = await Compiler(mapping)
 
 const Product = Entity({
