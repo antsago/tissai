@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto"
 import { TokenReader } from "./TokenReader.js"
 import mapping from "./mapping.js"
 import { Compiler } from "./Compiler.js"
@@ -20,22 +21,36 @@ type Expanded = {
   [key: string]: (string | number | boolean)[]
 }
 
-const tokenizeJson = (json: any): EntityToken[] =>
-  [
-    EntityStart,
-    "enitity-0",
-    Object.entries(expandEntry(json) as Expanded).map(([key, values]) => [
-      PropertyStart,
-      key,
-      Equals,
-      values
-        .map((value) => [value, ValueSeparator])
-        .flat()
-        .slice(0, -1),
-      PropertyEnd,
-    ]),
-    EntityEnd,
-  ].flat(3)
+const tokenizeJson = (json: any): EntityToken[] => {
+  let tokens = [] as EntityToken[]
+  const extractEntity = (entityObject: any) => {
+    const entityId = randomUUID()
+    const tokensForEntity = [
+      EntityStart,
+      entityId,
+      Object.entries(expandEntry(entityObject) as Expanded).map(([key, values]) => [
+        PropertyStart,
+        key,
+        Equals,
+        values
+          .map((value) => [
+            typeof(value) === "object" ? [Id, extractEntity(value)] : value,
+            ValueSeparator])
+          .flat()
+          .slice(0, -1),
+        PropertyEnd,
+      ]),
+      EntityEnd,
+    ].flat(Infinity) as EntityToken[]
+
+    tokens = tokens.concat(tokensForEntity)
+    return entityId
+  }
+
+  extractEntity(json)
+
+  return tokens
+}
 
 const ProductLd = {
   // "@context": "https://schema.org/",
@@ -43,12 +58,12 @@ const ProductLd = {
   // name: "The name of the product",
   productID: "121230",
   // description: "The description",
-  image: ["https://example.com/image.jpg","https://example.com/image2.jpg", 2]
-  // brand: {
-  //   "@type": "Brand",
-  //   name: "WEDZE",
-  //   image: ["https://brand.com/image.jpg"],
-  // },
+  image: ["https://example.com/image.jpg","https://example.com/image2.jpg", 2],
+  brand: {
+    "@type": "Brand",
+    name: "WEDZE",
+    image: ["https://brand.com/image.jpg"],
+  },
 }
 
 const tokens = tokenizeJson(ProductLd)
