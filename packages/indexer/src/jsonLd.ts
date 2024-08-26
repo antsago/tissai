@@ -14,7 +14,7 @@ export type JsonLD = Partial<{
   }>[]
 }>
 
-export function expandEntry(linkedData: any): any {
+function expandEntry(linkedData: any): any {
   if (typeof linkedData !== "object") {
     return linkedData
   }

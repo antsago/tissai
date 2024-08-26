@@ -16,13 +16,12 @@ expect.extend({
     pg: MockPg,
     query: CompiledQuery<T>,
   ) {
-    const { isNot, equals } = this
     const expected = expect.arrayContaining([[query.sql, query.parameters]])
     const actual = pg.pool.query.mock.calls
     return {
-      pass: equals(actual, expected),
+      pass: this.equals(actual, expected),
       message: () =>
-        isNot ? `Found unwanted query` : `Expected query not found`,
+        this.isNot ? `Found unwanted query` : `Expected query not found`,
       actual,
       expected,
     }

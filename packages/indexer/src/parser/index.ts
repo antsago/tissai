@@ -15,20 +15,22 @@ import {
   Required,
 } from "./grammar/index.js"
 import { EntityToken } from "./types.js"
-import { expandEntry } from "../jsonLd.js"
+import { parseAndExpand } from "../jsonLd.js"
+import { Page } from "@tissai/db"
+import { parse } from "node-html-parser"
 
 type Expanded = {
-  [key: string]: (string | number | boolean)[]
+  [key: string]: (string | number | boolean | Expanded)[]
 }
 
-const tokenizeJson = (json: any): EntityToken[] => {
+const tokenizeJson = (json: Expanded) => {
   let tokens = [] as EntityToken[]
-  const extractEntity = (entityObject: any) => {
+  const extractEntity = (entityObject: Expanded) => {
     const entityId = randomUUID()
     const tokensForEntity = [
       EntityStart,
       entityId,
-      Object.entries(expandEntry(entityObject) as Expanded).map(([key, values]) => [
+      Object.entries(entityObject).map(([key, values]) => [
         PropertyStart,
         key,
         Equals,
@@ -52,21 +54,42 @@ const tokenizeJson = (json: any): EntityToken[] => {
   return tokens
 }
 
-const ProductLd = {
-  "@context": "https://schema.org/",
-  "@type": "Product",
-  name: "The name of the product",
-  productID: "121230",
-  description: "The description",
-  image: ["https://example.com/image.jpg","https://example.com/image2.jpg", 2],
-  brand: {
-    "@type": "Brand",
-    name: "WEDZE",
-    image: ["https://brand.com/image.jpg"],
-  },
+const parsePage = (page: Page) =>
+  parseAndExpand(
+    parse(page.body)
+      .querySelectorAll('script[type="application/ld+json"]')
+      .map((t) => t.rawText),
+  ).map(tokenizeJson).flat()
+
+const testPage: Page = {
+  id: "test-id",
+  site: "site-id",
+  url: "https://example.com/page.html",
+  body: `
+    <html>
+      <head>
+          <script type="application/ld+json">
+            ${JSON.stringify({
+              "@context": "https://schema.org/",
+              "@type": "Product",
+              name: "The name of the product",
+              productID: "121230",
+              description: "The description",
+              image: ["https://example.com/image.jpg","https://example.com/image2.jpg", 2],
+              brand: {
+                "@type": "Brand",
+                name: "WEDZE",
+                image: ["https://brand.com/image.jpg"],
+              },
+            })}
+          </script>
+      </head>
+    </html>
+  `,
 }
 
-const reader = TokenReader(tokenizeJson(ProductLd))
+const tokens = parsePage(testPage)
+const reader = TokenReader(tokens)
 const compiler = await Compiler(mapping)
 
 const Product = Ontology([
