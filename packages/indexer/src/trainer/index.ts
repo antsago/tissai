@@ -1,3 +1,4 @@
+import assert from 'node:assert/strict'
 import { Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
@@ -47,11 +48,8 @@ for await (let { id, title } of products) {
       }
 
       const label = labels[labelsIndex]
-      if (label.value !== t.originalText) {
-        throw new Error(
-          `With title "${title}", expected to match ${label.value} with ${t.originalText}`,
-        )
-      }
+      assert.equal(label.value, t.originalText, `Expected "${label.value}" to equal "${t.originalText}" for "${title}", `)
+      
       labelsIndex += 1
 
       return {
