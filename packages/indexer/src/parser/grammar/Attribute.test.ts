@@ -4,6 +4,10 @@ import { TokenReader } from "../TokenReader.js"
 import { Attribute } from "./attributes.js"
 
 describe("Attribute", () => {
+  const TOKEN_BASE = {
+    originalText: "foo",
+    trailing: "",
+  }
   const getText = (tokens: WordToken[]) => tokens.map((t) => t.text).join(" ")
 
   it("returns null if no next token", async () => {
@@ -16,8 +20,8 @@ describe("Attribute", () => {
 
   it("rejects starting fillers", async () => {
     const tokens = [
-      { labels: ["filler"], isMeaningful: false, text: "a" },
-      { labels: ["label"], isMeaningful: true, text: "token" },
+      { labels: ["filler"], isMeaningful: false, text: "a", ...TOKEN_BASE },
+      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
     ]
     const reader = TokenReader(tokens)
 
@@ -29,8 +33,8 @@ describe("Attribute", () => {
 
   it("recognizes single labels", async () => {
     const tokens = [
-      { labels: ["label"], isMeaningful: true, text: "token" },
-      { labels: ["filler"], isMeaningful: false, text: "a" },
+      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+      { labels: ["filler"], isMeaningful: false, text: "a", ...TOKEN_BASE },
     ]
     const reader = TokenReader(tokens)
 
@@ -45,9 +49,9 @@ describe("Attribute", () => {
 
   it("recognizes consecutive labels", async () => {
     const tokens = [
-      { labels: ["label"], isMeaningful: true, text: "token" },
-      { labels: ["label"], isMeaningful: true, text: "token" },
-      { labels: ["filler"], isMeaningful: false, text: "a" },
+      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+      { labels: ["filler"], isMeaningful: false, text: "a", ...TOKEN_BASE },
     ]
     const reader = TokenReader(tokens)
 
@@ -62,8 +66,8 @@ describe("Attribute", () => {
 
   it("recognizes minimum common labels", async () => {
     const tokens = [
-      { labels: ["label1", "label2"], isMeaningful: true, text: "token" },
-      { labels: ["label1"], isMeaningful: true, text: "token" },
+      { labels: ["label1", "label2"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+      { labels: ["label1"], isMeaningful: true, text: "token", ...TOKEN_BASE },
     ]
     const reader = TokenReader(tokens)
 
@@ -77,9 +81,9 @@ describe("Attribute", () => {
 
   it("build minimum common labels iteratively", async () => {
     const tokens = [
-      { labels: ["label1", "label2"], isMeaningful: true, text: "token" },
-      { labels: ["label1"], isMeaningful: true, text: "token" },
-      { labels: ["label2"], isMeaningful: true, text: "token" },
+      { labels: ["label1", "label2"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+      { labels: ["label1"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+      { labels: ["label2"], isMeaningful: true, text: "token", ...TOKEN_BASE },
     ]
     const reader = TokenReader(tokens)
 
@@ -93,10 +97,10 @@ describe("Attribute", () => {
 
   it("accepts inbetween filler", async () => {
     const tokens = [
-      { labels: ["label"], isMeaningful: true, text: "token" },
-      { labels: ["filler"], isMeaningful: false, text: "a" },
-      { labels: ["label"], isMeaningful: true, text: "token" },
-      { labels: ["filler"], isMeaningful: false, text: "a" },
+      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+      { labels: ["filler"], isMeaningful: false, text: "a", ...TOKEN_BASE },
+      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+      { labels: ["filler"], isMeaningful: false, text: "a", ...TOKEN_BASE },
     ]
     const reader = TokenReader(tokens)
 
@@ -111,11 +115,11 @@ describe("Attribute", () => {
 
   it("accepts multiple infiller", async () => {
     const tokens = [
-      { labels: ["label"], isMeaningful: true, text: "token" },
-      { labels: ["filler"], isMeaningful: false, text: "a" },
-      { labels: ["filler"], isMeaningful: false, text: "a" },
-      { labels: ["label"], isMeaningful: true, text: "token" },
-      { labels: ["filler"], isMeaningful: false, text: "a" },
+      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+      { labels: ["filler"], isMeaningful: false, text: "a", ...TOKEN_BASE },
+      { labels: ["filler"], isMeaningful: false, text: "a", ...TOKEN_BASE },
+      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+      { labels: ["filler"], isMeaningful: false, text: "a", ...TOKEN_BASE },
     ]
     const reader = TokenReader(tokens)
 
@@ -130,10 +134,10 @@ describe("Attribute", () => {
 
   it("does not append different labels", async () => {
     const tokens = [
-      { labels: ["label"], isMeaningful: true, text: "token" },
-      { labels: ["filler"], isMeaningful: false, text: "a" },
-      { labels: ["other label"], isMeaningful: true, text: "token" },
-      { labels: ["filler"], isMeaningful: false, text: "a" },
+      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+      { labels: ["filler"], isMeaningful: false, text: "a", ...TOKEN_BASE },
+      { labels: ["other label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+      { labels: ["filler"], isMeaningful: false, text: "a", ...TOKEN_BASE },
     ]
     const reader = TokenReader(tokens)
 

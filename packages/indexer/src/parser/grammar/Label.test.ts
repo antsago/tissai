@@ -4,6 +4,11 @@ import { Context } from "../operators/index.js"
 import { Label } from "./attributes.js"
 
 describe("Label", () => {
+  const TOKEN_BASE = {
+    originalText: "foo",
+    trailing: "",
+  }
+
   it("returns null if no next token", () => {
     const reader = TokenReader([])
     const context = new Context()
@@ -15,8 +20,8 @@ describe("Label", () => {
 
   it("returns null if the next token is not meaningful", () => {
     const TOKENS = [
-      { labels: ["filler"], isMeaningful: false, text: "a" },
-      { labels: ["label"], isMeaningful: true, text: "token" },
+      { labels: ["filler"], isMeaningful: false, text: "a", ...TOKEN_BASE },
+      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
     ]
     const reader = TokenReader(TOKENS)
     const context = new Context()
@@ -29,8 +34,8 @@ describe("Label", () => {
 
   it("returns null if not meeting desired label", () => {
     const TOKENS = [
-      { labels: ["label1", "label2"], isMeaningful: true, text: "a" },
-      { labels: ["label"], isMeaningful: true, text: "token" },
+      { labels: ["label1", "label2"], isMeaningful: true, text: "a", ...TOKEN_BASE },
+      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
     ]
     const reader = TokenReader(TOKENS)
     const context = new Context()
@@ -44,8 +49,8 @@ describe("Label", () => {
 
   it("returns token if it's meaningful", () => {
     const TOKENS = [
-      { labels: ["label1", "label2"], isMeaningful: true, text: "a" },
-      { labels: ["label"], isMeaningful: true, text: "token" },
+      { labels: ["label1", "label2"], isMeaningful: true, text: "a", ...TOKEN_BASE },
+      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
     ]
     const reader = TokenReader(TOKENS)
     const context = new Context()
@@ -58,8 +63,8 @@ describe("Label", () => {
 
   it("returns token if it includes one desired label", () => {
     const TOKENS = [
-      { labels: ["label1", "label2"], isMeaningful: true, text: "a" },
-      { labels: ["label"], isMeaningful: true, text: "token" },
+      { labels: ["label1", "label2"], isMeaningful: true, text: "a", ...TOKEN_BASE },
+      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
     ]
     const reader = TokenReader(TOKENS)
     const context = new Context()

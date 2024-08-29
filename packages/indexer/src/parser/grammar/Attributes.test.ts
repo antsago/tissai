@@ -3,6 +3,10 @@ import { TokenReader } from "../TokenReader.js"
 import { Attributes } from "./attributes.js"
 
 describe("Attributes", () => {
+  const TOKEN_BASE = {
+    originalText: "foo",
+    trailing: "",
+  }
   it("handles empty tokens", async () => {
     const reader = TokenReader([])
 
@@ -12,7 +16,7 @@ describe("Attributes", () => {
   })
 
   it("recognizes top-level attributes", async () => {
-    const tokens = [{ labels: ["label"], isMeaningful: true, text: "token" }]
+    const tokens = [{ labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE }]
     const reader = TokenReader(tokens)
 
     const result = await Attributes(reader)
@@ -26,7 +30,7 @@ describe("Attributes", () => {
   })
 
   it("recognizes top-level filler", async () => {
-    const tokens = [{ labels: ["filler"], isMeaningful: false, text: "token" }]
+    const tokens = [{ labels: ["filler"], isMeaningful: false, text: "token", ...TOKEN_BASE }]
     const reader = TokenReader(tokens)
 
     const result = await Attributes(reader)
@@ -36,8 +40,8 @@ describe("Attributes", () => {
 
   it("recognizes multiple segments", async () => {
     const tokens = [
-      { labels: ["label"], isMeaningful: true, text: "token" },
-      { labels: ["filler"], isMeaningful: false, text: "token" },
+      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+      { labels: ["filler"], isMeaningful: false, text: "token", ...TOKEN_BASE },
     ]
     const reader = TokenReader(tokens)
 
