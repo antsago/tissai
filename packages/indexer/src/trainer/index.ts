@@ -1,8 +1,19 @@
 import { Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
-import Lexer from "../lexer/index.js"
+import Lexer, { type Token } from "../lexer/index.js"
 import { type Label, labelTokens } from './labelTokens.js'
+import { LabelMap } from "../parser/types.js"
+
+const updateMapping = (mapping: LabelMap, labeled: (Token & {label?: string})[]) =>
+  labeled
+    .filter((t) => !!t.label)
+    .forEach(({ label, text }) => {
+      mapping[text] = {
+        ...(mapping[text] ?? {}),
+        [label!]: (mapping[text]?.[label!] ?? 0) + 1,
+      }
+    })
 
 reporter.progress("Initializing database and pools")
 
@@ -20,27 +31,20 @@ const [{ count: productCount }] = await db.query(
     .compile(),
 )
 const products = await db.stream(
-  query.selectFrom("products").select(["title", "id"]).limit(2).compile(),
+  query.selectFrom("products").select(["title", "id"]).compile(),
 )
 
-const TOKEN_LABEL_MAPPING = {} as Record<string, Record<string, number>>
+const TOKEN_LABEL_MAPPING = {} as LabelMap
 let index = 1
 for await (let { id, title } of products) {
   try {
     reporter.progress(
       `Processing product ${index}/${productCount}: ${id} (${title})`,
     )
+
     const tokens = await lexer.tokenize(title)
     const labeled = await labelTokens(tokens, title, python)
-
-    labeled
-      .filter((t) => !!t.label)
-      .forEach(({ label, text }) => {
-        TOKEN_LABEL_MAPPING[text] = {
-          ...(TOKEN_LABEL_MAPPING[text] ?? {}),
-          [label!]: (TOKEN_LABEL_MAPPING[text]?.[label!] ?? 0) + 1,
-        }
-      })
+    updateMapping(TOKEN_LABEL_MAPPING, labeled)
 
     index += 1
   } catch (err) {

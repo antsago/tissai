@@ -1,8 +1,7 @@
 import Lexer, { type Token as LexerToken } from "../lexer/index.js"
-import type { WordToken, Rule } from "./types.js"
+import type { WordToken, Rule, LabelMap } from "./types.js"
 import { TokenReader } from "./TokenReader.js"
 
-type LabelMap = Record<string, Record<string, number>>
 const labeler = (map: LabelMap) => (tokens: LexerToken[]) =>
   tokens.map((t) => ({
     ...t,

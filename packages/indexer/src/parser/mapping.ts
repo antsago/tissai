@@ -1,3 +1,5 @@
+import type { LabelMap } from "./types.js"
+
 export default {
   jeans: { categoría: 81, talle: 2, modelo: 2 },
   cropped: { categoría: 6, modelo: 1 },
@@ -1057,4 +1059,4 @@ export default {
   boston: { marca: 6 },
   celtics: { marca: 6 },
   showtime: { marca: 1, modelo: 1 },
-} as Record<string, Record<string, number>>
+} as LabelMap

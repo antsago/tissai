@@ -1,6 +1,8 @@
 import type { TokenReader } from "./TokenReader.js"
 import type { Token } from "../lexer/index.js"
 
+export type LabelMap = Record<string, Record<string, number>>
+
 export type WordToken = Token & { labels: string[] }
 export type EntityToken = string | symbol | number | boolean
 export type DataToken = Exclude<EntityToken, symbol>
