@@ -1,5 +1,5 @@
 import { and, any, or, restructure, given, unless } from "../operators/index.js"
-import { EntityStart, EntityEnd, Id, Required } from "./symbols.js"
+import { EntityStart, EntityEnd, Id, Required } from "../../lexer/index.js"
 import { IsData, IsSymbol } from "./values.js"
 import {
   type PropertyDefinition,

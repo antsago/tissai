@@ -6,7 +6,7 @@ import {
   PropertyEnd,
   PropertyStart,
   Id,
-} from "./symbols.js"
+} from "../../lexer/index.js"
 import { IsData, IsSymbol, IsValue, IsParsed } from "./values.js"
 
 const PropertyValue = <Output>(Type: Rule<EntityToken, Output>) => {

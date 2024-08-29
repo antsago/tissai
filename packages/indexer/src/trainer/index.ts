@@ -1,7 +1,7 @@
 import { Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
-import Lexer, { type Token } from "../lexer/index.js"
+import { type Token, Lexer } from "../lexer/index.js"
 import { type Label, getLabels } from "./labelTokens.js"
 import { LabelMap } from "../parser/types.js"
 

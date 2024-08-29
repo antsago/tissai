@@ -7,11 +7,12 @@ import {
   EntityEnd,
   PropertyStart,
   Id,
-} from "./grammar/index.js"
-import { EntityToken } from "./types.js"
+} from "./symbols.js"
 import { parseAndExpand } from "../jsonLd.js"
 import { Page } from "@tissai/db"
 import { parse } from "node-html-parser"
+
+export type EntityToken = string | symbol | number | boolean
 
 type Expanded = {
   [key: string]: (string | number | boolean | Expanded)[]

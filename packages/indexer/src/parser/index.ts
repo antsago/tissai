@@ -1,9 +1,9 @@
 import { Page } from "@tissai/db"
-import Lexer, { type Token as LexerToken } from "../lexer/index.js"
+import { type Token as LexerToken, Lexer, Required } from "../lexer/index.js"
 import { TokenReader } from "./TokenReader.js"
 import mapping from "./mapping.js"
-import { Ontology, Attributes, Required } from "./grammar/index.js"
-import { parsePage } from "./parsePage.js"
+import { Ontology, Attributes } from "./grammar/index.js"
+import { parsePage } from "../lexer/parsePage.js"
 import { LabelMap } from "./types.js"
 
 const getLabels = (map: LabelMap) => (tokens: LexerToken[]) =>

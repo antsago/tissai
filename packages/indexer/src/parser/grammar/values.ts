@@ -1,6 +1,6 @@
 import type { EntityToken, DataToken } from "../types.js"
 import { Token, restructure } from "../operators/index.js"
-import { ValueSeparator, Id } from "./symbols.js"
+import { ValueSeparator, Id } from "../../lexer/symbols.js"
 
 export const IsData = (data?: DataToken) =>
   Token(

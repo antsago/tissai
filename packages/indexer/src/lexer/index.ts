@@ -1,5 +1,5 @@
-import { Lexer } from "./Lexer.js"
-
 export type { Token } from "./normalizer.js"
+export type { EntityToken } from "./parsePage.js"
 
-export default Lexer
+export { Lexer } from "./Lexer.js"
+export * from "./symbols.js"
