@@ -1,12 +1,8 @@
 import { Page } from "@tissai/db"
-import { type Token as LexerToken, Lexer, Required } from "../lexer/index.js"
+import { Lexer } from "../lexer/index.js"
 import { TokenReader } from "./TokenReader.js"
-import mapping from "./mapping.js"
-import { Ontology, Attributes } from "./grammar/index.js"
-import { LabelMap } from "./types.js"
-
-const getLabels = (map: LabelMap) => (tokens: LexerToken[]) =>
-  tokens.map((t) => t.text in map ? Object.keys(map[t.text]) : ["unknown"])
+import { Ontology } from "./grammar/index.js"
+import { getSchemas } from "./schemas.js"
 
 const testPage: Page = {
   id: "test-id",
@@ -43,38 +39,7 @@ const lexer = Lexer()
 const tokens = lexer.fromPage(testPage)
 const reader = TokenReader(tokens)
 
-const Product = Ontology([
-  {
-    [Required]: {
-      key: "@type",
-      value: "Product",
-    },
-    title: {
-      name: "name",
-      parse: {
-        as: "attributes",
-        with: async (title: string) => {
-          const tokens = await lexer.fromText(title, getLabels(mapping))
-          return Attributes(TokenReader(tokens))
-        },
-      },
-    },
-    brand: {
-      name: "brand",
-      isReference: true,
-    },
-    description: "description",
-    images: "image",
-  },
-  {
-    [Required]: {
-      key: "@type",
-      value: "Brand",
-    },
-    name: "name",
-    icon: "image",
-  },
-])
+const Product = Ontology(getSchemas(lexer))
 
 const result = await Product(reader)
 
