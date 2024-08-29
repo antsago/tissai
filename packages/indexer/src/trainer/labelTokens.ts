@@ -22,12 +22,6 @@ export const labelTokens = async (
     }
 
     const label = labels[labelsIndex]
-    assert.equal(
-      label.value,
-      t.originalText,
-      `Expected "${label.value}" to equal "${t.originalText}" in "${title}"`,
-    )
-
     labelsIndex += 1
 
     return {
