@@ -1,6 +1,7 @@
 import { Scanner } from "./Scanner.js"
 import { normalizer } from "./normalizer.js"
 import { type Labeler, labelTokens } from "./labelTokens.js"
+import { parsePage } from "./parsePage.js"
 
 export function Lexer() {
   const scanner = Scanner()
@@ -10,6 +11,7 @@ export function Lexer() {
       const tokens = await scanner.tokenize(title)
       return labelTokens(normalizer(tokens), getLabels)
     },
+    fromPage: parsePage,
     close: () => scanner.close(),
   }
 }

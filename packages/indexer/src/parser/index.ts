@@ -3,7 +3,6 @@ import { type Token as LexerToken, Lexer, Required } from "../lexer/index.js"
 import { TokenReader } from "./TokenReader.js"
 import mapping from "./mapping.js"
 import { Ontology, Attributes } from "./grammar/index.js"
-import { parsePage } from "../lexer/parsePage.js"
 import { LabelMap } from "./types.js"
 
 const getLabels = (map: LabelMap) => (tokens: LexerToken[]) =>
@@ -40,9 +39,9 @@ const testPage: Page = {
   `,
 }
 
-const tokens = parsePage(testPage)
-const reader = TokenReader(tokens)
 const lexer = Lexer()
+const tokens = lexer.fromPage(testPage)
+const reader = TokenReader(tokens)
 
 const Product = Ontology([
   {
