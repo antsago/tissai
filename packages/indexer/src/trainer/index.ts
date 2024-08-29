@@ -1,10 +1,8 @@
-import assert from 'node:assert/strict'
 import { Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
-import Lexer, { Token } from "../lexer/index.js"
-
-type Label = { label: string; value: string }
+import Lexer from "../lexer/index.js"
+import { type Label, labelTokens } from './labelTokens.js'
 
 reporter.progress("Initializing database and pools")
 
@@ -14,35 +12,6 @@ const python = PythonPool<
   { title: string; words: string[] },
   Label[]
 >(`./labelWords.py`, reporter)
-
-const labelTokens = async (tokens: Token[], title: string) => {
-  const words = tokens
-    .filter((t) => t.isMeaningful)
-    .map((t) => t.originalText)
-  const labels = await python.send({ title, words })
-
-  let labelsIndex = 0
-  const labeled = tokens.map((t) => {
-    if (!t.isMeaningful) {
-      return {
-        ...t,
-        label: undefined,
-      }
-    }
-
-    const label = labels[labelsIndex]
-    assert.equal(label.value, t.originalText, `Expected "${label.value}" to equal "${t.originalText}" in "${title}"`)
-    
-    labelsIndex += 1
-
-    return {
-      ...t,
-      label: label.label,
-    }
-  })
-
-  return labeled
-}
 
 const [{ count: productCount }] = await db.query(
   query
@@ -62,7 +31,7 @@ for await (let { id, title } of products) {
       `Processing product ${index}/${productCount}: ${id} (${title})`,
     )
     const tokens = await lexer.tokenize(title)
-    const labeled = await labelTokens(tokens, title)
+    const labeled = await labelTokens(tokens, title, python)
 
     labeled
       .filter((t) => !!t.label)
