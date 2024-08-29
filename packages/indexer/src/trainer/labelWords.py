@@ -19,7 +19,7 @@ def getPrompt(title, labels):
     pantalón <> categoría
     Total <> modelo
     look <> modelo
-    hombre <> género,edad
+    hombre <> género
     SPF <> marca
 
   Fred Perry Classic Swim Pantalones cortos
