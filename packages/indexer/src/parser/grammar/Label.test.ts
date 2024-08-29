@@ -34,7 +34,12 @@ describe("Label", () => {
 
   it("returns null if not meeting desired label", () => {
     const TOKENS = [
-      { labels: ["label1", "label2"], isMeaningful: true, text: "a", ...TOKEN_BASE },
+      {
+        labels: ["label1", "label2"],
+        isMeaningful: true,
+        text: "a",
+        ...TOKEN_BASE,
+      },
       { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
     ]
     const reader = TokenReader(TOKENS)
@@ -49,7 +54,12 @@ describe("Label", () => {
 
   it("returns token if it's meaningful", () => {
     const TOKENS = [
-      { labels: ["label1", "label2"], isMeaningful: true, text: "a", ...TOKEN_BASE },
+      {
+        labels: ["label1", "label2"],
+        isMeaningful: true,
+        text: "a",
+        ...TOKEN_BASE,
+      },
       { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
     ]
     const reader = TokenReader(TOKENS)
@@ -63,7 +73,12 @@ describe("Label", () => {
 
   it("returns token if it includes one desired label", () => {
     const TOKENS = [
-      { labels: ["label1", "label2"], isMeaningful: true, text: "a", ...TOKEN_BASE },
+      {
+        labels: ["label1", "label2"],
+        isMeaningful: true,
+        text: "a",
+        ...TOKEN_BASE,
+      },
       { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
     ]
     const reader = TokenReader(TOKENS)

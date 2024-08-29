@@ -2,10 +2,13 @@ import { Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
 import Lexer, { type Token } from "../lexer/index.js"
-import { type Label, labelTokens } from './labelTokens.js'
+import { type Label, labelTokens } from "./labelTokens.js"
 import { LabelMap } from "../parser/types.js"
 
-const updateMapping = (mapping: LabelMap, labeled: (Token & {label?: string})[]) =>
+const updateMapping = (
+  mapping: LabelMap,
+  labeled: (Token & { label?: string })[],
+) =>
   labeled
     .filter((t) => !!t.label)
     .forEach(({ label, text }) => {
@@ -19,10 +22,10 @@ reporter.progress("Initializing database and pools")
 
 const db = Db()
 const lexer = Lexer()
-const python = PythonPool<
-  { title: string; words: string[] },
-  Label[]
->(`./labelWords.py`, reporter)
+const python = PythonPool<{ title: string; words: string[] }, Label[]>(
+  `./labelWords.py`,
+  reporter,
+)
 
 const [{ count: productCount }] = await db.query(
   query

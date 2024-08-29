@@ -66,7 +66,12 @@ describe("Attribute", () => {
 
   it("recognizes minimum common labels", async () => {
     const tokens = [
-      { labels: ["label1", "label2"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+      {
+        labels: ["label1", "label2"],
+        isMeaningful: true,
+        text: "token",
+        ...TOKEN_BASE,
+      },
       { labels: ["label1"], isMeaningful: true, text: "token", ...TOKEN_BASE },
     ]
     const reader = TokenReader(tokens)
@@ -81,7 +86,12 @@ describe("Attribute", () => {
 
   it("build minimum common labels iteratively", async () => {
     const tokens = [
-      { labels: ["label1", "label2"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+      {
+        labels: ["label1", "label2"],
+        isMeaningful: true,
+        text: "token",
+        ...TOKEN_BASE,
+      },
       { labels: ["label1"], isMeaningful: true, text: "token", ...TOKEN_BASE },
       { labels: ["label2"], isMeaningful: true, text: "token", ...TOKEN_BASE },
     ]
@@ -136,7 +146,12 @@ describe("Attribute", () => {
     const tokens = [
       { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
       { labels: ["filler"], isMeaningful: false, text: "a", ...TOKEN_BASE },
-      { labels: ["other label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+      {
+        labels: ["other label"],
+        isMeaningful: true,
+        text: "token",
+        ...TOKEN_BASE,
+      },
       { labels: ["filler"], isMeaningful: false, text: "a", ...TOKEN_BASE },
     ]
     const reader = TokenReader(tokens)

@@ -16,7 +16,9 @@ describe("Attributes", () => {
   })
 
   it("recognizes top-level attributes", async () => {
-    const tokens = [{ labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE }]
+    const tokens = [
+      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+    ]
     const reader = TokenReader(tokens)
 
     const result = await Attributes(reader)
@@ -30,7 +32,9 @@ describe("Attributes", () => {
   })
 
   it("recognizes top-level filler", async () => {
-    const tokens = [{ labels: ["filler"], isMeaningful: false, text: "token", ...TOKEN_BASE }]
+    const tokens = [
+      { labels: ["filler"], isMeaningful: false, text: "token", ...TOKEN_BASE },
+    ]
     const reader = TokenReader(tokens)
 
     const result = await Attributes(reader)

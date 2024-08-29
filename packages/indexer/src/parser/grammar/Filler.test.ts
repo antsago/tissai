@@ -18,7 +18,12 @@ describe("Filler", () => {
 
   it("returns null if the next token is meaningful", () => {
     const TOKENS = [
-      { labels: ["label1", "label2"], isMeaningful: true, text: "a", ...TOKEN_BASE },
+      {
+        labels: ["label1", "label2"],
+        isMeaningful: true,
+        text: "a",
+        ...TOKEN_BASE,
+      },
       { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
     ]
     const reader = TokenReader(TOKENS)
