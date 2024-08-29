@@ -45,7 +45,7 @@ for await (let { id, title } of products) {
       `Processing product ${index}/${productCount}: ${id} (${title})`,
     )
 
-    const tokens = await lexer.tokenize(title)
+    const tokens = await lexer.asText(title)
     const labeled = await labelTokens(tokens, title, python)
     updateMapping(TOKEN_LABEL_MAPPING, labeled)
 

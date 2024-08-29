@@ -5,7 +5,7 @@ export function Lexer() {
   const scanner = Scanner()
 
   return {
-    tokenize: async (title: string) => {
+    asText: async (title: string) => {
       const tokens = await scanner.tokenize(title)
       return normalizer(tokens)
     },

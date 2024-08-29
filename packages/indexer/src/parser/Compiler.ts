@@ -16,7 +16,7 @@ export function Compiler(map: LabelMap) {
   const compile =
     <Output>(grammar: Rule<WordToken, Output>) =>
     async (title: string) => {
-      const tokens = await lexer.tokenize(title)
+      const tokens = await lexer.asText(title)
       const labeled = label(tokens)
       return grammar(TokenReader(labeled))
     }
