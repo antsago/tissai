@@ -2,7 +2,7 @@ import { Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
 import Lexer, { type Token } from "../lexer/index.js"
-import { type Label, labelTokens } from "./labelTokens.js"
+import { type Label, getLabels } from "./labelTokens.js"
 import { LabelMap } from "../parser/types.js"
 
 const updateMapping = (
@@ -45,9 +45,8 @@ for await (let { id, title } of products) {
       `Processing product ${index}/${productCount}: ${id} (${title})`,
     )
 
-    const tokens = await lexer.asText(title)
-    const labeled = await labelTokens(tokens, title, python)
-    updateMapping(TOKEN_LABEL_MAPPING, labeled)
+    const tokens = await lexer.asText(title, getLabels(title, python))
+    updateMapping(TOKEN_LABEL_MAPPING, tokens)
 
     index += 1
   } catch (err) {
