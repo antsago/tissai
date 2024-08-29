@@ -1,9 +1,13 @@
+import { Page } from "@tissai/db"
+import Lexer, { type Token as LexerToken } from "../lexer/index.js"
 import { TokenReader } from "./TokenReader.js"
 import mapping from "./mapping.js"
-import { Compiler } from "./Compiler.js"
 import { Ontology, Attributes, Required } from "./grammar/index.js"
-import { Page } from "@tissai/db"
 import { parsePage } from "./parsePage.js"
+import { LabelMap } from "./types.js"
+
+const getLabels = (map: LabelMap) => (tokens: LexerToken[]) =>
+  tokens.map((t) => t.text in map ? Object.keys(map[t.text]) : ["unknown"])
 
 const testPage: Page = {
   id: "test-id",
@@ -38,7 +42,7 @@ const testPage: Page = {
 
 const tokens = parsePage(testPage)
 const reader = TokenReader(tokens)
-const compiler = await Compiler(mapping)
+const lexer = Lexer()
 
 const Product = Ontology([
   {
@@ -50,7 +54,10 @@ const Product = Ontology([
       name: "name",
       parse: {
         as: "attributes",
-        with: compiler.compile(Attributes),
+        with: async (title: string) => {
+          const tokens = await lexer.fromText(title, getLabels(mapping))
+          return Attributes(TokenReader(tokens))
+        },
       },
     },
     brand: {
@@ -72,5 +79,5 @@ const Product = Ontology([
 
 const result = await Product(reader)
 
-await compiler.close()
+await lexer.close()
 console.dir(result, { depth: null })
