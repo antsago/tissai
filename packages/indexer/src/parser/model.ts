@@ -1,6 +1,16 @@
 import type { LabelMap } from "./types.js"
 
-export default {
+export const schemas = {
+  "jeans cropped marine": { género: 3, modelo: 2 },
+  "jeans high waist pockets": { modelo: 2 },
+  "jeans high": { talle: 2, pockets: 2, color: 2 },
+  jeans: { waist: 2, tamaño: 2, pockets: 2, modelo: 2 },
+  "jeans flare": { género: 2 },
+  "pantalon denim": { ancho: 2, bicolor: 2 },
+  "pantalon punto": { modelo: 2 },
+} as LabelMap
+
+export const vocabulary = {
   jeans: { categoría: 81, talle: 2, modelo: 2 },
   cropped: { categoría: 6, modelo: 1 },
   marine: { categoría: 3, marca: 1 },

@@ -76,7 +76,7 @@ const [{ count: pageCount }] = await db.query(
     .compile(),
 )
 const products = await db.stream(
-  query.selectFrom("pages").select(["body", "url", "id"]).limit(1).compile(),
+  query.selectFrom("pages").select(["body", "url", "id"]).compile(),
 )
 
 const VOCABULARY = {} as LabelMap
@@ -84,9 +84,7 @@ const SCHEMAS = {} as LabelMap
 let index = 1
 for await (let { id, body, url } of products) {
   try {
-    reporter.progress(
-      `Processing page ${index}/${pageCount}: ${id} (${url})`,
-    )
+    reporter.progress(`Processing page ${index}/${pageCount}: ${id} (${url})`)
 
     const tokens = lexer.fromPage(body)
     const entities = await Parser(TokenReader(tokens))

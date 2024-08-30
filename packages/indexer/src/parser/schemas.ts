@@ -1,6 +1,6 @@
 import { type Token as LexerToken, Lexer } from "../lexer/index.js"
 import { TokenReader } from "./TokenReader.js"
-import mapping from "./mapping.js"
+import * as model from "./model.js"
 import { type Schema, Attributes, Required } from "./grammar/index.js"
 import { LabelMap } from "./types.js"
 
@@ -18,7 +18,7 @@ export const getSchemas = (lexer: Lexer): Schema[] => [
       parse: {
         as: "attributes",
         with: async (title: string) => {
-          const tokens = await lexer.fromText(title, getLabels(mapping))
+          const tokens = await lexer.fromText(title, getLabels(model.vocabulary))
           return Attributes(TokenReader(tokens))
         },
       },
