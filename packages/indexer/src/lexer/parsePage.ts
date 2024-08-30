@@ -50,9 +50,9 @@ const tokenizeJson = (json: Expanded) => {
   return tokens
 }
 
-export const parsePage = (page: Page) =>
+export const parsePage = (body: string) =>
   parseAndExpand(
-    parse(page.body)
+    parse(body)
       .querySelectorAll('script[type="application/ld+json"]')
       .map((t) => t.rawText),
   )

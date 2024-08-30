@@ -1,14 +1,9 @@
-import { Page } from "@tissai/db"
 import { Lexer } from "../lexer/index.js"
 import { TokenReader } from "./TokenReader.js"
 import { Ontology } from "./grammar/index.js"
 import { getSchemas } from "./schemas.js"
 
-const testPage: Page = {
-  id: "test-id",
-  site: "site-id",
-  url: "https://example.com/page.html",
-  body: `
+const testPage = `
     <html>
       <head>
           <script type="application/ld+json">
@@ -32,8 +27,7 @@ const testPage: Page = {
           </script>
       </head>
     </html>
-  `,
-}
+  `
 
 const lexer = Lexer()
 const tokens = lexer.fromPage(testPage)
