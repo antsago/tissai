@@ -1,4 +1,5 @@
 import type { TokenReader } from "../TokenReader.js"
+import { NonMatch } from "./nonMatch.js"
 
 export const Token =
   <T>(check: (token: T) => boolean) =>
@@ -9,5 +10,5 @@ export const Token =
       return token
     }
 
-    return null
+    return NonMatch
   }

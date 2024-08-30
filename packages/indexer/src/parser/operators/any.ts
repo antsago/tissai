@@ -1,4 +1,5 @@
 import type { RuleResult, Rule, RuleReader } from "../types.js"
+import { AwaitedMatch, NonMatch } from "./nonMatch.js"
 
 const any =
   <R extends Rule<never, unknown>>(check: R) =>
@@ -9,12 +10,12 @@ const any =
       reader.savePosition()
 
       const result = await (check(reader) as RuleResult<R>)
-      if (!result) {
+      if (result === NonMatch) {
         reader.restoreSave()
         break
       }
 
-      results.push(result)
+      results.push(result as AwaitedMatch<RuleResult<R>>)
       reader.discardSave()
     }
 

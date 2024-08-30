@@ -1,5 +1,6 @@
-import { and, any, or, restructure, given, Token } from "../operators/index.js"
 import { EntityStart, EntityEnd, Id } from "../../lexer/index.js"
+import { type EntityToken } from "../types.js"
+import { and, any, or, restructure, given, Token } from "../operators/index.js"
 import { Any, IsData, IsSymbol } from "./values.js"
 import {
   type PropertyDefinition,
@@ -35,7 +36,7 @@ export const Properties = (schema: Schema) => {
 
   return restructure(
     given(
-      any(or(requiredProperty, Token(t => t !== EntityEnd))),
+      any(or(requiredProperty, Token<EntityToken>(t => t !== EntityEnd))),
       (match) => match.some(m => typeof(m) === "object" && "key" in m && m.key === Required),
       any(or(...definedProperties, AnyProperty)),
     ),

@@ -1,5 +1,5 @@
 import type { DataToken, EntityToken, Rule } from "../types.js"
-import { and, any, restructure } from "../operators/index.js"
+import { and, any, restructure, type AwaitedMatch } from "../operators/index.js"
 import {
   Equals,
   ValueSeparator,
@@ -13,9 +13,7 @@ const PropertyValue = <Output>(Type: Rule<EntityToken, Output>) => {
   return restructure(
     and(Type, any(and(IsSymbol(ValueSeparator), Type))),
     (tokens) =>
-      tokens.flat(Infinity).filter((t) => typeof t !== "symbol") as NonNullable<
-        Awaited<Output>
-      >[],
+      tokens.flat(Infinity).filter((t) => typeof t !== "symbol") as AwaitedMatch<Output>[],
   )
 }
 

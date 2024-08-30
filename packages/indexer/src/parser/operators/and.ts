@@ -1,7 +1,8 @@
 import type { Rule, RuleResult, RuleReader } from "../types.js"
+import { NonMatch, type AwaitedMatch } from "./nonMatch.js"
 
 type AndResults<T extends Rule<never, unknown>[]> = {
-  [K in keyof T]: NonNullable<Awaited<RuleResult<T[K]>>>
+  [K in keyof T]: AwaitedMatch<RuleResult<T[K]>>
 }
 
 const and =
@@ -11,8 +12,8 @@ const and =
 
     for (const check of checks) {
       const match = await check(reader)
-      if (!match) {
-        return null
+      if (match === NonMatch) {
+        return NonMatch
       }
 
       result.push(match)

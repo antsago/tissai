@@ -1,4 +1,5 @@
 import type { Rule, RuleResult, RuleReader } from "../types.js"
+import { NonMatch } from "./nonMatch.js"
 
 const or =
   <I extends Rule<never, unknown>[]>(...checks: I) =>
@@ -7,7 +8,7 @@ const or =
       reader.savePosition()
 
       const match = await (check(reader) as RuleResult<I[number]>)
-      if (match) {
+      if (match !== NonMatch) {
         reader.discardSave()
         return match
       }
@@ -15,7 +16,7 @@ const or =
       reader.restoreSave()
     }
 
-    return null
+    return NonMatch
   }
 
 export default or
