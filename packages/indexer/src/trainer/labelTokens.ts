@@ -3,13 +3,13 @@ import type { Token } from "../lexer/index.js"
 
 export type Label = { label: string; value: string }
 
-export const getLabels = (
-  title: string,
-  python: PythonPool<{ title: string; words: string[] }, Label[]>,
-) => async (
-  tokens: Token[],
-) => {
-  const words = tokens.map((t) => t.originalText)
-  const labels = await python.send({ title, words })
-  return labels.map(l => [l.label])
-}
+export const getLabels =
+  (
+    title: string,
+    python: PythonPool<{ title: string; words: string[] }, Label[]>,
+  ) =>
+  async (tokens: Token[]) => {
+    const words = tokens.map((t) => t.originalText)
+    const labels = await python.send({ title, words })
+    return labels.map((l) => [l.label])
+  }

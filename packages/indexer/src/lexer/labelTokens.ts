@@ -2,10 +2,7 @@ import { Token } from "./normalizer.js"
 
 export type Labeler = (tokens: Token[]) => Promise<string[][]> | string[][]
 
-export const labelTokens = async (
-  tokens: Token[],
-  getLabels: Labeler,
-) => {
+export const labelTokens = async (tokens: Token[], getLabels: Labeler) => {
   const labels = await getLabels(tokens.filter((t) => t.isMeaningful))
 
   let labelsIndex = 0

@@ -3,7 +3,11 @@ import type { TokenReader } from "../TokenReader.js"
 import { type AwaitedMatch, NonMatch } from "./nonMatch.js"
 
 export const given =
-  <T, RO, MO>(check: Rule<T, RO>, assertion: (ruleOutput: AwaitedMatch<RO>) => Boolean, onMatch: Rule<T, MO>) =>
+  <T, RO, MO>(
+    check: Rule<T, RO>,
+    assertion: (ruleOutput: AwaitedMatch<RO>) => Boolean,
+    onMatch: Rule<T, MO>,
+  ) =>
   async (reader: TokenReader<T>) => {
     reader.savePosition()
     const match = await check(reader)

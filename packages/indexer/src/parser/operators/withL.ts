@@ -9,7 +9,9 @@ const withL =
 
     const result = await (checkFactory(context)(reader) as RuleResult<R>)
 
-    return result === NonMatch ? NonMatch : { result: result as AwaitedMatch<RuleResult<R>>, context }
+    return result === NonMatch
+      ? NonMatch
+      : { result: result as AwaitedMatch<RuleResult<R>>, context }
   }
 
 export default withL

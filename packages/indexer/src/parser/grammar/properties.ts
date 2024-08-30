@@ -13,7 +13,9 @@ const PropertyValue = <Output>(Type: Rule<EntityToken, Output>) => {
   return restructure(
     and(Type, any(and(IsSymbol(ValueSeparator), Type))),
     (tokens) =>
-      tokens.flat(Infinity).filter((t) => typeof t !== "symbol") as AwaitedMatch<Output>[],
+      tokens
+        .flat(Infinity)
+        .filter((t) => typeof t !== "symbol") as AwaitedMatch<Output>[],
   )
 }
 

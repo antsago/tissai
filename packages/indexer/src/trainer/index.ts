@@ -7,7 +7,7 @@ import { LabelMap } from "../parser/types.js"
 import { Attributes, Ontology, Required } from "../parser/grammar/index.js"
 import { TokenReader } from "../parser/TokenReader.js"
 
-type Attribute = { value: string, labels: string[] }
+type Attribute = { value: string; labels: string[] }
 
 const updateMapping = (
   vocabulary: LabelMap,
@@ -15,7 +15,7 @@ const updateMapping = (
 ) =>
   labeled
     .filter((t) => t.isMeaningful && !!t.labels.length)
-    .flatMap(({ labels, text }) => labels.map(label => ({ label, text })))
+    .flatMap(({ labels, text }) => labels.map((label) => ({ label, text })))
     .forEach(({ label, text }) => {
       vocabulary[text] = {
         ...(vocabulary[text] ?? {}),
@@ -23,19 +23,22 @@ const updateMapping = (
       }
     })
 const CATEGORY_LABEL = "categoría"
-const updateSchemas = (
-  schemas: LabelMap,
-  attributes: Attribute[],
-) => {
-  const categories = attributes.filter(att => att.labels.includes(CATEGORY_LABEL)).map(att => att.value)
-  const otherAttributes = attributes.flatMap(att => att.labels).filter(label => label !== CATEGORY_LABEL)
-  categories.forEach(cat => otherAttributes.forEach(att => {
-    schemas[cat] = {
-      ...(schemas[cat] ?? {}),
-      // Add an extra count so unknown categories can have a phantom count
-      [att]: (schemas[cat]?.[att] ?? 1) + 1,
-    }
-  }))
+const updateSchemas = (schemas: LabelMap, attributes: Attribute[]) => {
+  const categories = attributes
+    .filter((att) => att.labels.includes(CATEGORY_LABEL))
+    .map((att) => att.value)
+  const otherAttributes = attributes
+    .flatMap((att) => att.labels)
+    .filter((label) => label !== CATEGORY_LABEL)
+  categories.forEach((cat) =>
+    otherAttributes.forEach((att) => {
+      schemas[cat] = {
+        ...(schemas[cat] ?? {}),
+        // Add an extra count so unknown categories can have a phantom count
+        [att]: (schemas[cat]?.[att] ?? 1) + 1,
+      }
+    }),
+  )
 }
 
 reporter.progress("Initializing database and pools")
@@ -46,23 +49,25 @@ const python = PythonPool<{ title: string; words: string[] }, Label[]>(
   `./labelWords.py`,
   console,
 )
-const Parser = Ontology([{
-  [Required]: {
-    key: "@type",
-    value: "Product",
-  },
-  title: {
-    name: "name",
-    parse: {
-      as: "parsedTitle",
-      with: async (title: string) => {
-        const tokens = await lexer.fromText(title, getLabels(title, python))
-        const attributes = await Attributes(TokenReader(tokens))
-        return { attributes, tokens }
-      }
+const Parser = Ontology([
+  {
+    [Required]: {
+      key: "@type",
+      value: "Product",
     },
-  }
-}])
+    title: {
+      name: "name",
+      parse: {
+        as: "parsedTitle",
+        with: async (title: string) => {
+          const tokens = await lexer.fromText(title, getLabels(title, python))
+          const attributes = await Attributes(TokenReader(tokens))
+          return { attributes, tokens }
+        },
+      },
+    },
+  },
+])
 
 const [{ count: pageCount }] = await db.query(
   query
@@ -88,13 +93,17 @@ for await (let { id, body, url } of products) {
 
     if (typeof entities !== "symbol") {
       const products = entities
-        .filter(entity => typeof(entity) !== "symbol" && "parsedTitle" in entity)
-        .map(product => product.parsedTitle)
+        .filter(
+          (entity) => typeof entity !== "symbol" && "parsedTitle" in entity,
+        )
+        .map((product) => product.parsedTitle)
 
-      updateMapping(VOCABULARY, products.map(p => p.tokens).flat())
+      updateMapping(VOCABULARY, products.map((p) => p.tokens).flat())
       products
-        .map(p => p.attributes.filter((att: Attribute|Token) => !("text" in att)))
-        .forEach(attributes => updateSchemas(SCHEMAS, attributes))
+        .map((p) =>
+          p.attributes.filter((att: Attribute | Token) => !("text" in att)),
+        )
+        .forEach((attributes) => updateSchemas(SCHEMAS, attributes))
     }
 
     index += 1

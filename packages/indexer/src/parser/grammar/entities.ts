@@ -36,8 +36,16 @@ export const Properties = (schema: Schema) => {
 
   return restructure(
     given(
-      any(or(requiredProperty, Token<EntityToken>(t => t !== EntityEnd))),
-      (match) => match.some(m => typeof(m) === "object" && "key" in m && m.key === Required),
+      any(
+        or(
+          requiredProperty,
+          Token<EntityToken>((t) => t !== EntityEnd),
+        ),
+      ),
+      (match) =>
+        match.some(
+          (m) => typeof m === "object" && "key" in m && m.key === Required,
+        ),
       any(or(...definedProperties, AnyProperty)),
     ),
     (properties) =>
@@ -67,7 +75,7 @@ export const Entity = (schema: Schema) =>
     }),
   )
 
-export const Ontology = (schemas: Schema[]) => restructure(
-  any(or(...schemas.map(Entity), Any)),
-  (candidates) => candidates.filter(c => typeof(c) === "object")
-)
+export const Ontology = (schemas: Schema[]) =>
+  restructure(any(or(...schemas.map(Entity), Any)), (candidates) =>
+    candidates.filter((c) => typeof c === "object"),
+  )
