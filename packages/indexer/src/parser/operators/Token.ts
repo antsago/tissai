@@ -5,7 +5,7 @@ export const Token =
   <T>(check: (token: T) => boolean) =>
   (reader: TokenReader<T>) => {
     const token = reader.get()
-    if (token && check(token)) {
+    if (token !== undefined && check(token)) {
       reader.next()
       return token
     }
