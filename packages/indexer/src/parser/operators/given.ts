@@ -1,22 +1,16 @@
-import type { Rule, RuleReader } from "../types.js"
+import type { Rule } from "../types.js"
 import type { TokenReader } from "../TokenReader.js"
 
 export const given =
-  <T, CO, MO>(condition: Rule<T, CO>, onMatch: Rule<T, MO>) =>
+  <T, RO, MO>(check: Rule<T, RO>, assertion: (ruleOutput: NonNullable<Awaited<RO>>) => Boolean, onMatch: Rule<T, MO>) =>
   async (reader: TokenReader<T>) => {
     reader.savePosition()
+    const match = await check(reader)
+    reader.restoreSave()
 
-    while (reader.hasNext()) {
-      const match = await condition(reader)
-
-      if (match !== null) {
-        reader.restoreSave()
-        return onMatch(reader)
-      }
-
-      reader.next()
+    if (!match || !assertion(match)) {
+      return null
     }
 
-    reader.restoreSave()
-    return null
+    return onMatch(reader)
   }

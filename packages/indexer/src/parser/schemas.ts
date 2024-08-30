@@ -1,7 +1,7 @@
-import { type Token as LexerToken, Lexer, Required } from "../lexer/index.js"
+import { type Token as LexerToken, Lexer } from "../lexer/index.js"
 import { TokenReader } from "./TokenReader.js"
 import mapping from "./mapping.js"
-import { type Schema, Attributes } from "./grammar/index.js"
+import { type Schema, Attributes, Required } from "./grammar/index.js"
 import { LabelMap } from "./types.js"
 
 const getLabels = (map: LabelMap) => (tokens: LexerToken[]) =>

@@ -1,5 +1,5 @@
-import { and, any, or, restructure, given, unless } from "../operators/index.js"
-import { EntityStart, EntityEnd, Id, Required } from "../../lexer/index.js"
+import { and, any, or, restructure, given, Token } from "../operators/index.js"
+import { EntityStart, EntityEnd, Id } from "../../lexer/index.js"
 import { IsData, IsSymbol } from "./values.js"
 import {
   type PropertyDefinition,
@@ -7,6 +7,8 @@ import {
   AnyProperty,
   DataProperty,
 } from "./properties.js"
+
+export const Required = Symbol("Required key")
 
 type DistributiveOmit<T, K extends keyof any> = T extends any
   ? Omit<T, K>
@@ -33,7 +35,8 @@ export const Properties = (schema: Schema) => {
 
   return restructure(
     given(
-      unless(IsSymbol(EntityEnd), requiredProperty),
+      any(or(requiredProperty, Token(t => t !== EntityEnd))),
+      (match) => match.some(m => typeof(m) === "object" && "key" in m && m.key === Required),
       any(or(...definedProperties, AnyProperty)),
     ),
     (properties) =>

@@ -1,4 +1,3 @@
-export const Required = Symbol("required")
 
 export const Id = Symbol("Id of entity")
 export const ValueSeparator = Symbol("Value separator")
