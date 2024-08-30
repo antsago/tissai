@@ -4,7 +4,7 @@ import { reporter } from "../Reporter.js"
 import { type Token, Lexer } from "../lexer/index.js"
 import { type Label, getLabels } from "./labelTokens.js"
 import { LabelMap } from "../parser/types.js"
-import { Ontology, Required } from "../parser/grammar/index.js"
+import { Attributes, Ontology, Required } from "../parser/grammar/index.js"
 import { TokenReader } from "../parser/TokenReader.js"
 
 const updateMapping = (
@@ -13,12 +13,13 @@ const updateMapping = (
 ) =>
   labeled
     .filter((t) => t.isMeaningful && !!t.labels.length)
-    .forEach(({ labels, text }) => labels.forEach(label => {
+    .flatMap(({ labels, text }) => labels.map(label => ({ label, text })))
+    .forEach(({ label, text }) => {
       mapping[text] = {
         ...(mapping[text] ?? {}),
         [label]: (mapping[text]?.[label] ?? 0) + 1,
       }
-    }))
+    })
 
 reporter.progress("Initializing database and pools")
 
@@ -36,8 +37,12 @@ const Parser = Ontology([{
   title: {
     name: "name",
     parse: {
-      as: "tokens",
-      with: async (title: string) => lexer.fromText(title, getLabels(title, python))
+      as: "parsedTitle",
+      with: async (title: string) => {
+        const tokens = await lexer.fromText(title, getLabels(title, python))
+        const attributes = await Attributes(TokenReader(tokens))
+        return { attributes, tokens }
+      }
     },
   }
 }])
@@ -62,12 +67,13 @@ for await (let { id, body, url } of products) {
 
     const tokens = lexer.fromPage(body)
     const entities = await Parser(TokenReader(tokens))
+
     if (typeof entities !== "symbol") {
-      const labeledTokens = entities
-        .filter(entity => typeof(entity) !== "symbol" && "tokens" in entity)
-        .map(product => product.tokens)
-        .flat()
-      updateMapping(TOKEN_LABEL_MAPPING, labeledTokens)
+      const products = entities
+        .filter(entity => typeof(entity) !== "symbol" && "parsedTitle" in entity)
+        .map(product => product.parsedTitle)
+
+      updateMapping(TOKEN_LABEL_MAPPING, products.map(p => p.tokens).flat())
     }
 
     index += 1
