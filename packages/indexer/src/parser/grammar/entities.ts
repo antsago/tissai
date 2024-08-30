@@ -1,6 +1,6 @@
 import { and, any, or, restructure, given, Token } from "../operators/index.js"
 import { EntityStart, EntityEnd, Id } from "../../lexer/index.js"
-import { IsData, IsSymbol } from "./values.js"
+import { Any, IsData, IsSymbol } from "./values.js"
 import {
   type PropertyDefinition,
   Property,
@@ -66,4 +66,7 @@ export const Entity = (schema: Schema) =>
     }),
   )
 
-export const Ontology = (schemas: Schema[]) => any(or(...schemas.map(Entity)))
+export const Ontology = (schemas: Schema[]) => restructure(
+  any(or(...schemas.map(Entity), Any)),
+  (candidates) => candidates.filter(c => typeof(c) === "object")
+)
