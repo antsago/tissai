@@ -7,19 +7,36 @@ import { LabelMap } from "../parser/types.js"
 import { Attributes, Ontology, Required } from "../parser/grammar/index.js"
 import { TokenReader } from "../parser/TokenReader.js"
 
+type Attribute = { value: string, labels: string[] }
+
 const updateMapping = (
-  mapping: LabelMap,
+  vocabulary: LabelMap,
   labeled: (Token & { labels: string[] })[],
 ) =>
   labeled
     .filter((t) => t.isMeaningful && !!t.labels.length)
     .flatMap(({ labels, text }) => labels.map(label => ({ label, text })))
     .forEach(({ label, text }) => {
-      mapping[text] = {
-        ...(mapping[text] ?? {}),
-        [label]: (mapping[text]?.[label] ?? 0) + 1,
+      vocabulary[text] = {
+        ...(vocabulary[text] ?? {}),
+        [label]: (vocabulary[text]?.[label] ?? 0) + 1,
       }
     })
+const CATEGORY_LABEL = "categoría"
+const updateSchemas = (
+  schemas: LabelMap,
+  attributes: Attribute[],
+) => {
+  const categories = attributes.filter(att => att.labels.includes(CATEGORY_LABEL)).map(att => att.value)
+  const otherAttributes = attributes.flatMap(att => att.labels).filter(label => label !== CATEGORY_LABEL)
+  categories.forEach(cat => otherAttributes.forEach(att => {
+    schemas[cat] = {
+      ...(schemas[cat] ?? {}),
+      // Add an extra count so unknown categories can have a phantom count
+      [att]: (schemas[cat]?.[att] ?? 1) + 1,
+    }
+  }))
+}
 
 reporter.progress("Initializing database and pools")
 
@@ -54,10 +71,11 @@ const [{ count: pageCount }] = await db.query(
     .compile(),
 )
 const products = await db.stream(
-  query.selectFrom("pages").select(["body", "url", "id"]).compile(),
+  query.selectFrom("pages").select(["body", "url", "id"]).limit(1).compile(),
 )
 
-const TOKEN_LABEL_MAPPING = {} as LabelMap
+const VOCABULARY = {} as LabelMap
+const SCHEMAS = {} as LabelMap
 let index = 1
 for await (let { id, body, url } of products) {
   try {
@@ -73,7 +91,10 @@ for await (let { id, body, url } of products) {
         .filter(entity => typeof(entity) !== "symbol" && "parsedTitle" in entity)
         .map(product => product.parsedTitle)
 
-      updateMapping(TOKEN_LABEL_MAPPING, products.map(p => p.tokens).flat())
+      updateMapping(VOCABULARY, products.map(p => p.tokens).flat())
+      products
+        .map(p => p.attributes.filter((att: Attribute|Token) => !("text" in att)))
+        .forEach(attributes => updateSchemas(SCHEMAS, attributes))
     }
 
     index += 1
@@ -84,7 +105,8 @@ for await (let { id, body, url } of products) {
 }
 
 reporter.succeed(`Processed ${pageCount} pages`)
-console.log(JSON.stringify(TOKEN_LABEL_MAPPING))
+console.log(JSON.stringify(VOCABULARY))
+console.log(JSON.stringify(SCHEMAS))
 
 await db.close()
 await lexer.close()
