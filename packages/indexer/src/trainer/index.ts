@@ -4,19 +4,21 @@ import { reporter } from "../Reporter.js"
 import { type Token, Lexer } from "../lexer/index.js"
 import { type Label, getLabels } from "./labelTokens.js"
 import { LabelMap } from "../parser/types.js"
+import { Ontology, Required } from "../parser/grammar/index.js"
+import { TokenReader } from "../parser/TokenReader.js"
 
 const updateMapping = (
   mapping: LabelMap,
-  labeled: (Token & { label?: string })[],
+  labeled: (Token & { labels: string[] })[],
 ) =>
   labeled
-    .filter((t) => !!t.label)
-    .forEach(({ label, text }) => {
+    .filter((t) => t.isMeaningful && !!t.labels.length)
+    .forEach(({ labels, text }) => labels.forEach(label => {
       mapping[text] = {
         ...(mapping[text] ?? {}),
-        [label!]: (mapping[text]?.[label!] ?? 0) + 1,
+        [label]: (mapping[text]?.[label] ?? 0) + 1,
       }
-    })
+    }))
 
 reporter.progress("Initializing database and pools")
 
@@ -24,38 +26,58 @@ const db = Db()
 const lexer = Lexer()
 const python = PythonPool<{ title: string; words: string[] }, Label[]>(
   `./labelWords.py`,
-  reporter,
+  console,
 )
+const Parser = Ontology([{
+  [Required]: {
+    key: "@type",
+    value: "Product",
+  },
+  title: {
+    name: "name",
+    parse: {
+      as: "tokens",
+      with: async (title: string) => lexer.fromText(title, getLabels(title, python))
+    },
+  }
+}])
 
-const [{ count: productCount }] = await db.query(
+const [{ count: pageCount }] = await db.query(
   query
-    .selectFrom("products")
+    .selectFrom("pages")
     .select(({ fn }) => fn.count("id").as("count"))
     .compile(),
 )
 const products = await db.stream(
-  query.selectFrom("products").select(["title", "id"]).compile(),
+  query.selectFrom("pages").select(["body", "url", "id"]).compile(),
 )
 
 const TOKEN_LABEL_MAPPING = {} as LabelMap
 let index = 1
-for await (let { id, title } of products) {
+for await (let { id, body, url } of products) {
   try {
     reporter.progress(
-      `Processing product ${index}/${productCount}: ${id} (${title})`,
+      `Processing page ${index}/${pageCount}: ${id} (${url})`,
     )
 
-    const tokens = await lexer.fromText(title, getLabels(title, python))
-    updateMapping(TOKEN_LABEL_MAPPING, tokens)
+    const tokens = lexer.fromPage(body)
+    const entities = await Parser(TokenReader(tokens))
+    if (typeof entities !== "symbol") {
+      const labeledTokens = entities
+        .filter(entity => typeof(entity) !== "symbol" && "tokens" in entity)
+        .map(product => product.tokens)
+        .flat()
+      updateMapping(TOKEN_LABEL_MAPPING, labeledTokens)
+    }
 
     index += 1
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
-    reporter.error(`[${id} (${title})]: ${message}`)
+    reporter.error(`[${id} (${url})]: ${message}`)
   }
 }
 
-reporter.succeed(`Processed ${productCount} products`)
+reporter.succeed(`Processed ${pageCount} pages`)
 console.log(JSON.stringify(TOKEN_LABEL_MAPPING))
 
 await db.close()
