@@ -1,26 +1,32 @@
 import { expect, describe, it } from "vitest"
 import { TokenReader } from "../TokenReader.js"
 import { NonMatch } from "./nonMatch.js"
-import { Token as RawToken } from "./Token.js"
+import { Token } from "./Token.js"
 
 describe("Token", () => {
-  const Token = <T>(check: (T) => boolean) => (tokens: T[]) => RawToken(check)(TokenReader(tokens))
-
   it("rejects no next token", () => {
-    const tokens = []
-    const result = Token(() => true)(tokens)
+    const reader = TokenReader([])
+
+    const result = Token(() => true)(reader)
+
     expect(result).toStrictEqual(NonMatch)
   })
 
   it("rejects tokens that fail the check", () => {
-    const tokens = ["asdf"]
-    const result = Token(() => false)(tokens)
+    const reader = TokenReader(["asdf"])
+
+    const result = Token(() => false)(reader)
+
     expect(result).toStrictEqual(NonMatch)
+    expect(reader.get()).toStrictEqual("asdf")
   })
 
   it("accepts tokens that the passed check", () => {
-    const tokens = ["asdf"]
-    const result = Token(() => true)(tokens)
-    expect(result).toStrictEqual(tokens[0])
+    const reader = TokenReader(["asdf"])
+
+    const result = Token(() => true)(reader)
+
+    expect(result).toStrictEqual("asdf")
+    expect(reader.hasNext()).toBe(false)
   })
 })
