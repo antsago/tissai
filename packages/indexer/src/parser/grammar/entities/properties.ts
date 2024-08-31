@@ -11,24 +11,24 @@ type BaseDefinition = {
 type DataDefinition = BaseDefinition & {
   value?: DataToken
 }
+type ReferenceDefinition = BaseDefinition & {
+  isReference: true
+}
+type ParsedDefinition = BaseDefinition & {
+  parse: { as: string; with: (text: string) => any }
+}
+
 export const DataProperty = ({ key, name, value }: DataDefinition) =>
   restructure(Property(IsData(value), name), (dataValues) => ({
     key,
     value: dataValues,
   }))
 
-type ReferenceDefinition = BaseDefinition & {
-  isReference: true
-}
 export const ReferenceProperty = ({ key, name }: ReferenceDefinition) =>
   restructure(Property(and(IsSymbol(Id), IsData()), name), (references) => ({
     key,
     value: references.map((r) => ({ [Id]: r })),
   }))
-
-type ParsedDefinition = BaseDefinition & {
-  parse: { as: string; with: (text: string) => any }
-}
 
 const IsParsed = <Output>(parse: (text: string) => Output) =>
   restructure(IsData(), async (token) => {
