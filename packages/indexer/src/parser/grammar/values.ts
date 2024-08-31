@@ -17,9 +17,3 @@ export const IsValue = Token(
   (token: EntityToken) =>
     token === Id || token === ValueSeparator || typeof token !== "symbol",
 )
-
-export const IsParsed = <Output>(parse: (text: string) => Output) =>
-  restructure(IsData(), async (token) => {
-    const parsed = await parse(token as string)
-    return { token, parsed }
-  })

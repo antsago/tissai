@@ -7,7 +7,13 @@ import {
   PropertyStart,
   Id,
 } from "../../lexer/index.js"
-import { IsData, IsSymbol, IsValue, IsParsed } from "./values.js"
+import { IsData, IsSymbol, IsValue } from "./values.js"
+
+const IsParsed = <Output>(parse: (text: string) => Output) =>
+  restructure(IsData(), async (token) => {
+    const parsed = await parse(token as string)
+    return { token, parsed }
+  })
 
 const PropertyValue = <Output>(Type: Rule<EntityToken, Output>) => {
   return restructure(
