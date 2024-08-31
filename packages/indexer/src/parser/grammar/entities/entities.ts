@@ -13,18 +13,7 @@ import { Any, IsData, IsSymbol } from "./values.js"
 import { AnyProperty } from "./AnyProperty.js"
 import { DataProperty } from "./DataProperty.js"
 import { DefinedProperty } from "./DefinedProperty.js"
-
-export const Required = Symbol("Required key")
-
-type DistributiveOmit<T, K extends keyof any> = T extends any
-  ? Omit<T, K>
-  : never
-type RequiredDefinition = { key: string; value: string }
-
-export type Schema = Record<
-  string,
-  string | DistributiveOmit<PropertyDefinition, "key">
-> & { [Required]: RequiredDefinition }
+import { Required, type Schema, type RequiredDefinition } from "./types.js"
 
 const extractDefinitions = (inputSchema: Schema): PropertyDefinition[] =>
   Object.entries(inputSchema).map(([key, v]) => ({
