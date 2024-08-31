@@ -7,56 +7,43 @@ describe("Attributes", () => {
     originalText: "foo",
     trailing: "",
   }
-  it("handles empty tokens", async () => {
-    const reader = TokenReader([])
+  const filler = { label: undefined, isMeaningful: false, text: "filler", ...TOKEN_BASE }
+  const attribute = { label: "label", isMeaningful: true, text: "label", ...TOKEN_BASE }
 
-    const result = await Attributes(reader)
-
-    expect(result).toStrictEqual([])
-  })
-
-  it("recognizes top-level attributes", async () => {
-    const tokens = [
-      { label: "label", isMeaningful: true, text: "token", ...TOKEN_BASE },
-    ]
-    const reader = TokenReader(tokens)
+  it("matches attributes", async () => {
+    const reader = TokenReader([attribute])
 
     const result = await Attributes(reader)
 
     expect(result).toStrictEqual([
       {
-        label: "label",
-        value: tokens[0].text,
+        label: attribute.label,
+        value: attribute.text,
       },
     ])
   })
 
-  it("recognizes top-level filler", async () => {
-    const tokens = [
-      { label: undefined, isMeaningful: false, text: "token", ...TOKEN_BASE },
-    ]
-    const reader = TokenReader(tokens)
+  it("matches filler", async () => {
+    const reader = TokenReader([filler])
 
     const result = await Attributes(reader)
 
-    expect(result).toStrictEqual(tokens)
+    expect(result).toStrictEqual([
+      filler,
+    ])
   })
 
-  it("recognizes multiple segments", async () => {
-    const tokens = [
-      { label: "label", isMeaningful: true, text: "token", ...TOKEN_BASE },
-      { label: undefined, isMeaningful: false, text: "token", ...TOKEN_BASE },
-    ]
-    const reader = TokenReader(tokens)
+  it("matches attributes and filler", async () => {
+    const reader = TokenReader([attribute, filler])
 
     const result = await Attributes(reader)
 
     expect(result).toStrictEqual([
       {
-        label: "label",
-        value: tokens[0].text,
+        label: attribute.label,
+        value: attribute.text,
       },
-      tokens[1],
+      filler,
     ])
   })
 })
