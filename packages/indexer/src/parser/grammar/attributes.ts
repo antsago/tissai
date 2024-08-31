@@ -9,7 +9,7 @@ import {
   type Context,
 } from "../operators/index.js"
 
-export const Filler = Token((word: WordToken) => !word.isMeaningful)
+export const Filler = Token((word: WordToken) => !word.isMeaningful || word.label === undefined)
 
 export const Label = (context: Context) =>
   Token(

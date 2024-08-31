@@ -7,44 +7,42 @@ describe("Filler", () => {
   const TOKEN_BASE = {
     originalText: "foo",
     trailing: "",
+    text: "a",
   }
 
-  it("returns no match if no next token", () => {
-    const reader = TokenReader([])
+  it("rejects meaningless tokens", () => {
+    const token = {
+      ...TOKEN_BASE,
+      label: "label",
+      isMeaningful: true,
+    }
 
-    const result = Filler(reader)
+    const result = Filler(TokenReader([token]))
 
     expect(result).toBe(NonMatch)
   })
 
-  it("returns no match if the next token is meaningful", () => {
-    const TOKENS = [
-      {
-        labels: ["label1", "label2"],
-        isMeaningful: true,
-        text: "a",
-        ...TOKEN_BASE,
-      },
-      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
-    ]
-    const reader = TokenReader(TOKENS)
+  it("matches non-meaningful tokens", () => {
+    const token = {
+      ...TOKEN_BASE,
+      label: "label",
+      isMeaningful: false,
+    }
 
-    const result = Filler(reader)
+    const result = Filler(TokenReader([token]))
 
-    expect(result).toBe(NonMatch)
-    expect(reader.get()).toStrictEqual(TOKENS[0])
+    expect(result).toBe(token)
   })
 
-  it("returns token if it's not meaningful", () => {
-    const TOKENS = [
-      { labels: ["filler"], isMeaningful: false, text: "a", ...TOKEN_BASE },
-      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
-    ]
-    const reader = TokenReader(TOKENS)
+  it("matches label-less tokens", () => {
+    const token = {
+      ...TOKEN_BASE,
+      label: undefined,
+      isMeaningful: true,
+    }
 
-    const result = Filler(reader)
+    const result = Filler(TokenReader([token]))
 
-    expect(result).toStrictEqual(TOKENS[0])
-    expect(reader.get()).toStrictEqual(TOKENS[1])
+    expect(result).toBe(token)
   })
 })
