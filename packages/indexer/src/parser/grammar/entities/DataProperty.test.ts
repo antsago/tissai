@@ -1,10 +1,8 @@
 import { expect, describe, it } from "vitest"
 import {
   Equals,
-  Id,
   PropertyEnd,
   PropertyStart,
-  ValueSeparator,
 } from "../../../lexer/symbols.js"
 import { TokenReader } from "../../TokenReader.js"
 import { NonMatch } from "../../operators/nonMatch.js"
@@ -35,7 +33,7 @@ describe("DataProperty", () => {
     expect(result).toStrictEqual({ key: "foo", value: ["value"] })
   })
 
-  it("requires name", async () => {
+  it("requires specified name", async () => {
     const reader = TokenReader([
       PropertyStart,
       "name",
