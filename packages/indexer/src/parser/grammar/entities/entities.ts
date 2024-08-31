@@ -12,7 +12,7 @@ import { type PropertyDefinition } from "./types.js"
 import { Any, IsData, IsSymbol } from "./values.js"
 import { AnyProperty } from "./AnyProperty.js"
 import { DataProperty } from "./DataProperty.js"
-import { DefinedProperty } from "./properties.js"
+import { DefinedProperty } from "./DefinedProperty.js"
 
 export const Required = Symbol("Required key")
 

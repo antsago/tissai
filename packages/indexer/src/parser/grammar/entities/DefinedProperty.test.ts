@@ -6,7 +6,7 @@ import {
   PropertyStart,
 } from "../../../lexer/symbols.js"
 import { TokenReader } from "../../TokenReader.js"
-import { DefinedProperty } from "./properties.js"
+import { DefinedProperty } from "./DefinedProperty.js"
 
 describe("DefinedProperty", () => {
   it("handles data definitions", async () => {

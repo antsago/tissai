@@ -7,7 +7,7 @@ import {
 } from "../../../lexer/symbols.js"
 import { TokenReader } from "../../TokenReader.js"
 import { NonMatch } from "../../operators/nonMatch.js"
-import { ParsedProperty } from "./properties.js"
+import { ParsedProperty } from "./ParsedProperty.js"
 
 describe("ParsedProperty", () => {
   const DEFINITION = {
