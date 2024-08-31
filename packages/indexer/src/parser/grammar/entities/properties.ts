@@ -9,12 +9,7 @@ import type {
 } from "./types.js"
 import { IsData, IsSymbol } from "./values.js"
 import { Property } from "./Property.js"
-
-export const DataProperty = ({ key, name, value }: DataDefinition) =>
-  restructure(Property(IsData(value), name), (dataValues) => ({
-    key,
-    value: dataValues,
-  }))
+import { DataProperty } from "./DataProperty.js"
 
 export const ReferenceProperty = ({ key, name }: ReferenceDefinition) =>
   restructure(Property(and(IsSymbol(Id), IsData()), name), (references) => ({
