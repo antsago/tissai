@@ -9,12 +9,8 @@ import {
   Token,
 } from "../../operators/index.js"
 import { Any, IsData, IsSymbol } from "./values.js"
-import {
-  type PropertyDefinition,
-  DefinedProperty,
-  AnyProperty,
-  DataProperty,
-} from "./properties.js"
+import { type PropertyDefinition } from "./propertyTypes.js"
+import { DefinedProperty, AnyProperty, DataProperty } from "./properties.js"
 
 export const Required = Symbol("Required key")
 
