@@ -10,7 +10,11 @@ import { NonMatch } from "../../operators/nonMatch.js"
 import { ParsedProperty } from "./properties.js"
 
 describe("ParsedProperty", () => {
-  const DEFINITION = { key: "foo", name: "name", parse: { as: "bar", with: (t: string) => t.split(" ")} }
+  const DEFINITION = {
+    key: "foo",
+    name: "name",
+    parse: { as: "bar", with: (t: string) => t.split(" ") },
+  }
   it("parses matched value", async () => {
     const reader = TokenReader([
       PropertyStart,

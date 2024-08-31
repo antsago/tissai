@@ -1,9 +1,5 @@
 import { expect, describe, it } from "vitest"
-import {
-  Equals,
-  PropertyEnd,
-  PropertyStart,
-} from "../../../lexer/symbols.js"
+import { Equals, PropertyEnd, PropertyStart } from "../../../lexer/symbols.js"
 import { TokenReader } from "../../TokenReader.js"
 import { NonMatch } from "../../operators/nonMatch.js"
 import { DataProperty } from "./properties.js"
@@ -29,7 +25,11 @@ describe("DataProperty", () => {
       "value",
       PropertyEnd,
     ])
-    const result = await DataProperty({ key: "foo", name: "name", value: "value" })(reader)
+    const result = await DataProperty({
+      key: "foo",
+      name: "name",
+      value: "value",
+    })(reader)
     expect(result).toStrictEqual({ key: "foo", value: ["value"] })
   })
 
@@ -53,7 +53,11 @@ describe("DataProperty", () => {
       "value",
       PropertyEnd,
     ])
-    const result = await DataProperty({ key: "foo", name: "name", value: "bar" })(reader)
+    const result = await DataProperty({
+      key: "foo",
+      name: "name",
+      value: "bar",
+    })(reader)
     expect(result).toStrictEqual(NonMatch)
   })
 })

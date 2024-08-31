@@ -1,7 +1,12 @@
 import type { DataToken } from "../../types.js"
 import { and, any, restructure } from "../../operators/index.js"
 import { Id } from "../../../lexer/index.js"
-import type { DataDefinition, ReferenceDefinition, ParsedDefinition, PropertyDefinition } from "./propertyTypes.js"
+import type {
+  DataDefinition,
+  ReferenceDefinition,
+  ParsedDefinition,
+  PropertyDefinition,
+} from "./propertyTypes.js"
 import { IsData, IsSymbol, IsValue } from "./values.js"
 import { Property } from "./Property.js"
 

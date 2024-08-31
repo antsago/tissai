@@ -19,8 +19,12 @@ describe("ReferenceProperty", () => {
       "entity-id",
       PropertyEnd,
     ])
-    const result = await ReferenceProperty({ key: "foo", name: "name", isReference: true })(reader)
-    expect(result).toStrictEqual({ key: "foo", value: [{ [Id]: "entity-id"}] })
+    const result = await ReferenceProperty({
+      key: "foo",
+      name: "name",
+      isReference: true,
+    })(reader)
+    expect(result).toStrictEqual({ key: "foo", value: [{ [Id]: "entity-id" }] })
   })
 
   it("requires specified name", async () => {
@@ -32,7 +36,11 @@ describe("ReferenceProperty", () => {
       "entity-id",
       PropertyEnd,
     ])
-    const result = await ReferenceProperty({ key: "foo", name: "bar", isReference: true })(reader)
+    const result = await ReferenceProperty({
+      key: "foo",
+      name: "bar",
+      isReference: true,
+    })(reader)
     expect(result).toStrictEqual(NonMatch)
   })
 
@@ -44,7 +52,11 @@ describe("ReferenceProperty", () => {
       "entity-id",
       PropertyEnd,
     ])
-    const result = await ReferenceProperty({ key: "foo", name: "name", isReference: true })(reader)
+    const result = await ReferenceProperty({
+      key: "foo",
+      name: "name",
+      isReference: true,
+    })(reader)
     expect(result).toStrictEqual(NonMatch)
   })
 })

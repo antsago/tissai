@@ -30,8 +30,12 @@ describe("DefinedProperty", () => {
       "entity-id",
       PropertyEnd,
     ])
-    const result = await DefinedProperty({ key: "foo", name: "name", isReference: true })(reader)
-    expect(result).toStrictEqual({ key: "foo", value: [{ [Id]: "entity-id"}] })
+    const result = await DefinedProperty({
+      key: "foo",
+      name: "name",
+      isReference: true,
+    })(reader)
+    expect(result).toStrictEqual({ key: "foo", value: [{ [Id]: "entity-id" }] })
   })
 
   it("handles parse definitions", async () => {
@@ -42,7 +46,11 @@ describe("DefinedProperty", () => {
       "A value",
       PropertyEnd,
     ])
-    const result = await DefinedProperty({ key: "foo", name: "name", parse: { as: "bar", with: (t) => t.split(" ")} })(reader)
+    const result = await DefinedProperty({
+      key: "foo",
+      name: "name",
+      parse: { as: "bar", with: (t) => t.split(" ") },
+    })(reader)
     expect(result).toStrictEqual([
       { key: "foo", value: ["A value"] },
       { key: "bar", value: [["A", "value"]] },
