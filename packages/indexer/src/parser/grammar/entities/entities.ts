@@ -8,8 +8,8 @@ import {
   given,
   Token,
 } from "../../operators/index.js"
-import { Any, IsData, IsSymbol } from "./values.js"
 import { type PropertyDefinition } from "./propertyTypes.js"
+import { Any, IsData, IsSymbol } from "./values.js"
 import { DefinedProperty, AnyProperty, DataProperty } from "./properties.js"
 
 export const Required = Symbol("Required key")
@@ -17,38 +17,42 @@ export const Required = Symbol("Required key")
 type DistributiveOmit<T, K extends keyof any> = T extends any
   ? Omit<T, K>
   : never
+type RequiredDefinition = { key: string; value: string }
 
 export type Schema = Record<
   string,
   string | DistributiveOmit<PropertyDefinition, "key">
-> & { [Required]: { key: string; value: string } }
+> & { [Required]: RequiredDefinition }
 
-const definitions = (inputSchema: Schema): PropertyDefinition[] =>
+const extractDefinitions = (inputSchema: Schema): PropertyDefinition[] =>
   Object.entries(inputSchema).map(([key, v]) => ({
     key,
     ...(typeof v === "string" ? { name: v } : v),
   }))
 
-export const Properties = (schema: Schema) => {
-  const requiredProperty = DataProperty({
+const RequiredProperty = ({ key: name, value }: RequiredDefinition) =>
+  any(
+      or(DataProperty({
     key: Required,
-    name: schema[Required].key,
-    value: schema[Required].value,
-  })
-  const definedProperties = definitions(schema).map(DefinedProperty)
+    name,
+    value,
+  }),
+        Token<EntityToken>((t) => t !== EntityEnd),
+      ),
+    )
+  
+const hasRequired = (match: NonNullable<unknown>[]) =>
+  match.some(
+    (m) => typeof m === "object" && "key" in m && m.key === Required,
+  )
+
+export const Properties = (schema: Schema) => {
+  const definedProperties = extractDefinitions(schema).map(DefinedProperty)
 
   return restructure(
     given(
-      any(
-        or(
-          requiredProperty,
-          Token<EntityToken>((t) => t !== EntityEnd),
-        ),
-      ),
-      (match) =>
-        match.some(
-          (m) => typeof m === "object" && "key" in m && m.key === Required,
-        ),
+      RequiredProperty(schema[Required]),
+      hasRequired,
       any(or(...definedProperties, AnyProperty)),
     ),
     (properties) =>
