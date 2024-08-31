@@ -6,19 +6,25 @@ import { Any, IsData, IsSymbol, IsValue } from "./values.js"
 
 describe("values", () => {
   describe("Any", () => {
-    it.each([true, false, "", "asdf", Symbol(), 123])("matches '%s'", (token) => {
-      const reader = TokenReader([token])
-      const result = Any(reader)
-      expect(result).toStrictEqual(token)
-    })
+    it.each([true, false, "", "asdf", Symbol(), 123])(
+      "matches '%s'",
+      (token) => {
+        const reader = TokenReader([token])
+        const result = Any(reader)
+        expect(result).toStrictEqual(token)
+      },
+    )
   })
 
   describe("IsValue", () => {
-    it.each([true, false, "", "asdf", 123, Id, ValueSeparator])("matches '%s'", (token) => {
-      const reader = TokenReader([token])
-      const result = IsValue(reader)
-      expect(result).toStrictEqual(token)
-    })
+    it.each([true, false, "", "asdf", 123, Id, ValueSeparator])(
+      "matches '%s'",
+      (token) => {
+        const reader = TokenReader([token])
+        const result = IsValue(reader)
+        expect(result).toStrictEqual(token)
+      },
+    )
 
     it("rejects non-value symbols", () => {
       const reader = TokenReader([Symbol()])

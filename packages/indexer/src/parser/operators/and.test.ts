@@ -5,8 +5,8 @@ import { NonMatch } from "./nonMatch.js"
 import and from "./and.js"
 
 describe("and", () => {
-  const IsYes = Token(t => t === "yes")
-  const IsNo = Token(t => t === "no")
+  const IsYes = Token((t) => t === "yes")
+  const IsNo = Token((t) => t === "no")
 
   it("requires first match", async () => {
     const reader = TokenReader(["yes", "no"])

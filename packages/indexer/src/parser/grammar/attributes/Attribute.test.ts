@@ -9,8 +9,18 @@ describe("Attribute", () => {
     originalText: "foo",
     trailing: "",
   }
-  const filler = { label: undefined, isMeaningful: false, text: "filler", ...TOKEN_BASE }
-  const label = { label: "label", isMeaningful: true, text: "label", ...TOKEN_BASE }
+  const filler = {
+    label: undefined,
+    isMeaningful: false,
+    text: "filler",
+    ...TOKEN_BASE,
+  }
+  const label = {
+    label: "label",
+    isMeaningful: true,
+    text: "label",
+    ...TOKEN_BASE,
+  }
   const getText = (tokens: WordToken[]) => tokens.map((t) => t.text).join(" ")
 
   it("rejects fillers", async () => {
@@ -34,7 +44,10 @@ describe("Attribute", () => {
 
     const result = await Attribute(reader)
 
-    expect(result).toStrictEqual({ value: getText([label, label]), label: label.label })
+    expect(result).toStrictEqual({
+      value: getText([label, label]),
+      label: label.label,
+    })
   })
 
   it("matches multiple consecutive labels", async () => {
@@ -42,7 +55,10 @@ describe("Attribute", () => {
 
     const result = await Attribute(reader)
 
-    expect(result).toStrictEqual({ value: getText([label, label, label]), label: label.label })
+    expect(result).toStrictEqual({
+      value: getText([label, label, label]),
+      label: label.label,
+    })
   })
 
   it("matches inner filler", async () => {
@@ -50,7 +66,10 @@ describe("Attribute", () => {
 
     const result = await Attribute(reader)
 
-    expect(result).toStrictEqual({ value: getText([label, filler, label]), label: label.label })
+    expect(result).toStrictEqual({
+      value: getText([label, filler, label]),
+      label: label.label,
+    })
   })
 
   it("matches multiple inner filler", async () => {
@@ -58,11 +77,18 @@ describe("Attribute", () => {
 
     const result = await Attribute(reader)
 
-    expect(result).toStrictEqual({ value: getText([label, filler, filler, label]), label: label.label })
+    expect(result).toStrictEqual({
+      value: getText([label, filler, filler, label]),
+      label: label.label,
+    })
   })
 
   it("rejects non-consecutive labels", async () => {
-    const reader = TokenReader([label, filler, { ...label, label: "another label" }])
+    const reader = TokenReader([
+      label,
+      filler,
+      { ...label, label: "another label" },
+    ])
 
     const result = await Attribute(reader)
 

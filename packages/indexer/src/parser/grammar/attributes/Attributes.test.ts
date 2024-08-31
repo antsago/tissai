@@ -7,8 +7,18 @@ describe("Attributes", () => {
     originalText: "foo",
     trailing: "",
   }
-  const filler = { label: undefined, isMeaningful: false, text: "filler", ...TOKEN_BASE }
-  const attribute = { label: "label", isMeaningful: true, text: "label", ...TOKEN_BASE }
+  const filler = {
+    label: undefined,
+    isMeaningful: false,
+    text: "filler",
+    ...TOKEN_BASE,
+  }
+  const attribute = {
+    label: "label",
+    isMeaningful: true,
+    text: "label",
+    ...TOKEN_BASE,
+  }
 
   it("matches attributes", async () => {
     const reader = TokenReader([attribute])
@@ -28,9 +38,7 @@ describe("Attributes", () => {
 
     const result = await Attributes(reader)
 
-    expect(result).toStrictEqual([
-      filler,
-    ])
+    expect(result).toStrictEqual([filler])
   })
 
   it("matches attributes and filler", async () => {

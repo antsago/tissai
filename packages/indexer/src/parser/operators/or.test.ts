@@ -5,8 +5,8 @@ import { NonMatch } from "./nonMatch.js"
 import or from "./or.js"
 
 describe("or", () => {
-  const IsYes = Token(t => t === "yes")
-  const IsNo = Token(t => t === "no")
+  const IsYes = Token((t) => t === "yes")
+  const IsNo = Token((t) => t === "no")
 
   it("matches first rule", async () => {
     const reader = TokenReader(["yes"])

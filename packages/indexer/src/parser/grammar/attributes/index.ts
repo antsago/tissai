@@ -9,12 +9,16 @@ import {
   type Context,
 } from "../../operators/index.js"
 
-export const Filler = Token((word: WordToken) => !word.isMeaningful || word.label === undefined)
+export const Filler = Token(
+  (word: WordToken) => !word.isMeaningful || word.label === undefined,
+)
 
 export const Labeled = (context: Context) =>
   Token(
     (word: WordToken) =>
-      word.isMeaningful && word.label !== undefined && context.narrow(word.label) !== null,
+      word.isMeaningful &&
+      word.label !== undefined &&
+      context.narrow(word.label) !== null,
   )
 
 export const Attribute = restructure(

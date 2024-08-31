@@ -11,7 +11,7 @@ class Context {
     if (this.label === newLabel) {
       return this.label
     }
-    
+
     return null
   }
 }

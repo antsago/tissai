@@ -1,5 +1,11 @@
 import { expect, describe, it } from "vitest"
-import { Equals, Id, PropertyEnd, PropertyStart, ValueSeparator } from "../../../lexer/symbols.js"
+import {
+  Equals,
+  Id,
+  PropertyEnd,
+  PropertyStart,
+  ValueSeparator,
+} from "../../../lexer/symbols.js"
 import { TokenReader } from "../../TokenReader.js"
 import { NonMatch } from "../../operators/nonMatch.js"
 import { Any, IsData, IsSymbol, IsValue } from "./values.js"
@@ -7,7 +13,13 @@ import { Property } from "./properties.js"
 
 describe("Property", () => {
   it("matches properties", async () => {
-    const reader = TokenReader([PropertyStart, "name", Equals, "value", PropertyEnd])
+    const reader = TokenReader([
+      PropertyStart,
+      "name",
+      Equals,
+      "value",
+      PropertyEnd,
+    ])
     const result = await Property(IsData())(reader)
     expect(result).toStrictEqual(["value"])
   })
@@ -43,25 +55,52 @@ describe("Property", () => {
   })
 
   it("matches multiple values", async () => {
-    const reader = TokenReader([PropertyStart, "name", Equals, "value", ValueSeparator, "value2", PropertyEnd])
+    const reader = TokenReader([
+      PropertyStart,
+      "name",
+      Equals,
+      "value",
+      ValueSeparator,
+      "value2",
+      PropertyEnd,
+    ])
     const result = await Property(IsData(), "name")(reader)
     expect(result).toStrictEqual(["value", "value2"])
   })
 
   it("requires value separator", async () => {
-    const reader = TokenReader([PropertyStart, "name", Equals, "value", "value2", PropertyEnd])
+    const reader = TokenReader([
+      PropertyStart,
+      "name",
+      Equals,
+      "value",
+      "value2",
+      PropertyEnd,
+    ])
     const result = await Property(IsData(), "name")(reader)
     expect(result).toStrictEqual(NonMatch)
   })
 
   it("matches specified name", async () => {
-    const reader = TokenReader([PropertyStart, "name", Equals, "value", PropertyEnd])
+    const reader = TokenReader([
+      PropertyStart,
+      "name",
+      Equals,
+      "value",
+      PropertyEnd,
+    ])
     const result = await Property(IsData(), "name")(reader)
     expect(result).toStrictEqual(["value"])
   })
 
   it("requires specified name", async () => {
-    const reader = TokenReader([PropertyStart, "foo", Equals, "value", PropertyEnd])
+    const reader = TokenReader([
+      PropertyStart,
+      "foo",
+      Equals,
+      "value",
+      PropertyEnd,
+    ])
     const result = await Property(IsData(), "name")(reader)
     expect(result).toStrictEqual(NonMatch)
   })

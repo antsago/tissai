@@ -1,5 +1,10 @@
 import type { DataToken, EntityToken, Rule } from "../../types.js"
-import { and, any, restructure, type AwaitedMatch } from "../../operators/index.js"
+import {
+  and,
+  any,
+  restructure,
+  type AwaitedMatch,
+} from "../../operators/index.js"
 import {
   Equals,
   ValueSeparator,
@@ -51,13 +56,10 @@ type ReferenceDefinition = BaseDefinition & {
   isReference: true
 }
 export const ReferenceProperty = ({ key, name }: ReferenceDefinition) =>
-  restructure(
-    Property(and(IsSymbol(Id), IsData()), name),
-    (references) => ({
-      key,
-      value: references.map((r) => ({ [Id]: r })),
-    }),
-  )
+  restructure(Property(and(IsSymbol(Id), IsData()), name), (references) => ({
+    key,
+    value: references.map((r) => ({ [Id]: r })),
+  }))
 
 type ParsedDefinition = BaseDefinition & {
   parse: { as: string; with: (text: string) => any }
@@ -81,13 +83,10 @@ export const ParsedProperty = ({ key, name, parse }: ParsedDefinition) =>
     },
   ])
 
-export const AnyProperty = restructure(
-  Property(any(IsValue)),
-  (value) => ({
-    key: undefined,
-    value,
-  }),
-)
+export const AnyProperty = restructure(Property(any(IsValue)), (value) => ({
+  key: undefined,
+  value,
+}))
 
 export type PropertyDefinition =
   | DataDefinition
