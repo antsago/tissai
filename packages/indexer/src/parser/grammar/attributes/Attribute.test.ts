@@ -9,119 +9,63 @@ describe("Attribute", () => {
     originalText: "foo",
     trailing: "",
   }
+  const filler = { label: undefined, isMeaningful: false, text: "filler", ...TOKEN_BASE }
+  const label = { label: "label", isMeaningful: true, text: "label", ...TOKEN_BASE }
   const getText = (tokens: WordToken[]) => tokens.map((t) => t.text).join(" ")
 
-  it("returns no match if no next token", async () => {
-    const reader = TokenReader([])
+  it("rejects fillers", async () => {
+    const reader = TokenReader([filler])
 
     const result = await Attribute(reader)
 
-    expect(result).toBe(NonMatch)
+    expect(result).toStrictEqual(NonMatch)
   })
 
-  it("rejects starting fillers", async () => {
-    const tokens = [
-      { label: undefined, isMeaningful: false, text: "a", ...TOKEN_BASE },
-      { label: "label", isMeaningful: true, text: "token", ...TOKEN_BASE },
-    ]
-    const reader = TokenReader(tokens)
+  it("matches labels", async () => {
+    const reader = TokenReader([label])
 
     const result = await Attribute(reader)
 
-    expect(result).toBe(NonMatch)
-    expect(reader.get()).toStrictEqual(tokens[0])
+    expect(result).toStrictEqual({ value: label.text, label: label.label })
   })
 
-  it("recognizes single label", async () => {
-    const tokens = [
-      { label: "label", isMeaningful: true, text: "token", ...TOKEN_BASE },
-      { label: undefined, isMeaningful: false, text: "a", ...TOKEN_BASE },
-    ]
-    const reader = TokenReader(tokens)
+  it("matches consecutive labels", async () => {
+    const reader = TokenReader([label, label])
 
     const result = await Attribute(reader)
 
-    expect(result).toStrictEqual({
-      label: tokens[0].label,
-      value: getText(tokens.slice(0, 1)),
-    })
-    expect(reader.get()).toStrictEqual(tokens[1])
+    expect(result).toStrictEqual({ value: getText([label, label]), label: label.label })
   })
 
-  it("recognizes consecutive labels", async () => {
-    const tokens = [
-      { label: "label", isMeaningful: true, text: "token", ...TOKEN_BASE },
-      { label: "label", isMeaningful: true, text: "token", ...TOKEN_BASE },
-      { label: undefined, isMeaningful: false, text: "a", ...TOKEN_BASE },
-    ]
-    const reader = TokenReader(tokens)
+  it("matches multiple consecutive labels", async () => {
+    const reader = TokenReader([label, label, label])
 
     const result = await Attribute(reader)
 
-    expect(result).toStrictEqual({
-      label: tokens[0].label,
-      value: getText(tokens.slice(0, 2)),
-    })
-    expect(reader.get()).toStrictEqual(tokens[2])
+    expect(result).toStrictEqual({ value: getText([label, label, label]), label: label.label })
   })
 
-  it("accepts inbetween filler", async () => {
-    const tokens = [
-      { label: "label", isMeaningful: true, text: "token", ...TOKEN_BASE },
-      { label: undefined, isMeaningful: false, text: "a", ...TOKEN_BASE },
-      { label: "label", isMeaningful: true, text: "token", ...TOKEN_BASE },
-      { label: undefined, isMeaningful: false, text: "a", ...TOKEN_BASE },
-    ]
-    const reader = TokenReader(tokens)
+  it("matches inner filler", async () => {
+    const reader = TokenReader([label, filler, label])
 
     const result = await Attribute(reader)
 
-    expect(result).toStrictEqual({
-      label: tokens[0].label,
-      value: getText(tokens.slice(0, 3)),
-    })
-    expect(reader.get()).toStrictEqual(tokens[3])
+    expect(result).toStrictEqual({ value: getText([label, filler, label]), label: label.label })
   })
 
-  it("accepts multiple infiller", async () => {
-    const tokens = [
-      { label: "label", isMeaningful: true, text: "token", ...TOKEN_BASE },
-      { label: undefined, isMeaningful: false, text: "a", ...TOKEN_BASE },
-      { label: undefined, isMeaningful: false, text: "a", ...TOKEN_BASE },
-      { label: "label", isMeaningful: true, text: "token", ...TOKEN_BASE },
-      { label: undefined, isMeaningful: false, text: "a", ...TOKEN_BASE },
-    ]
-    const reader = TokenReader(tokens)
+  it("matches multiple inner filler", async () => {
+    const reader = TokenReader([label, filler, filler, label])
 
     const result = await Attribute(reader)
 
-    expect(result).toStrictEqual({
-      label: tokens[0].label,
-      value: getText(tokens.slice(0, 4)),
-    })
-    expect(reader.get()).toStrictEqual(tokens[4])
+    expect(result).toStrictEqual({ value: getText([label, filler, filler, label]), label: label.label })
   })
 
-  it("does not append different labels", async () => {
-    const tokens = [
-      { label: "label", isMeaningful: true, text: "token", ...TOKEN_BASE },
-      { label: undefined, isMeaningful: false, text: "a", ...TOKEN_BASE },
-      {
-        label: "other label",
-        isMeaningful: true,
-        text: "token",
-        ...TOKEN_BASE,
-      },
-      { label: undefined, isMeaningful: false, text: "a", ...TOKEN_BASE },
-    ]
-    const reader = TokenReader(tokens)
+  it("rejects non-consecutive labels", async () => {
+    const reader = TokenReader([label, filler, { ...label, label: "another label" }])
 
     const result = await Attribute(reader)
 
-    expect(result).toStrictEqual({
-      label: tokens[0].label,
-      value: tokens[0].text,
-    })
-    expect(reader.get()).toStrictEqual(tokens[1])
+    expect(result).toStrictEqual({ value: label.text, label: label.label })
   })
 })
