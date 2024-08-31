@@ -10,7 +10,7 @@ const testPage = `
             ${JSON.stringify({
               "@context": "https://schema.org/",
               "@type": "Product",
-              name: "The name of the product",
+              name: "Jeans cropped marine azul",
               productID: "121230",
               description: "The description",
               image: [
