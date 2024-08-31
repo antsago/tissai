@@ -11,14 +11,14 @@ import {
 
 export const Filler = Token((word: WordToken) => !word.isMeaningful || word.label === undefined)
 
-export const Label = (context: Context) =>
+export const Labeled = (context: Context) =>
   Token(
     (word: WordToken) =>
       word.isMeaningful && word.label !== undefined && context.narrow(word.label) !== null,
   )
 
 export const Attribute = restructure(
-  withL((l) => and(Label(l), any(and(any(Filler), Label(l))))),
+  withL((l) => and(Labeled(l), any(and(any(Filler), Labeled(l))))),
   ({ result, context }) => {
     const value = (result.flat(Infinity) as WordToken[])
       .map((t: WordToken) => t.text)
