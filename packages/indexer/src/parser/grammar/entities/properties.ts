@@ -6,14 +6,9 @@ import type {
   ReferenceDefinition,
   ParsedDefinition,
   PropertyDefinition,
-} from "./propertyTypes.js"
-import { IsData, IsSymbol, IsValue } from "./values.js"
+} from "./types.js"
+import { IsData, IsSymbol } from "./values.js"
 import { Property } from "./Property.js"
-
-export const AnyProperty = restructure(Property(any(IsValue)), (value) => ({
-  key: undefined,
-  value,
-}))
 
 export const DataProperty = ({ key, name, value }: DataDefinition) =>
   restructure(Property(IsData(value), name), (dataValues) => ({

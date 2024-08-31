@@ -1,7 +1,7 @@
 import { expect, describe, it } from "vitest"
 import { Equals, PropertyEnd, PropertyStart } from "../../../lexer/symbols.js"
 import { TokenReader } from "../../TokenReader.js"
-import { AnyProperty } from "./properties.js"
+import { AnyProperty } from "./AnyProperty.js"
 
 describe("AnyProperty", () => {
   it("matches properties", async () => {
