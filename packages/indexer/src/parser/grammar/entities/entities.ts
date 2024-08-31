@@ -4,7 +4,7 @@ import { and, any, or, restructure, given, Token } from "../../operators/index.j
 import { Any, IsData, IsSymbol } from "./values.js"
 import {
   type PropertyDefinition,
-  Property,
+  DefinedProperty,
   AnyProperty,
   DataProperty,
 } from "./properties.js"
@@ -32,7 +32,7 @@ export const Properties = (schema: Schema) => {
     name: schema[Required].key,
     value: schema[Required].value,
   })
-  const definedProperties = definitions(schema).map(Property)
+  const definedProperties = definitions(schema).map(DefinedProperty)
 
   return restructure(
     given(

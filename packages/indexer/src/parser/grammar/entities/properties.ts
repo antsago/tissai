@@ -9,13 +9,7 @@ import {
 } from "../../../lexer/index.js"
 import { IsData, IsSymbol, IsValue } from "./values.js"
 
-const IsParsed = <Output>(parse: (text: string) => Output) =>
-  restructure(IsData(), async (token) => {
-    const parsed = await parse(token as string)
-    return { token, parsed }
-  })
-
-const PropertyValue = <Output>(Type: Rule<EntityToken, Output>) => {
+export const ValueOfType = <Output>(Type: Rule<EntityToken, Output>) => {
   return restructure(
     and(Type, any(and(IsSymbol(ValueSeparator), Type))),
     (tokens) =>
@@ -25,7 +19,7 @@ const PropertyValue = <Output>(Type: Rule<EntityToken, Output>) => {
   )
 }
 
-const PropertyOfType = <Output>(
+const Property = <Output>(
   Type: Rule<EntityToken, Output>,
   name?: string,
 ) =>
@@ -34,7 +28,7 @@ const PropertyOfType = <Output>(
       IsSymbol(PropertyStart),
       IsData(name),
       IsSymbol(Equals),
-      PropertyValue(Type),
+      ValueOfType(Type),
       IsSymbol(PropertyEnd),
     ),
     ([s, n, eq, value, e]) => value,
@@ -48,7 +42,7 @@ type DataDefinition = BaseDefinition & {
   value?: DataToken
 }
 export const DataProperty = ({ key, name, value }: DataDefinition) =>
-  restructure(PropertyOfType(IsData(value), name), (dataValues) => ({
+  restructure(Property(IsData(value), name), (dataValues) => ({
     key,
     value: dataValues,
   }))
@@ -58,7 +52,7 @@ type ReferenceDefinition = BaseDefinition & {
 }
 export const ReferenceProperty = ({ key, name }: ReferenceDefinition) =>
   restructure(
-    PropertyOfType(and(IsSymbol(Id), IsData()), name),
+    Property(and(IsSymbol(Id), IsData()), name),
     (references) => ({
       key,
       value: references.map((r) => ({ [Id]: r })),
@@ -69,8 +63,14 @@ type ParsedDefinition = BaseDefinition & {
   parse: { as: string; with: (text: string) => any }
 }
 
+const IsParsed = <Output>(parse: (text: string) => Output) =>
+  restructure(IsData(), async (token) => {
+    const parsed = await parse(token as string)
+    return { token, parsed }
+  })
+
 export const ParsedProperty = ({ key, name, parse }: ParsedDefinition) =>
-  restructure(PropertyOfType(IsParsed(parse.with), name), (values) => [
+  restructure(Property(IsParsed(parse.with), name), (values) => [
     {
       key: key,
       value: values.map(({ token }) => token),
@@ -82,7 +82,7 @@ export const ParsedProperty = ({ key, name, parse }: ParsedDefinition) =>
   ])
 
 export const AnyProperty = restructure(
-  PropertyOfType(any(IsValue)),
+  Property(any(IsValue)),
   (value) => ({
     key: undefined,
     value,
@@ -94,7 +94,7 @@ export type PropertyDefinition =
   | ParsedDefinition
   | ReferenceDefinition
 
-export const Property = (definition: PropertyDefinition) =>
+export const DefinedProperty = (definition: PropertyDefinition) =>
   "parse" in definition
     ? ParsedProperty(definition)
     : "isReference" in definition
