@@ -15,7 +15,7 @@ export function TokenReader<T>(tokens: T[]) {
     get(): T | undefined {
       return tokens[position]
     },
-    advancePosition() {
+    advance() {
       position++
     },
     hasNext() {

@@ -6,7 +6,7 @@ export const Token =
   (reader: TokenReader<T>) => {
     const token = reader.get()
     if (token !== undefined && check(token)) {
-      reader.advancePosition()
+      reader.advance()
       return token
     }
 
