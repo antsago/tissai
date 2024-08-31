@@ -9,7 +9,7 @@ import {
 } from "../../../lexer/index.js"
 import { IsData, IsSymbol, IsValue } from "./values.js"
 
-export const ValueOfType = <Output>(Type: Rule<EntityToken, Output>) => {
+const ValueOf = <Output>(Type: Rule<EntityToken, Output>) => {
   return restructure(
     and(Type, any(and(IsSymbol(ValueSeparator), Type))),
     (tokens) =>
@@ -19,7 +19,7 @@ export const ValueOfType = <Output>(Type: Rule<EntityToken, Output>) => {
   )
 }
 
-const Property = <Output>(
+export const Property = <Output>(
   Type: Rule<EntityToken, Output>,
   name?: string,
 ) =>
@@ -28,7 +28,7 @@ const Property = <Output>(
       IsSymbol(PropertyStart),
       IsData(name),
       IsSymbol(Equals),
-      ValueOfType(Type),
+      ValueOf(Type),
       IsSymbol(PropertyEnd),
     ),
     ([s, n, eq, value, e]) => value,
