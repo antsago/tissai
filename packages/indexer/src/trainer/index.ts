@@ -7,28 +7,27 @@ import { LabelMap } from "../parser/types.js"
 import { Attributes, Ontology, Required } from "../parser/grammar/index.js"
 import { TokenReader } from "../parser/TokenReader.js"
 
-type Attribute = { value: string; labels: string[] }
+type Attribute = { value: string; label: string }
 
 const updateMapping = (
   vocabulary: LabelMap,
-  labeled: (Token & { labels: string[] })[],
+  labeled: (Token & { label?: string })[],
 ) =>
   labeled
-    .filter((t) => t.isMeaningful && !!t.labels.length)
-    .flatMap(({ labels, text }) => labels.map((label) => ({ label, text })))
+    .filter((t) => t.isMeaningful && t.label !== undefined)
     .forEach(({ label, text }) => {
       vocabulary[text] = {
         ...(vocabulary[text] ?? {}),
-        [label]: (vocabulary[text]?.[label] ?? 0) + 1,
+        [label!]: (vocabulary[text]?.[label!] ?? 0) + 1,
       }
     })
 const CATEGORY_LABEL = "categoría"
 const updateSchemas = (schemas: LabelMap, attributes: Attribute[]) => {
   const categories = attributes
-    .filter((att) => att.labels.includes(CATEGORY_LABEL))
+    .filter((att) => att.label === CATEGORY_LABEL)
     .map((att) => att.value)
   const otherAttributes = attributes
-    .flatMap((att) => att.labels)
+    .map((att) => att.label)
     .filter((label) => label !== CATEGORY_LABEL)
   categories.forEach((cat) =>
     otherAttributes.forEach((att) => {
@@ -75,14 +74,14 @@ const [{ count: pageCount }] = await db.query(
     .select(({ fn }) => fn.count("id").as("count"))
     .compile(),
 )
-const products = await db.stream(
-  query.selectFrom("pages").select(["body", "url", "id"]).compile(),
+const pages = await db.stream(
+  query.selectFrom("pages").select(["body", "url", "id"]).limit(2).compile(),
 )
 
 const VOCABULARY = {} as LabelMap
 const SCHEMAS = {} as LabelMap
 let index = 1
-for await (let { id, body, url } of products) {
+for await (let { id, body, url } of pages) {
   try {
     reporter.progress(`Processing page ${index}/${pageCount}: ${id} (${url})`)
 

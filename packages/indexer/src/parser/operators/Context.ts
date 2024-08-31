@@ -1,20 +1,18 @@
 import _ from "lodash"
 
 class Context {
-  public labels?: string[]
+  public label?: string
 
-  narrow(newLabels: string[]) {
-    if (this.labels === undefined) {
-      return (this.labels = newLabels)
+  narrow(newLabel: string) {
+    if (this.label === undefined) {
+      return (this.label = newLabel)
     }
 
-    const intersect = _.intersection(newLabels, this.labels)
-
-    if (!intersect.length) {
-      return null
+    if (this.label === newLabel) {
+      return this.label
     }
-
-    return (this.labels = intersect)
+    
+    return null
   }
 }
 

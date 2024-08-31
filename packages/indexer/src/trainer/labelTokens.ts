@@ -11,5 +11,5 @@ export const getLabels =
   async (tokens: Token[]) => {
     const words = tokens.map((t) => t.originalText)
     const labels = await python.send({ title, words })
-    return labels.map((l) => [l.label])
+    return labels.map((l) => l.label)
   }

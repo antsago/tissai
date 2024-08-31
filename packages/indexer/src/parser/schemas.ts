@@ -5,7 +5,7 @@ import { type Schema, Attributes, Required } from "./grammar/index.js"
 import { LabelMap } from "./types.js"
 
 const getLabels = (map: LabelMap) => (tokens: LexerToken[]) =>
-  tokens.map((t) => (t.text in map ? Object.keys(map[t.text]) : ["unknown"]))
+  tokens.map((t) => (t.text in map ? Object.keys(map[t.text])[0] : "unknown"))
 
 export const getSchemas = (lexer: Lexer): Schema[] => [
   {

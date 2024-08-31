@@ -1,6 +1,6 @@
 import { Token } from "./normalizer.js"
 
-export type Labeler = (tokens: Token[]) => Promise<string[][]> | string[][]
+export type Labeler = (tokens: Token[]) => Promise<string[]> | string[]
 
 export const labelTokens = async (tokens: Token[], getLabels: Labeler) => {
   const labels = await getLabels(tokens.filter((t) => t.isMeaningful))
@@ -10,16 +10,16 @@ export const labelTokens = async (tokens: Token[], getLabels: Labeler) => {
     if (!t.isMeaningful) {
       return {
         ...t,
-        labels: [],
+        label: undefined,
       }
     }
 
-    const wordLabels = labels[labelsIndex]
+    const wordLabel = labels[labelsIndex]
     labelsIndex += 1
 
     return {
       ...t,
-      labels: wordLabels,
+      label: wordLabel,
     }
   })
 

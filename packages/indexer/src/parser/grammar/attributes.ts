@@ -14,7 +14,7 @@ export const Filler = Token((word: WordToken) => !word.isMeaningful)
 export const Label = (context: Context) =>
   Token(
     (word: WordToken) =>
-      word.isMeaningful && context.narrow(word.labels) !== null,
+      word.isMeaningful && word.label !== undefined && context.narrow(word.label) !== null,
   )
 
 export const Attribute = restructure(
@@ -23,7 +23,7 @@ export const Attribute = restructure(
     const value = (result.flat(Infinity) as WordToken[])
       .map((t: WordToken) => t.text)
       .join(" ")
-    return { value, labels: context.labels }
+    return { value, label: context.label }
   },
 )
 
