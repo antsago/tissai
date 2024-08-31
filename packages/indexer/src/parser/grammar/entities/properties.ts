@@ -1,43 +1,8 @@
-import type { DataToken, EntityToken, Rule } from "../../types.js"
-import {
-  and,
-  any,
-  restructure,
-  type AwaitedMatch,
-} from "../../operators/index.js"
-import {
-  Equals,
-  ValueSeparator,
-  PropertyEnd,
-  PropertyStart,
-  Id,
-} from "../../../lexer/index.js"
+import type { DataToken } from "../../types.js"
+import { and, any, restructure } from "../../operators/index.js"
+import { Id } from "../../../lexer/index.js"
 import { IsData, IsSymbol, IsValue } from "./values.js"
-
-const ValueOf = <Output>(Type: Rule<EntityToken, Output>) => {
-  return restructure(
-    and(Type, any(and(IsSymbol(ValueSeparator), Type))),
-    (tokens) =>
-      tokens
-        .flat(Infinity)
-        .filter((t) => typeof t !== "symbol") as AwaitedMatch<Output>[],
-  )
-}
-
-export const Property = <Output>(
-  Type: Rule<EntityToken, Output>,
-  name?: string,
-) =>
-  restructure(
-    and(
-      IsSymbol(PropertyStart),
-      IsData(name),
-      IsSymbol(Equals),
-      ValueOf(Type),
-      IsSymbol(PropertyEnd),
-    ),
-    ([s, n, eq, value, e]) => value,
-  )
+import { Property } from "./Property.js"
 
 type BaseDefinition = {
   key: string | symbol

@@ -8,8 +8,8 @@ import {
 } from "../../../lexer/symbols.js"
 import { TokenReader } from "../../TokenReader.js"
 import { NonMatch } from "../../operators/nonMatch.js"
-import { Any, IsData, IsSymbol, IsValue } from "./values.js"
-import { Property } from "./properties.js"
+import { IsData } from "./values.js"
+import { Property } from "./Property.js"
 
 describe("Property", () => {
   it("matches properties", async () => {
