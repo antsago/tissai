@@ -1,8 +1,8 @@
 import { expect, describe, it } from "vitest"
 import { TokenReader } from "../TokenReader.js"
 import { Token } from "./Token.js"
-import or from "./or.js"
 import { NonMatch } from "./nonMatch.js"
+import or from "./or.js"
 
 describe("or", () => {
   const IsYes = Token(t => t === "yes")
