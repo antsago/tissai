@@ -7,7 +7,7 @@ import {
 } from "../../../lexer/symbols.js"
 import { TokenReader } from "../../TokenReader.js"
 import { NonMatch } from "../../operators/nonMatch.js"
-import { ReferenceProperty } from "./properties.js"
+import { ReferenceProperty } from "./ReferenceProperty.js"
 
 describe("ReferenceProperty", () => {
   it("matches definition", async () => {

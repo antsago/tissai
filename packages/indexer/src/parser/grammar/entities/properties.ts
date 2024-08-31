@@ -1,21 +1,12 @@
-import type { DataToken } from "../../types.js"
-import { and, any, restructure } from "../../operators/index.js"
-import { Id } from "../../../lexer/index.js"
+import { restructure } from "../../operators/index.js"
 import type {
-  DataDefinition,
-  ReferenceDefinition,
   ParsedDefinition,
   PropertyDefinition,
 } from "./types.js"
-import { IsData, IsSymbol } from "./values.js"
+import { IsData } from "./values.js"
 import { Property } from "./Property.js"
 import { DataProperty } from "./DataProperty.js"
-
-export const ReferenceProperty = ({ key, name }: ReferenceDefinition) =>
-  restructure(Property(and(IsSymbol(Id), IsData()), name), (references) => ({
-    key,
-    value: references.map((r) => ({ [Id]: r })),
-  }))
+import { ReferenceProperty } from "./ReferenceProperty.js"
 
 const IsParsed = <Output>(parse: (text: string) => Output) =>
   restructure(IsData(), async (token) => {
