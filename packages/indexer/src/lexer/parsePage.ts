@@ -9,7 +9,6 @@ import {
   Id,
 } from "./symbols.js"
 import { parseAndExpand } from "../jsonLd.js"
-import { Page } from "@tissai/db"
 import { parse } from "node-html-parser"
 
 export type EntityToken = string | symbol | number | boolean
