@@ -1,12 +1,12 @@
-import type { DataToken, EntityToken, Rule } from "../types.js"
-import { and, any, restructure, type AwaitedMatch } from "../operators/index.js"
+import type { DataToken, EntityToken, Rule } from "../../types.js"
+import { and, any, restructure, type AwaitedMatch } from "../../operators/index.js"
 import {
   Equals,
   ValueSeparator,
   PropertyEnd,
   PropertyStart,
   Id,
-} from "../../lexer/index.js"
+} from "../../../lexer/index.js"
 import { IsData, IsSymbol, IsValue } from "./values.js"
 
 const IsParsed = <Output>(parse: (text: string) => Output) =>

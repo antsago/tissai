@@ -1,2 +1,2 @@
-export { Ontology, type Schema, Required } from "./entities.js"
-export { Attributes } from "./attributes/index.js"
+export * from "./attributes/index.js"
+export { Ontology, type Schema, Required } from "./entities/index.js"
