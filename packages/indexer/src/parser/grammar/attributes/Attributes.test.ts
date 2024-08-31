@@ -1,6 +1,6 @@
 import { expect, describe, it } from "vitest"
-import { TokenReader } from "../TokenReader.js"
-import { Attributes } from "./attributes.js"
+import { TokenReader } from "../../TokenReader.js"
+import { Attributes } from "./index.js"
 
 describe("Attributes", () => {
   const TOKEN_BASE = {

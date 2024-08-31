@@ -1,7 +1,7 @@
 import { expect, describe, it } from "vitest"
-import { TokenReader } from "../TokenReader.js"
-import { Context, NonMatch } from "../operators/index.js"
-import { Labeled } from "./attributes.js"
+import { TokenReader } from "../../TokenReader.js"
+import { Context, NonMatch } from "../../operators/index.js"
+import { Labeled } from "./index.js"
 
 describe("Labeled", () => {
   const TOKEN_BASE = {

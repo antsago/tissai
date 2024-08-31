@@ -1,8 +1,8 @@
 import { expect, describe, it } from "vitest"
-import type { WordToken } from "../types.js"
-import { TokenReader } from "../TokenReader.js"
-import { NonMatch } from "../operators/index.js"
-import { Attribute } from "./attributes.js"
+import type { WordToken } from "../../types.js"
+import { TokenReader } from "../../TokenReader.js"
+import { NonMatch } from "../../operators/index.js"
+import { Attribute } from "./index.js"
 
 describe("Attribute", () => {
   const TOKEN_BASE = {

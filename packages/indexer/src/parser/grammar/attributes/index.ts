@@ -1,4 +1,4 @@
-import type { WordToken } from "../types.js"
+import type { WordToken } from "../../types.js"
 import {
   withL,
   and,
@@ -7,7 +7,7 @@ import {
   Token,
   restructure,
   type Context,
-} from "../operators/index.js"
+} from "../../operators/index.js"
 
 export const Filler = Token((word: WordToken) => !word.isMeaningful || word.label === undefined)
 
