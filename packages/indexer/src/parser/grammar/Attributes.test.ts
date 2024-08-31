@@ -17,7 +17,7 @@ describe("Attributes", () => {
 
   it("recognizes top-level attributes", async () => {
     const tokens = [
-      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
+      { label: "label", isMeaningful: true, text: "token", ...TOKEN_BASE },
     ]
     const reader = TokenReader(tokens)
 
@@ -25,7 +25,7 @@ describe("Attributes", () => {
 
     expect(result).toStrictEqual([
       {
-        labels: ["label"],
+        label: "label",
         value: tokens[0].text,
       },
     ])
@@ -33,7 +33,7 @@ describe("Attributes", () => {
 
   it("recognizes top-level filler", async () => {
     const tokens = [
-      { labels: ["filler"], isMeaningful: false, text: "token", ...TOKEN_BASE },
+      { label: undefined, isMeaningful: false, text: "token", ...TOKEN_BASE },
     ]
     const reader = TokenReader(tokens)
 
@@ -44,8 +44,8 @@ describe("Attributes", () => {
 
   it("recognizes multiple segments", async () => {
     const tokens = [
-      { labels: ["label"], isMeaningful: true, text: "token", ...TOKEN_BASE },
-      { labels: ["filler"], isMeaningful: false, text: "token", ...TOKEN_BASE },
+      { label: "label", isMeaningful: true, text: "token", ...TOKEN_BASE },
+      { label: undefined, isMeaningful: false, text: "token", ...TOKEN_BASE },
     ]
     const reader = TokenReader(tokens)
 
@@ -53,7 +53,7 @@ describe("Attributes", () => {
 
     expect(result).toStrictEqual([
       {
-        labels: ["label"],
+        label: "label",
         value: tokens[0].text,
       },
       tokens[1],

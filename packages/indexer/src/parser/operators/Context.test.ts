@@ -2,39 +2,40 @@ import { expect, describe, it } from "vitest"
 import Context from "./Context.js"
 
 describe("Context", () => {
-  it("holds passed labels", () => {
-    const labels = ["a", "b"]
+  it("holds passed label", () => {
+    const label = "a"
     const context = new Context()
 
-    const result = context.narrow(labels)
+    const result = context.narrow(label)
 
-    expect(result).not.toBe(null)
-    expect(context.labels).toStrictEqual(labels)
+    expect(result).toStrictEqual(label)
+    expect(context.label).toStrictEqual(label)
   })
 
-  it("starts with no labels", () => {
+  it("starts with no label", () => {
     const context = new Context()
-    expect(context.labels).toBe(undefined)
+    expect(context.label).toBe(undefined)
   })
 
-  it("narrows labels", () => {
+  it("accepts equal labels", () => {
+    const label = "a"
     const context = new Context()
-    context.narrow(["a", "b"])
+    context.narrow(label)
 
-    const result = context.narrow(["b", "c"])
+    const result = context.narrow("a")
 
-    expect(result).not.toBe(null)
-    expect(context.labels).toStrictEqual(["b"])
+    expect(result).toStrictEqual(label)
+    expect(context.label).toStrictEqual(label)
   })
 
-  it("rejects empty narrowing", () => {
-    const labels = ["a", "b"]
+  it("rejects different labels", () => {
+    const label = "a"
     const context = new Context()
-    context.narrow(labels)
+    context.narrow(label)
 
-    const result = context.narrow(["c", "d"])
+    const result = context.narrow("b")
 
     expect(result).toBe(null)
-    expect(context.labels).toStrictEqual(labels)
+    expect(context.label).toStrictEqual(label)
   })
 })

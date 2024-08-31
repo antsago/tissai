@@ -1,5 +1,6 @@
 import { expect, describe, it } from "vitest"
 import { TokenReader } from "../TokenReader.js"
+import { NonMatch } from "../operators/index.js"
 import { Filler } from "./attributes.js"
 
 describe("Filler", () => {
@@ -8,15 +9,15 @@ describe("Filler", () => {
     trailing: "",
   }
 
-  it("returns null if no next token", () => {
+  it("returns no match if no next token", () => {
     const reader = TokenReader([])
 
     const result = Filler(reader)
 
-    expect(result).toBe(null)
+    expect(result).toBe(NonMatch)
   })
 
-  it("returns null if the next token is meaningful", () => {
+  it("returns no match if the next token is meaningful", () => {
     const TOKENS = [
       {
         labels: ["label1", "label2"],
@@ -30,7 +31,7 @@ describe("Filler", () => {
 
     const result = Filler(reader)
 
-    expect(result).toBe(null)
+    expect(result).toBe(NonMatch)
     expect(reader.get()).toStrictEqual(TOKENS[0])
   })
 
