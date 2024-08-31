@@ -1,2 +1,3 @@
 export * from "./values.js"
-export { Ontology, type Schema, Required } from "./entities.js"
+export { Ontology } from "./entities.js"
+export { type Schema, Required } from "./types.js"
