@@ -1,6 +1,4 @@
-import type {
-  PropertyDefinition,
-} from "./types.js"
+import type { PropertyDefinition } from "./types.js"
 import { DataProperty } from "./DataProperty.js"
 import { ReferenceProperty } from "./ReferenceProperty.js"
 import { ParsedProperty } from "./ParsedProperty.js"

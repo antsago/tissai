@@ -34,19 +34,18 @@ const extractDefinitions = (inputSchema: Schema): PropertyDefinition[] =>
 
 const RequiredProperty = ({ key: name, value }: RequiredDefinition) =>
   any(
-      or(DataProperty({
-    key: Required,
-    name,
-    value,
-  }),
-        Token<EntityToken>((t) => t !== EntityEnd),
-      ),
-    )
-  
-const hasRequired = (match: NonNullable<unknown>[]) =>
-  match.some(
-    (m) => typeof m === "object" && "key" in m && m.key === Required,
+    or(
+      DataProperty({
+        key: Required,
+        name,
+        value,
+      }),
+      Token<EntityToken>((t) => t !== EntityEnd),
+    ),
   )
+
+const hasRequired = (match: NonNullable<unknown>[]) =>
+  match.some((m) => typeof m === "object" && "key" in m && m.key === Required)
 
 export const Properties = (schema: Schema) => {
   const definedProperties = extractDefinitions(schema).map(DefinedProperty)

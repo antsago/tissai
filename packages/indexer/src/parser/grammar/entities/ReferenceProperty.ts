@@ -1,8 +1,6 @@
 import { and, restructure } from "../../operators/index.js"
 import { Id } from "../../../lexer/index.js"
-import type {
-  ReferenceDefinition,
-} from "./types.js"
+import type { ReferenceDefinition } from "./types.js"
 import { IsData, IsSymbol } from "./values.js"
 import { Property } from "./Property.js"
 

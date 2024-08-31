@@ -1,7 +1,5 @@
 import { restructure } from "../../operators/index.js"
-import type {
-  DataDefinition,
-} from "./types.js"
+import type { DataDefinition } from "./types.js"
 import { IsData } from "./values.js"
 import { Property } from "./Property.js"
 
