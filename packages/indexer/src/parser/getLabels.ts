@@ -12,7 +12,7 @@ const getCategoryProbability = (vocable?: LabelMap[string]) => {
   return (vocable.categoría ?? 0) / sum
 }
 
-const getLabel = (vocable?: { label: string, count: number}[]) => {
+const getLabel = (vocable?: { label: string; count: number }[]) => {
   if (!vocable) {
     return undefined
   }
@@ -22,6 +22,17 @@ const getLabel = (vocable?: { label: string, count: number}[]) => {
     .map(({ label }) => label)
 
   return candidates[0] !== "categoría" ? candidates[0] : candidates[1]
+}
+
+const getVocable = (vocable?: LabelMap[string], schema?: LabelMap[string]) => {
+  if (!vocable) {
+    return undefined
+  }
+
+  return Object.entries(vocable).map(([label, count]) => ({
+    label,
+    count: (schema?.[label] ?? 1) * count,
+  }))
 }
 
 export const getLabels =
@@ -35,16 +46,10 @@ export const getLabels =
       }))
       .sort(({ probability: a }, { probability: b }) => b - a)[0]
 
-    const getVocable = (word: string) => {
-      if (!(word in vocabulary)) {
-        return undefined
-      } 
-
-      return Object.entries(vocabulary[word]).map(([label, count]) => ({ label, count: (schemas[category.value]?.[label] ?? 1) * count }))
-    }
-
-    const labels = tokens.map((t) => getVocable(t.text))
-      .map((vocab) => getLabel(vocab) ?? "unknown")
+    const schema = schemas[category.value]
+    const labels = tokens
+      .map((t) => getVocable(vocabulary[t.text], schema))
+      .map((vocable) => getLabel(vocable) ?? "unknown")
 
     return category.probability === 0
       ? labels
