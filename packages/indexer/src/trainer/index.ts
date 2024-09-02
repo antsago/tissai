@@ -10,8 +10,8 @@ const MODEL: Model = {
   schemas: {},
 }
 
-await PageServer(
-  () => {
+await new PageServer<{ compiler: ReturnType<typeof Compiler>, python: PythonPool<{ title: string; words: string[] }, Label[]>}>(
+() => {
     const python = PythonPool<{ title: string; words: string[] }, Label[]>(
       `./labelWords.py`,
       reporter,
@@ -30,6 +30,7 @@ await PageServer(
     }
   },
   ({ compiler, python }) => Promise.all([compiler?.close(), python?.close()]),
-).start()
+)
+.start()
 
 console.log(JSON.stringify(MODEL))
