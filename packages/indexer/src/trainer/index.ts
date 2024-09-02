@@ -10,18 +10,12 @@ const MODEL: Model = {
   schemas: {},
 }
 
-await new PageServer<{ compiler: ReturnType<typeof Compiler>, python: PythonPool<{ title: string; words: string[] }, Label[]>}>(
-() => {
-    const python = PythonPool<{ title: string; words: string[] }, Label[]>(
-      `./labelWords.py`,
-      reporter,
-    )
-    const compiler = Compiler(getSchemas(python))
-    return {
-      python,
-      compiler,
-    }
-  },
+type ServerState = {
+  compiler: ReturnType<typeof Compiler>
+  python: PythonPool<{ title: string; words: string[] }, Label[]>
+}
+
+await new PageServer<ServerState>(
   async (page, { compiler }) => {
     const entities = await compiler.parse(page.body)
 
@@ -31,6 +25,17 @@ await new PageServer<{ compiler: ReturnType<typeof Compiler>, python: PythonPool
   },
   ({ compiler, python }) => Promise.all([compiler?.close(), python?.close()]),
 )
-.start()
+  .onInitialize(() => {
+    const python = PythonPool<{ title: string; words: string[] }, Label[]>(
+      `./labelWords.py`,
+      reporter,
+    )
+    const compiler = Compiler(getSchemas(python))
+    return {
+      python,
+      compiler,
+    }
+  })
+  .start()
 
 console.log(JSON.stringify(MODEL))

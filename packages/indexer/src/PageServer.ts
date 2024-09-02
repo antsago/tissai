@@ -8,22 +8,28 @@ export class PageServer<T = undefined> {
   getState?: OnInitialize<T>
 
   constructor(
-    private onInitialize: OnInitialize<T>,
     private onPage: (page: Page, state: T & { db: Db }) => Promise<any>,
     private onClose: (state: Partial<T>) => Promise<any>,
   ) {}
 
+  onInitialize = (fn: OnInitialize<T>) => {
+    this.getState = fn
+    return this
+  }
+
   start = async () => {
     let db: Db
     let state: T
-  
+
     try {
       reporter.progress("Initializing...")
-  
+
       db = Db()
       await db.initialize()
-      state = await this.onInitialize()
-  
+      if (this.getState) {
+        state = this.getState()
+      }
+
       await runForAllPages(db, (page) => this.onPage(page, { ...state, db }))
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
