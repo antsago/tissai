@@ -1,4 +1,3 @@
-import type { ParsedPage } from "./parsedPage.js"
 import he from "he"
 
 export type JsonLD = Partial<{
@@ -57,28 +56,3 @@ export function parseAndExpand(entries: string[]) {
     .map((t) => (t["@graph"] ? t["@graph"] : t))
     .flat()
 }
-
-function jsonLd(parsedPage: ParsedPage): JsonLD {
-  const expanded = parseAndExpand(
-    parsedPage
-      .querySelectorAll('script[type="application/ld+json"]')
-      .map((t) => t.rawText),
-  )
-
-  const productTag = expanded.filter((t) => t["@type"].includes("Product"))[0]
-
-  return {
-    title: productTag?.name[0],
-    description: productTag?.description?.[0],
-    image: productTag?.image,
-    brandName: productTag?.brand?.[0].name[0],
-    brandLogo: productTag?.brand?.[0].image?.[0],
-    offers: productTag?.offers?.map((offer: any) => ({
-      price: offer.price?.[0],
-      currency: offer.priceCurrency?.[0],
-      seller: offer.seller?.[0].name[0],
-    })),
-  }
-}
-
-export default jsonLd

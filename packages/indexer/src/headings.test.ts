@@ -1,6 +1,6 @@
 import { expect, describe, it } from "vitest"
+import { parse } from "node-html-parser"
 import { PAGE } from "#mocks"
-import parsedPage from "./parsedPage.js"
 import headings from "./headings.js"
 
 describe("headings", () => {
@@ -30,7 +30,7 @@ describe("headings", () => {
       `,
     }
 
-    const result = headings(parsedPage(page))
+    const result = headings(parse(page.body))
 
     expect(result).toStrictEqual({
       title: headers.title,
@@ -49,7 +49,7 @@ describe("headings", () => {
       `,
     }
 
-    const result = headings(parsedPage(page))
+    const result = headings(parse(page.body))
 
     expect(result).toStrictEqual({
       title: undefined,

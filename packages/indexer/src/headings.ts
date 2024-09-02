@@ -1,11 +1,11 @@
-import type { ParsedPage } from "./parsedPage.js"
+import { type HTMLElement } from "node-html-parser"
 
 export type Headings = Partial<{
   title: string
   description: string
 }>
 
-function headings(parsedPage: ParsedPage): Headings {
+function headings(parsedPage: HTMLElement): Headings {
   const headers = {
     title: parsedPage.querySelector("title")?.textContent,
     description: parsedPage

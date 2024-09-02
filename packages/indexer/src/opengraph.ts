@@ -1,11 +1,11 @@
-import type { ParsedPage } from "./parsedPage.js"
+import { type HTMLElement } from "node-html-parser"
 
 export type OpenGraph = Partial<{
   title: string
   description: string
   image: string[]
 }>
-function opengraph(parsedPage: ParsedPage): OpenGraph {
+function opengraph(parsedPage: HTMLElement): OpenGraph {
   const entries = Object.fromEntries(
     parsedPage
       .querySelectorAll('meta[property^="og:"]')

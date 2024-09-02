@@ -1,6 +1,6 @@
 import { expect, describe, it } from "vitest"
+import { parse } from "node-html-parser"
 import { PAGE } from "#mocks"
-import parsedPage from "./parsedPage.js"
 import entries from "./opengraph.js"
 
 const BASE_DATA = {
@@ -27,7 +27,7 @@ describe("opengraph", () => {
       ...BASE_DATA,
     })
 
-    const result = entries(parsedPage(page))
+    const result = entries(parse(page.body))
 
     expect(result).toStrictEqual({
       title: BASE_DATA["og:title"],
@@ -39,7 +39,7 @@ describe("opengraph", () => {
   it("handles empty pages", () => {
     const page = pageWithOg({})
 
-    const result = entries(parsedPage(page))
+    const result = entries(parse(page.body))
 
     expect(result).toStrictEqual({})
   })
@@ -50,7 +50,7 @@ describe("opengraph", () => {
       ...BASE_DATA,
     })
 
-    const result = entries(parsedPage(page))
+    const result = entries(parse(page.body))
 
     expect(result).toStrictEqual({})
   })

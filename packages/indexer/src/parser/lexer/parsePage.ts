@@ -8,7 +8,7 @@ import {
   PropertyStart,
   Id,
 } from "./symbols.js"
-import { parseAndExpand } from "../../jsonLd.js"
+import { parseAndExpand } from "./parseAndExpand.js"
 import { parse } from "node-html-parser"
 
 export type EntityToken = string | symbol | number | boolean
