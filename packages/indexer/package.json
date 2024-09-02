@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "poetry run node build/src/index.js",
-    "parse": "poetry run node ./build/src/parser/index.js",
+    "label": "poetry run node ./build/src/labeler/index.js",
     "train": "poetry run node ./build/src/trainer/index.js",
     "build": "rm -rf ./build && tsc --build && cp --parents -R **/*.py build/",
     "test": "poetry run vitest run",

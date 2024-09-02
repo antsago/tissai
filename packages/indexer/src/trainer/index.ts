@@ -20,7 +20,10 @@ const updateMapping = (
       }
     })
 const CATEGORY_LABEL = "categoría"
-const updateSchemas = (schemas: LabelMap, labeled: (Token & { label?: string })[]) => {
+const updateSchemas = (
+  schemas: LabelMap,
+  labeled: (Token & { label?: string })[],
+) => {
   const categories = labeled
     .filter((word) => word.label === CATEGORY_LABEL)
     .map((word) => word.text)
@@ -57,7 +60,8 @@ const Parser = Ontology([
       name: "name",
       parse: {
         as: "parsedTitle",
-        with: (title: string) => lexer.fromText(title, getLabels(title, python)),
+        with: (title: string) =>
+          lexer.fromText(title, getLabels(title, python)),
       },
     },
   },
