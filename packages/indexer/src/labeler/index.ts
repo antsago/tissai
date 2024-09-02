@@ -1,6 +1,5 @@
-import { Lexer, Ontology, type Schema, TokenReader } from "../parser/index.js"
 import { getSchemas } from "./schemas.js"
-import { Compiler } from "./Compiler.js"
+import { Compiler } from "../parser/index.js"
 
 const testPage = `
     <html>

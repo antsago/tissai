@@ -1,4 +1,6 @@
-import { Lexer, Ontology, type Schema, TokenReader } from "../parser/index.js"
+import { Lexer } from "./lexer/index.js"
+import { Ontology, type Schema } from "./grammar/index.js"
+import { TokenReader } from "./TokenReader.js"
 
 export function Compiler(getSchemas: (lexer: Lexer) => Schema[]) {
   const lexer = Lexer()
