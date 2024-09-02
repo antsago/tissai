@@ -1,4 +1,4 @@
-import type { LabelMap } from "../parser/types.js"
+import type { LabelMap } from "../parser/index.js"
 
 export const schemas = {
   "jeans cropped marine": { género: 3, modelo: 2 },

@@ -1,6 +1,4 @@
-import { Lexer } from "../parser/lexer/index.js"
-import { TokenReader } from "../parser/TokenReader.js"
-import { Ontology } from "../parser/grammar/index.js"
+import { Lexer, Ontology, TokenReader } from "../parser/index.js"
 import { getSchemas } from "./schemas.js"
 
 const testPage = `

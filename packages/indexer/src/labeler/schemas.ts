@@ -1,7 +1,5 @@
-import { Lexer } from "../parser/lexer/index.js"
-import { TokenReader } from "../parser/TokenReader.js"
+import { type Schema, Attributes, Required, Lexer, TokenReader } from "../parser/index.js"
 import * as model from "./model.js"
-import { type Schema, Attributes, Required } from "../parser/grammar/index.js"
 import { getLabels } from "./getLabels.js"
 
 export const getSchemas = (lexer: Lexer): Schema[] => [

@@ -1,11 +1,8 @@
 import { Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
-import { type Token, Lexer } from "../parser/lexer/index.js"
+import { type Token, Lexer, Ontology, Required, TokenReader, type LabelMap } from "../parser/index.js"
 import { type Label, getLabels } from "./labelTokens.js"
-import { LabelMap } from "../parser/types.js"
-import { Ontology, Required } from "../parser/grammar/index.js"
-import { TokenReader } from "../parser/TokenReader.js"
 
 const updateMapping = (
   vocabulary: LabelMap,
