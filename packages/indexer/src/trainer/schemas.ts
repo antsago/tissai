@@ -1,6 +1,18 @@
 import { PythonPool } from "@tissai/python-pool"
-import { Required, Lexer } from "../parser/index.js"
-import { type Label, getLabels } from "./labelTokens.js"
+import { type Token, Required, Lexer } from "../parser/index.js"
+
+export type Label = { label: string; value: string }
+
+export const getLabels =
+  (
+    title: string,
+    python: PythonPool<{ title: string; words: string[] }, Label[]>,
+  ) =>
+  async (tokens: Token[]) => {
+    const words = tokens.map((t) => t.originalText)
+    const labels = await python.send({ title, words })
+    return labels.map((l) => l.label)
+  }
 
 export const getSchemas = (python: PythonPool<{ title: string; words: string[] }, Label[]>) => (lexer: Lexer) => [
   {

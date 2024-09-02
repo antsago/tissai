@@ -2,8 +2,7 @@ import { Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
 import { Compiler, type Token, type LabelMap } from "../parser/index.js"
-import { type Label } from "./labelTokens.js"
-import { getSchemas } from "./schemas.js"
+import { type Label, getSchemas } from "./schemas.js"
 
 const updateMapping = (
   vocabulary: LabelMap,
