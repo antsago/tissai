@@ -1,7 +1,7 @@
 import { Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
-import { Compiler, type Token, type LabelMap } from "../parser/index.js"
+import { Compiler, type Token, type LabelMap, type Model } from "../parser/index.js"
 import { type Label, getSchemas } from "./schemas.js"
 
 const updateMapping = (
@@ -59,8 +59,10 @@ const pages = await db.stream(
   query.selectFrom("pages").select(["body", "url", "id"]).limit(1).compile(),
 )
 
-const VOCABULARY = {} as LabelMap
-const SCHEMAS = {} as LabelMap
+const MODEL: Model = {
+  vocabulary: {},
+  schemas: {},
+}
 let index = 1
 for await (let { id, body, url } of pages) {
   try {
@@ -75,8 +77,8 @@ for await (let { id, body, url } of pages) {
         )
         .map((product) => product.parsedTitle)
 
-      updateMapping(VOCABULARY, products.flat())
-      products.forEach((product) => updateSchemas(SCHEMAS, product))
+      updateMapping(MODEL.vocabulary, products.flat())
+      products.forEach((product) => updateSchemas(MODEL.schemas, product))
     }
 
     index += 1
@@ -87,8 +89,7 @@ for await (let { id, body, url } of pages) {
 }
 
 reporter.succeed(`Processed ${pageCount} pages`)
-console.log(JSON.stringify(VOCABULARY))
-console.log(JSON.stringify(SCHEMAS))
+console.log(JSON.stringify(MODEL))
 
 await db.close()
 await compiler.close()
