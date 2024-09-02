@@ -15,16 +15,7 @@ type ServerState = {
   python: PythonPool<{ title: string; words: string[] }, Label[]>
 }
 
-await new PageServer<ServerState>(
-  async (page, { compiler }) => {
-    const entities = await compiler.parse(page.body)
-
-    if (entities !== NonMatch) {
-      updateModel(entities, MODEL)
-    }
-  },
-  ({ compiler, python }) => Promise.all([compiler?.close(), python?.close()]),
-)
+await new PageServer<ServerState>()
   .onInitialize(() => {
     const python = PythonPool<{ title: string; words: string[] }, Label[]>(
       `./labelWords.py`,
@@ -36,6 +27,16 @@ await new PageServer<ServerState>(
       compiler,
     }
   })
+  .onPage(async (page, { compiler }) => {
+    const entities = await compiler.parse(page.body)
+
+    if (entities !== NonMatch) {
+      updateModel(entities, MODEL)
+    }
+  })
+  .onClose(({ compiler, python }) =>
+    Promise.all([compiler?.close(), python?.close()]),
+  )
   .start()
 
 console.log(JSON.stringify(MODEL))
