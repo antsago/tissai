@@ -44,6 +44,6 @@ describe("getLabels", () => {
       },
     ])
 
-    expect(result).toStrictEqual(["categoría", "unknown", "unknown"])
+    expect(result).toStrictEqual(["label", "categoría", "unknown"])
   })
 })
