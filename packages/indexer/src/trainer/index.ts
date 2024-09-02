@@ -18,20 +18,18 @@ await PageServer(
     )
     const compiler = Compiler(getSchemas(python))
     return {
-      python, compiler
+      python,
+      compiler,
     }
   },
   async (page, { compiler }) => {
     const entities = await compiler.parse(page.body)
-    
+
     if (entities !== NonMatch) {
       updateModel(entities, MODEL)
     }
   },
-  ({ compiler, python }) => Promise.all([
-    compiler?.close(),
-    python?.close(),
-  ])
-)
+  ({ compiler, python }) => Promise.all([compiler?.close(), python?.close()]),
+).start()
 
 console.log(JSON.stringify(MODEL))
