@@ -1,4 +1,6 @@
 import { randomUUID } from "node:crypto"
+import _ from "lodash"
+import { parse } from "node-html-parser"
 import {
   Equals,
   ValueSeparator,
@@ -9,7 +11,6 @@ import {
   Id,
 } from "./symbols.js"
 import { expandEntry, parseAndExpand } from "./parseAndExpand.js"
-import { parse } from "node-html-parser"
 
 export type EntityToken = string | symbol | number | boolean
 
@@ -58,13 +59,32 @@ export const parsePage = (body: string) => {
   )
     .map(tokenizeJson)
     .flat()
-  
+
   const og = Object.fromEntries(
     page
       .querySelectorAll('meta[property^="og:"]')
-      .map((t) => [t.getAttribute("property"), t.getAttribute("content")])
+      .map((t) => [t.getAttribute("property"), t.getAttribute("content")]),
   )
-  const ogTokens = tokenizeJson(expandEntry(og))
+  const ogTokens = _.isEmpty(og) ? [] : tokenizeJson(expandEntry(og))
+  const headers = {
+    title: page.querySelector("title")?.textContent,
+    description: page
+      .querySelector('meta[name="description"]')
+      ?.getAttribute("content"),
+    keywords: page
+      .querySelector('meta[name="keywords"]')
+      ?.getAttribute("content"),
+    author: page
+      .querySelector('meta[name="author"]')
+      ?.getAttribute("content"),
+    robots: page
+      .querySelector('meta[name="robots"]')
+      ?.getAttribute("content"),
+    canonical: page
+      .querySelector('link[rel="canonical"]')
+      ?.getAttribute("href"),
+  }
+  const headerTokens = tokenizeJson(expandEntry(headers))
 
-  return [...ldTokens, ...ogTokens]
+  return [...ldTokens, ...ogTokens, ...headerTokens]
 }

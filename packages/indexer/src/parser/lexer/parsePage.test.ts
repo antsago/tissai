@@ -1,5 +1,4 @@
 import { expect, describe, it } from "vitest"
-import { parse } from "node-html-parser"
 import { PAGE } from "#mocks"
 import { parsePage } from "./parsePage.js"
 
@@ -27,13 +26,45 @@ describe("opengraph", () => {
 
     const result = parsePage(page.body)
 
-    expect(result).toStrictEqual(expect.arrayContaining(
-[      "og:title",
-      OG_DATA["og:title"],
-      "og:description",
-      OG_DATA["og:description"],
-      "og:image",
-      OG_DATA["og:image"],]
-    ))
+    expect(result).toStrictEqual(
+      expect.arrayContaining([
+        "og:title",
+        OG_DATA["og:title"],
+        "og:description",
+        OG_DATA["og:description"],
+        "og:image",
+        OG_DATA["og:image"],
+      ]),
+    )
+  })
+
+  it("extracts heading information", () => {
+    const headers = {
+      title: "The page title",
+      description: "The description",
+      keywords: "Some, keywords",
+      author: "The author",
+      robots: "index,follow",
+      canonical: PAGE.url,
+    }
+    const page = `
+        <html>
+          <head>
+            <title>${headers.title}</title>
+            <meta name="viewport" content="something else">
+            <meta name="description" content="${headers.description}">
+            <meta name="keywords" content="${headers.keywords}">
+            <meta name="author" content="${headers.author}">
+            <meta name="robots" content="${headers.robots}">
+            <link rel="canonical" href="${headers.canonical}" />
+          </head>
+        </html>
+      `
+
+    const result = parsePage(page)
+
+    expect(result).toStrictEqual(
+      expect.arrayContaining(Object.entries(headers).flat()),
+    )
   })
 })
