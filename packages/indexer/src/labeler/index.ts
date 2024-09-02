@@ -1,5 +1,6 @@
-import { Lexer, Ontology, TokenReader } from "../parser/index.js"
+import { Lexer, Ontology, type Schema, TokenReader } from "../parser/index.js"
 import { getSchemas } from "./schemas.js"
+import { Compiler } from "./Compiler.js"
 
 const testPage = `
     <html>
@@ -27,13 +28,8 @@ const testPage = `
     </html>
   `
 
-const lexer = Lexer()
-const tokens = lexer.fromPage(testPage)
-const reader = TokenReader(tokens)
+const compiler = Compiler(getSchemas)
+const result = await compiler.parse(testPage)
+await compiler.close()
 
-const Product = Ontology(getSchemas(lexer))
-
-const result = await Product(reader)
-
-await lexer.close()
 console.dir(result, { depth: null })
