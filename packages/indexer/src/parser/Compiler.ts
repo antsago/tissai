@@ -5,7 +5,7 @@ import { TokenReader } from "./TokenReader.js"
 export function Compiler(getSchemas: (lexer: Lexer) => Schema[]) {
   const lexer = Lexer()
   const Product = Ontology(getSchemas(lexer))
-  
+
   return {
     parse: (page: string) => {
       const tokens = lexer.fromPage(page)

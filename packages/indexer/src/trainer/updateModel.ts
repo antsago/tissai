@@ -35,11 +35,12 @@ const updateSchemas = (
   )
 }
 
-export const updateModel = (entities: any[], { vocabulary, schemas }: Model) => {
+export const updateModel = (
+  entities: any[],
+  { vocabulary, schemas }: Model,
+) => {
   const products = entities
-    .filter(
-      (entity) => typeof entity !== "symbol" && "parsedTitle" in entity,
-    )
+    .filter((entity) => typeof entity !== "symbol" && "parsedTitle" in entity)
     .map((product) => product.parsedTitle)
 
   updateMapping(vocabulary, products.flat())

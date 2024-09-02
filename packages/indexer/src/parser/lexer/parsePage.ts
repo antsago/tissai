@@ -74,12 +74,8 @@ export const parsePage = (body: string) => {
     keywords: page
       .querySelector('meta[name="keywords"]')
       ?.getAttribute("content"),
-    author: page
-      .querySelector('meta[name="author"]')
-      ?.getAttribute("content"),
-    robots: page
-      .querySelector('meta[name="robots"]')
-      ?.getAttribute("content"),
+    author: page.querySelector('meta[name="author"]')?.getAttribute("content"),
+    robots: page.querySelector('meta[name="robots"]')?.getAttribute("content"),
     canonical: page
       .querySelector('link[rel="canonical"]')
       ?.getAttribute("href"),

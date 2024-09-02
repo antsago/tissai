@@ -1,4 +1,10 @@
-import { type Schema, Attributes, Required, Lexer, TokenReader } from "../parser/index.js"
+import {
+  type Schema,
+  Attributes,
+  Required,
+  Lexer,
+  TokenReader,
+} from "../parser/index.js"
 import * as model from "./model.js"
 import { getLabels } from "./getLabels.js"
 
