@@ -15,10 +15,7 @@ export const getSchemas = (lexer: Lexer): Schema[] => [
       parse: {
         as: "attributes",
         with: async (title: string) => {
-          const tokens = await lexer.fromText(
-            title,
-            getLabels(model),
-          )
+          const tokens = await lexer.fromText(title, getLabels(model))
           return Attributes(TokenReader(tokens))
         },
       },

@@ -49,26 +49,26 @@ describe("getLabels", () => {
   })
 
   it("update label probabilities with schema", () => {
+    const schemas = {
+      theCategory: {
+        label2: 100,
+      },
+    }
     const vocabulary = {
       theCategory: { categoría: 10 },
-      word1: { categoría: 4, label: 2 },
-      word2: { categoría: 5 },
+      word: { label1: 4, label2: 2 },
     }
-    const result = getLabels({ schemas: SCHEMAS, vocabulary })([
+    const result = getLabels({ schemas, vocabulary })([
       {
         ...WORD_TOKEN,
-        text: "word1",
+        text: "word",
       },
       {
         ...WORD_TOKEN,
         text: "theCategory",
       },
-      {
-        ...WORD_TOKEN,
-        text: "word2",
-      },
     ])
 
-    expect(result).toStrictEqual(["label", "categoría", "unknown"])
+    expect(result).toStrictEqual(["label2", "categoría"])
   })
 })

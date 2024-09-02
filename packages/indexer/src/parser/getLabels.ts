@@ -12,32 +12,32 @@ const getCategoryProbability = (vocab?: LabelMap[string]) => {
   return vocab.categoría ?? 0 / sum
 }
 
-export const getLabels = ({ vocabulary }: Model) => (tokens: LexerToken[]) => {
-  const categoryCandidate = tokens
-    .map((t, index) => ({
-      probability: getCategoryProbability(vocabulary[t.text]),
-      index,
-    }))
-    .sort(({ probability: a }, { probability: b }) => b - a)[0]
-  const categoryIndex =
-    categoryCandidate.probability === 0 ? undefined : categoryCandidate.index
+export const getLabels =
+  ({ vocabulary }: Model) =>
+  (tokens: LexerToken[]) => {
+    const category = tokens
+      .map((t, index) => ({
+        probability: getCategoryProbability(vocabulary[t.text]),
+        index,
+      }))
+      .sort(({ probability: a }, { probability: b }) => b - a)[0]
 
-  const getLabel = (word: string, wordIndex: number) => {
-    if (!(word in vocabulary)) {
-      return undefined
+    const getLabel = (word: string) => {
+      if (!(word in vocabulary)) {
+        return undefined
+      }
+
+      const candidates = Object.entries(vocabulary[word])
+        .toSorted(([, a], [, b]) => b - a)
+        .map(([label]) => label)
+      const label = candidates[0]
+
+      return label !== "categoría" ? label : candidates[1]
     }
 
-    if (wordIndex === categoryIndex) {
-      return "categoría"
-    }
+    const labels = tokens.map((t) => getLabel(t.text) ?? "unknown")
 
-    const candidates = Object.entries(vocabulary[word])
-      .toSorted(([, a], [, b]) => b - a)
-      .map(([label]) => label)
-    const label = candidates[0]
-
-    return label !== "categoría" ? label : candidates[1]
+    return category.probability === 0
+      ? labels
+      : labels.toSpliced(category.index, 1, "categoría")
   }
-
-  return tokens.map((t, i) => getLabel(t.text, i) ?? "unknown")
-}
