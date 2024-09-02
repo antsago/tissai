@@ -1,5 +1,5 @@
 import type { TokenReader } from "./TokenReader.js"
-import type { Token } from "../lexer/index.js"
+import type { Token } from "./lexer/index.js"
 
 export type LabelMap = Record<string, Record<string, number>>
 export type Model = { vocabulary: LabelMap; schemas: LabelMap }

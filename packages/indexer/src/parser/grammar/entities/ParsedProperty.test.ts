@@ -1,10 +1,5 @@
 import { expect, describe, it } from "vitest"
-import {
-  Equals,
-  Id,
-  PropertyEnd,
-  PropertyStart,
-} from "../../../lexer/symbols.js"
+import { Equals, PropertyEnd, PropertyStart } from "../../lexer/symbols.js"
 import { TokenReader } from "../../TokenReader.js"
 import { NonMatch } from "../../operators/nonMatch.js"
 import { ParsedProperty } from "./ParsedProperty.js"

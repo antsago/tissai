@@ -10,7 +10,7 @@ import {
   ValueSeparator,
   PropertyEnd,
   PropertyStart,
-} from "../../../lexer/index.js"
+} from "../../lexer/index.js"
 import { IsData, IsSymbol } from "./values.js"
 
 const ValueOf = <Output>(Type: Rule<EntityToken, Output>) => {

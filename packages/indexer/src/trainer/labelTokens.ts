@@ -1,5 +1,5 @@
 import type { PythonPool } from "@tissai/python-pool"
-import type { Token } from "../lexer/index.js"
+import type { Token } from "../parser/lexer/index.js"
 
 export type Label = { label: string; value: string }
 

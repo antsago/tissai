@@ -1,4 +1,4 @@
-import { EntityStart, EntityEnd, Id } from "../../../lexer/index.js"
+import { EntityStart, EntityEnd, Id } from "../../lexer/index.js"
 import { and, any, or, restructure } from "../../operators/index.js"
 import { Any, IsData, IsSymbol } from "./values.js"
 import { type Schema } from "./types.js"

@@ -5,7 +5,7 @@ import {
   PropertyEnd,
   PropertyStart,
   ValueSeparator,
-} from "../../../lexer/symbols.js"
+} from "../../lexer/symbols.js"
 import { TokenReader } from "../../TokenReader.js"
 import { NonMatch } from "../../operators/nonMatch.js"
 import { IsData } from "./values.js"

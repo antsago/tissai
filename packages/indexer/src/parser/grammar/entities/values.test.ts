@@ -1,5 +1,5 @@
 import { expect, describe, it } from "vitest"
-import { Id, ValueSeparator } from "../../../lexer/symbols.js"
+import { Id, ValueSeparator } from "../../lexer/symbols.js"
 import { TokenReader } from "../../TokenReader.js"
 import { NonMatch } from "../../operators/nonMatch.js"
 import { Any, IsData, IsSymbol, IsValue } from "./values.js"

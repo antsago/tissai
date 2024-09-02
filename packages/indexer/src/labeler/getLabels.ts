@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { type Token as LexerToken } from "../lexer/index.js"
+import { type Token as LexerToken } from "../parser/lexer/index.js"
 import { Model, type LabelMap } from "../parser/types.js"
 
 const getCategoryProbability = (vocable?: LabelMap[string]) => {

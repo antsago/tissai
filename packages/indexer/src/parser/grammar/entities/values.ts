@@ -1,6 +1,6 @@
 import type { EntityToken, DataToken } from "../../types.js"
-import { Token, restructure } from "../../operators/index.js"
-import { ValueSeparator, Id } from "../../../lexer/symbols.js"
+import { Token } from "../../operators/index.js"
+import { ValueSeparator, Id } from "../../lexer/symbols.js"
 
 export const Any = Token<EntityToken>(() => true)
 
