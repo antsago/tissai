@@ -8,28 +8,29 @@ describe("getLabels", () => {
     isMeaningful: true,
     trailing: "",
   }
+  const schemas = {}
 
   it("returns 'unknown' for unknown words", () => {
-    const map = {}
-    const result = getLabels(map)([WORD_TOKEN])
+    const vocabulary = {}
+    const result = getLabels({ schemas, vocabulary })([WORD_TOKEN])
 
     expect(result).toStrictEqual(["unknown"])
   })
 
   it("returns most frequent label", () => {
-    const map = { [WORD_TOKEN.text]: { unfrequent: 1, frequent: 10 } }
-    const result = getLabels(map)([WORD_TOKEN])
+    const vocabulary = { [WORD_TOKEN.text]: { unfrequent: 1, frequent: 10 } }
+    const result = getLabels({ schemas, vocabulary })([WORD_TOKEN])
 
     expect(result).toStrictEqual(["frequent"])
   })
 
   it("returns single category label", () => {
-    const map = {
+    const vocabulary = {
       theCategory: { categoría: 10 },
       word1: { categoría: 4, label: 2 },
       word2: { categoría: 5 },
     }
-    const result = getLabels(map)([
+    const result = getLabels({ schemas, vocabulary })([
       {
         ...WORD_TOKEN,
         text: "word1",

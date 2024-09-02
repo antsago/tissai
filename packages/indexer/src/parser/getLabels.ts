@@ -1,6 +1,6 @@
 import _ from "lodash"
 import { type Token as LexerToken } from "../lexer/index.js"
-import { type LabelMap } from "./types.js"
+import { Model, type LabelMap } from "./types.js"
 
 const getCategoryProbability = (vocab?: LabelMap[string]) => {
   if (vocab === undefined) {
@@ -12,10 +12,10 @@ const getCategoryProbability = (vocab?: LabelMap[string]) => {
   return vocab.categoría ?? 0 / sum
 }
 
-export const getLabels = (map: LabelMap) => (tokens: LexerToken[]) => {
+export const getLabels = ({ vocabulary }: Model) => (tokens: LexerToken[]) => {
   const categoryCandidate = tokens
     .map((t, index) => ({
-      probability: getCategoryProbability(map[t.text]),
+      probability: getCategoryProbability(vocabulary[t.text]),
       index,
     }))
     .sort(({ probability: a }, { probability: b }) => b - a)[0]
@@ -23,7 +23,7 @@ export const getLabels = (map: LabelMap) => (tokens: LexerToken[]) => {
     categoryCandidate.probability === 0 ? undefined : categoryCandidate.index
 
   const getLabel = (word: string, wordIndex: number) => {
-    if (!(word in map)) {
+    if (!(word in vocabulary)) {
       return undefined
     }
 
@@ -31,7 +31,7 @@ export const getLabels = (map: LabelMap) => (tokens: LexerToken[]) => {
       return "categoría"
     }
 
-    const candidates = Object.entries(map[word])
+    const candidates = Object.entries(vocabulary[word])
       .toSorted(([, a], [, b]) => b - a)
       .map(([label]) => label)
     const label = candidates[0]
