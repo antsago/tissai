@@ -1,5 +1,5 @@
 import { Db, Page } from "@tissai/db"
-import { reporter } from "../Reporter.js"
+import { reporter } from "./Reporter.js"
 import { runForAllPages } from "./runForAllPages.js"
 
 export async function PageServer<T>(

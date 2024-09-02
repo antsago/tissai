@@ -3,7 +3,7 @@ import { reporter } from "../Reporter.js"
 import { Compiler, type Model, NonMatch } from "../parser/index.js"
 import { type Label, getSchemas } from "./schemas.js"
 import { updateModel } from "./updateModel.js"
-import { PageServer } from "./PageServer.js"
+import { PageServer } from "../PageServer.js"
 
 const MODEL: Model = {
   vocabulary: {},

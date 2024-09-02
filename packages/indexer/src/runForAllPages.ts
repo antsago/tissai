@@ -1,5 +1,5 @@
 import { type Page, Db, query } from "@tissai/db"
-import { reporter } from "../Reporter.js"
+import { reporter } from "./Reporter.js"
 
 export const runForAllPages = async (db: Db, onPage: (page: Page) => Promise<void>) => {
   reporter.progress("Setting up page stream")
