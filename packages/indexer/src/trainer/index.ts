@@ -22,19 +22,20 @@ const updateMapping = (
       }
     })
 const CATEGORY_LABEL = "categoría"
-const updateSchemas = (schemas: LabelMap, attributes: Attribute[]) => {
-  const categories = attributes
-    .filter((att) => att.label === CATEGORY_LABEL)
-    .map((att) => att.value)
-  const otherAttributes = attributes
+const updateSchemas = (schemas: LabelMap, labeled: (Token & { label?: string })[]) => {
+  const categories = labeled
+    .filter((word) => word.label === CATEGORY_LABEL)
+    .map((word) => word.text)
+  const otherLabels = labeled
     .map((att) => att.label)
-    .filter((label) => label !== CATEGORY_LABEL)
+    .filter((label) => !!label && label !== CATEGORY_LABEL)
+
   categories.forEach((cat) =>
-    otherAttributes.forEach((att) => {
+    otherLabels.forEach((label) => {
       schemas[cat] = {
         ...(schemas[cat] ?? {}),
         // Add an extra count so unknown categories can have a phantom count
-        [att]: (schemas[cat]?.[att] ?? 1) + 1,
+        [label!]: (schemas[cat]?.[label!] ?? 1) + 1,
       }
     }),
   )
@@ -75,7 +76,7 @@ const [{ count: pageCount }] = await db.query(
     .compile(),
 )
 const pages = await db.stream(
-  query.selectFrom("pages").select(["body", "url", "id"]).limit(2).compile(),
+  query.selectFrom("pages").select(["body", "url", "id"]).limit(1).compile(),
 )
 
 const VOCABULARY = {} as LabelMap
@@ -97,10 +98,7 @@ for await (let { id, body, url } of pages) {
 
       updateMapping(VOCABULARY, products.map((p) => p.tokens).flat())
       products
-        .map((p) =>
-          p.attributes.filter((att: Attribute | Token) => !("text" in att)),
-        )
-        .forEach((attributes) => updateSchemas(SCHEMAS, attributes))
+        .forEach((p) => updateSchemas(SCHEMAS, p.tokens))
     }
 
     index += 1
