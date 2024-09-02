@@ -1,34 +1,18 @@
 import { getSchemas } from "./schemas.js"
-import { Compiler } from "../parser/index.js"
+import { Compiler, NonMatch } from "../parser/index.js"
+import { PageServer } from "../PageServer.js"
 
-const testPage = `
-    <html>
-      <head>
-          <script type="application/ld+json">
-            ${JSON.stringify({
-              "@context": "https://schema.org/",
-              "@type": "Product",
-              name: "Jeans cropped marine azul",
-              productID: "121230",
-              description: "The description",
-              image: [
-                "https://example.com/image.jpg",
-                "https://example.com/image2.jpg",
-                2,
-              ],
-              brand: {
-                "@type": "Brand",
-                name: "WEDZE",
-                image: ["https://brand.com/image.jpg"],
-              },
-            })}
-          </script>
-      </head>
-    </html>
-  `
+let entities = [] as any[]
 
-const compiler = Compiler(getSchemas)
-const result = await compiler.parse(testPage)
-await compiler.close()
+await new PageServer<{ compiler: Compiler }>()
+  .onInitialize(() => ({ compiler: Compiler(getSchemas) }))
+  .onClose(async ({ compiler }) => compiler?.close())
+  .onPage(async (page, { compiler }) => {
+    const result = await compiler.parse(page.body)
+    if (result !== NonMatch) {
+      entities = entities.concat(result)
+    }
+  })
+  .start()
 
-console.dir(result, { depth: null })
+console.dir(entities, { depth: null })

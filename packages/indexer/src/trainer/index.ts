@@ -11,7 +11,7 @@ const MODEL: Model = {
 }
 
 type ServerState = {
-  compiler: ReturnType<typeof Compiler>
+  compiler: Compiler
   python: PythonPool<{ title: string; words: string[] }, Label[]>
 }
 

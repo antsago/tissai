@@ -15,3 +15,5 @@ export function Compiler(getSchemas: (lexer: Lexer) => Schema[]) {
     close: () => lexer.close(),
   }
 }
+
+export type Compiler = ReturnType<typeof Compiler>
