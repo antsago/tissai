@@ -12,8 +12,21 @@ const getCategoryProbability = (vocab?: LabelMap[string]) => {
   return vocab.categoría ?? 0 / sum
 }
 
+const getLabel = (vocab?: LabelMap[string]) => {
+  if (!vocab) {
+    return undefined
+  }
+
+  const candidates = Object.entries(vocab)
+    .toSorted(([, a], [, b]) => b - a)
+    .map(([label]) => label)
+  const label = candidates[0]
+
+  return label !== "categoría" ? label : candidates[1]
+}
+
 export const getLabels =
-  ({ vocabulary }: Model) =>
+  ({ vocabulary, schemas }: Model) =>
   (tokens: LexerToken[]) => {
     const category = tokens
       .map((t, index) => ({
@@ -22,20 +35,7 @@ export const getLabels =
       }))
       .sort(({ probability: a }, { probability: b }) => b - a)[0]
 
-    const getLabel = (word: string) => {
-      if (!(word in vocabulary)) {
-        return undefined
-      }
-
-      const candidates = Object.entries(vocabulary[word])
-        .toSorted(([, a], [, b]) => b - a)
-        .map(([label]) => label)
-      const label = candidates[0]
-
-      return label !== "categoría" ? label : candidates[1]
-    }
-
-    const labels = tokens.map((t) => getLabel(t.text) ?? "unknown")
+    const labels = tokens.map((t) => getLabel(vocabulary[t.text]) ?? "unknown")
 
     return category.probability === 0
       ? labels
