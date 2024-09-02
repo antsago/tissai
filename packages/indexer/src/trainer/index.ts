@@ -1,7 +1,7 @@
 import { Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
-import { type Token, Lexer, Ontology, Required, TokenReader, type LabelMap } from "../parser/index.js"
+import { Compiler, type Token, Required, type LabelMap } from "../parser/index.js"
 import { type Label, getLabels } from "./labelTokens.js"
 
 const updateMapping = (
@@ -42,12 +42,11 @@ const updateSchemas = (
 reporter.progress("Initializing database and pools")
 
 const db = Db()
-const lexer = Lexer()
 const python = PythonPool<{ title: string; words: string[] }, Label[]>(
   `./labelWords.py`,
   console,
 )
-const Parser = Ontology([
+const compiler = Compiler((lexer) => [
   {
     [Required]: {
       key: "@type",
@@ -81,8 +80,7 @@ for await (let { id, body, url } of pages) {
   try {
     reporter.progress(`Processing page ${index}/${pageCount}: ${id} (${url})`)
 
-    const tokens = lexer.fromPage(body)
-    const entities = await Parser(TokenReader(tokens))
+    const entities = await compiler.parse(body)
 
     if (typeof entities !== "symbol") {
       const products = entities
@@ -107,5 +105,5 @@ console.log(JSON.stringify(VOCABULARY))
 console.log(JSON.stringify(SCHEMAS))
 
 await db.close()
-await lexer.close()
+await compiler.close()
 await python.close()
