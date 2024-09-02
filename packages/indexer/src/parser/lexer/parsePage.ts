@@ -8,7 +8,7 @@ import {
   PropertyStart,
   Id,
 } from "./symbols.js"
-import { parseAndExpand } from "./parseAndExpand.js"
+import { expandEntry, parseAndExpand } from "./parseAndExpand.js"
 import { parse } from "node-html-parser"
 
 export type EntityToken = string | symbol | number | boolean
@@ -49,11 +49,22 @@ const tokenizeJson = (json: Expanded) => {
   return tokens
 }
 
-export const parsePage = (body: string) =>
-  parseAndExpand(
-    parse(body)
+export const parsePage = (body: string) => {
+  const page = parse(body)
+  const ldTokens = parseAndExpand(
+    page
       .querySelectorAll('script[type="application/ld+json"]')
       .map((t) => t.rawText),
   )
     .map(tokenizeJson)
     .flat()
+  
+  const og = Object.fromEntries(
+    page
+      .querySelectorAll('meta[property^="og:"]')
+      .map((t) => [t.getAttribute("property"), t.getAttribute("content")])
+  )
+  const ogTokens = tokenizeJson(expandEntry(og))
+
+  return [...ldTokens, ...ogTokens]
+}
