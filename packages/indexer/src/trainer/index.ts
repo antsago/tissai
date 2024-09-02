@@ -4,10 +4,8 @@ import { reporter } from "../Reporter.js"
 import { type Token, Lexer } from "../lexer/index.js"
 import { type Label, getLabels } from "./labelTokens.js"
 import { LabelMap } from "../parser/types.js"
-import { Attributes, Ontology, Required } from "../parser/grammar/index.js"
+import { Ontology, Required } from "../parser/grammar/index.js"
 import { TokenReader } from "../parser/TokenReader.js"
-
-type Attribute = { value: string; label: string }
 
 const updateMapping = (
   vocabulary: LabelMap,
@@ -59,11 +57,7 @@ const Parser = Ontology([
       name: "name",
       parse: {
         as: "parsedTitle",
-        with: async (title: string) => {
-          const tokens = await lexer.fromText(title, getLabels(title, python))
-          const attributes = await Attributes(TokenReader(tokens))
-          return { attributes, tokens }
-        },
+        with: (title: string) => lexer.fromText(title, getLabels(title, python)),
       },
     },
   },
@@ -96,9 +90,8 @@ for await (let { id, body, url } of pages) {
         )
         .map((product) => product.parsedTitle)
 
-      updateMapping(VOCABULARY, products.map((p) => p.tokens).flat())
-      products
-        .forEach((p) => updateSchemas(SCHEMAS, p.tokens))
+      updateMapping(VOCABULARY, products.flat())
+      products.forEach((product) => updateSchemas(SCHEMAS, product))
     }
 
     index += 1
