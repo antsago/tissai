@@ -1,7 +1,7 @@
 import { Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
-import { Compiler, type Token, type LabelMap, type Model } from "../parser/index.js"
+import { Compiler, type Token, type LabelMap, type Model, NonMatch } from "../parser/index.js"
 import { type Label, getSchemas } from "./schemas.js"
 
 const updateMapping = (
@@ -39,6 +39,17 @@ const updateSchemas = (
   )
 }
 
+const updateModel = (entities: any[], { vocabulary, schemas }: Model) => {
+  const products = entities
+    .filter(
+      (entity) => typeof entity !== "symbol" && "parsedTitle" in entity,
+    )
+    .map((product) => product.parsedTitle)
+
+  updateMapping(vocabulary, products.flat())
+  products.forEach((product) => updateSchemas(schemas, product))
+}
+
 reporter.progress("Initializing database and pools")
 
 const db = Db()
@@ -70,15 +81,8 @@ for await (let { id, body, url } of pages) {
 
     const entities = await compiler.parse(body)
 
-    if (typeof entities !== "symbol") {
-      const products = entities
-        .filter(
-          (entity) => typeof entity !== "symbol" && "parsedTitle" in entity,
-        )
-        .map((product) => product.parsedTitle)
-
-      updateMapping(MODEL.vocabulary, products.flat())
-      products.forEach((product) => updateSchemas(MODEL.schemas, product))
+    if (entities !== NonMatch) {
+      updateModel(entities, MODEL)
     }
 
     index += 1
