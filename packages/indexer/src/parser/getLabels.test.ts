@@ -6,7 +6,7 @@ describe("getLabels", () => {
     text: "word",
     originalText: "word",
     isMeaningful: true,
-    trailing: ""
+    trailing: "",
   }
 
   it("returns 'unknown' for unknown words", () => {
@@ -17,7 +17,7 @@ describe("getLabels", () => {
   })
 
   it("returns most frequent label", () => {
-    const map = { [WORD_TOKEN.text]: { unfrequent: 1, frequent: 10 }}
+    const map = { [WORD_TOKEN.text]: { unfrequent: 1, frequent: 10 } }
     const result = getLabels(map)([WORD_TOKEN])
 
     expect(result).toStrictEqual(["frequent"])

@@ -13,12 +13,14 @@ const getCategoryProbability = (vocab?: LabelMap[string]) => {
 }
 
 export const getLabels = (map: LabelMap) => (tokens: LexerToken[]) => {
-  const categoryCandidate = tokens.map((t, index) => ({
-    probability: getCategoryProbability(map[t.text]),
-    index
-  }))
-    .sort(({ probability: a }, { probability: b }) => b-a)[0]
-  const categoryIndex = categoryCandidate.probability === 0 ? undefined : categoryCandidate.index
+  const categoryCandidate = tokens
+    .map((t, index) => ({
+      probability: getCategoryProbability(map[t.text]),
+      index,
+    }))
+    .sort(({ probability: a }, { probability: b }) => b - a)[0]
+  const categoryIndex =
+    categoryCandidate.probability === 0 ? undefined : categoryCandidate.index
 
   const getLabel = (word: string, wordIndex: number) => {
     if (!(word in map)) {
@@ -29,7 +31,9 @@ export const getLabels = (map: LabelMap) => (tokens: LexerToken[]) => {
       return "categoría"
     }
 
-    const candidates = Object.entries(map[word]).toSorted(([, a], [, b]) => b-a).map(([label]) => label)
+    const candidates = Object.entries(map[word])
+      .toSorted(([, a], [, b]) => b - a)
+      .map(([label]) => label)
     const label = candidates[0]
 
     return label !== "categoría" ? label : candidates[1]
