@@ -1,8 +1,9 @@
 import { Db, query } from "@tissai/db"
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../Reporter.js"
-import { Compiler, type Token, Required, type LabelMap } from "../parser/index.js"
-import { type Label, getLabels } from "./labelTokens.js"
+import { Compiler, type Token, type LabelMap } from "../parser/index.js"
+import { type Label } from "./labelTokens.js"
+import { getSchemas } from "./schemas.js"
 
 const updateMapping = (
   vocabulary: LabelMap,
@@ -46,22 +47,8 @@ const python = PythonPool<{ title: string; words: string[] }, Label[]>(
   `./labelWords.py`,
   console,
 )
-const compiler = Compiler((lexer) => [
-  {
-    [Required]: {
-      key: "@type",
-      value: "Product",
-    },
-    title: {
-      name: "name",
-      parse: {
-        as: "parsedTitle",
-        with: (title: string) =>
-          lexer.fromText(title, getLabels(title, python)),
-      },
-    },
-  },
-])
+
+const compiler = Compiler(getSchemas(python))
 
 const [{ count: pageCount }] = await db.query(
   query
