@@ -9,10 +9,10 @@ import {
 import * as model from "./model.js"
 import { getLabels } from "./getLabels.js"
 
-const ProductType = Symbol("Product")
-const BrandType = Symbol("Brand")
-const OfferType = Symbol("Offer")
-const SellerType = Symbol("Seller")
+export const ProductType = Symbol("Product")
+export const BrandType = Symbol("Brand")
+export const OfferType = Symbol("Offer")
+export const SellerType = Symbol("Seller")
 
 const ProductSchema = (lexer: Lexer): Schema => ({
   [Type]: ProductType,
