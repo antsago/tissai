@@ -1,27 +1,7 @@
 import { BrandType, getSchemas } from "./schemas.js"
 import { Compiler, NonMatch, Type } from "../parser/index.js"
 import { PageServer } from "../PageServer.js"
-import { Brand, Db } from "@tissai/db"
-
-const saveBrand = async (brand: Brand, db: Db) => {
-  const existing = await db.brands.byName(brand.name)
-
-  if (!existing) {
-    await db.brands.create(brand)
-    return
-  }
-
-  if (existing.logo || !brand.logo) {
-    return
-  }
-
-  const updated = {
-    ...existing,
-    logo: brand.logo,
-  }
-
-  await db.brands.update(updated)
-}
+import { saveBrand } from "./saveBrand.js"
 
 let result = [] as any[]
 
