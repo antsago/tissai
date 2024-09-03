@@ -1,7 +1,7 @@
 import { expect, describe, test, beforeEach } from "vitest"
 import { mockDbFixture, queries } from "@tissai/db/mocks"
 import { type Brand, Db } from "@tissai/db"
-import { saveBrand } from "./saveBrand.js"
+import { brand } from "./brand.js"
 
 type Fixtures = { pg: mockDbFixture }
 const it = test.extend<Fixtures>({
@@ -11,7 +11,7 @@ const it = test.extend<Fixtures>({
 const NAME = "Wedze"
 const LOGO = "https://brand.com/image.jpg"
 
-describe("brands", () => {
+describe("brand", () => {
   let db: Db
   beforeEach<Fixtures>(({ pg }) => {
     pg.pool.query.mockResolvedValue({ rows: [] })
@@ -19,7 +19,7 @@ describe("brands", () => {
   })
 
   it("extracts new brands", async ({ pg }) => {
-    const result = await saveBrand({ name: NAME, logo: LOGO }, db)
+    const result = await brand({ name: NAME, logo: LOGO }, db)
 
     expect(result).toStrictEqual({
       name: NAME,
@@ -32,7 +32,7 @@ describe("brands", () => {
     const existing = { name: NAME, logo: LOGO }
     pg.pool.query.mockResolvedValueOnce({ rows: [existing] })
 
-    const result = await saveBrand({ name: NAME.toLowerCase() }, db)
+    const result = await brand({ name: NAME.toLowerCase() }, db)
 
     expect(result).toStrictEqual(existing)
     expect(pg).not.toHaveExecuted(queries.brands.create(existing))
@@ -42,7 +42,7 @@ describe("brands", () => {
     const existing = { name: NAME }
     pg.pool.query.mockResolvedValueOnce({ rows: [existing] })
 
-    const result = await saveBrand(
+    const result = await brand(
       { name: NAME.toLowerCase(), logo: LOGO },
       db,
     )
@@ -52,7 +52,7 @@ describe("brands", () => {
   })
 
   it("handles new brands without logo", async () => {
-    const result = await saveBrand({ name: NAME }, db)
+    const result = await brand({ name: NAME }, db)
 
     expect(result).toStrictEqual({
       name: NAME,

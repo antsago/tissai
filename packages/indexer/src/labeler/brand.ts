@@ -1,6 +1,6 @@
 import type { Brand, Db } from "@tissai/db"
 
-export async function saveBrand(
+export async function brand(
   { name, logo }: Brand,
   db: Db,
 ): Promise<Brand> {
