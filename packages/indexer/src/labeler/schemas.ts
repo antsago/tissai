@@ -4,11 +4,18 @@ import {
   Required,
   Lexer,
   TokenReader,
+  Type,
 } from "../parser/index.js"
 import * as model from "./model.js"
 import { getLabels } from "./getLabels.js"
 
-const ProductSchema = (lexer: Lexer) => ({
+const ProductType = Symbol("Product")
+const BrandType = Symbol("Brand")
+const OfferType = Symbol("Offer")
+const SellerType = Symbol("Seller")
+
+const ProductSchema = (lexer: Lexer): Schema => ({
+  [Type]: ProductType,
   [Required]: {
     key: "@type",
     value: "Product",
@@ -35,7 +42,8 @@ const ProductSchema = (lexer: Lexer) => ({
   }
 })
 
-const BrandSchema ={
+const BrandSchema: Schema ={
+  [Type]: BrandType,
   [Required]: {
     key: "@type",
     value: "Brand",
@@ -43,7 +51,8 @@ const BrandSchema ={
   name: "name",
   logo: "image",
 }
-const OfferSchema = {
+const OfferSchema: Schema = {
+  [Type]: OfferType,
   [Required]: {
     key: "@type",
     value: "Offer",
@@ -55,7 +64,8 @@ const OfferSchema = {
   price: "price",
   currency: "priceCurrency",
 }
-const OrganizationSchema = {
+const OrganizationSchema: Schema = {
+  [Type]: SellerType,
   [Required]: {
     key: "@type",
     value: "Organization",

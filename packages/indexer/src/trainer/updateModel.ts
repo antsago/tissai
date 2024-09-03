@@ -1,4 +1,5 @@
-import { type Token, type LabelMap, type Model } from "../parser/index.js"
+import { type Token, type LabelMap, type Model, Type } from "../parser/index.js"
+import { ProductType } from "./schemas.js"
 
 const updateMapping = (
   vocabulary: LabelMap,
@@ -40,7 +41,7 @@ export const updateModel = (
   { vocabulary, schemas }: Model,
 ) => {
   const products = entities
-    .filter((entity) => typeof entity !== "symbol" && "parsedTitle" in entity)
+    .filter((entity) => entity[Type] === ProductType)
     .map((product) => product.parsedTitle)
 
   updateMapping(vocabulary, products.flat())

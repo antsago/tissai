@@ -1,7 +1,7 @@
 import { EntityStart, EntityEnd, Id } from "../../lexer/index.js"
 import { and, any, or, restructure } from "../../operators/index.js"
 import { Any, IsData, IsSymbol } from "./values.js"
-import { type Schema } from "./types.js"
+import { Type, type Schema } from "./types.js"
 import { Properties } from "./Properties.js"
 
 export const Entity = (schema: Schema) =>
@@ -13,8 +13,9 @@ export const Entity = (schema: Schema) =>
       IsSymbol(EntityEnd),
     ),
     ([s, id, parsedProperties, e]) => ({
-      ...parsedProperties,
       [Id]: id,
+      [Type]: schema[Type],
+      ...parsedProperties,
     }),
   )
 

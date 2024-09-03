@@ -1,7 +1,8 @@
 import { PythonPool } from "@tissai/python-pool"
-import { type Token, Required, Lexer } from "../parser/index.js"
+import { type Token, Required, Lexer, Schema, Type } from "../parser/index.js"
 
 export type Label = { label: string; value: string }
+export const ProductType = Symbol("Product")
 
 export const getLabels =
   (
@@ -16,8 +17,9 @@ export const getLabels =
 
 export const getSchemas =
   (python: PythonPool<{ title: string; words: string[] }, Label[]>) =>
-  (lexer: Lexer) => [
+  (lexer: Lexer): Schema[] => [
     {
+      [Type]: ProductType,
       [Required]: {
         key: "@type",
         value: "Product",

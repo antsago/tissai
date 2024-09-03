@@ -23,9 +23,11 @@ export type PropertyDefinition =
   | ReferenceDefinition
 
 export const Required = Symbol("Required key")
+export const Type = Symbol("Type of entity")
 
 export type RequiredDefinition = { key: string; value: string }
-export type Schema = Record<
-  string,
-  string | DistributiveOmit<PropertyDefinition, "key">
-> & { [Required]: RequiredDefinition }
+export type Schema = {
+  [key: string]: string | DistributiveOmit<PropertyDefinition, "key">
+  [Required]: RequiredDefinition
+  [Type]: symbol
+}
