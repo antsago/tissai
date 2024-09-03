@@ -2,17 +2,18 @@ import { getSchemas } from "./schemas.js"
 import { Compiler, NonMatch } from "../parser/index.js"
 import { PageServer } from "../PageServer.js"
 
-let entities = [] as any[]
+let result = [] as any[]
 
 await new PageServer<{ compiler: Compiler }>()
   .onInitialize(() => ({ compiler: Compiler(getSchemas) }))
   .onClose(async ({ compiler }) => compiler?.close())
   .onPage(async (page, { compiler }) => {
-    const result = await compiler.parse(page.body)
-    if (result !== NonMatch) {
-      entities = entities.concat(result)
+    const entities = await compiler.parse(page.body)
+
+    if (entities !== NonMatch) {
+      result = result.concat(entities)
     }
   })
   .start()
 
-console.dir(entities, { depth: null })
+console.dir(result, { depth: null })
