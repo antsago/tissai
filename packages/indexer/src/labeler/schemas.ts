@@ -39,10 +39,10 @@ const ProductSchema = (lexer: Lexer): Schema => ({
   offers: {
     name: "offers",
     isReference: true,
-  }
+  },
 })
 
-const BrandSchema: Schema ={
+const BrandSchema: Schema = {
   [Type]: BrandType,
   [Required]: {
     key: "@type",
@@ -70,7 +70,7 @@ const OrganizationSchema: Schema = {
     key: "@type",
     value: "Organization",
   },
-  name: "name"
+  name: "name",
 }
 
 export const getSchemas = (lexer: Lexer): Schema[] => [
