@@ -17,8 +17,7 @@ await new PageServer<{ compiler: Compiler }>()
       const entityMap = entities.reduce((eMap, e) => ({ ...eMap, [e[Id]]: e }), {}) as Record<string, GenericEntity>
       await Promise.all(entities.filter(e => e[Type] === ProductType && !!e.title)
         .map(async product => {
-          const brandCandidate = product.brand && entityMap[product.brand[0][Id]]
-          const productBrand = brandCandidate?.name && await brand(brandCandidate as unknown as Brand, db)
+          const productBrand = await brand(entityMap[product.brand[0][Id]] as any, db)
 
           await db.products.create({
             id: product[Id],

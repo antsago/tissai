@@ -18,8 +18,22 @@ describe("brand", () => {
     db = Db()
   })
 
+  it("handles undefined", async ({ pg }) => {
+    const result = await brand(undefined, db)
+
+    expect(result).toStrictEqual(undefined)
+    expect(pg).not.toHaveExecuted(queries.brands.create({} as Brand))
+  })
+
+  it("handles brands without name", async ({ pg }) => {
+    const result = await brand({} as any, db)
+
+    expect(result).toStrictEqual(undefined)
+    expect(pg).not.toHaveExecuted(queries.brands.create({} as Brand))
+  })
+
   it("extracts new brands", async ({ pg }) => {
-    const result = await brand({ name: NAME, logo: LOGO }, db)
+    const result = await brand({ name: [NAME], logo: [LOGO] }, db)
 
     expect(result).toStrictEqual({
       name: NAME,
@@ -32,7 +46,7 @@ describe("brand", () => {
     const existing = { name: NAME, logo: LOGO }
     pg.pool.query.mockResolvedValueOnce({ rows: [existing] })
 
-    const result = await brand({ name: NAME.toLowerCase() }, db)
+    const result = await brand({ name: [NAME.toLowerCase()] }, db)
 
     expect(result).toStrictEqual(existing)
     expect(pg).not.toHaveExecuted(queries.brands.create(existing))
@@ -42,14 +56,14 @@ describe("brand", () => {
     const existing = { name: NAME }
     pg.pool.query.mockResolvedValueOnce({ rows: [existing] })
 
-    const result = await brand({ name: NAME.toLowerCase(), logo: LOGO }, db)
+    const result = await brand({ name: [NAME.toLowerCase()], logo: [LOGO] }, db)
 
     expect(result).toStrictEqual({ name: NAME, logo: LOGO })
     expect(pg).toHaveExecuted(queries.brands.update(result as Brand))
   })
 
   it("handles new brands without logo", async () => {
-    const result = await brand({ name: NAME }, db)
+    const result = await brand({ name: [NAME] }, db)
 
     expect(result).toStrictEqual({
       name: NAME,
