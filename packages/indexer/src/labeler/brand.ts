@@ -1,9 +1,6 @@
 import type { Brand, Db } from "@tissai/db"
 
-export async function brand(
-  { name, logo }: Brand,
-  db: Db,
-): Promise<Brand> {
+export async function brand({ name, logo }: Brand, db: Db): Promise<Brand> {
   const existing = await db.brands.byName(name)
 
   if (!existing) {

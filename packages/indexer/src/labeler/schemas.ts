@@ -6,7 +6,7 @@ import {
   TokenReader,
   Type,
 } from "../parser/index.js"
-import * as model from "./model.js"
+import model from "./model.js"
 import { getLabels } from "./getLabels.js"
 
 export const ProductType = Symbol("Product")

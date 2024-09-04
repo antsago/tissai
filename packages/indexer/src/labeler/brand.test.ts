@@ -42,10 +42,7 @@ describe("brand", () => {
     const existing = { name: NAME }
     pg.pool.query.mockResolvedValueOnce({ rows: [existing] })
 
-    const result = await brand(
-      { name: NAME.toLowerCase(), logo: LOGO },
-      db,
-    )
+    const result = await brand({ name: NAME.toLowerCase(), logo: LOGO }, db)
 
     expect(result).toStrictEqual({ name: NAME, logo: LOGO })
     expect(pg).toHaveExecuted(queries.brands.update(result as Brand))

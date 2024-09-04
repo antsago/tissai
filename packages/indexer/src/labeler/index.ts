@@ -14,17 +14,16 @@ await new PageServer<{ compiler: Compiler }>()
 
     if (entities !== NonMatch) {
       await Promise.all(
-        entities
-          .map(async (e) => {
-            switch(e[Type]) {
-              case BrandType:
-                return brand(e, db)
-              case SellerType:
-                return seller(e, db)
-              default:
-                return
-            }
-          })
+        entities.map(async (e) => {
+          switch (e[Type]) {
+            case BrandType:
+              return brand(e, db)
+            case SellerType:
+              return seller(e, db)
+            default:
+              return
+          }
+        }),
       )
 
       result = result.concat(entities)
