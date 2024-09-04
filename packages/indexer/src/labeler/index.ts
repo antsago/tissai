@@ -1,4 +1,4 @@
-import { Attribute, Brand, Db, Seller } from "@tissai/db"
+import { Attribute, Brand, Db, Page, Seller } from "@tissai/db"
 import _ from "lodash"
 import { randomUUID } from "crypto"
 import { Compiler, Id, NonMatch, Type, type GenericEntity } from "../parser/index.js"
@@ -7,7 +7,6 @@ import { getSchemas, ProductType } from "./schemas.js"
 import { brand } from "./brand.js"
 import seller from "./seller.js"
 import attribute from "./attribute.js"
-
 
 await new PageServer<{ compiler: Compiler }>()
   .onInitialize(() => ({ compiler: Compiler(getSchemas) }))
@@ -34,9 +33,10 @@ await new PageServer<{ compiler: Compiler }>()
             .map((att: any) => attribute(att, product[Id], db))
           )
 
-          const normalizedOffers = await Promise.all(product.offers?.map(offerReference => entityMap[offerReference[Id]])
-          .filter(offer => !!offer)
-          .map(async offer => {
+          const productOffers = product.offers?.map(offerReference => entityMap[offerReference[Id]])
+            .filter(offer => !!offer)
+          
+          const normalizedOffers = !productOffers?.length ? [{} as any] : await Promise.all(productOffers.map(async offer => {
             const offerSeller = await seller(entityMap[offer.seller[0][Id]] as any, db)
 
             return {
