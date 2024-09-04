@@ -31,7 +31,7 @@ await new PageServer<{ compiler: Compiler }>()
 
           await Promise.all(product.attributes[0]
             .filter((att: any) => "value" in att)
-            .map(attribute)
+            .map((att: any) => attribute(att, product[Id], db))
           )
 
           const normalizedOffers = await Promise.all(product.offers?.map(offerReference => entityMap[offerReference[Id]])

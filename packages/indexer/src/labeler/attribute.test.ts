@@ -10,7 +10,7 @@ const it = test.extend<Fixtures>({
 
 describe("attribute", () => {
   const PRODUCT_ID = "product-id"
-  const KEY = "key"
+  const LABEL = "key"
   const VALUE = "value"
 
   let db: Db
@@ -20,11 +20,11 @@ describe("attribute", () => {
   })
 
   it("extracts attribute", async ({ pg }) => {
-    const result = await attribute({ key: KEY, value: VALUE }, PRODUCT_ID, db)
+    const result = await attribute({ label: LABEL, value: VALUE }, PRODUCT_ID, db)
 
     expect(result).toStrictEqual({
       id: expect.any(String),
-      label: KEY,
+      label: LABEL,
       value: VALUE,
       product: PRODUCT_ID,
     })
