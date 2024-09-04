@@ -1,4 +1,3 @@
-import { Attribute, Brand, Db, Page, Seller } from "@tissai/db"
 import _ from "lodash"
 import { randomUUID } from "crypto"
 import { Compiler, Id, NonMatch, Type, type GenericEntity } from "../parser/index.js"
