@@ -4,6 +4,11 @@ import { Any, IsData, IsSymbol } from "./values.js"
 import { Type, type Schema } from "./types.js"
 import { Properties } from "./Properties.js"
 
+export type GenericEntity = {
+  [Id]: string,
+  [Type]: symbol,
+} & Record<string, any[]>
+
 export const Entity = (schema: Schema) =>
   restructure(
     and(
@@ -16,7 +21,7 @@ export const Entity = (schema: Schema) =>
       [Id]: id,
       [Type]: schema[Type],
       ...parsedProperties,
-    }),
+    }) as GenericEntity,
   )
 
 export const Ontology = (schemas: Schema[]) =>

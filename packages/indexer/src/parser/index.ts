@@ -6,6 +6,7 @@ export {
   Required,
   Attributes,
   type Schema,
+  type GenericEntity,
 } from "./grammar/index.js"
 export { type Token, Lexer, Id } from "./lexer/index.js"
 export { Compiler } from "./Compiler.js"

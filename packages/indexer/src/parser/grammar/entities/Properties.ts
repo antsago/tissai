@@ -42,7 +42,7 @@ const ExtractProperties = (schema: Schema) => {
             key,
             value,
           ]),
-      ),
+      ) as Record<string, any[]>,
   )
 }
 

@@ -1,10 +1,11 @@
-import { BrandType, getSchemas, ProductType, SellerType } from "./schemas.js"
-import { Compiler, Id, NonMatch, Type } from "../parser/index.js"
+import { Brand, Seller } from "@tissai/db"
+import _ from "lodash"
+import { randomUUID } from "crypto"
+import { Compiler, Id, NonMatch, Type, type GenericEntity } from "../parser/index.js"
 import { PageServer } from "../PageServer.js"
-// import { brand, brand } from "./brand.js"
+import { getSchemas, ProductType } from "./schemas.js"
+import { brand } from "./brand.js"
 import seller from "./seller.js"
-
-let result = [] as any[]
 
 await new PageServer<{ compiler: Compiler }>()
   .onInitialize(() => ({ compiler: Compiler(getSchemas) }))
@@ -13,42 +14,41 @@ await new PageServer<{ compiler: Compiler }>()
     const entities = await compiler.parse(page.body)
 
     if (entities !== NonMatch) {
-      // const entityMap = entities.reduce((eMap, e) => ({ ...eMap, [e.Id]: e }), {}) as Record<string, any>
-      // entities.filter(e => e[Type] === ProductType && !e.title)
-        // .map(async product => {
-        //   const brandCandidate = product.brand && entityMap[product.brand[Id]]
-        //   const productBrand = brandCandidate?.name ? await brand(brandCandidate, db) : undefined
+      const entityMap = entities.reduce((eMap, e) => ({ ...eMap, [e[Id]]: e }), {}) as Record<string, GenericEntity>
+      await Promise.all(entities.filter(e => e[Type] === ProductType && !e.title)
+        .map(async product => {
+          const brandCandidate = product.brand && entityMap[product.brand[0][Id]]
+          const productBrand = brandCandidate?.name && await brand(brandCandidate as unknown as Brand, db)
 
-        //   await db.products.create({
-        //     id: product[Id],
-        //     title: product.title,
-        //     description: product.description,
-        //     images: product.images && !Array.isArray(product.images) ? [product.images] : product.images,
-        //     brand: productBrand?.name,
-        //   })
+          await db.products.create({
+            id: product[Id],
+            title: product.title[0],
+            description: product.description[0],
+            images: product.images,
+            brand: productBrand?.name,
+          })
 
-        //   const productOffers = product.offers && !Array.isArray(product.offers) ? [product.offers] : product.offers
+          const normalizedOffers = await Promise.all(product.offers?.map(offerReference => entityMap[offerReference[Id]]).map(async offer => {
+            const sellerCandidate = offer.seller && entityMap[offer.seller[0][Id]]
+            const offerSeller = sellerCandidate?.name && await seller(sellerCandidate as unknown as Seller, db)
 
-        //   productOffers.map(offer => {
-        //     const sellerCandidate = 
-        //   })
-        // })
-      // await Promise.all(
-      //   entities.map(async (e) => {
-      //     switch (e[Type]) {
-      //       case BrandType:
-      //         return brand(e, db)
-      //       case SellerType:
-      //         return seller(e, db)
-      //       default:
-      //         return
-      //     }
-      //   }),
-      // )
+            return {
+              price: offer.price[0],
+              currency: offer.currency[0],
+              seller: offerSeller?.name,
+            }
+          }))
 
-      result = result.concat(entities)
+          await Promise.all(_.uniqWith(normalizedOffers, _.isEqual).map(offer => db.offers.create({
+            id: randomUUID(),
+            product: product[Id],
+            site: page.site,
+            url: page.url,
+            currency: offer.currency,
+            price: offer.price,
+            seller: offer.seller,
+          })))
+        }))
     }
   })
   .start()
-
-console.dir(result, { depth: null })
