@@ -42,7 +42,7 @@ export const updateModel = (
 ) => {
   const products = entities
     .filter((entity) => entity[Type] === ProductType)
-    .map((product) => product.parsedTitle)
+    .map((product) => product.parsedTitle[0])
 
   updateMapping(vocabulary, products.flat())
   products.forEach((product) => updateSchemas(schemas, product))

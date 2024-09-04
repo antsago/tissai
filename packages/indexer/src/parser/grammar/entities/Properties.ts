@@ -40,7 +40,7 @@ const ExtractProperties = (schema: Schema) => {
           .filter(({ key }) => !!key)
           .map(({ key, value }) => [
             key,
-            value.length === 1 ? value[0] : value,
+            value,
           ]),
       ),
   )
