@@ -14,7 +14,7 @@ export const runForAllPages = async (
       .compile(),
   )
   const pages = db.stream<Page>(
-    query.selectFrom("pages").selectAll().limit(2).compile(),
+    query.selectFrom("pages").selectAll().compile(),
   )
 
   let index = 1
