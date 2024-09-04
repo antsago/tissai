@@ -17,15 +17,29 @@ describe("seller", () => {
     db = Db()
   })
 
+  it("handles undefined", async ({ pg }) => {
+    const result = await seller(undefined, db)
+
+    expect(result).toStrictEqual(undefined)
+    expect(pg).not.toHaveExecuted(queries.sellers.create({} as Seller))
+  })
+
+  it("handles missing name", async ({ pg }) => {
+    const result = await seller({}, db)
+
+    expect(result).toStrictEqual(undefined)
+    expect(pg).not.toHaveExecuted(queries.sellers.create({} as Seller))
+  })
+
   it("extracts seller", async ({ pg }) => {
-    const result = await seller({ name: NAME }, db)
+    const result = await seller({ name: [NAME] }, db)
 
     expect(result).toStrictEqual({ name: NAME })
     expect(pg).toHaveExecuted(queries.sellers.create(result as Seller))
   })
 
   it("turns name to lowercase", async () => {
-    const result = await seller({ name: NAME.toUpperCase() }, db)
+    const result = await seller({ name: [NAME.toUpperCase()] }, db)
 
     expect(result).toStrictEqual({ name: NAME })
   })

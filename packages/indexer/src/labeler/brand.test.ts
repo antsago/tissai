@@ -26,7 +26,7 @@ describe("brand", () => {
   })
 
   it("handles brands without name", async ({ pg }) => {
-    const result = await brand({} as any, db)
+    const result = await brand({}, db)
 
     expect(result).toStrictEqual(undefined)
     expect(pg).not.toHaveExecuted(queries.brands.create({} as Brand))

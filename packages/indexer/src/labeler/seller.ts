@@ -1,8 +1,12 @@
 import type { Seller, Db } from "@tissai/db"
 
-async function seller({ name }: Seller, db: Db): Promise<Seller> {
+async function seller(raw: undefined|{ name?: string[] }, db: Db): Promise<undefined|Seller> {
+  if (!raw || !raw.name) {
+    return undefined
+  }
+
   const entity = {
-    name: name.toLowerCase(),
+    name: raw.name[0].toLowerCase(),
   }
   try {
     await db.sellers.create(entity)

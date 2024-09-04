@@ -1,6 +1,6 @@
 import type { Brand, Db } from "@tissai/db"
 
-export async function brand(raw: { name: string[], logo?: string[] }|undefined, db: Db): Promise<Brand|undefined> {
+export async function brand(raw: { name?: string[], logo?: string[] }|undefined, db: Db): Promise<Brand|undefined> {
   if (!raw || !raw.name) {
     return undefined
   }
