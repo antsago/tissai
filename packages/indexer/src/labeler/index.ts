@@ -28,6 +28,18 @@ await new PageServer<{ compiler: Compiler }>()
             brand: productBrand?.name,
           })
 
+          await Promise.all(product.attributes[0]
+            .filter((att: any) => "value" in att)
+            .map(async ({ key, value}: any) => 
+              db.attributes.create({
+                id: randomUUID(),
+                product: product[Id],
+                label: key,
+                value,
+              })
+            )
+          )
+
           const normalizedOffers = await Promise.all(product.offers?.map(offerReference => entityMap[offerReference[Id]]).map(async offer => {
             const sellerCandidate = offer.seller && entityMap[offer.seller[0][Id]]
             const offerSeller = sellerCandidate?.name && await seller(sellerCandidate as unknown as Seller, db)
