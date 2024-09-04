@@ -40,7 +40,9 @@ await new PageServer<{ compiler: Compiler }>()
             )
           )
 
-          const normalizedOffers = await Promise.all(product.offers?.map(offerReference => entityMap[offerReference[Id]]).map(async offer => {
+          const normalizedOffers = await Promise.all(product.offers?.map(offerReference => entityMap[offerReference[Id]])
+          .filter(offer => !!offer)
+          .map(async offer => {
             const sellerCandidate = offer.seller && entityMap[offer.seller[0][Id]]
             const offerSeller = sellerCandidate?.name && await seller({ name: sellerCandidate.name[0] }, db)
 
