@@ -18,7 +18,7 @@ await new PageServer<{ compiler: Compiler }>()
       const entityMap = entities.reduce((eMap, e) => ({ ...eMap, [e[Id]]: e }), {}) as Record<string, GenericEntity>
       await Promise.all(entities.filter(e => e[Type] === ProductType && !!e.title)
         .map(async product => {
-          const productBrand = await brand(entityMap[product.brand[0][Id]] as any, db)
+          const productBrand = product.brand && await brand(entityMap[product.brand[0][Id]] as any, db)
 
           await db.products.create({
             id: product[Id],
@@ -37,7 +37,7 @@ await new PageServer<{ compiler: Compiler }>()
             .filter(offer => !!offer)
           
           const normalizedOffers = !productOffers?.length ? [{} as any] : await Promise.all(productOffers.map(async offer => {
-            const offerSeller = await seller(entityMap[offer.seller[0][Id]] as any, db)
+            const offerSeller = offer.seller && await seller(entityMap[offer.seller[0][Id]] as any, db)
 
             return {
               price: offer.price?.[0],
