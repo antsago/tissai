@@ -101,7 +101,7 @@ export const search = {
           .innerJoin("results", "attributes.product", "results.id")
           .select(({ fn }) => [
             "attributes.label",
-            fn.count("results.id").as("tally"),
+            fn.count("results.id").distinct().as("tally"),
           ])
           .groupBy("attributes.label")
           .orderBy("tally", "desc")

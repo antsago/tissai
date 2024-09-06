@@ -309,6 +309,29 @@ describe.concurrent("search", () => {
         },
       ])
     })
+
+    it("handles products with duplicate labels", async ({
+      expect,
+      db,
+    }) => {
+      const otherAttribute = {
+        id: "d50bc19c-14a6-4edd-890f-aab73fe6ce7f",
+        label: attribute1.label,
+        value: "bar",
+        product: product1.id,
+      }
+      await db.load({ attributes: [otherAttribute] })
+
+      const result = await db.products.search({ query: product1.title })
+
+      expect(result.suggestions).toStrictEqual([
+        {
+          label: attribute1.label,
+          frequency: 1,
+          values: [attribute2.value, otherAttribute.value, attribute1.value],
+        },
+      ])
+    })
   })
 
   it("handles no results found", async ({ expect, db }) => {
