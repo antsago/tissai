@@ -5,7 +5,8 @@ from functools import reduce
 from transformers import pipeline
 
 modelName = "unsloth/tinyllama"
-generator = pipeline(model=modelName)
+revision= "277240b3a621a06cfc02acf7b1f53bdbcb27843b"
+generator = pipeline(model=modelName, revision=revision)
 
 
 def getPrompt(title, labels):
