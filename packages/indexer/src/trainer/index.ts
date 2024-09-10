@@ -1,9 +1,8 @@
-import { PythonPool } from "@tissai/python-pool"
-import { reporter } from "../Reporter.js"
 import { Compiler, type Model, NonMatch } from "../parser/index.js"
-import { type Label, getSchemas } from "./schemas.js"
+import { getSchemas } from "./schemas.js"
 import { updateModel } from "./updateModel.js"
 import { PageServer } from "../PageServer.js"
+import { LlmLabeler } from "./LlmLabeler.js"
 
 const MODEL: Model = {
   vocabulary: {},
@@ -12,15 +11,12 @@ const MODEL: Model = {
 
 type ServerState = {
   compiler: Compiler
-  python: PythonPool<{ title: string; words: string[] }, Label[]>
+  python: LlmLabeler
 }
 
 await new PageServer<ServerState>()
   .onInitialize(() => {
-    const python = PythonPool<{ title: string; words: string[] }, Label[]>(
-      `./labelWords.py`,
-      reporter,
-    )
+    const python = LlmLabeler()
     const compiler = Compiler(getSchemas(python))
     return {
       python,
