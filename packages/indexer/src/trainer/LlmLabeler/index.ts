@@ -1,10 +1,10 @@
 import { PythonPool } from "@tissai/python-pool"
 import { reporter } from "../../Reporter.js"
 
-export type Label = { label: string; value: string }
+export type Property = { labels: string[]; value: string }
 
 export function LlmLabeler(logger = reporter) {
-  return PythonPool<{ title: string; words: string[] }, Label[]>(
+  return PythonPool<{ title: string; words: string[] }, { category: string, properties: Property[] }>(
     `./LlmLabeler.py`,
     logger,
   )

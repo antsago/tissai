@@ -7,7 +7,7 @@ export const getLabels =
   (title: string, python: LlmLabeler) => async (tokens: Token[]) => {
     const words = tokens.map((t) => t.originalText)
     const labels = await python.send({ title, words })
-    return labels.map((l) => l.label)
+    return labels.properties.map((l) => l.labels[0])
   }
 
 export const getSchemas =
