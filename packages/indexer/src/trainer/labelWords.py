@@ -1,15 +1,15 @@
 import sys
 import json
+import string
 from functools import reduce
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import pipeline
 
 modelName = "unsloth/tinyllama"
-tokenizer = AutoTokenizer.from_pretrained(modelName)
-model = AutoModelForCausalLM.from_pretrained(modelName)
+generator = pipeline(model=modelName)
 
 
 def getPrompt(title, labels):
-    labeled = "\n    ".join([f"""{token} <> {label}""" for (token, label) in labels])[
+    labeled = "\n    ".join([f"""{token} <> {labels[0]}""" for (token, labels) in labels])[
         :-1
     ]
     return f"""Dados los nombres de los productos siguientes, etiqueta cada palabra con el nombre de los atributos que representa:
@@ -50,27 +50,32 @@ def getPrompt(title, labels):
   {title}
     {labeled}"""
 
+def cleanText(generatedText):
+  firstSentence = generatedText.split("\n")[0]
+  firstWord = [
+    w for w in firstSentence.split(" ") if w and not w.isspace()
+  ][0]
+  return reduce(lambda word, punctuation: word.replace(punctuation, ""), string.punctuation, firstWord)
+  
 
-def getLabel(title, labels, toLabel):
-    prompt = getPrompt(title, [*labels, (toLabel, "")])
+def getLabel(title, previousLabels, toLabel):
+    prompt = getPrompt(title, [*previousLabels, (toLabel, [""])])
 
-    inputs = tokenizer(prompt, return_tensors="pt")
-    outputs = model.generate(
-        **inputs, max_new_tokens=100, stop_strings=["\n ", "\n\n"], tokenizer=tokenizer
+    generated = generator(prompt,
+      max_new_tokens=5, num_return_sequences=3, return_full_text=False,
+      do_sample=False, num_beams=3, num_beam_groups=3, diversity_penalty=10.0,
     )
-    output = tokenizer.batch_decode(outputs, skip_special_tokens=True)[0]
+    
+    labels = [ cleanText(o["generated_text"]) for o in generated]
 
-    label = [
-        w for w in output[(len(prompt) + 1) :].split("\n") if w and not w.isspace()
-    ][-1]
-    return [*labels, (toLabel, label)]
+    return [*previousLabels, (toLabel, labels)]
 
 
 def labelWords(words, title):
     labels = reduce(
-        lambda labels, wordToLabel: getLabel(title, labels, wordToLabel), words, []
+        lambda previousLabels, wordToLabel: getLabel(title, previousLabels, wordToLabel), words, []
     )
-    return [{"label": label, "value": token} for (token, label) in labels]
+    return [{"labels": labels, "value": token} for (token, labels) in labels]
 
 
 for rawQuery in sys.stdin:
