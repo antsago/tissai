@@ -20,7 +20,11 @@ describe("attribute", () => {
   })
 
   it("extracts attribute", async ({ pg }) => {
-    const result = await attribute({ label: LABEL, value: VALUE }, PRODUCT_ID, db)
+    const result = await attribute(
+      { label: LABEL, value: VALUE },
+      PRODUCT_ID,
+      db,
+    )
 
     expect(result).toStrictEqual({
       id: expect.any(String),

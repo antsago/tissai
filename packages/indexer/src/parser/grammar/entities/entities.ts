@@ -5,8 +5,8 @@ import { Type, type Schema } from "./types.js"
 import { Properties } from "./Properties.js"
 
 export type GenericEntity = {
-  [Id]: string,
-  [Type]: symbol,
+  [Id]: string
+  [Type]: symbol
 } & Record<string, any[]>
 
 export const Entity = (schema: Schema) =>
@@ -17,11 +17,12 @@ export const Entity = (schema: Schema) =>
       Properties(schema),
       IsSymbol(EntityEnd),
     ),
-    ([s, id, parsedProperties, e]) => ({
-      [Id]: id,
-      [Type]: schema[Type],
-      ...parsedProperties,
-    }) as GenericEntity,
+    ([s, id, parsedProperties, e]) =>
+      ({
+        [Id]: id,
+        [Type]: schema[Type],
+        ...parsedProperties,
+      }) as GenericEntity,
   )
 
 export const Ontology = (schemas: Schema[]) =>

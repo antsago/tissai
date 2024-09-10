@@ -13,9 +13,7 @@ export const runForAllPages = async (
       .select(({ fn }) => fn.count("id").as("count"))
       .compile(),
   )
-  const pages = db.stream<Page>(
-    query.selectFrom("pages").selectAll().compile(),
-  )
+  const pages = db.stream<Page>(query.selectFrom("pages").selectAll().compile())
 
   let index = 1
   for await (let page of pages) {

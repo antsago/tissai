@@ -9,9 +9,9 @@ generator = pipeline(model=modelName)
 
 
 def getPrompt(title, labels):
-    labeled = "\n    ".join([f"""{token} <> {labels[0]}""" for (token, labels) in labels])[
-        :-1
-    ]
+    labeled = "\n    ".join(
+        [f"""{token} <> {labels[0]}""" for (token, labels) in labels]
+    )[:-1]
     return f"""Dados los nombres de los productos siguientes, etiqueta cada palabra con el nombre de los atributos que representa:
   Conjunto de cazadora y pantalón | Total look de hombre | SPF
     Conjunto <> categoría
@@ -50,30 +50,43 @@ def getPrompt(title, labels):
   {title}
     {labeled}"""
 
+
 def cleanText(generatedText):
-  firstSentence = generatedText.split("\n")[0]
-  firstWord = [
-    w for w in firstSentence.split(" ") if w and not w.isspace()
-  ][0]
-  return reduce(lambda word, punctuation: word.replace(punctuation, ""), string.punctuation, firstWord)
-  
+    firstSentence = generatedText.split("\n")[0]
+    firstWord = [w for w in firstSentence.split(" ") if w and not w.isspace()][0]
+    return reduce(
+        lambda word, punctuation: word.replace(punctuation, ""),
+        string.punctuation,
+        firstWord,
+    )
+
 
 def getLabel(title, previousLabels, toLabel):
     prompt = getPrompt(title, [*previousLabels, (toLabel, [""])])
 
-    generated = generator(prompt,
-      max_new_tokens=5, num_return_sequences=3, return_full_text=False,
-      do_sample=False, num_beams=3, num_beam_groups=3, diversity_penalty=10.0,
+    generated = generator(
+        prompt,
+        max_new_tokens=5,
+        num_return_sequences=3,
+        return_full_text=False,
+        do_sample=False,
+        num_beams=3,
+        num_beam_groups=3,
+        diversity_penalty=10.0,
     )
-    
-    labels = [ cleanText(o["generated_text"]) for o in generated]
+
+    labels = [cleanText(o["generated_text"]) for o in generated]
 
     return [*previousLabels, (toLabel, labels)]
 
 
 def labelWords(words, title):
     labels = reduce(
-        lambda previousLabels, wordToLabel: getLabel(title, previousLabels, wordToLabel), words, []
+        lambda previousLabels, wordToLabel: getLabel(
+            title, previousLabels, wordToLabel
+        ),
+        words,
+        [],
     )
     return [{"labels": labels, "value": token} for (token, labels) in labels]
 

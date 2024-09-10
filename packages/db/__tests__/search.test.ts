@@ -310,10 +310,7 @@ describe.concurrent("search", () => {
       ])
     })
 
-    it("handles products with duplicate labels", async ({
-      expect,
-      db,
-    }) => {
+    it("handles products with duplicate labels", async ({ expect, db }) => {
       const otherAttribute = {
         id: "d50bc19c-14a6-4edd-890f-aab73fe6ce7f",
         label: attribute1.label,

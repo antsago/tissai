@@ -38,10 +38,7 @@ const ExtractProperties = (schema: Schema) => {
         properties
           .flat()
           .filter(({ key }) => !!key)
-          .map(({ key, value }) => [
-            key,
-            value,
-          ]),
+          .map(({ key, value }) => [key, value]),
       ) as Record<string, any[]>,
   )
 }

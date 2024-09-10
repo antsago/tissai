@@ -1,6 +1,9 @@
 import type { Seller, Db } from "@tissai/db"
 
-async function seller(raw: undefined|{ name?: string[] }, db: Db): Promise<undefined|Seller> {
+async function seller(
+  raw: undefined | { name?: string[] },
+  db: Db,
+): Promise<undefined | Seller> {
   if (!raw || !raw.name) {
     return undefined
   }
