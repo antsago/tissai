@@ -1,5 +1,5 @@
 import { type Token, Required, Lexer, Schema, Type } from "../parser/index.js"
-import type { LlmLabeler } from "./LlmLabeler.js";
+import type { LlmLabeler } from "./LlmLabeler/index.js"
 
 export const ProductType = Symbol("Product")
 
