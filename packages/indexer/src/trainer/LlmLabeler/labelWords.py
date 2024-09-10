@@ -1,5 +1,6 @@
 import string
 from functools import reduce
+from utils import getFirstWord
 
 
 def getPrompt(title, labels):
@@ -45,16 +46,6 @@ def getPrompt(title, labels):
     {labeled}"""
 
 
-def cleanText(generatedText):
-    firstSentence = generatedText.split("\n")[0]
-    firstWord = [w for w in firstSentence.split(" ") if w and not w.isspace()][0]
-    return reduce(
-        lambda word, punctuation: word.replace(punctuation, ""),
-        string.punctuation,
-        firstWord,
-    )
-
-
 def getLabel(generator, title, previousLabels, toLabel):
     prompt = getPrompt(title, [*previousLabels, (toLabel, [""])])
 
@@ -69,7 +60,7 @@ def getLabel(generator, title, previousLabels, toLabel):
         num_return_sequences=3,
     )
 
-    labels = [cleanText(o["generated_text"]) for o in generated]
+    labels = [getFirstWord(o["generated_text"]) for o in generated]
 
     return [*previousLabels, (toLabel, labels)]
 
