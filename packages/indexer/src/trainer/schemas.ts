@@ -4,11 +4,7 @@ import type { LlmLabeler } from "./LlmLabeler/index.js"
 export const ProductType = Symbol("Product")
 
 export const getLabels =
-  (
-    title: string,
-    python: LlmLabeler,
-  ) =>
-  async (tokens: Token[]) => {
+  (title: string, python: LlmLabeler) => async (tokens: Token[]) => {
     const words = tokens.map((t) => t.originalText)
     const labels = await python.send({ title, words })
     return labels.map((l) => l.label)

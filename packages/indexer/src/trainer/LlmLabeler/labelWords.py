@@ -1,6 +1,7 @@
 import string
 from functools import reduce
 
+
 def getPrompt(title, labels):
     labeled = "\n    ".join(
         [f"""{token} <> {labels[0]}""" for (token, labels) in labels]
@@ -60,12 +61,12 @@ def getLabel(generator, title, previousLabels, toLabel):
     generated = generator(
         prompt,
         max_new_tokens=5,
-        num_return_sequences=3,
         return_full_text=False,
         do_sample=False,
         num_beams=3,
         num_beam_groups=3,
         diversity_penalty=10.0,
+        num_return_sequences=3,
     )
 
     labels = [cleanText(o["generated_text"]) for o in generated]
@@ -82,4 +83,3 @@ def labelWords(generator, words, title):
         [],
     )
     return [{"labels": labels, "value": token} for (token, labels) in labels]
-
