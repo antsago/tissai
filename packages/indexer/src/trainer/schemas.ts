@@ -1,16 +1,17 @@
-import { type Token, Required, Lexer, Schema, Type } from "../parser/index.js"
-import type { LlmLabeler } from "./LlmLabeler/index.js"
+import { type Token, Compiler, Required, Lexer, Schema, Type } from "../parser/index.js"
+import type { Reporter } from "../PageServer/index.js"
+import { LlmLabeler } from "./LlmLabeler/index.js"
 
 export const ProductType = Symbol("Product")
 
-export const getLabels =
+const getLabels =
   (title: string, python: LlmLabeler) => async (tokens: Token[]) => {
     const words = tokens.map((t) => t.originalText)
     const labels = await python.send({ title, words })
     return labels.properties.map((l) => l.labels[0])
   }
 
-export const getSchemas =
+const getSchemas =
   (python: LlmLabeler) =>
   (lexer: Lexer): Schema[] => [
     {
@@ -29,3 +30,12 @@ export const getSchemas =
       },
     },
   ]
+
+export const compilerFixture = (reporter: Reporter) => {
+  const python = LlmLabeler(reporter)
+  const compiler = Compiler(getSchemas(python))
+  return [
+    compiler,
+    () => Promise.all([compiler?.close(), python?.close()]),
+  ] as const
+}

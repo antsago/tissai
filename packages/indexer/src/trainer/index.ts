@@ -1,7 +1,7 @@
 import { type Model, NonMatch } from "../parser/index.js"
 import { type OnPage, type Helpers, PageServer } from "../PageServer/index.js"
 import { updateModel } from "./updateModel.js"
-import { compilerFixture } from "./compilerFixture.js"
+import { compilerFixture } from "./schemas.js"
 import { Page, query } from "@tissai/db"
 
 const MODEL: Model = {
