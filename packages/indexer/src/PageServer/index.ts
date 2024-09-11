@@ -1,4 +1,4 @@
-import { Db, Page } from "@tissai/db"
+import { Db, Page, query } from "@tissai/db"
 import { Reporter } from "./Reporter.js"
 import { runForAllPages } from "./runForAllPages.js"
 
@@ -33,11 +33,27 @@ export class PageServer<T> {
         [state, onClose] = this.fixture({ reporter })
       }
 
-      const processedPages = await runForAllPages(async (page) => {
+  const baseQuery = query.selectFrom("pages")
+  const [{ total }] = await db.query(
+    baseQuery
+      .select(({ fn }) => fn.count("id").as("total"))
+      .compile(),
+  )
+  const pages = db.stream<Page>(baseQuery.selectAll().compile())
+
+      const processedPages = await runForAllPages(pages, async (page, index) => {
+        reporter.progress(
+          `Processing page ${index}/${total}: ${page.id} (${page.url})`,
+        )
+
         if (this.processPage) {
           await this.processPage(page, { ...state, db })
         }
-      }, { db, reporter })
+      },
+      (err, page) => {
+        const message = err instanceof Error ? err.message : String(err)
+        reporter.error(`[${page.id} (${page.url})]: ${message}`)
+      })
 
       reporter.succeed(`Processed ${processedPages} pages`)
     } catch (err) {
