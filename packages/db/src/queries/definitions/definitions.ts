@@ -1,4 +1,3 @@
-import { sql } from "kysely"
 import {
   type Brand,
   type Offer,
@@ -13,25 +12,13 @@ import sharedQueries from "./sharedQueries.js"
 import * as sellers from "./sellers.js"
 import * as brands from "./brands.js"
 import * as products from "./products/index.js"
-import builder from "../builder.js"
+import * as schemas from "./schemas.js"
 
 export const Definitions = {
   attributes: sharedQueries<Attribute>("attributes"),
   schemas: {
     ...sharedQueries<Schema>("schemas"),
-    upsert: (schema: Schema) =>
-      builder
-        .insertInto("schemas")
-        .onConflict((oc) =>
-          oc
-            .columns(["category", "label", "value"])
-            .doUpdateSet({
-              tally: ({ ref }) =>
-                sql`${ref("schemas.tally")} + ${ref("excluded.tally")}`,
-            }),
-        )
-        .values(schema)
-        .compile(),
+    ...schemas,
   },
   brands: {
     ...sharedQueries<Brand>("brands"),
