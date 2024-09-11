@@ -34,8 +34,3 @@ export function Reporter(isSilent = false) {
   }
 }
 export type Reporter = ReturnType<typeof Reporter>
-
-export let reporter = Reporter()
-export function resetReporter() {
-  reporter = Reporter()
-}

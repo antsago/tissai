@@ -1,9 +1,9 @@
 import { type Page, Db, query } from "@tissai/db"
-import { reporter } from "./Reporter.js"
+import { type Reporter } from "./Reporter.js"
 
 export const runForAllPages = async (
-  db: Db,
   onPage: (page: Page) => Promise<void>,
+  { db, reporter }: { db: Db, reporter: Reporter },
 ) => {
   const [{ count: totalPageCount }] = await db.query(
     query
