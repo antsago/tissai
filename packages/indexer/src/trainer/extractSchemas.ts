@@ -1,8 +1,8 @@
-import { type Token } from "../parser/index.js"
+import type { Property } from "./updateModel.js"
 
 export function extractSchemas(
   category: string,
-  properties: (Token & { labels?: string[] })[],
+  properties: Property[],
 ) {
   const seenLabels = [] as string[]
 

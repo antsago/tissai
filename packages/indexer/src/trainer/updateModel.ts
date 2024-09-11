@@ -1,23 +1,28 @@
-import { type Token, type LabelMap, type Model, Type } from "../parser/index.js"
-import { ProductType } from "./schemas.js"
+import { type Token, type LabelMap, type Model } from "../parser/index.js"
+
+export type Property = Token & { labels?: string[] }
 
 const updateMapping = (
   vocabulary: LabelMap,
-  labeled: (Token & { label?: string })[],
+  labeled: Property[],
 ) =>
   labeled
-    .filter((t) => t.isMeaningful && t.label !== undefined)
+    .filter((t) => t.isMeaningful && t.labels !== undefined)
+    .map(({text, labels}) => ({ text, label: labels![0]}))
     .forEach(({ label, text }) => {
       vocabulary[text] = {
         ...(vocabulary[text] ?? {}),
-        [label!]: (vocabulary[text]?.[label!] ?? 0) + 1,
+        [label]: (vocabulary[text]?.[label] ?? 0) + 1,
       }
     })
 const CATEGORY_LABEL = "categoría"
 const updateSchemas = (
   schemas: LabelMap,
-  labeled: (Token & { label?: string })[],
+  product: Property[],
 ) => {
+  const labeled = product
+    .map(({ labels, text}) => ({ text, label: labels?.[0] }))
+
   const categories = labeled
     .filter((word) => word.label === CATEGORY_LABEL)
     .map((word) => word.text)
@@ -37,13 +42,9 @@ const updateSchemas = (
 }
 
 export const updateModel = (
-  entities: any[],
+  products: Property[][],
   { vocabulary, schemas }: Model,
 ) => {
-  const products = entities
-    .filter((entity) => entity[Type] === ProductType)
-    .map((product) => product.parsedTitle[0])
-
   updateMapping(vocabulary, products.flat())
   products.forEach((product) => updateSchemas(schemas, product))
 }

@@ -30,7 +30,7 @@ const getSchemas =
       title: {
         name: "name",
         parse: {
-          as: "parsedTitle",
+          as: "properties",
           with: (title: string) =>
             lexer.fromText(title, getLabels(title, python)),
         },

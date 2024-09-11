@@ -1,8 +1,8 @@
-import { type Model, NonMatch } from "../parser/index.js"
+import { Page, query } from "@tissai/db"
+import { type Model, NonMatch, Type } from "../parser/index.js"
 import { type OnPage, type Helpers, PageServer } from "../PageServer/index.js"
 import { updateModel } from "./updateModel.js"
-import { compilerFixture } from "./schemas.js"
-import { Page, query } from "@tissai/db"
+import { compilerFixture, ProductType } from "./schemas.js"
 
 const MODEL: Model = {
   vocabulary: {},
@@ -13,7 +13,11 @@ const processPage: OnPage = async (page, { compiler }) => {
   const entities = await compiler.parse(page.body)
 
   if (entities !== NonMatch) {
-    updateModel(entities, MODEL)
+    const products = entities
+      .filter((entity) => entity[Type] === ProductType)
+      .map((product) => product.properties[0])
+
+    updateModel(products, MODEL)
   }
 }
 
