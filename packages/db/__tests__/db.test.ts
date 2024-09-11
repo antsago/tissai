@@ -1,4 +1,4 @@
-import { describe, test } from "vitest"
+import { describe, test, beforeEach } from "vitest"
 import {
   PRODUCT,
   SITE,
@@ -40,6 +40,36 @@ describe.concurrent("db", () => {
     expect(sellers).toStrictEqual([SELLER])
     expect(attributes).toStrictEqual([ATTRIBUTE])
     expect(schemas).toStrictEqual([SCHEMA])
+  })
+
+  describe("upsert schema", () => {
+    const SCHEMA = {
+      category: "myCategory",
+      label: "theLabel",
+      value: "a value",
+      tally: 4,
+    }
+
+    beforeEach<Fixtures>(async ({ db }) => {
+      await db.load({
+        schemas: [SCHEMA],
+      })
+    })
+
+    it("creates new if it doesn't already exists", async ({ expect, db }) => {
+      const newSchema = { ...SCHEMA, label: "new label" }
+
+      await db.schemas.upsert(newSchema)
+      const schemas = await db.schemas.getAll()
+
+      expect(schemas).toStrictEqual([SCHEMA, newSchema])
+    })
+
+    it("updates tally if it already exists", async ({ expect, db }) => {
+      await db.schemas.upsert({ ...SCHEMA, tally: 1 })
+      const schemas = await db.schemas.getAll()
+      expect(schemas).toStrictEqual([{ ...SCHEMA, tally: SCHEMA.tally + 1 }])
+    })
   })
 
   it("gets product details", async ({ expect, db }) => {

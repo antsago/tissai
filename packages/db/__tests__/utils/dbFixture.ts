@@ -4,9 +4,11 @@ import {
   Attribute,
   Brand,
   Db,
+  Entities,
   Offer,
   Page,
   Product,
+  Schema,
   Seller,
   Site,
 } from "../../src/index.js"
@@ -19,28 +21,29 @@ type State = Partial<{
   products: Product[]
   offers: Offer[]
   attributes: Attribute[]
+  schemas: Schema[]
 }>
 
 const load = (db: Db) => async (state: State) => {
+  const { pages, products, attributes, offers, ...others } = state
+
+  await Promise.all(
+    Object.entries(others).flatMap(([entityName, entities]) =>
+      entities.map((e) => db[entityName].create(e)),
+    ),
+  )
+
   await Promise.all(
     [
-      state.sites?.map((s) => db.sites.create(s)),
-      state.sellers?.map((s) => db.sellers.create(s)),
-      state.brands?.map((b) => db.brands.create(b)),
+      pages?.map((p) => db.pages.create(p)),
+      products?.map((p) => db.products.create(p)),
     ].flat(),
   )
 
   await Promise.all(
     [
-      state.pages?.map((p) => db.pages.create(p)),
-      state.products?.map((p) => db.products.create(p)),
-    ].flat(),
-  )
-
-  await Promise.all(
-    [
-      state.offers?.map((o) => db.offers.create(o)),
-      state.attributes?.map((a) => db.attributes.create(a)),
+      offers?.map((o) => db.offers.create(o)),
+      attributes?.map((a) => db.attributes.create(a)),
     ].flat(),
   )
 }
