@@ -17,10 +17,7 @@ await new PageServer<{ compiler: Compiler }>()
   .extend(() => {
     const compiler = Compiler(getSchemas)
 
-    return [
-      { compiler },
-      () => compiler.close()
-    ]
+    return [{ compiler }, () => compiler.close()]
   })
   .onPage(async (page, { compiler, db }) => {
     const entities = await compiler.parse(page.body)

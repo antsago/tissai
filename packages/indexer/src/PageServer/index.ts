@@ -30,40 +30,38 @@ export class PageServer<T> {
       db = Db()
       await db.initialize()
       if (this.fixture) {
-        [state, onClose] = this.fixture({ reporter })
+        ;[state, onClose] = this.fixture({ reporter })
       }
 
-  const baseQuery = query.selectFrom("pages")
-  const [{ total }] = await db.query(
-    baseQuery
-      .select(({ fn }) => fn.count("id").as("total"))
-      .compile(),
-  )
-  const pages = db.stream<Page>(baseQuery.selectAll().compile())
+      const baseQuery = query.selectFrom("pages")
+      const [{ total }] = await db.query(
+        baseQuery.select(({ fn }) => fn.count("id").as("total")).compile(),
+      )
+      const pages = db.stream<Page>(baseQuery.selectAll().compile())
 
-      const processedPages = await runForAllPages(pages, async (page, index) => {
-        reporter.progress(
-          `Processing page ${index}/${total}: ${page.id} (${page.url})`,
-        )
+      const processedPages = await runForAllPages(
+        pages,
+        async (page, index) => {
+          reporter.progress(
+            `Processing page ${index}/${total}: ${page.id} (${page.url})`,
+          )
 
-        if (this.processPage) {
-          await this.processPage(page, { ...state, db })
-        }
-      },
-      (err, page) => {
-        const message = err instanceof Error ? err.message : String(err)
-        reporter.error(`[${page.id} (${page.url})]: ${message}`)
-      })
+          if (this.processPage) {
+            await this.processPage(page, { ...state, db })
+          }
+        },
+        (err, page) => {
+          const message = err instanceof Error ? err.message : String(err)
+          reporter.error(`[${page.id} (${page.url})]: ${message}`)
+        },
+      )
 
       reporter.succeed(`Processed ${processedPages} pages`)
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
       reporter.fail(`Fatal error: ${message}`)
     } finally {
-      await Promise.all([
-        db!?.close(),
-        onClose && onClose(),
-      ])
+      await Promise.all([db!?.close(), onClose && onClose()])
     }
   }
 }
