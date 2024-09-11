@@ -13,5 +13,5 @@ export const streamFor = async <T>(
     }
   }
 
-  return index
+  return index - 1
 }
