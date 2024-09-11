@@ -5,12 +5,14 @@ function extractSchemas(
   category: string,
   properties: (Token & { labels?: string[] })[],
 ) {
-  return properties.map((property) => ({
-    category,
-    label: property.labels?.[0],
-    value: property.text,
-    tally: 1,
-  }))
+  return properties
+    .filter((token) => !!token.labels)
+    .map((property) => ({
+      category,
+      label: property.labels![0],
+      value: property.text,
+      tally: 1,
+    }))
 }
 
 describe("extractSchemas", () => {
@@ -61,6 +63,32 @@ describe("extractSchemas", () => {
         value: "foo",
         tally: 1,
       },
+      {
+        category: CATEGORY,
+        label: "foobar",
+        value: "foobar",
+        tally: 1,
+      },
+    ])
+  })
+
+  it("Ignores filler words", () => {
+    const properties = [
+      {
+        ...WORD_TOKEN,
+        text: "filler",
+        labels: undefined,
+      },
+      {
+        ...WORD_TOKEN,
+        text: "foobar",
+        labels: ["foobar"],
+      },
+    ]
+
+    const result = extractSchemas(CATEGORY, properties)
+
+    expect(result).toStrictEqual([
       {
         category: CATEGORY,
         label: "foobar",
