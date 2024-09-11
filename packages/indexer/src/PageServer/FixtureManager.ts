@@ -1,7 +1,7 @@
 import { type Db } from "@tissai/db"
 import { Reporter } from "./Reporter.js"
 
-type OptionalPromise<T> = Promise<T> | T
+export type OptionalPromise<T> = Promise<T> | T
 type CloseFixture = () => OptionalPromise<any>
 export type Fixture<T> = (
   reporter: Reporter,

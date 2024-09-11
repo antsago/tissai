@@ -1,24 +1,18 @@
 import { Db, Page, query } from "@tissai/db"
 import { Reporter } from "./Reporter.js"
 import { streamFor } from "./streamFor.js"
-import { type Fixture, FixtureManager } from "./FixtureManager.js"
+import { type Fixture, FixtureManager, OptionalPromise } from "./FixtureManager.js"
 import { dbFixture } from "./dbFixture.js"
 
-type OnPage<T> = (page: Page, state: { compiler: T; db: Db }) => Promise<any>
-
-const createStream = async (db: Db) => {
-  const baseQuery = query.selectFrom("pages")
-  const [{ total }] = await db.query(
-    baseQuery.select(({ fn }) => fn.count("id").as("total")).compile(),
-  )
-  const pages = db.stream<Page>(baseQuery.selectAll().compile())
-
-  return { total, pages }
-}
+export type Helpers<T> = { compiler: T; db: Db }
+export type OnPage<T> = (page: Page, helpers: Helpers<T>) => Promise<any>
+type CreateStream<T> = (helper: Helpers<T>) => OptionalPromise<{ total: number, pages: AsyncGenerator<Page, void, unknown>}>
 
 export class PageServer<T> {
   private processPage?: OnPage<T>
   private fixtures?: ReturnType<typeof FixtureManager<T>>
+
+  constructor(private createStream: CreateStream<T>) {}
 
   with = (fixture: Fixture<T>) => {
     this.fixtures = FixtureManager(fixture, dbFixture)
@@ -39,7 +33,7 @@ export class PageServer<T> {
       reporter.progress("Initializing...")
 
       const helpers = await this.fixtures.init(reporter)
-      const { total, pages } = await createStream(helpers.db)
+      const { total, pages } = await this.createStream(helpers)
 
       const processedPages = await streamFor(
         pages,

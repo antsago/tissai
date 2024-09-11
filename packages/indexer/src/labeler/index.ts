@@ -7,13 +7,24 @@ import {
   Type,
   type GenericEntity,
 } from "../parser/index.js"
-import { PageServer } from "../PageServer/index.js"
+import { Helpers, PageServer } from "../PageServer/index.js"
 import { getSchemas, ProductType } from "./schemas.js"
 import { brand } from "./brand.js"
 import seller from "./seller.js"
 import attribute from "./attribute.js"
+import { Page, query } from "@tissai/db"
 
-await new PageServer<Compiler>()
+const createStream = async ({ db }: Helpers<Compiler>) => {
+  const baseQuery = query.selectFrom("pages")
+  const [{ total }] = await db.query(
+    baseQuery.select(({ fn }) => fn.count("id").as("total")).compile(),
+  )
+  const pages = db.stream<Page>(baseQuery.selectAll().compile())
+
+  return { total: total as number, pages }
+}
+
+await new PageServer<Compiler>(createStream)
   .with(() => {
     const compiler = Compiler(getSchemas)
 
