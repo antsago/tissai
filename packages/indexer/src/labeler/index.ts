@@ -1,6 +1,4 @@
-import {
-  Compiler,
-} from "../parser/index.js"
+import { Compiler } from "../parser/index.js"
 import { Helpers, PageServer } from "../PageServer/index.js"
 import { getSchemas } from "./schemas.js"
 import { Page, query } from "@tissai/db"
