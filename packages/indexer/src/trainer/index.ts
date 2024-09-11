@@ -13,10 +13,7 @@ await new PageServer<Compiler>()
   .extend((reporter) => {
     const python = LlmLabeler(reporter)
     const compiler = Compiler(getSchemas(python))
-    return [
-      compiler,
-      () => Promise.all([compiler?.close(), python?.close()]),
-    ]
+    return [compiler, () => Promise.all([compiler?.close(), python?.close()])]
   })
   .onPage(async (page, { compiler }) => {
     const entities = await compiler.parse(page.body)

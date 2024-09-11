@@ -6,13 +6,10 @@ const dbFixture = async () => {
   const db = Db()
   await db.initialize()
 
-  return [
-    db,
-    () => db.close()
-  ] as const
+  return [db, () => db.close()] as const
 }
 
-type OnPage<T> = (page: Page, state: { compiler: T, db: Db }) => Promise<any>
+type OnPage<T> = (page: Page, state: { compiler: T; db: Db }) => Promise<any>
 type Fixture<T> = (reporter: Reporter) => [T, () => {}]
 
 export class PageServer<T> {
@@ -29,19 +26,28 @@ export class PageServer<T> {
   }
 
   start = async () => {
-    let db: Db
-    let compiler: T
-    let closeDb
-    let closeFixture
+    let closeDb: Awaited<ReturnType<typeof dbFixture>>[1]
+    let closeCompiler: Awaited<ReturnType<Fixture<T>>>[1]
     const reporter = Reporter()
+
+    const closeFixtures = () =>
+      Promise.all([closeDb && closeDb(), closeCompiler && closeCompiler()])
+    const initFixtures = async () => {
+      if (!this.compilerFixture) {
+        throw new Error("No compiler fixture given")
+      }
+      let db, compiler
+      ;[db, closeDb] = await dbFixture()
+      ;[compiler, closeCompiler] = this.compilerFixture(reporter)
+
+      return { db, compiler }
+    }
 
     try {
       reporter.progress("Initializing...")
 
-      ;[db, closeDb] = await dbFixture()
-      if (this.compilerFixture) {
-        ;[compiler, closeFixture] = this.compilerFixture(reporter)
-      }
+      const helpers = await initFixtures()
+      const { db } = helpers
 
       const baseQuery = query.selectFrom("pages")
       const [{ total }] = await db.query(
@@ -57,7 +63,7 @@ export class PageServer<T> {
           )
 
           if (this.processPage) {
-            await this.processPage(page, { compiler, db })
+            await this.processPage(page, helpers)
           }
         },
         (err, page) => {
@@ -71,7 +77,7 @@ export class PageServer<T> {
       const message = err instanceof Error ? err.message : String(err)
       reporter.fail(`Fatal error: ${message}`)
     } finally {
-      await Promise.all([closeDb && closeDb(), closeFixture && closeFixture()])
+      await closeFixtures()
     }
   }
 }
