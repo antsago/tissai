@@ -2,6 +2,16 @@ import { Db, Page, query } from "@tissai/db"
 import { Reporter } from "./Reporter.js"
 import { runStream } from "./runStream.js"
 
+const dbFixture = async () => {
+  const db = Db()
+  await db.initialize()
+
+  return [
+    db,
+    () => db.close()
+  ] as const
+}
+
 type OnPage<T> = (page: Page, state: { compiler: T, db: Db }) => Promise<any>
 type Fixture<T> = (reporter: Reporter) => [T, () => {}]
 
@@ -21,14 +31,14 @@ export class PageServer<T> {
   start = async () => {
     let db: Db
     let compiler: T
+    let closeDb
     let closeFixture
     const reporter = Reporter()
 
     try {
       reporter.progress("Initializing...")
 
-      db = Db()
-      await db.initialize()
+      ;[db, closeDb] = await dbFixture()
       if (this.compilerFixture) {
         ;[compiler, closeFixture] = this.compilerFixture(reporter)
       }
@@ -61,7 +71,7 @@ export class PageServer<T> {
       const message = err instanceof Error ? err.message : String(err)
       reporter.fail(`Fatal error: ${message}`)
     } finally {
-      await Promise.all([db!?.close(), closeFixture && closeFixture()])
+      await Promise.all([closeDb && closeDb(), closeFixture && closeFixture()])
     }
   }
 }
