@@ -1,4 +1,11 @@
-import { type Token, Compiler, Required, Lexer, Schema, Type } from "../parser/index.js"
+import {
+  type Token,
+  Compiler,
+  Required,
+  Lexer,
+  Schema,
+  Type,
+} from "../parser/index.js"
 import type { Reporter } from "../PageServer/index.js"
 import { LlmLabeler } from "./LlmLabeler/index.js"
 

@@ -11,9 +11,7 @@ import { Compiler } from "../parser/Compiler.js"
 
 export type Helpers = { compiler: Compiler; db: Db }
 export type OnPage = (page: Page, helpers: Helpers) => Promise<any>
-type CreateStream = (
-  helper: Helpers,
-) => OptionalPromise<{
+type CreateStream = (helper: Helpers) => OptionalPromise<{
   total: number
   pages: AsyncGenerator<Page, void, unknown>
 }>
