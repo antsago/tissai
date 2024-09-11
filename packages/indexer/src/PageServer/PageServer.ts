@@ -5,6 +5,16 @@ import { type Fixture, FixtureManager } from "./FixtureManager.js"
 
 type OnPage<T> = (page: Page, state: { compiler: T; db: Db }) => Promise<any>
 
+const createStream = async (db: Db) => {
+  const baseQuery = query.selectFrom("pages")
+  const [{ total }] = await db.query(
+    baseQuery.select(({ fn }) => fn.count("id").as("total")).compile(),
+  )
+  const pages = db.stream<Page>(baseQuery.selectAll().compile())
+
+  return { total, pages }
+}
+
 export class PageServer<T> {
   private processPage?: OnPage<T>
   private fixtures?: ReturnType<typeof FixtureManager<T>>
@@ -22,19 +32,13 @@ export class PageServer<T> {
     if (!this.fixtures) {
       throw new Error("No compiler fixture given")
     }
-    const reporter = Reporter()
 
+    const reporter = Reporter()
     try {
       reporter.progress("Initializing...")
 
       const helpers = await this.fixtures.init(reporter)
-      const { db } = helpers
-
-      const baseQuery = query.selectFrom("pages")
-      const [{ total }] = await db.query(
-        baseQuery.select(({ fn }) => fn.count("id").as("total")).compile(),
-      )
-      const pages = db.stream<Page>(baseQuery.selectAll().compile())
+      const { total, pages } = await createStream(helpers.db)
 
       const processedPages = await runStream(
         pages,
