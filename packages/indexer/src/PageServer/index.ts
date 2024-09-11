@@ -1,6 +1,6 @@
 import { Db, Page, query } from "@tissai/db"
 import { Reporter } from "./Reporter.js"
-import { runForAllPages } from "./runForAllPages.js"
+import { runStream } from "./runStream.js"
 
 type OnPage<T> = (page: Page, state: T & { db: Db }) => Promise<any>
 type Fixture<T> = (state: { reporter: Reporter }) => [T, () => {}]
@@ -39,7 +39,7 @@ export class PageServer<T> {
       )
       const pages = db.stream<Page>(baseQuery.selectAll().compile())
 
-      const processedPages = await runForAllPages(
+      const processedPages = await runStream(
         pages,
         async (page, index) => {
           reporter.progress(
