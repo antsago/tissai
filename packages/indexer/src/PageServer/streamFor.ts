@@ -1,4 +1,4 @@
-export const runStream = async <T>(
+export const streamFor = async <T>(
   stream: AsyncGenerator<T, void, unknown>,
   onItem: (current: T, index: number) => Promise<void>,
   onError: (error: unknown, current: T) => void,
