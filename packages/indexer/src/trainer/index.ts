@@ -1,7 +1,7 @@
 import { Compiler, type Model, NonMatch } from "../parser/index.js"
+import { PageServer } from "../PageServer/index.js"
 import { getSchemas } from "./schemas.js"
 import { updateModel } from "./updateModel.js"
-import { PageServer } from "../PageServer.js"
 import { LlmLabeler } from "./LlmLabeler/index.js"
 
 const MODEL: Model = {

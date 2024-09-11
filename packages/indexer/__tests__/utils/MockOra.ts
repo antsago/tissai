@@ -1,5 +1,5 @@
 import { vi } from "vitest"
-import { setOra } from "../../src/Reporter.js"
+import { setOra } from "../../src/PageServer/Reporter.js"
 
 export function MockOra() {
   const spinner = {

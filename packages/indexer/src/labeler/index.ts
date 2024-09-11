@@ -7,7 +7,7 @@ import {
   Type,
   type GenericEntity,
 } from "../parser/index.js"
-import { PageServer } from "../PageServer.js"
+import { PageServer } from "../PageServer/index.js"
 import { getSchemas, ProductType } from "./schemas.js"
 import { brand } from "./brand.js"
 import seller from "./seller.js"
