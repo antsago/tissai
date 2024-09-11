@@ -8,6 +8,7 @@ import {
   SELLER,
   ATTRIBUTE,
   dbFixture,
+  SCHEMA,
 } from "#mocks"
 
 type Fixtures = { db: dbFixture }
@@ -24,18 +25,21 @@ describe.concurrent("db", () => {
     await db.products.create(PRODUCT)
     await db.offers.create(OFFER)
     await db.attributes.create(ATTRIBUTE)
+    await db.schemas.create(SCHEMA)
 
     const products = await db.products.getAll()
     const offers = await db.offers.getAll()
     const brands = await db.brands.getAll()
     const sellers = await db.sellers.getAll()
     const attributes = await db.attributes.getAll()
+    const schemas = await db.schemas.getAll()
 
     expect(products).toStrictEqual([PRODUCT])
     expect(offers).toStrictEqual([OFFER])
     expect(brands).toStrictEqual([BRAND])
     expect(sellers).toStrictEqual([SELLER])
     expect(attributes).toStrictEqual([ATTRIBUTE])
+    expect(schemas).toStrictEqual([SCHEMA])
   })
 
   describe("brands", () => {

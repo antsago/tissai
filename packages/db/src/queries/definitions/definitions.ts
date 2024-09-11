@@ -1,11 +1,12 @@
-import type {
-  Brand,
-  Offer,
-  Page,
-  Product,
-  Attribute,
-  Seller,
-  Site,
+import {
+  type Brand,
+  type Offer,
+  type Page,
+  type Product,
+  type Attribute,
+  type Seller,
+  type Site,
+  type Schema,
 } from "../../types.js"
 import sharedQueries from "./sharedQueries.js"
 import createSeller from "./createSeller.js"
@@ -15,6 +16,7 @@ import searchProducts from "./searchProducts.js"
 
 export const Definitions = {
   attributes: sharedQueries<Attribute>("attributes"),
+  schemas: sharedQueries<Schema>("schemas"),
   brands: {
     ...sharedQueries<Brand>("brands"),
     ...brands,

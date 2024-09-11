@@ -48,3 +48,10 @@ export const ATTRIBUTE = {
   value: "BL 900",
   product: PRODUCT.id,
 }
+
+export const SCHEMA = {
+  category: "pantalones",
+  label: "modelo",
+  value: "BL 900",
+  tally: 3,
+}

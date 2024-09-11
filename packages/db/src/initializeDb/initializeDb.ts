@@ -6,6 +6,7 @@ import * as offers from "./offers.js"
 import * as sites from "./sites.js"
 import * as pages from "./pages.js"
 import * as attributes from "./attributes.js"
+import * as schemas from "./schemas.js"
 
 const Tables = {
   attributes,
@@ -13,6 +14,7 @@ const Tables = {
   offers,
   pages,
   products,
+  schemas,
   sellers,
   sites,
 }
@@ -28,11 +30,11 @@ const initializeTables = async (connection: Connection) => {
       Object.values(tables).map((table) => table.initialize(connection)),
     )
 
-  const { sites, brands, sellers, pages, products, ...others } = Tables
+  const { pages, products, attributes, offers, ...others } = Tables
 
-  await initializeInParalel({ sites, brands, sellers })
-  await initializeInParalel({ pages, products })
   await initializeInParalel(others)
+  await initializeInParalel({ pages, products })
+  await initializeInParalel({ attributes, offers })
 }
 
 const initializeDb = async (connection: Connection) => {
