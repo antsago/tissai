@@ -2,8 +2,6 @@ import { Db, Page } from "@tissai/db"
 import { Reporter } from "./Reporter.js"
 import { runForAllPages } from "./runForAllPages.js"
 
-const reporter = Reporter()
-
 type OnInitialize<T> = (state: { reporter: Reporter }) => T
 type OnPage<T> = (page: Page, state: T & { db: Db }) => Promise<any>
 type OnClose<T> = (state: Partial<T>) => Promise<any>
@@ -29,6 +27,7 @@ export class PageServer<T> {
   start = async () => {
     let db: Db
     let state: T
+    const reporter = Reporter()
 
     try {
       reporter.progress("Initializing...")
