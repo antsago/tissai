@@ -1,15 +1,15 @@
-import { type Compiler, type Model, NonMatch } from "../parser/index.js"
+import { type Model, NonMatch } from "../parser/index.js"
 import { type OnPage, type Helpers, PageServer } from "../PageServer/index.js"
 import { updateModel } from "./updateModel.js"
 import { compilerFixture } from "./compilerFixture.js"
-import { Db, Page, query } from "@tissai/db"
+import { Page, query } from "@tissai/db"
 
 const MODEL: Model = {
   vocabulary: {},
   schemas: {},
 }
 
-const processPage: OnPage<Compiler> = async (page: Page, { compiler }) => {
+const processPage: OnPage = async (page, { compiler }) => {
   const entities = await compiler.parse(page.body)
 
   if (entities !== NonMatch) {
@@ -17,7 +17,7 @@ const processPage: OnPage<Compiler> = async (page: Page, { compiler }) => {
   }
 }
 
-const createStream = async ({ db }: Helpers<Compiler>) => {
+const createStream = async ({ db }: Helpers) => {
   const baseQuery = query.selectFrom("pages")
   const [{ total }] = await db.query(
     baseQuery.select(({ fn }) => fn.count("id").as("total")).compile(),
@@ -27,7 +27,7 @@ const createStream = async ({ db }: Helpers<Compiler>) => {
   return { total: total as number, pages }
 }
 
-await new PageServer<Compiler>(createStream)
+await new PageServer(createStream)
   .with(compilerFixture)
   .onPage(processPage)
   .start()
