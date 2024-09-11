@@ -13,11 +13,11 @@ import { brand } from "./brand.js"
 import seller from "./seller.js"
 import attribute from "./attribute.js"
 
-await new PageServer<{ compiler: Compiler }>()
+await new PageServer<Compiler>()
   .extend(() => {
     const compiler = Compiler(getSchemas)
 
-    return [{ compiler }, () => compiler.close()]
+    return [compiler, () => compiler.close()]
   })
   .onPage(async (page, { compiler, db }) => {
     const entities = await compiler.parse(page.body)

@@ -9,16 +9,12 @@ const MODEL: Model = {
   schemas: {},
 }
 
-type ServerState = {
-  compiler: Compiler
-}
-
-await new PageServer<ServerState>()
-  .extend(({ reporter }) => {
+await new PageServer<Compiler>()
+  .extend((reporter) => {
     const python = LlmLabeler(reporter)
     const compiler = Compiler(getSchemas(python))
     return [
-      { compiler },
+      compiler,
       () => Promise.all([compiler?.close(), python?.close()]),
     ]
   })
