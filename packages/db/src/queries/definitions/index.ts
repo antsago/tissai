@@ -1,4 +1,3 @@
-export type { ProductDetails } from "./getProductDetails.js"
-export type { SearchParams, Search } from "./searchProducts.js"
+export type { ProductDetails, SearchParams, Search } from "./products/index.js"
 
 export { Definitions } from "./definitions.js"

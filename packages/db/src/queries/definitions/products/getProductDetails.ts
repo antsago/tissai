@@ -1,7 +1,7 @@
 import { type CompiledQuery, sql } from "kysely"
 import { jsonBuildObject } from "kysely/helpers/postgres"
-import { Product, Brand } from "../../types.js"
-import builder, { toJsonb } from "../builder.js"
+import { Product, Brand } from "../../../types.js"
+import builder, { toJsonb } from "../../builder.js"
 
 const getDetails = {
   takeFirst: true,

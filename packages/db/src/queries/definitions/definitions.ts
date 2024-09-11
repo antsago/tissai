@@ -9,10 +9,9 @@ import {
   type Schema,
 } from "../../types.js"
 import sharedQueries from "./sharedQueries.js"
-import createSeller from "./createSeller.js"
+import * as sellers from "./sellers.js"
 import * as brands from "./brands.js"
-import getProductDetails from "./getProductDetails.js"
-import searchProducts from "./searchProducts.js"
+import * as products from "./products/index.js"
 
 export const Definitions = {
   attributes: sharedQueries<Attribute>("attributes"),
@@ -25,12 +24,11 @@ export const Definitions = {
   pages: sharedQueries<Page>("pages"),
   products: {
     ...sharedQueries<Product>("products"),
-    getDetails: getProductDetails,
-    search: searchProducts,
+    ...products,
   },
   sellers: {
     ...sharedQueries<Seller>("sellers"),
-    create: createSeller,
+    ...sellers,
   },
   sites: sharedQueries<Site>("sites"),
 }
