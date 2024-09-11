@@ -1,8 +1,8 @@
 import { Db, Page } from "@tissai/db"
-import { reporter } from "./Reporter.js"
+import { type Reporter, reporter } from "./Reporter.js"
 import { runForAllPages } from "./runForAllPages.js"
 
-type OnInitialize<T> = () => T
+type OnInitialize<T> = (state: { reporter: Reporter }) => T
 type OnPage<T> = (page: Page, state: T & { db: Db }) => Promise<any>
 type OnClose<T> = (state: Partial<T>) => Promise<any>
 
@@ -34,14 +34,16 @@ export class PageServer<T> {
       db = Db()
       await db.initialize()
       if (this.getState) {
-        state = this.getState()
+        state = this.getState({ reporter })
       }
 
-      await runForAllPages(db, async (page) => {
+      const processedPages = await runForAllPages(db, async (page) => {
         if (this.processPage) {
           await this.processPage(page, { ...state, db })
         }
       })
+
+      reporter.succeed(`Processed ${processedPages} pages`)
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
       reporter.fail(`Fatal error: ${message}`)

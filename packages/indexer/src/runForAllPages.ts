@@ -5,8 +5,6 @@ export const runForAllPages = async (
   db: Db,
   onPage: (page: Page) => Promise<void>,
 ) => {
-  reporter.progress("Setting up page stream")
-
   const [{ count: totalPageCount }] = await db.query(
     query
       .selectFrom("pages")
@@ -31,5 +29,5 @@ export const runForAllPages = async (
     }
   }
 
-  reporter.succeed(`Processed ${totalPageCount} pages`)
+  return index
 }

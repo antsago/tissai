@@ -15,8 +15,8 @@ type ServerState = {
 }
 
 await new PageServer<ServerState>()
-  .onInitialize(() => {
-    const python = LlmLabeler()
+  .onInitialize(({ reporter }) => {
+    const python = LlmLabeler(reporter)
     const compiler = Compiler(getSchemas(python))
     return {
       python,
