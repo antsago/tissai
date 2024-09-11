@@ -1,27 +1,9 @@
 import { randomUUID } from "node:crypto"
 import { TaskContext, TestContext } from "vitest"
-import {
-  Attribute,
-  Brand,
-  Db,
-  Entities,
-  Offer,
-  Page,
-  Product,
-  Schema,
-  Seller,
-  Site,
-} from "../../src/index.js"
+import { Database, Db } from "../../src/index.js"
 
 type State = Partial<{
-  sites: Site[]
-  pages: Page[]
-  sellers: Seller[]
-  brands: Brand[]
-  products: Product[]
-  offers: Offer[]
-  attributes: Attribute[]
-  schemas: Schema[]
+  [K in keyof Database]: Database[K][]
 }>
 
 const load = (db: Db) => async (state: State) => {
