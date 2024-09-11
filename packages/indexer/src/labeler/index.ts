@@ -1,8 +1,7 @@
-import { Compiler } from "../parser/index.js"
 import { Helpers, PageServer } from "../PageServer/index.js"
-import { getSchemas } from "./schemas.js"
 import { Page, query } from "@tissai/db"
 import { processPage } from "./processPage.js"
+import { compilerFixture } from "./schemas.js"
 
 const createStream = async ({ db }: Helpers) => {
   const baseQuery = query.selectFrom("pages")
@@ -12,11 +11,6 @@ const createStream = async ({ db }: Helpers) => {
   const pages = db.stream<Page>(baseQuery.selectAll().compile())
 
   return { total: total as number, pages }
-}
-
-const compilerFixture = () => {
-  const compiler = Compiler(getSchemas)
-  return [compiler, () => compiler.close()] as const
 }
 
 await new PageServer(createStream)

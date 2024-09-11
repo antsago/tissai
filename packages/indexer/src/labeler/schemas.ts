@@ -5,6 +5,7 @@ import {
   Lexer,
   TokenReader,
   Type,
+  Compiler,
 } from "../parser/index.js"
 import model from "./model.js"
 import { getLabels } from "./getLabels.js"
@@ -73,9 +74,14 @@ const OrganizationSchema: Schema = {
   name: "name",
 }
 
-export const getSchemas = (lexer: Lexer): Schema[] => [
+const getSchemas = (lexer: Lexer): Schema[] => [
   ProductSchema(lexer),
   BrandSchema,
   OfferSchema,
   OrganizationSchema,
 ]
+
+export const compilerFixture = () => {
+  const compiler = Compiler(getSchemas)
+  return [compiler, () => compiler.close()] as const
+}
