@@ -3,9 +3,14 @@ import { Reporter } from "./Reporter.js"
 
 type OptionalPromise<T> = Promise<T> | T
 type CloseFixture = () => OptionalPromise<any>
-export type Fixture<T> = (reporter: Reporter) => OptionalPromise<[T, CloseFixture]>
+export type Fixture<T> = (
+  reporter: Reporter,
+) => OptionalPromise<readonly [T, CloseFixture]>
 
-export function FixtureManager<T>(compilerFixture: Fixture<T>, dbFixture: Fixture<Db>) {
+export function FixtureManager<T>(
+  compilerFixture: Fixture<T>,
+  dbFixture: Fixture<Db>,
+) {
   let closeDb: CloseFixture
   let closeCompiler: CloseFixture
 
@@ -17,6 +22,7 @@ export function FixtureManager<T>(compilerFixture: Fixture<T>, dbFixture: Fixtur
 
       return { db, compiler }
     },
-    close: () => Promise.all([closeDb && closeDb(), closeCompiler && closeCompiler()]),
+    close: () =>
+      Promise.all([closeDb && closeDb(), closeCompiler && closeCompiler()]),
   }
 }

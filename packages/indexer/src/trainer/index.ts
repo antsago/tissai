@@ -1,8 +1,7 @@
-import { Compiler, type Model, NonMatch } from "../parser/index.js"
+import { type Compiler, type Model, NonMatch } from "../parser/index.js"
 import { PageServer } from "../PageServer/index.js"
-import { getSchemas } from "./schemas.js"
 import { updateModel } from "./updateModel.js"
-import { LlmLabeler } from "./LlmLabeler/index.js"
+import { compilerFixture } from "./compilerFixture.js"
 
 const MODEL: Model = {
   vocabulary: {},
@@ -10,11 +9,7 @@ const MODEL: Model = {
 }
 
 await new PageServer<Compiler>()
-  .with((reporter) => {
-    const python = LlmLabeler(reporter)
-    const compiler = Compiler(getSchemas(python))
-    return [compiler, () => Promise.all([compiler?.close(), python?.close()])]
-  })
+  .with(compilerFixture)
   .onPage(async (page, { compiler }) => {
     const entities = await compiler.parse(page.body)
 
