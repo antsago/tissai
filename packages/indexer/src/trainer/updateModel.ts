@@ -2,13 +2,10 @@ import { type Token, type LabelMap, type Model } from "../parser/index.js"
 
 export type Property = Token & { labels?: string[] }
 
-const updateMapping = (
-  vocabulary: LabelMap,
-  labeled: Property[],
-) =>
+const updateMapping = (vocabulary: LabelMap, labeled: Property[]) =>
   labeled
     .filter((t) => t.isMeaningful && t.labels !== undefined)
-    .map(({text, labels}) => ({ text, label: labels![0]}))
+    .map(({ text, labels }) => ({ text, label: labels![0] }))
     .forEach(({ label, text }) => {
       vocabulary[text] = {
         ...(vocabulary[text] ?? {}),
@@ -16,12 +13,11 @@ const updateMapping = (
       }
     })
 const CATEGORY_LABEL = "categoría"
-const updateSchemas = (
-  schemas: LabelMap,
-  product: Property[],
-) => {
-  const labeled = product
-    .map(({ labels, text}) => ({ text, label: labels?.[0] }))
+const updateSchemas = (schemas: LabelMap, product: Property[]) => {
+  const labeled = product.map(({ labels, text }) => ({
+    text,
+    label: labels?.[0],
+  }))
 
   const categories = labeled
     .filter((word) => word.label === CATEGORY_LABEL)

@@ -1,5 +1,4 @@
 import { expect, describe, it } from "vitest"
-import { type Token } from "../parser/index.js"
 import { extractSchemas } from "./extractSchemas.js"
 
 describe("extractSchemas", () => {

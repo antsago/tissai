@@ -1,9 +1,6 @@
 import type { Property } from "./updateModel.js"
 
-export function extractSchemas(
-  category: string,
-  properties: Property[],
-) {
+export function extractSchemas(category: string, properties: Property[]) {
   const seenLabels = [] as string[]
 
   return properties
@@ -25,5 +22,6 @@ export function extractSchemas(
         value: property.text,
         tally: 1,
       }
-    }).filter(schema => !!schema)
+    })
+    .filter((schema) => !!schema)
 }
