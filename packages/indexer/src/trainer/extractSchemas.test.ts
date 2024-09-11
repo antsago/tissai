@@ -1,13 +1,16 @@
 import { expect, describe, it } from "vitest"
-import { type Token} from "../parser/index.js"
+import { type Token } from "../parser/index.js"
 
-function extractSchemas(category: string, properties: (Token & { labels?: string[] })[]) {
-  return [{
+function extractSchemas(
+  category: string,
+  properties: (Token & { labels?: string[] })[],
+) {
+  return properties.map((property) => ({
     category,
-    label: properties[0].labels?.[0],
-    value: properties[0].text,
+    label: property.labels?.[0],
+    value: property.text,
     tally: 1,
-  }]
+  }))
 }
 
 describe("extractSchemas", () => {
@@ -17,19 +20,53 @@ describe("extractSchemas", () => {
     originalText: "word",
     isMeaningful: true,
     trailing: "",
+    labels: ["foo"],
   }
 
-  it("converts labels to schema", () => {
-    const LABEL = "foo"
-    const properties = [{...WORD_TOKEN, labels: [LABEL]}]
+  it("converts property to schema", () => {
+    const properties = [WORD_TOKEN]
 
     const result = extractSchemas(CATEGORY, properties)
 
-    expect(result).toStrictEqual([{
-      category: CATEGORY,
-      label: LABEL,
-      value: WORD_TOKEN.text,
-      tally: 1,
-    }])
+    expect(result).toStrictEqual([
+      {
+        category: CATEGORY,
+        label: WORD_TOKEN.labels[0],
+        value: WORD_TOKEN.text,
+        tally: 1,
+      },
+    ])
+  })
+
+  it("handles several properties", () => {
+    const properties = [
+      {
+        ...WORD_TOKEN,
+        text: "foo",
+        labels: ["bar"],
+      },
+      {
+        ...WORD_TOKEN,
+        text: "foobar",
+        labels: ["foobar"],
+      },
+    ]
+
+    const result = extractSchemas(CATEGORY, properties)
+
+    expect(result).toStrictEqual([
+      {
+        category: CATEGORY,
+        label: "bar",
+        value: "foo",
+        tally: 1,
+      },
+      {
+        category: CATEGORY,
+        label: "foobar",
+        value: "foobar",
+        tally: 1,
+      },
+    ])
   })
 })
