@@ -14,9 +14,11 @@ function extractSchemas(
         (label) => !seenLabels.includes(label),
       )
 
-      if (label) {
-        seenLabels.push(label)
+      if (!label) {
+        return
       }
+
+      seenLabels.push(label)
 
       return {
         category,
@@ -24,7 +26,7 @@ function extractSchemas(
         value: property.text,
         tally: 1,
       }
-    })
+    }).filter(schema => !!schema)
 }
 
 describe("extractSchemas", () => {
@@ -127,14 +129,35 @@ describe("extractSchemas", () => {
     expect(result).toStrictEqual([
       {
         category: CATEGORY,
-        label: "foo",
-        value: WORD_TOKEN.labels[0],
+        label: WORD_TOKEN.labels[0],
+        value: "foo",
         tally: 1,
       },
       {
         category: CATEGORY,
-        label: "bar",
-        value: WORD_TOKEN.labels[1],
+        label: WORD_TOKEN.labels[1],
+        value: "bar",
+        tally: 1,
+      },
+    ])
+  })
+
+  it("ignores properties without fallback labels", () => {
+    const properties = [WORD_TOKEN, WORD_TOKEN, WORD_TOKEN]
+
+    const result = extractSchemas(CATEGORY, properties)
+
+    expect(result).toStrictEqual([
+      {
+        category: CATEGORY,
+        label: WORD_TOKEN.labels[0],
+        value: WORD_TOKEN.text,
+        tally: 1,
+      },
+      {
+        category: CATEGORY,
+        label: WORD_TOKEN.labels[1],
+        value: WORD_TOKEN.text,
         tally: 1,
       },
     ])
