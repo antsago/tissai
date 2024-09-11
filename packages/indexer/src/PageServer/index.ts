@@ -2,31 +2,26 @@ import { Db, Page } from "@tissai/db"
 import { Reporter } from "./Reporter.js"
 import { runForAllPages } from "./runForAllPages.js"
 
-type OnInitialize<T> = (state: { reporter: Reporter }) => T
 type OnPage<T> = (page: Page, state: T & { db: Db }) => Promise<any>
-type OnClose<T> = (state: Partial<T>) => Promise<any>
+type Fixture<T> = (state: { reporter: Reporter }) => [T, () => {}]
 
 export class PageServer<T> {
-  private getState?: OnInitialize<T>
   private processPage?: OnPage<T>
-  private closeState?: OnClose<T>
+  private fixture?: Fixture<T>
 
-  onInitialize = (fn: OnInitialize<T>) => {
-    this.getState = fn
+  extend = (fix: Fixture<T>) => {
+    this.fixture = fix
     return this
   }
   onPage = (fn: OnPage<T>) => {
     this.processPage = fn
     return this
   }
-  onClose = (fn: OnClose<T>) => {
-    this.closeState = fn
-    return this
-  }
 
   start = async () => {
     let db: Db
     let state: T
+    let onClose
     const reporter = Reporter()
 
     try {
@@ -34,8 +29,8 @@ export class PageServer<T> {
 
       db = Db()
       await db.initialize()
-      if (this.getState) {
-        state = this.getState({ reporter })
+      if (this.fixture) {
+        [state, onClose] = this.fixture({ reporter })
       }
 
       const processedPages = await runForAllPages(async (page) => {
@@ -51,7 +46,7 @@ export class PageServer<T> {
     } finally {
       await Promise.all([
         db!?.close(),
-        this.closeState && this.closeState(state! ?? {}),
+        onClose && onClose(),
       ])
     }
   }

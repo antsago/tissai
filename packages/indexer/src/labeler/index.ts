@@ -14,8 +14,14 @@ import seller from "./seller.js"
 import attribute from "./attribute.js"
 
 await new PageServer<{ compiler: Compiler }>()
-  .onInitialize(() => ({ compiler: Compiler(getSchemas) }))
-  .onClose(async ({ compiler }) => compiler?.close())
+  .extend(() => {
+    const compiler = Compiler(getSchemas)
+
+    return [
+      { compiler },
+      () => compiler.close()
+    ]
+  })
   .onPage(async (page, { compiler, db }) => {
     const entities = await compiler.parse(page.body)
 

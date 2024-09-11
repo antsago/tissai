@@ -11,28 +11,24 @@ const MODEL: Model = {
 
 type ServerState = {
   compiler: Compiler
-  python: LlmLabeler
 }
 
 await new PageServer<ServerState>()
-  .onInitialize(({ reporter }) => {
+  .extend(({ reporter }) => {
     const python = LlmLabeler(reporter)
     const compiler = Compiler(getSchemas(python))
-    return {
-      python,
-      compiler,
-    }
+    return [
+      { compiler },
+      () => Promise.all([compiler?.close(), python?.close()]),
+    ]
   })
-  .onPage(async (page, { compiler, db }) => {
+  .onPage(async (page, { compiler }) => {
     const entities = await compiler.parse(page.body)
 
     if (entities !== NonMatch) {
       updateModel(entities, MODEL)
     }
   })
-  .onClose(({ compiler, python }) =>
-    Promise.all([compiler?.close(), python?.close()]),
-  )
   .start()
 
 console.log(JSON.stringify(MODEL))
