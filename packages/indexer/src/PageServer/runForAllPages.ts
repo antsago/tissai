@@ -5,19 +5,19 @@ export const runForAllPages = async (
   onPage: (page: Page) => Promise<void>,
   { db, reporter }: { db: Db, reporter: Reporter },
 ) => {
-  const [{ count: totalPageCount }] = await db.query(
-    query
-      .selectFrom("pages")
-      .select(({ fn }) => fn.count("id").as("count"))
+  const baseQuery = query.selectFrom("pages")
+  const [{ total }] = await db.query(
+    baseQuery
+      .select(({ fn }) => fn.count("id").as("total"))
       .compile(),
   )
-  const pages = db.stream<Page>(query.selectFrom("pages").selectAll().compile())
+  const pages = db.stream<Page>(baseQuery.selectAll().compile())
 
   let index = 1
   for await (let page of pages) {
     try {
       reporter.progress(
-        `Processing page ${index}/${totalPageCount}: ${page.id} (${page.url})`,
+        `Processing page ${index}/${total}: ${page.id} (${page.url})`,
       )
 
       await onPage(page)
