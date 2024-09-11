@@ -1,33 +1,6 @@
 import { expect, describe, it } from "vitest"
 import { type Token } from "../parser/index.js"
-
-function extractSchemas(
-  category: string,
-  properties: (Token & { labels?: string[] })[],
-) {
-  const seenLabels = [] as string[]
-
-  return properties
-    .filter((token) => !!token.labels)
-    .map((property) => {
-      const label = property.labels!.find(
-        (label) => !seenLabels.includes(label),
-      )
-
-      if (!label) {
-        return
-      }
-
-      seenLabels.push(label)
-
-      return {
-        category,
-        label,
-        value: property.text,
-        tally: 1,
-      }
-    }).filter(schema => !!schema)
-}
+import { extractSchemas } from "./extractSchemas.js"
 
 describe("extractSchemas", () => {
   const CATEGORY = "myCategory"
