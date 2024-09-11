@@ -10,7 +10,7 @@ const MODEL: Model = {
 }
 
 await new PageServer<Compiler>()
-  .extend((reporter) => {
+  .with((reporter) => {
     const python = LlmLabeler(reporter)
     const compiler = Compiler(getSchemas(python))
     return [compiler, () => Promise.all([compiler?.close(), python?.close()])]

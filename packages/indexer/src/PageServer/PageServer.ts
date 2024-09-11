@@ -1,23 +1,16 @@
 import { Db, Page, query } from "@tissai/db"
 import { Reporter } from "./Reporter.js"
 import { runStream } from "./runStream.js"
-
-const dbFixture = async () => {
-  const db = Db()
-  await db.initialize()
-
-  return [db, () => db.close()] as const
-}
+import { type Fixture, FixtureManager } from "./FixtureManager.js"
 
 type OnPage<T> = (page: Page, state: { compiler: T; db: Db }) => Promise<any>
-type Fixture<T> = (reporter: Reporter) => [T, () => {}]
 
 export class PageServer<T> {
   private processPage?: OnPage<T>
-  private compilerFixture?: Fixture<T>
+  private fixtures?: ReturnType<typeof FixtureManager<T>>
 
-  extend = (fix: Fixture<T>) => {
-    this.compilerFixture = fix
+  with = (fixture: Fixture<T>) => {
+    this.fixtures = FixtureManager(fixture)
     return this
   }
   onPage = (fn: OnPage<T>) => {
@@ -26,27 +19,15 @@ export class PageServer<T> {
   }
 
   start = async () => {
-    let closeDb: Awaited<ReturnType<typeof dbFixture>>[1]
-    let closeCompiler: Awaited<ReturnType<Fixture<T>>>[1]
-    const reporter = Reporter()
-
-    const closeFixtures = () =>
-      Promise.all([closeDb && closeDb(), closeCompiler && closeCompiler()])
-    const initFixtures = async () => {
-      if (!this.compilerFixture) {
-        throw new Error("No compiler fixture given")
-      }
-      let db, compiler
-      ;[db, closeDb] = await dbFixture()
-      ;[compiler, closeCompiler] = this.compilerFixture(reporter)
-
-      return { db, compiler }
+    if (!this.fixtures) {
+      throw new Error("No compiler fixture given")
     }
+    const reporter = Reporter()
 
     try {
       reporter.progress("Initializing...")
 
-      const helpers = await initFixtures()
+      const helpers = await this.fixtures.init(reporter)
       const { db } = helpers
 
       const baseQuery = query.selectFrom("pages")
@@ -77,7 +58,7 @@ export class PageServer<T> {
       const message = err instanceof Error ? err.message : String(err)
       reporter.fail(`Fatal error: ${message}`)
     } finally {
-      await closeFixtures()
+      await this.fixtures.close()
     }
   }
 }

@@ -14,7 +14,7 @@ import seller from "./seller.js"
 import attribute from "./attribute.js"
 
 await new PageServer<Compiler>()
-  .extend(() => {
+  .with(() => {
     const compiler = Compiler(getSchemas)
 
     return [compiler, () => compiler.close()]
