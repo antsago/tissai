@@ -2,6 +2,7 @@ import { Db, Page, query } from "@tissai/db"
 import { Reporter } from "./Reporter.js"
 import { streamFor } from "./streamFor.js"
 import { type Fixture, FixtureManager } from "./FixtureManager.js"
+import { dbFixture } from "./dbFixture.js"
 
 type OnPage<T> = (page: Page, state: { compiler: T; db: Db }) => Promise<any>
 
@@ -20,7 +21,7 @@ export class PageServer<T> {
   private fixtures?: ReturnType<typeof FixtureManager<T>>
 
   with = (fixture: Fixture<T>) => {
-    this.fixtures = FixtureManager(fixture)
+    this.fixtures = FixtureManager(fixture, dbFixture)
     return this
   }
   onPage = (fn: OnPage<T>) => {
