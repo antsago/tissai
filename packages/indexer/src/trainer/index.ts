@@ -11,16 +11,15 @@ const processPage: OnPage<Compiler> = async (page, { compiler, db, reporter }) =
     return
   }
 
-  reporter.log(JSON.stringify(entities))
-  // const schemas = entities
-  //   .filter((entity) => entity[Type] === ProductType)
-  //   .map((product) => product.schemas[0])
+  const schemas = entities
+    .filter((entity) => entity[Type] === ProductType)
+    .map((product) => product.schemas[0])
 
-  // await Promise.all(schemas.map((schema) => db.schemas.upsert(schema)))
+  await Promise.all(schemas.map((schema) => db.schemas.upsert(schema)))
 }
 
 const createStream = async ({ db }: Helpers<Compiler>) => {
-  const baseQuery = query.selectFrom("pages").limit(1)
+  const baseQuery = query.selectFrom("pages")
   const [{ total }] = await db.query(
     baseQuery.select(({ fn }) => fn.count("id").as("total")).compile(),
   )
