@@ -1,15 +1,11 @@
-import { Scanner } from "./Scanner.js"
-import { normalizer } from "./normalizer.js"
+import { Scanner, parseText } from "./parseText/index.js"
 import { parsePage } from "./parsePage.js"
 
 export function Lexer() {
   const scanner = Scanner()
 
   return {
-    fromText: async (title: string) => {
-      const rawTokens = await scanner.tokenize(title)
-      return normalizer(rawTokens)
-    },
+    fromText: (title: string) => parseText(scanner, title),
     fromPage: parsePage,
     close: () => scanner.close(),
   }

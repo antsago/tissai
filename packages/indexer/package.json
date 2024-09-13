@@ -7,7 +7,6 @@
     "label": "poetry run node ./build/src/labeler/index.js",
     "train": "poetry run node ./build/src/trainer/index.js",
     "build": "rm -rf ./build && tsc --build && cp --parents -R **/*.py build/",
-    "foo": "tsc --noEmit",
     "test": "poetry run vitest run",
     "test:integration": "poetry run vitest run __tests__"
   },

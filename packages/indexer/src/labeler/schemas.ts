@@ -28,7 +28,9 @@ const ProductSchema = (lexer: Lexer): Schema => ({
       as: "attributes",
       with: async (title: string) => {
         const tokens = await lexer.fromText(title)
-        const labels = await getLabels(model)(tokens.filter((t) => t.isMeaningful))
+        const labels = await getLabels(model)(
+          tokens.filter((t) => t.isMeaningful),
+        )
         const labeled = labelTokens(tokens, labels)
         return Attributes(TokenReader(labeled))
       },
