@@ -1,13 +1,13 @@
 import _ from "lodash"
 import { randomUUID } from "crypto"
-import { Id, NonMatch, Type, type GenericEntity } from "../parser/index.js"
+import { Id, NonMatch, Type, type GenericEntity, type Compiler } from "../parser/index.js"
 import { OnPage } from "../PageServer/index.js"
 import { ProductType } from "./schemas.js"
 import { brand } from "./brand.js"
 import seller from "./seller.js"
 import attribute from "./attribute.js"
 
-export const processPage: OnPage = async (page, { compiler, db }) => {
+export const processPage: OnPage<Compiler> = async (page, { compiler, db }) => {
   const entities = await compiler.parse(page.body)
 
   if (entities !== NonMatch) {

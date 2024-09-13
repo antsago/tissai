@@ -7,26 +7,25 @@ import {
   OptionalPromise,
 } from "./FixtureManager.js"
 import { dbFixture } from "./dbFixture.js"
-import { Compiler } from "../parser/Compiler.js"
 
-export type Helpers = { compiler: Compiler; db: Db }
-export type OnPage = (page: Page, helpers: Helpers) => Promise<any>
-type CreateStream = (helper: Helpers) => OptionalPromise<{
+export type Helpers<Compiler> = { compiler: Compiler; db: Db }
+export type OnPage<Compiler> = (page: Page, helpers: Helpers<Compiler>) => Promise<any>
+type CreateStream<Compiler> = (helper: Helpers<Compiler>) => OptionalPromise<{
   total: number
   pages: AsyncGenerator<Page, void, unknown>
 }>
 
-export class PageServer {
-  private processPage?: OnPage
+export class PageServer<Compiler> {
+  private processPage?: OnPage<Compiler>
   private fixtures?: ReturnType<typeof FixtureManager<Compiler>>
 
-  constructor(private createStream: CreateStream) {}
+  constructor(private createStream: CreateStream<Compiler>) {}
 
   with = (fixture: Fixture<Compiler>) => {
     this.fixtures = FixtureManager(fixture, dbFixture)
     return this
   }
-  onPage = (fn: OnPage) => {
+  onPage = (fn: OnPage<Compiler>) => {
     this.processPage = fn
     return this
   }

@@ -1,4 +1,4 @@
-import { type Token, type LabelMap, type Model } from "../parser/index.js"
+import { type Token, type LabelMap, type Model } from "./parser/index.js"
 
 export type Property = Token & { labels?: string[] }
 

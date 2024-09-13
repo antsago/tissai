@@ -5,7 +5,7 @@ import {
   Lexer,
   Schema,
   Type,
-} from "../parser/index.js"
+} from "./parser/index.js"
 import type { Reporter } from "../PageServer/index.js"
 import { LlmLabeler } from "./LlmLabeler/index.js"
 

@@ -2,8 +2,9 @@ import { Helpers, PageServer } from "../PageServer/index.js"
 import { Page, query } from "@tissai/db"
 import { processPage } from "./processPage.js"
 import { compilerFixture } from "./schemas.js"
+import { Compiler } from "../parser/Compiler.js"
 
-const createStream = async ({ db }: Helpers) => {
+const createStream = async ({ db }: Helpers<Compiler>) => {
   const baseQuery = query.selectFrom("pages")
   const [{ total }] = await db.query(
     baseQuery.select(({ fn }) => fn.count("id").as("total")).compile(),
