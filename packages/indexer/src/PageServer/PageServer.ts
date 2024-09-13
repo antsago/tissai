@@ -9,7 +9,10 @@ import {
 import { dbFixture } from "./dbFixture.js"
 
 export type Helpers<Compiler> = { compiler: Compiler; db: Db }
-export type OnPage<Compiler> = (page: Page, helpers: Helpers<Compiler>) => Promise<any>
+export type OnPage<Compiler> = (
+  page: Page,
+  helpers: Helpers<Compiler>,
+) => Promise<any>
 type CreateStream<Compiler> = (helper: Helpers<Compiler>) => OptionalPromise<{
   total: number
   pages: AsyncGenerator<Page, void, unknown>

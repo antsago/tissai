@@ -8,14 +8,14 @@ import {
 } from "./parser/index.js"
 import type { Reporter } from "../PageServer/index.js"
 import { LlmLabeler } from "./LlmLabeler/index.js"
+import { extractSchemas } from "./extractSchemas.js"
 
 export const ProductType = Symbol("Product")
 
 const getLabels =
   (title: string, python: LlmLabeler) => async (tokens: Token[]) => {
     const words = tokens.map((t) => t.originalText)
-    const labels = await python.send({ title, words })
-    return labels.properties.map((l) => l.labels[0])
+    return python.send({ title, words })
   }
 
 const getSchemas =
@@ -30,9 +30,15 @@ const getSchemas =
       title: {
         name: "name",
         parse: {
-          as: "properties",
-          with: (title: string) =>
-            lexer.fromText(title, getLabels(title, python)),
+          as: "schemas",
+          with: async (title: string) => {
+            const words = await lexer.fromText(title)
+            const result = await python.send({
+              title,
+              words: words.map((w) => w.text),
+            })
+            return extractSchemas(result.category, result.properties)
+          },
         },
       },
     },

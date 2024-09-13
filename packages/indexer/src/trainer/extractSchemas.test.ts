@@ -3,24 +3,21 @@ import { extractSchemas } from "./extractSchemas.js"
 
 describe("extractSchemas", () => {
   const CATEGORY = "myCategory"
-  const WORD_TOKEN = {
-    text: "word",
-    originalText: "word",
-    isMeaningful: true,
-    trailing: "",
+  const WORD_PROPERTY = {
+    value: "word",
     labels: ["foo", "bar"],
   }
 
   it("converts property to schema", () => {
-    const properties = [WORD_TOKEN]
+    const properties = [WORD_PROPERTY]
 
     const result = extractSchemas(CATEGORY, properties)
 
     expect(result).toStrictEqual([
       {
         category: CATEGORY,
-        label: WORD_TOKEN.labels[0],
-        value: WORD_TOKEN.text,
+        label: WORD_PROPERTY.labels[0],
+        value: WORD_PROPERTY.value,
         tally: 1,
       },
     ])
@@ -29,13 +26,13 @@ describe("extractSchemas", () => {
   it("handles several properties", () => {
     const properties = [
       {
-        ...WORD_TOKEN,
-        text: "foo",
+        ...WORD_PROPERTY,
+        value: "foo",
         labels: ["bar"],
       },
       {
-        ...WORD_TOKEN,
-        text: "foobar",
+        ...WORD_PROPERTY,
+        value: "foobar",
         labels: ["foobar"],
       },
     ]
@@ -61,13 +58,13 @@ describe("extractSchemas", () => {
   it("ignores filler words", () => {
     const properties = [
       {
-        ...WORD_TOKEN,
-        text: "filler",
+        ...WORD_PROPERTY,
+        value: "filler",
         labels: undefined,
       },
       {
-        ...WORD_TOKEN,
-        text: "foobar",
+        ...WORD_PROPERTY,
+        value: "foobar",
         labels: ["foobar"],
       },
     ]
@@ -87,12 +84,12 @@ describe("extractSchemas", () => {
   it("avoids duplicate labels", () => {
     const properties = [
       {
-        ...WORD_TOKEN,
-        text: "foo",
+        ...WORD_PROPERTY,
+        value: "foo",
       },
       {
-        ...WORD_TOKEN,
-        text: "bar",
+        ...WORD_PROPERTY,
+        value: "bar",
       },
     ]
 
@@ -101,13 +98,13 @@ describe("extractSchemas", () => {
     expect(result).toStrictEqual([
       {
         category: CATEGORY,
-        label: WORD_TOKEN.labels[0],
+        label: WORD_PROPERTY.labels[0],
         value: "foo",
         tally: 1,
       },
       {
         category: CATEGORY,
-        label: WORD_TOKEN.labels[1],
+        label: WORD_PROPERTY.labels[1],
         value: "bar",
         tally: 1,
       },
@@ -115,21 +112,21 @@ describe("extractSchemas", () => {
   })
 
   it("ignores properties without fallback labels", () => {
-    const properties = [WORD_TOKEN, WORD_TOKEN, WORD_TOKEN]
+    const properties = [WORD_PROPERTY, WORD_PROPERTY, WORD_PROPERTY]
 
     const result = extractSchemas(CATEGORY, properties)
 
     expect(result).toStrictEqual([
       {
         category: CATEGORY,
-        label: WORD_TOKEN.labels[0],
-        value: WORD_TOKEN.text,
+        label: WORD_PROPERTY.labels[0],
+        value: WORD_PROPERTY.value,
         tally: 1,
       },
       {
         category: CATEGORY,
-        label: WORD_TOKEN.labels[1],
-        value: WORD_TOKEN.text,
+        label: WORD_PROPERTY.labels[1],
+        value: WORD_PROPERTY.value,
         tally: 1,
       },
     ])

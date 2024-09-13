@@ -1,6 +1,12 @@
 import _ from "lodash"
 import { randomUUID } from "crypto"
-import { Id, NonMatch, Type, type GenericEntity, type Compiler } from "../parser/index.js"
+import {
+  Id,
+  NonMatch,
+  Type,
+  type GenericEntity,
+  type Compiler,
+} from "../parser/index.js"
 import { OnPage } from "../PageServer/index.js"
 import { ProductType } from "./schemas.js"
 import { brand } from "./brand.js"

@@ -1,7 +1,6 @@
 import { Page, query } from "@tissai/db"
 import { type Model, NonMatch, Type, type Compiler } from "./parser/index.js"
 import { type OnPage, type Helpers, PageServer } from "../PageServer/index.js"
-import { updateModel } from "./updateModel.js"
 import { compilerFixture, ProductType } from "./schemas.js"
 
 const MODEL: Model = {
@@ -9,15 +8,15 @@ const MODEL: Model = {
   schemas: {},
 }
 
-const processPage: OnPage<Compiler> = async (page, { compiler }) => {
+const processPage: OnPage<Compiler> = async (page, { compiler, db }) => {
   const entities = await compiler.parse(page.body)
 
   if (entities !== NonMatch) {
-    const products = entities
+    const schemas = entities
       .filter((entity) => entity[Type] === ProductType)
-      .map((product) => product.properties[0])
+      .map((product) => product.schemas[0])
 
-    updateModel(products, MODEL)
+    await Promise.all(schemas.map((schema) => db.schemas.upsert(schema)))
   }
 }
 
