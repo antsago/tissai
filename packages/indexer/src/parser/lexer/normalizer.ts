@@ -1,6 +1,6 @@
 import { type RawToken } from "./Scanner.js"
 
-export const normalizeString = (str: string) =>
+const normalizeString = (str: string) =>
   str
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")

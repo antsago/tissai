@@ -1,6 +1,5 @@
 import { Scanner } from "./Scanner.js"
 import { normalizer } from "./normalizer.js"
-import { labelTokens } from "./labelTokens.js"
 import { parsePage } from "./parsePage.js"
 
 export function Lexer() {
