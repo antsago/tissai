@@ -1,5 +1,5 @@
 import { Scanner, parseText } from "./parseText/index.js"
-import { parsePage } from "./parsePage.js"
+import { parsePage } from "./parsePage/index.js"
 
 export function Lexer() {
   const scanner = Scanner()

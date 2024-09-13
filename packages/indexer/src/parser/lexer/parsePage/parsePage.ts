@@ -9,7 +9,7 @@ import {
   EntityEnd,
   PropertyStart,
   Id,
-} from "./symbols.js"
+} from "../symbols.js"
 import { expandEntry, parseAndExpand } from "./parseAndExpand.js"
 
 export type EntityToken = string | symbol | number | boolean
