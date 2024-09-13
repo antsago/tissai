@@ -9,6 +9,7 @@ import {
 } from "../parser/index.js"
 import model from "./model.js"
 import { getLabels } from "./getLabels.js"
+import { labelTokens } from "./labelTokens.js"
 
 export const ProductType = Symbol("Product")
 export const BrandType = Symbol("Brand")
@@ -26,8 +27,10 @@ const ProductSchema = (lexer: Lexer): Schema => ({
     parse: {
       as: "attributes",
       with: async (title: string) => {
-        const tokens = await lexer.fromText(title, getLabels(model))
-        return Attributes(TokenReader(tokens))
+        const tokens = await lexer.fromText(title)
+        const labels = await getLabels(model)(tokens.filter((t) => t.isMeaningful))
+        const labeled = labelTokens(tokens, labels)
+        return Attributes(TokenReader(labeled))
       },
     },
   },

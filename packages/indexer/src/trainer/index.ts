@@ -1,5 +1,5 @@
 import { Page, query } from "@tissai/db"
-import { type Model, NonMatch, Type, type Compiler } from "./parser/index.js"
+import { type Model, NonMatch, Type, type Compiler } from "../parser/index.js"
 import { type OnPage, type Helpers, PageServer } from "../PageServer/index.js"
 import { compilerFixture, ProductType } from "./schemas.js"
 

@@ -5,18 +5,12 @@ import {
   Lexer,
   Schema,
   Type,
-} from "./parser/index.js"
+} from "../parser/index.js"
 import type { Reporter } from "../PageServer/index.js"
 import { LlmLabeler } from "./LlmLabeler/index.js"
 import { extractSchemas } from "./extractSchemas.js"
 
 export const ProductType = Symbol("Product")
-
-const getLabels =
-  (title: string, python: LlmLabeler) => async (tokens: Token[]) => {
-    const words = tokens.map((t) => t.originalText)
-    return python.send({ title, words })
-  }
 
 const getSchemas =
   (python: LlmLabeler) =>
