@@ -1,5 +1,4 @@
 import {
-  type Token,
   Compiler,
   Required,
   Lexer,
@@ -9,11 +8,9 @@ import {
 import type { Reporter } from "../PageServer/index.js"
 import { LLM, Property } from "./LlmLabeler/index.js"
 import { extractSchemas } from "./extractSchemas.js"
+import { getFirstWord } from "./getFirstWord.js"
 
 export const ProductType = Symbol("Product")
-
-const PUNCTUATION = /['!"#$%&\\'()\*+,\-\.\/:;<=>?@\[\\\]\^_`{|}~']/g
-const getFirstWord = (text: string) => text.split("\n").at(0)?.split(" ").map(s => s.replace(PUNCTUATION,"").trim()).filter(s => !!s).at(0)
 
 const getCategory = async (llm: LLM, title: string) => {
   const output = await llm.send({
