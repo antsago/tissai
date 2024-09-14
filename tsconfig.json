@@ -1,4 +1,5 @@
 {
+  // For VS code to pickup
   "references": [
     { "path": "./packages/db/tsconfig.dev.json" },
     { "path": "./packages/pythonPool/tsconfig.dev.json" },
