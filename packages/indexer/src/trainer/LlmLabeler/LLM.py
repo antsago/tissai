@@ -11,7 +11,7 @@ for rawQuery in sys.stdin:
     query = json.loads(rawQuery)
     prompt = query["prompt"]
     options = query["options"]
-    
+
     output = generator(
         prompt,
         **options,

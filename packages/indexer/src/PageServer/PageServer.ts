@@ -8,7 +8,11 @@ import {
 } from "./FixtureManager.js"
 import { dbFixture } from "./dbFixture.js"
 
-export type Helpers<Compiler> = { compiler: Compiler; db: Db, reporter: Reporter }
+export type Helpers<Compiler> = {
+  compiler: Compiler
+  db: Db
+  reporter: Reporter
+}
 export type OnPage<Compiler> = (
   page: Page,
   helpers: Helpers<Compiler>,
@@ -42,7 +46,7 @@ export class PageServer<Compiler> {
     try {
       reporter.progress("Initializing...")
 
-      const helpers = {...await this.fixtures.init(reporter), reporter }
+      const helpers = { ...(await this.fixtures.init(reporter)), reporter }
       const { total, pages } = await this.createStream(helpers)
 
       const processedPages = await streamFor(

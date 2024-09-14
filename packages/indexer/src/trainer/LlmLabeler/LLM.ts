@@ -11,10 +11,10 @@ type LlmOptions = Partial<{
 }>
 
 export function LLM(logger: Parameters<typeof PythonPool>[1] = console) {
-  return PythonPool<
-    { prompt: string; options: LlmOptions },
-    string[]
-  >(`./LLM.py`, logger)
+  return PythonPool<{ prompt: string; options: LlmOptions }, string[]>(
+    `./LLM.py`,
+    logger,
+  )
 }
 
 export type LLM = ReturnType<typeof LLM>

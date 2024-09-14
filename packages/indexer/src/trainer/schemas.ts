@@ -1,10 +1,4 @@
-import {
-  Compiler,
-  Required,
-  Lexer,
-  Schema,
-  Type,
-} from "../parser/index.js"
+import { Compiler, Required, Lexer, Schema, Type } from "../parser/index.js"
 import type { Reporter } from "../PageServer/index.js"
 import { LLM } from "./LlmLabeler/index.js"
 import { extractSchemas } from "./extractSchemas.js"
@@ -34,11 +28,15 @@ const getSchemas =
               throw new Error("No category detected")
             }
 
-            const properties = await getProperties(llm, title, words.map(w => w.text))
+            const properties = await getProperties(
+              llm,
+              title,
+              words.map((w) => w.text),
+            )
 
             const schemas = extractSchemas(category, properties)
 
-            if (!schemas.find(s => s.label === "categoría")) {
+            if (!schemas.find((s) => s.label === "categoría")) {
               throw new Error("No property categoría found")
             }
 

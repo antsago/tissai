@@ -3,7 +3,10 @@ import { NonMatch, Type, type Compiler } from "../parser/index.js"
 import { type OnPage, type Helpers, PageServer } from "../PageServer/index.js"
 import { compilerFixture, ProductType } from "./schemas.js"
 
-const processPage: OnPage<Compiler> = async (page, { compiler, db, reporter }) => {
+const processPage: OnPage<Compiler> = async (
+  page,
+  { compiler, db, reporter },
+) => {
   const entities = await compiler.parse(page.body)
 
   if (entities === NonMatch) {
