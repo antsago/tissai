@@ -1,11 +1,11 @@
 {
-  "private": true,
   "name": "@tissai/tissai",
+  "packageManager": "yarn@4.4.1",
   "workspaces": [
     "packages/*",
     "apps/*"
   ],
-  "packageManager": "yarn@4.4.1",
+  "private": true,
   "scripts": {
     "postinstall": "poetry install",
     "turbo": "turbo",
