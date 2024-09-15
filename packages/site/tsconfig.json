@@ -14,7 +14,6 @@
   },
   "references": [
     { "path": "../db/tsconfig.dev.json" },
-    { "path": "../pythonPool/tsconfig.dev.json" }
   ]
   // Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
   //
