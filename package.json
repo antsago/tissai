@@ -7,6 +7,7 @@
   "packageManager": "yarn@4.4.1",
   "scripts": {
     "turbo": "turbo",
+    "build": "turbo run build",
     "format": "yarn format:js & yarn format:py",
     "format:js": "prettier --write .",
     "format:py": "poetry run black .",
