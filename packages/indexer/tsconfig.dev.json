@@ -6,8 +6,5 @@
     "composite": true,
     "declarationMap": true
   },
-  "references": [
-    { "path": "../db/tsconfig.dev.json" }
-  ],
   "include": ["./src/**/*", "./__tests__/**/*"]
 }

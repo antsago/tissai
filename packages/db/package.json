@@ -4,6 +4,7 @@
   "packageManager": "yarn@4.1.1",
   "type": "module",
   "scripts": {
+    "build": "tsc --build",
     "test": "vitest run",
     "test:integration": "vitest run __tests__"
   },

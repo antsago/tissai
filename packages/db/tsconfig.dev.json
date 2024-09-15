@@ -3,7 +3,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "outDir": "build",
-    "composite": true,
+    "declaration": true,
     "declarationMap": true
   },
   "include": ["./src/**/*", "./__tests__/**/*"]

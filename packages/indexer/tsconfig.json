@@ -4,8 +4,5 @@
     "composite": false,
     "declarationMap": false
   },
-  "references": [
-    { "path": "../db/tsconfig.json" },
-  ],
   "exclude": ["./src/**/*.test.ts", "./__tests__/**/*"]
 }
