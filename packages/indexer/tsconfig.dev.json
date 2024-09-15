@@ -7,8 +7,7 @@
     "declarationMap": true
   },
   "references": [
-    { "path": "../db/tsconfig.dev.json" },
-    { "path": "../pythonPool/tsconfig.dev.json" }
+    { "path": "../db/tsconfig.dev.json" }
   ],
   "include": ["./src/**/*", "./__tests__/**/*"]
 }

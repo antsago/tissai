@@ -6,7 +6,6 @@
   },
   "references": [
     { "path": "../db/tsconfig.json" },
-    { "path": "../pythonPool/tsconfig.json" }
   ],
   "exclude": ["./src/**/*.test.ts", "./__tests__/**/*"]
 }

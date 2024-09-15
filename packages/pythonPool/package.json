@@ -4,13 +4,12 @@
   "packageManager": "yarn@4.1.1",
   "type": "module",
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run",
+    "build": "tsc --build"
   },
   "exports": {
     ".": {
       "types": "./src/index.js",
-      "svelte": "./src/index.js",
-      "development": "./src/index.js",
       "default": "./build/src/index.js"
     },
     "./mocks": "./__tests__/utils/index.js"
