@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@repo/tissai",
+  "name": "@tissai/tissai",
   "workspaces": [
     "packages/*"
   ],

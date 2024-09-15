@@ -646,18 +646,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@repo/tissai@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "@repo/tissai@workspace:."
-  dependencies:
-    "@tsconfig/node20": "npm:20.1.4"
-    prettier: "npm:3.3.3"
-    prettier-plugin-svelte: "npm:3.2.6"
-    svelte: "npm:4.2.19"
-    turbo: "npm:2.1.2"
-  languageName: unknown
-  linkType: soft
-
 "@rollup/plugin-commonjs@npm:^26.0.1":
   version: 26.0.1
   resolution: "@rollup/plugin-commonjs@npm:26.0.1"
@@ -1155,6 +1143,18 @@ __metadata:
     typescript: "npm:5.6.2"
     vite: "npm:5.4.5"
     vitest: "npm:2.1.1"
+  languageName: unknown
+  linkType: soft
+
+"@tissai/tissai@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@tissai/tissai@workspace:."
+  dependencies:
+    "@tsconfig/node20": "npm:20.1.4"
+    prettier: "npm:3.3.3"
+    prettier-plugin-svelte: "npm:3.2.6"
+    svelte: "npm:4.2.19"
+    turbo: "npm:2.1.2"
   languageName: unknown
   linkType: soft
 
