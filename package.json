@@ -6,6 +6,7 @@
   ],
   "packageManager": "yarn@4.4.1",
   "scripts": {
+    "postinstall": "poetry install",
     "turbo": "turbo",
     "build": "turbo run build",
     "format": "yarn format:js & yarn format:py",
