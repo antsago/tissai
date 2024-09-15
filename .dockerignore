@@ -8,6 +8,7 @@
 **/node_modules
 **/coverage
 packages/*/build
+apps/*/build
 **/*.tsbuildinfo
 **/*.test.ts
 
@@ -30,8 +31,8 @@ packages/*/build
 **/.env.*
 
 # Packages
-packages/site/.svelte-kit
-packages/*/vite.config.ts.timestamp-*
+apps/site/.svelte-kit
+apps/site/vite.config.ts.timestamp-*
 apps/indexer
 
 # Data folder

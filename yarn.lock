@@ -1113,9 +1113,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tissai/site@workspace:packages/site":
+"@tissai/site@workspace:apps/site":
   version: 0.0.0-use.local
-  resolution: "@tissai/site@workspace:packages/site"
+  resolution: "@tissai/site@workspace:apps/site"
   dependencies:
     "@sveltejs/adapter-node": "npm:5.2.2"
     "@sveltejs/kit": "npm:2.5.27"

@@ -21,10 +21,10 @@ FROM base AS final
 
 COPY --from=build /app/package.json /app/yarn.lock /app/.yarnrc.yml /app/
 COPY --from=build /app/packages/db/package.json /app/packages/db/
-COPY --from=build /app/packages/site/package.json /app/packages/site/
-COPY --from=build /app/packages/site/build /app/packages/site/build
+COPY --from=build /app/apps/site/package.json /app/apps/site/
+COPY --from=build /app/apps/site/build /app/apps/site/build
 
 RUN yarn workspaces focus @tissai/site --production
-WORKDIR /app/packages/site
+WORKDIR /app/apps/site
 
 CMD ["node", "build"]

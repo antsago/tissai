@@ -30,8 +30,8 @@ __pycache__
 !.env.example
 
 # Site folder
-/packages/site/.svelte-kit
-/packages/*/vite.config.ts.timestamp-*
+/apps/site/.svelte-kit
+/apps/site/vite.config.ts.timestamp-*
 
 # Data folder
 /data
