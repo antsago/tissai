@@ -1,6 +1,6 @@
 import { expect, describe, test, beforeEach } from "vitest"
 import { mockDbFixture, queries } from "@tissai/db/mocks"
-import { Attribute, Db, type Seller } from "@tissai/db"
+import { Db } from "@tissai/db"
 import attribute from "./attribute.js"
 
 type Fixtures = { pg: mockDbFixture }
