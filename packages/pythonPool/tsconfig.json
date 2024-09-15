@@ -2,7 +2,7 @@
   "extends": "@tissai/config/tsconfig.json",
   "compilerOptions": {
     "rootDir": ".",
-    "outDir": "build",
+    "outDir": "build"
   },
   "include": ["./src/**/*"],
   "exclude": ["./src/**/*.test.ts"]
