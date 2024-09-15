@@ -4,6 +4,7 @@
   "packageManager": "yarn@4.1.1",
   "type": "module",
   "scripts": {
+    "postinstall": "poetry install",
     "label": "poetry run node ./build/src/labeler/index.js",
     "train": "poetry run node ./build/src/trainer/index.js",
     "build": "rm -rf ./build && tsc --build && cp --parents -R **/*.py build/",
