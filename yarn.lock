@@ -1067,6 +1067,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tissai/black@workspace:packages/black":
+  version: 0.0.0-use.local
+  resolution: "@tissai/black@workspace:packages/black"
+  languageName: unknown
+  linkType: soft
+
 "@tissai/config@workspace:*, @tissai/config@workspace:packages/config":
   version: 0.0.0-use.local
   resolution: "@tissai/config@workspace:packages/config"
