@@ -1,9 +1,0 @@
-{
-  // For VS code to pickup
-  "references": [
-    { "path": "./packages/db/tsconfig.dev.json" },
-    { "path": "./packages/pythonPool/tsconfig.dev.json" },
-    { "path": "./packages/indexer/tsconfig.dev.json" },
-    { "path": "./packages/site/tsconfig.json" }
-  ]
-}
