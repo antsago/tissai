@@ -1082,9 +1082,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tissai/indexer@workspace:packages/indexer":
+"@tissai/indexer@workspace:apps/indexer":
   version: 0.0.0-use.local
-  resolution: "@tissai/indexer@workspace:packages/indexer"
+  resolution: "@tissai/indexer@workspace:apps/indexer"
   dependencies:
     "@tissai/db": "workspace:*"
     "@tissai/python-pool": "workspace:*"

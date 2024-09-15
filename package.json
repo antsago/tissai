@@ -2,7 +2,8 @@
   "private": true,
   "name": "@tissai/tissai",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ],
   "packageManager": "yarn@4.4.1",
   "scripts": {
