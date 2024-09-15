@@ -7,7 +7,6 @@
   ],
   "private": true,
   "scripts": {
-    "postinstall": "poetry install",
     "turbo": "turbo",
     "build": "turbo run build",
     "test": "turbo run test",
