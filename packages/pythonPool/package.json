@@ -10,6 +10,8 @@
   "exports": {
     ".": {
       "types": "./src/index.js",
+      "svelte": "./src/index.js",
+      "development": "./src/index.js",
       "default": "./build/src/index.js"
     },
     "./mocks": "./__tests__/utils/index.js"
