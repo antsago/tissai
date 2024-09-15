@@ -25,6 +25,7 @@
     "vitest": "2.1.1"
   },
   "dependencies": {
+    "@tissai/config": "workspace:*",
     "python-shell": "5.0.0"
   }
 }
