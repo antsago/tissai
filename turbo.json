@@ -1,6 +1,10 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
+    "test": {
+      "env": ["PG_CONNECTION_STRING", "PG_DATABASE"],
+      "outputLogs": "new-only"
+    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["build/**"],
