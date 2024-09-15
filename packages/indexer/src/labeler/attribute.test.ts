@@ -34,10 +34,4 @@ describe("attribute", () => {
     })
     expect(pg).toHaveExecuted(queries.attributes.create(result!))
   })
-
-  // it("turns name to lowercase", async () => {
-  //   const result = await attribute({ name: [NAME.toUpperCase()] }, db)
-
-  //   expect(result).toStrictEqual({ name: NAME })
-  // })
 })
