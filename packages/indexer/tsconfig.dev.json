@@ -2,7 +2,9 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": ".",
-    "outDir": "build"
+    "outDir": "build",
+    "composite": true,
+    "declarationMap": true
   },
   "references": [
     { "path": "../db/tsconfig.dev.json" },
