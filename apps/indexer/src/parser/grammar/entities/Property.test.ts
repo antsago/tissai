@@ -1,11 +1,10 @@
 import { expect, describe, it } from "vitest"
 import {
   Equals,
-  Id,
   PropertyEnd,
   PropertyStart,
   ValueSeparator,
-} from "../../lexer/symbols.js"
+} from "@tissai/tokenizer"
 import { TokenReader } from "../../TokenReader.js"
 import { NonMatch } from "../../operators/nonMatch.js"
 import { IsData } from "./values.js"

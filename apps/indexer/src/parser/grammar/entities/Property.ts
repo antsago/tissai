@@ -1,3 +1,9 @@
+import {
+  Equals,
+  ValueSeparator,
+  PropertyEnd,
+  PropertyStart,
+} from "@tissai/tokenizer"
 import type { EntityToken, Rule } from "../../types.js"
 import {
   and,
@@ -5,12 +11,6 @@ import {
   restructure,
   type AwaitedMatch,
 } from "../../operators/index.js"
-import {
-  Equals,
-  ValueSeparator,
-  PropertyEnd,
-  PropertyStart,
-} from "../../lexer/index.js"
 import { IsData, IsSymbol } from "./values.js"
 
 const ValueOf = <Output>(Type: Rule<EntityToken, Output>) => {

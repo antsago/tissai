@@ -1,4 +1,4 @@
-import { Lexer } from "./lexer/index.js"
+import { Lexer } from "@tissai/tokenizer"
 import { Ontology, type Schema } from "./grammar/index.js"
 import { TokenReader } from "./TokenReader.js"
 

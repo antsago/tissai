@@ -1,5 +1,4 @@
-import { Scanner } from "@tissai/tokenizer"
-import { parseText } from "./parseText/index.js"
+import { parseText, Scanner } from "./parseText/index.js"
 import { parsePage } from "./parsePage/index.js"
 
 export function Lexer() {

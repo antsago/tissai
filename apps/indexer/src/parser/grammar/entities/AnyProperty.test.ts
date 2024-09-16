@@ -1,5 +1,5 @@
 import { expect, describe, it } from "vitest"
-import { Equals, PropertyEnd, PropertyStart } from "../../lexer/symbols.js"
+import { Equals, PropertyEnd, PropertyStart } from "@tissai/tokenizer"
 import { TokenReader } from "../../TokenReader.js"
 import { AnyProperty } from "./AnyProperty.js"
 

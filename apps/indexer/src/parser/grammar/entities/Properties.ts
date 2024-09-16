@@ -1,4 +1,4 @@
-import { EntityEnd } from "../../lexer/index.js"
+import { EntityEnd } from "@tissai/tokenizer"
 import { type EntityToken } from "../../types.js"
 import { any, or, restructure, given, Token } from "../../operators/index.js"
 import { type PropertyDefinition } from "./types.js"

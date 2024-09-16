@@ -66,7 +66,9 @@ export class PageServer<Compiler> {
         },
       )
 
-      reporter.succeed(`Successfully processed ${processedPages}/${total} pages`)
+      reporter.succeed(
+        `Successfully processed ${processedPages}/${total} pages`,
+      )
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
       reporter.fail(`Fatal error: ${message}`)

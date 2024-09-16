@@ -13,7 +13,6 @@
     "#mocks": "./__tests__/utils/index.ts"
   },
   "devDependencies": {
-    "@types/he": "1",
     "@types/lodash": "4.17.7",
     "@types/node": "20.14.8",
     "@types/pg": "8",
@@ -26,9 +25,7 @@
     "@tissai/db": "workspace:*",
     "@tissai/python-pool": "workspace:*",
     "@tissai/tokenizer": "workspace:*",
-    "he": "1.2.0",
     "lodash": "4.17.21",
-    "node-html-parser": "6.1.13",
     "ora": "8.1.0"
   }
 }
