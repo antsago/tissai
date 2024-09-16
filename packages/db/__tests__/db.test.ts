@@ -42,6 +42,25 @@ describe.concurrent("db", () => {
     expect(schemas).toStrictEqual([SCHEMA])
   })
 
+  describe("suggestions", () => {
+    it("returns category suggestion", async ({ expect, db }) => {
+      const schema = {
+        category: "category",
+        label: "categoría",
+        value: "value",
+        tally: 2,
+      }
+      await db.load({ schemas: [schema] })
+
+      const suggestions = await db.suggestions.category([schema.value])
+
+      expect(suggestions).toStrictEqual({
+        label: "categoría",
+        values: [schema.category],
+      })
+    })
+  })
+
   describe("upsert schema", () => {
     const SCHEMA = {
       category: "myCategory",
