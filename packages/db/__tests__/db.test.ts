@@ -10,6 +10,7 @@ import {
   dbFixture,
   SCHEMA,
 } from "#mocks"
+import { CATEGORY_LABEL } from "../src"
 
 type Fixtures = { db: dbFixture }
 const it = test.extend<Fixtures>({
@@ -43,19 +44,21 @@ describe.concurrent("db", () => {
   })
 
   describe("suggestions", () => {
-    it("returns category suggestion", async ({ expect, db }) => {
+    it.only("returns categories suggestion", async ({ expect, db }) => {
+      const WORD1 = "word1"
+      const WORD2 = "word2"
       const schema = {
         category: "category",
-        label: "categoría",
-        value: "value",
+        label: CATEGORY_LABEL,
+        value: WORD1,
         tally: 2,
       }
       await db.load({ schemas: [schema] })
 
-      const suggestions = await db.suggestions.category([schema.value])
+      const suggestions = await db.suggestions.category([WORD1, WORD2])
 
       expect(suggestions).toStrictEqual({
-        label: "categoría",
+        label: CATEGORY_LABEL,
         values: [schema.category],
       })
     })

@@ -1,7 +1,8 @@
-export type {
-  ProductDetails,
-  Search,
-  SearchParams,
+export {
+  type ProductDetails,
+  type Search,
+  type SearchParams,
+  CATEGORY_LABEL,
 } from "./definitions/index.js"
 
 export { default as builder } from "./builder.js"

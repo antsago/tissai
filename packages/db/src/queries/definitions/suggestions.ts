@@ -1,5 +1,7 @@
 import builder from "../builder.js"
 
+export const CATEGORY_LABEL = "categoría"
+
 export const category = {
   takeFirst: true,
   query: (words: string[]) =>
@@ -8,7 +10,7 @@ export const category = {
         db
           .selectFrom("schemas")
           .select("schemas.category")
-          .where("schemas.label", "=", "categoría")
+          .where("schemas.label", "=", CATEGORY_LABEL)
           .where((eb) => eb("schemas.value", "=", eb.fn.any(eb.val(words))))
           .orderBy(({ fn }) => fn.agg("mul", ["schemas.tally"]), "desc")
           .groupBy("category"),
@@ -16,7 +18,7 @@ export const category = {
       .selectFrom("category_counts")
       .select(({ fn, ref, val }) => [
         fn.agg("array_agg", [ref("category_counts.category")]).as("values"),
-        val("categoría").as("label"),
+        val(CATEGORY_LABEL).as("label"),
       ])
       .compile(),
 }
