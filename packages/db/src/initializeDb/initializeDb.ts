@@ -22,7 +22,9 @@ const Tables = {
 const initializeExtensions = async (connection: Connection) => {
   await connection.raw("CREATE EXTENSION IF NOT EXISTS vector;")
   await connection.raw("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
-  await connection.raw("DROP AGGREGATE IF EXISTS mul(numeric); CREATE AGGREGATE mul(numeric) ( SFUNC = numeric_mul, STYPE=numeric );")
+  await connection.raw(
+    "DROP AGGREGATE IF EXISTS mul(numeric); CREATE AGGREGATE mul(numeric) ( SFUNC = numeric_mul, STYPE=numeric );",
+  )
 }
 
 const initializeTables = async (connection: Connection) => {
