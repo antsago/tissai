@@ -12,8 +12,7 @@ export function extractDirectory(stackLine: string) {
   return path.dirname(filepath)
 }
 
-export function resolveRelativePath(filepath: string) {
+export function getCallerDirectory() {
   const stack = new Error().stack!.split("\n")
-  const directory = extractDirectory(stack[3])
-  return path.resolve(directory, filepath)
+  return extractDirectory(stack[3])
 }

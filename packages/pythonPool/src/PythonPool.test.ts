@@ -24,12 +24,15 @@ describe("PythonPool", () => {
   })
 
   it("starts script on initialization", async ({ python }) => {
-    const expectedScriptPath = path.resolve(import.meta.dirname, SCRIPT_PATH)
-
-    expect(python.PythonShell).toHaveBeenCalledWith(
-      expectedScriptPath,
-      expect.anything(),
-    )
+    expect(python.PythonShell).toHaveBeenCalledWith(SCRIPT_PATH, {
+      mode: "json",
+      scriptPath: import.meta.dirname,
+      pythonOptions: ["-u"],
+      pythonPath: python.PYTHON_PATH,
+    })
+    expect(python.exec).toHaveBeenCalledWith("poetry env info --executable", {
+      cwd: import.meta.dirname,
+    })
   })
 
   it("forwards responses to requests", async ({ python }) => {

@@ -3,11 +3,11 @@
   "type": "module",
   "scripts": {
     "postinstall": "poetry install",
-    "label": "poetry run node ./build/src/labeler/index.js",
-    "train": "poetry run node ./build/src/trainer/index.js",
+    "label": "node ./build/src/labeler/index.js",
+    "train": "node ./build/src/trainer/index.js",
     "build": "rm -rf ./build && tsc --build && cp --parents src/**/*.py build/",
-    "test": "poetry run vitest run",
-    "test:integration": "poetry run vitest run __tests__"
+    "test": "vitest run",
+    "test:integration": "vitest run __tests__"
   },
   "imports": {
     "#mocks": "./__tests__/utils/index.ts"

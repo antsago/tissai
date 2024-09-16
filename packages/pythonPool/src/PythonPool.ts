@@ -1,9 +1,12 @@
+import { execSync } from "node:child_process"
 import { PythonShell as PShell } from "python-shell"
-import { resolveRelativePath } from "./pathUtils.js"
+import { getCallerDirectory } from "./pathUtils.js"
 
 let PythonShell = PShell
-export function setPShell(mock: typeof PShell) {
-  PythonShell = mock
+let exec = execSync
+export function setShells(pShell: typeof PShell, execShell: typeof exec) {
+  PythonShell = pShell
+  exec = execShell
 }
 
 type Resolver<T> = (value: T | PromiseLike<T>) => void
@@ -11,13 +14,20 @@ type Resolver<T> = (value: T | PromiseLike<T>) => void
 export function PythonPool<Input extends string | Object, Output>(
   scriptPath: string,
   reporter: { log: (message: string) => void },
-  pythonPath?: string,
 ) {
   const resolvers: Resolver<Output>[] = []
   let expectExit = false
 
-  const worker = new PythonShell(resolveRelativePath(scriptPath), {
+  const cwd = getCallerDirectory()
+  const pythonPath = exec("poetry env info --executable", {
+    cwd,
+  })
+    .toString()
+    .trim()
+
+  const worker = new PythonShell(scriptPath, {
     mode: "json",
+    scriptPath: cwd,
     pythonOptions: ["-u"], // get print results in real-time
     pythonPath,
   })

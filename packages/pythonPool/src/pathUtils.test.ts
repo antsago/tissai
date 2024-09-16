@@ -1,7 +1,5 @@
-import path from "node:path"
-import { fileURLToPath } from "node:url"
 import { expect, describe, it } from "vitest"
-import { resolveRelativePath, extractDirectory } from "./pathUtils.js"
+import { getCallerDirectory, extractDirectory } from "./pathUtils.js"
 
 describe("extractDirectory", () => {
   const DIRECTORY = "/parent/folder"
@@ -28,13 +26,11 @@ describe("extractDirectory", () => {
   })
 })
 
-describe("resolveRelativePath", () => {
-  const FILEPATH = "./foo.js"
-  const resolvePath = () => resolveRelativePath(FILEPATH)
+describe("getCallerDirectory", () => {
+  const resolvePath = () => getCallerDirectory()
 
   it("resolves path relative to caller", () => {
-    const expected = path.resolve(import.meta.dirname, FILEPATH)
     const result = resolvePath()
-    expect(result).toBe(expected)
+    expect(result).toBe(import.meta.dirname)
   })
 })
