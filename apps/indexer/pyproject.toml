@@ -3,8 +3,6 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "3.9.2"
-spacy = {extras = ["cuda11x"], version = "3.7.5"}
-es-core-news-sm = {url = "https://github.com/explosion/spacy-models/releases/download/es_core_news_sm-3.7.0/es_core_news_sm-3.7.0-py3-none-any.whl"}
 transformers = {extras = ["torch"], version = "4.41.2"}
 
 

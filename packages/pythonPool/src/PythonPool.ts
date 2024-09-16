@@ -11,6 +11,7 @@ type Resolver<T> = (value: T | PromiseLike<T>) => void
 export function PythonPool<Input extends string | Object, Output>(
   scriptPath: string,
   reporter: { log: (message: string) => void },
+  pythonPath?: string,
 ) {
   const resolvers: Resolver<Output>[] = []
   let expectExit = false
@@ -18,6 +19,7 @@ export function PythonPool<Input extends string | Object, Output>(
   const worker = new PythonShell(resolveRelativePath(scriptPath), {
     mode: "json",
     pythonOptions: ["-u"], // get print results in real-time
+    pythonPath,
   })
 
   worker.on("message", (message: Output) => {
