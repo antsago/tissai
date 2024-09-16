@@ -2,7 +2,7 @@ import {
   type Schema,
   Attributes,
   Required,
-  Lexer,
+  Tokenizer,
   TokenReader,
   Type,
   Compiler,
@@ -16,7 +16,7 @@ export const BrandType = Symbol("Brand")
 export const OfferType = Symbol("Offer")
 export const SellerType = Symbol("Seller")
 
-const ProductSchema = (lexer: Lexer): Schema => ({
+const ProductSchema = (tokenizer: Tokenizer): Schema => ({
   [Type]: ProductType,
   [Required]: {
     key: "@type",
@@ -27,7 +27,7 @@ const ProductSchema = (lexer: Lexer): Schema => ({
     parse: {
       as: "attributes",
       with: async (title: string) => {
-        const tokens = await lexer.fromText(title)
+        const tokens = await tokenizer.fromText(title)
         const labels = await getLabels(model)(
           tokens.filter((t) => t.isMeaningful),
         )
@@ -79,8 +79,8 @@ const OrganizationSchema: Schema = {
   name: "name",
 }
 
-const getSchemas = (lexer: Lexer): Schema[] => [
-  ProductSchema(lexer),
+const getSchemas = (tokenizer: Tokenizer): Schema[] => [
+  ProductSchema(tokenizer),
   BrandSchema,
   OfferSchema,
   OrganizationSchema,

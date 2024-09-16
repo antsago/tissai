@@ -1,4 +1,4 @@
-export { type Token, Lexer, Id } from "@tissai/tokenizer"
+export { type Token, Tokenizer, Id } from "@tissai/tokenizer"
 
 export { TokenReader } from "./TokenReader.js"
 export type { LabelMap, Model } from "./types.js"

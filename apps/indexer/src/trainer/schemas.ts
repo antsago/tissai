@@ -1,4 +1,4 @@
-import { Compiler, Required, Lexer, Schema, Type } from "../parser/index.js"
+import { Compiler, Required, Tokenizer, Schema, Type } from "../parser/index.js"
 import type { Reporter } from "../PageServer/index.js"
 import { LLM } from "./LlmLabeler/index.js"
 import { extractSchemas } from "./extractSchemas.js"
@@ -9,7 +9,7 @@ export const ProductType = Symbol("Product")
 
 const getSchemas =
   (llm: LLM) =>
-  (lexer: Lexer): Schema[] => [
+  (tokenizer: Tokenizer): Schema[] => [
     {
       [Type]: ProductType,
       [Required]: {
@@ -21,7 +21,7 @@ const getSchemas =
         parse: {
           as: "schemas",
           with: async (title: string) => {
-            const words = await lexer.fromText(title)
+            const words = await tokenizer.fromText(title)
             const category = await getCategory(llm, title)
 
             if (!category) {

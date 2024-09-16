@@ -18,11 +18,12 @@ const processPage: OnPage<Compiler> = async (
     .filter((entity) => entity[Type] === ProductType)
     .map((product) => product.schemas[0])
 
-  await Promise.all(schemas.map((schema) => db.schemas.upsert(schema)))
+  // await Promise.all(schemas.map((schema) => db.schemas.upsert(schema)))
+  console.dir(schemas, { depth: null })
 }
 
 const createStream = async ({ db }: Helpers<Compiler>) => {
-  const baseQuery = query.selectFrom("pages")
+  const baseQuery = query.selectFrom("pages").limit(1)
   const [{ total }] = await db.query(
     baseQuery.select(({ fn }) => fn.count("id").as("total")).compile(),
   )

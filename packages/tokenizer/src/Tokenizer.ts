@@ -1,7 +1,7 @@
 import { parseText, Scanner } from "./parseText/index.js"
 import { parsePage } from "./parsePage/index.js"
 
-export function Lexer() {
+export function Tokenizer() {
   const scanner = Scanner()
 
   return {
@@ -11,4 +11,4 @@ export function Lexer() {
   }
 }
 
-export type Lexer = ReturnType<typeof Lexer>
+export type Tokenizer = ReturnType<typeof Tokenizer>
