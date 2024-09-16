@@ -1116,9 +1116,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@tissai/python-pool@workspace:*, @tissai/python-pool@workspace:packages/pythonPool":
+"@tissai/python-pool@workspace:*, @tissai/python-pool@workspace:packages/python-pool":
   version: 0.0.0-use.local
-  resolution: "@tissai/python-pool@workspace:packages/pythonPool"
+  resolution: "@tissai/python-pool@workspace:packages/python-pool"
   dependencies:
     "@tissai/config": "workspace:*"
     "@types/node": "npm:20.14.8"
