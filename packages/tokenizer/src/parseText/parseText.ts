@@ -1,4 +1,4 @@
-import type { RawToken, Scanner } from "./Scanner.js"
+import type { RawToken, Lexer } from "./Lexer.js"
 
 const normalizeString = (str: string) =>
   str
@@ -15,7 +15,7 @@ export const normalizer = (tokens: RawToken[]) =>
 
 export type Token = ReturnType<typeof normalizer>[number]
 
-export const parseText = async (scanner: Scanner, title: string) => {
-  const rawTokens = await scanner.tokenize(title)
+export const parseText = async (lexer: Lexer, title: string) => {
+  const rawTokens = await lexer.tokenize(title)
   return normalizer(rawTokens)
 }

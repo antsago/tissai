@@ -2,9 +2,9 @@ import { PythonPool } from "@tissai/python-pool"
 
 export type RawToken = { text: string; isMeaningful: boolean; trailing: string }
 
-export function Scanner() {
+export function Lexer() {
   const python: PythonPool<string, RawToken[]> = PythonPool(
-    "./scanner.py",
+    "./lexer.py",
     console,
   )
 
@@ -14,4 +14,4 @@ export function Scanner() {
   }
 }
 
-export type Scanner = ReturnType<typeof Scanner>
+export type Lexer = ReturnType<typeof Lexer>

@@ -1,13 +1,13 @@
-import { parseText, Scanner } from "./parseText/index.js"
+import { parseText, Lexer } from "./parseText/index.js"
 import { parsePage } from "./parsePage/index.js"
 
 export function Tokenizer() {
-  const scanner = Scanner()
+  const lexer = Lexer()
 
   return {
-    fromText: (title: string) => parseText(scanner, title),
+    fromText: (title: string) => parseText(lexer, title),
     fromPage: parsePage,
-    close: () => scanner.close(),
+    close: () => lexer.close(),
   }
 }
 
