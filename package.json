@@ -16,7 +16,7 @@
     "db": "yarn workspace @tissai/db",
     "site": "yarn workspace @tissai/site",
     "ind": "yarn workspace @tissai/indexer",
-    "pp": "yarn workspace @tissai/python-pool"
+    "pkg": "bash -c 'yarn workspace @tissai/$0 ${@:1}'"
   },
   "devDependencies": {
     "prettier": "3.3.3",
