@@ -1,0 +1,25 @@
+{
+  "name": "@tissai/tokenizer",
+  "type": "module",
+  "scripts": {
+    "postinstall": "poetry install",
+    "build": "rm -rf ./build && tsc --build && cp --parents -R src/**/*.py build/"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.js",
+      "svelte": "./src/index.js",
+      "development": "./src/index.js",
+      "default": "./build/src/index.js"
+    }
+  },
+  "devDependencies": {
+    "@types/node": "20.14.8",
+    "typescript": "5.6.2",
+    "vitest": "2.1.1"
+  },
+  "dependencies": {
+    "@tissai/config": "workspace:*",
+    "@tissai/python-pool": "workspace:*"
+  }
+}

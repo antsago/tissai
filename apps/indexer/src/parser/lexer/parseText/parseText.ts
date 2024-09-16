@@ -1,5 +1,4 @@
-import { Scanner } from "./Scanner.js"
-import { type RawToken } from "./Scanner.js"
+import type { RawToken, Scanner } from "@tissai/tokenizer"
 
 const normalizeString = (str: string) =>
   str

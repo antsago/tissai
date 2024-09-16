@@ -1104,6 +1104,7 @@ __metadata:
     "@tissai/config": "workspace:*"
     "@tissai/db": "workspace:*"
     "@tissai/python-pool": "workspace:*"
+    "@tissai/tokenizer": "workspace:*"
     "@types/he": "npm:1"
     "@types/lodash": "npm:4.17.7"
     "@types/node": "npm:20.14.8"
@@ -1171,6 +1172,18 @@ __metadata:
     prettier-plugin-svelte: "npm:3.2.6"
     svelte: "npm:4.2.19"
     turbo: "npm:2.1.2"
+  languageName: unknown
+  linkType: soft
+
+"@tissai/tokenizer@workspace:*, @tissai/tokenizer@workspace:packages/tokenizer":
+  version: 0.0.0-use.local
+  resolution: "@tissai/tokenizer@workspace:packages/tokenizer"
+  dependencies:
+    "@tissai/config": "workspace:*"
+    "@tissai/python-pool": "workspace:*"
+    "@types/node": "npm:20.14.8"
+    typescript: "npm:5.6.2"
+    vitest: "npm:2.1.1"
   languageName: unknown
   linkType: soft
 
