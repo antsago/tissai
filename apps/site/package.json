@@ -36,6 +36,7 @@
   "dependencies": {
     "@testing-library/dom": "10.4.0",
     "@tissai/db": "workspace:*",
+    "@tissai/tokenizer": "workspace:*",
     "pg": "8.12.0"
   }
 }

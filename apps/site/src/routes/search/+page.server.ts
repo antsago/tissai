@@ -8,7 +8,8 @@ export const load: PageServerLoad = async ({ url, locals }) => {
     query,
     ...filters,
   })
-  const suggestions = await locals.db.suggestions.category(query.split(" "))
+  const words = (await locals.tokenizer.fromText(query)).filter(w => !!w.isMeaningful).map(w => w.text)
+  const suggestions = await locals.db.suggestions.category(words)
 
   return {
     tiles: mergeTiles(products, [{ ...suggestions, frequency: 1 }]),
