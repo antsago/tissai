@@ -44,59 +44,66 @@ describe.concurrent("db", () => {
   })
 
   describe("suggestions", () => {
-    it("suggests most frequent categories", async ({ expect, db }) => {
-      const WORD = "word"
-      await db.load({ schemas: [
-        {
-        category: "category1",
-        label: CATEGORY_LABEL,
-        value: WORD,
-        tally: 2,
-      },
-        {
-        category: "category2",
-        label: CATEGORY_LABEL,
-        value: WORD,
-        tally: 4,
-      },
-    ] })
+    const SCHEMA = {
+      category: "category1",
+      label: CATEGORY_LABEL,
+      value: "word1",
+      tally: 2,
+    }
 
-      const suggestions = await db.suggestions.category([WORD])
+    beforeEach<Fixtures>(async ({ db }) => {
+      await db.load({ schemas: [SCHEMA] })
+    })
+
+    it("suggests most frequent categories", async ({ expect, db }) => {
+      const otherCategory = "category2"
+      await db.load({
+        schemas: [
+          {
+            category: otherCategory,
+            label: CATEGORY_LABEL,
+            value: SCHEMA.value,
+            tally: 4,
+          },
+        ],
+      })
+
+      const suggestions = await db.suggestions.category([SCHEMA.value])
 
       expect(suggestions).toStrictEqual({
         label: CATEGORY_LABEL,
-        values: ["category2", "category1"],
+        values: [otherCategory, SCHEMA.category],
       })
     })
 
     it("discounts word frequency", async ({ expect, db }) => {
-      const WORD1 = "word1"
-      const WORD2 = "word2"
-      await db.load({ schemas: [
-        {
-        category: "category1",
-        label: CATEGORY_LABEL,
-        value: WORD1,
-        tally: 2,
-      },
-        {
-        category: "category2",
-        label: CATEGORY_LABEL,
-        value: WORD2,
-        tally: 4,
-      },
-      { category: "category2",
-        label: "fodder",
-        value: WORD2,
-        tally: 4,
-      }
-    ] })
+      const otherCategory = "category2"
+      const otherWord = "word2"
+      await db.load({
+        schemas: [
+          {
+            category: otherCategory,
+            label: CATEGORY_LABEL,
+            value: otherWord,
+            tally: 4,
+          },
+          {
+            category: otherCategory,
+            label: "fodder",
+            value: otherWord,
+            tally: 4,
+          },
+        ],
+      })
 
-      const suggestions = await db.suggestions.category([WORD1, WORD2])
+      const suggestions = await db.suggestions.category([
+        SCHEMA.value,
+        otherWord,
+      ])
 
       expect(suggestions).toStrictEqual({
         label: CATEGORY_LABEL,
-        values: ["category1", "category2"],
+        values: [SCHEMA.category, otherCategory],
       })
     })
   })

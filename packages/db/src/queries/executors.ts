@@ -29,7 +29,7 @@ const createExecutors = (connection: Connection) =>
           async (...args: any[]) => {
             const query = "query" in definition ? definition.query : definition
             const result = await connection.query(query(...args))
-            return definition.takeFirst? result[0] : result
+            return definition.takeFirst ? result[0] : result
           },
         ]),
       ),

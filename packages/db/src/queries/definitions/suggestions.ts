@@ -3,18 +3,20 @@ import builder from "../builder.js"
 
 export const CATEGORY_LABEL = "categoría"
 
+// Pick the category-word pairs that maximize p(C|W) = p(C) * p(W|C) / p(W) ∝ c(W|C) / c(W)
 export const category = {
   takeFirst: true,
   query: (words: string[]) =>
     builder
-      .with("word_count", (db) => db
-        .selectFrom("schemas")
-        .select(({ fn }) => [
-          "schemas.value as W",
-          fn.sum("schemas.tally").as("c(W)"),
-        ])
-        .where((eb) => eb("schemas.value", "=", eb.fn.any(eb.val(words))))
-        .groupBy("schemas.value")
+      .with("word_count", (db) =>
+        db
+          .selectFrom("schemas")
+          .select(({ fn }) => [
+            "schemas.value as W",
+            fn.sum("schemas.tally").as("c(W)"),
+          ])
+          .where((eb) => eb("schemas.value", "=", eb.fn.any(eb.val(words))))
+          .groupBy("schemas.value"),
       )
       .with("category_counts", (db) =>
         db
@@ -34,17 +36,19 @@ export const category = {
           .selectFrom("category_counts")
           .leftJoin("word_count", "category_counts.W", "word_count.W")
           .select(({ fn, ref }) => [
-            sql`${ref("category_counts.c(C|W)")} / ${ref("word_count.c(W)")}`.as("p(C|W)"),
+            sql`${ref("category_counts.c(C|W)")} / ${ref("word_count.c(W)")}`.as(
+              "p(C|W)",
+            ),
             "category_counts.C",
             "category_counts.W",
           ])
           .orderBy("p(C|W)", "desc")
-          .limit(5)
+          .limit(5),
       )
       .selectFrom("category_probabilities")
       .select(({ fn, ref, val }) => [
         fn.agg("array_agg", [ref("category_probabilities.C")]).as("values"),
         val(CATEGORY_LABEL).as("label"),
       ])
-      .compile()
+      .compile(),
 }
