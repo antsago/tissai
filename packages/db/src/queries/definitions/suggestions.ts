@@ -3,7 +3,9 @@ import builder from "../builder.js"
 
 export const CATEGORY_LABEL = "categoría"
 
-export const category = (words: string[]) =>
+export const category = {
+  takeFirst: false,
+  query: (words: string[]) =>
     builder
       .with("word_count", (db) => db
         .selectFrom("schemas")
@@ -45,4 +47,4 @@ export const category = (words: string[]) =>
         val(CATEGORY_LABEL).as("label"),
       ])
       .compile()
-
+}

@@ -24,16 +24,12 @@ const createExecutors = (connection: Connection) =>
     Object.entries(Definitions).map(([tableName, table]) => [
       tableName,
       Object.fromEntries(
-        Object.entries(table).map(([methodName, queryBuilder]) => [
+        Object.entries(table).map(([methodName, definition]) => [
           methodName,
           async (...args: any[]) => {
-            if ("takeFirst" in queryBuilder) {
-              const [result] = await connection.query(
-                queryBuilder.query(...args),
-              )
-              return result
-            }
-            return connection.query(queryBuilder(...args))
+            const query = "query" in definition ? definition.query : definition
+            const result = await connection.query(query(...args))
+            return definition.takeFirst? result[0] : result
           },
         ]),
       ),
