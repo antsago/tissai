@@ -63,10 +63,10 @@ describe.concurrent("db", () => {
 
       const suggestions = await db.suggestions.category([WORD])
 
-      expect(suggestions).toStrictEqual([{
+      expect(suggestions).toStrictEqual({
         label: CATEGORY_LABEL,
         values: ["category2", "category1"],
-      }])
+      })
     })
 
     it("discounts word frequency", async ({ expect, db }) => {
@@ -94,10 +94,10 @@ describe.concurrent("db", () => {
 
       const suggestions = await db.suggestions.category([WORD1, WORD2])
 
-      expect(suggestions).toStrictEqual([{
+      expect(suggestions).toStrictEqual({
         label: CATEGORY_LABEL,
         values: ["category1", "category2"],
-      }])
+      })
     })
   })
 

@@ -4,7 +4,7 @@ import builder from "../builder.js"
 export const CATEGORY_LABEL = "categoría"
 
 export const category = {
-  takeFirst: false,
+  takeFirst: true,
   query: (words: string[]) =>
     builder
       .with("word_count", (db) => db
