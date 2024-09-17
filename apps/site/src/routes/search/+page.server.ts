@@ -8,9 +8,10 @@ export const load: PageServerLoad = async ({ url, locals }) => {
     query,
     ...filters,
   })
+  const suggestions = await locals.db.suggestions.category(query.split(" "))
 
   return {
-    tiles: mergeTiles(results),
+    tiles: mergeTiles({ products: results.products, suggestions: [{ ...suggestions, frequency: 1 }] }),
     filters,
   }
 }

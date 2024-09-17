@@ -51,7 +51,7 @@ export const category = {
         .limit(5)
       )
       .selectFrom("category_values").select(({ fn, ref, val }) => [
-        fn.agg("array_agg", [ref("category_values.category_name")]).as("values"),
+        fn.agg<string[]>("array_agg", [ref("category_values.category_name")]).as("values"),
         val(CATEGORY_LABEL).as("label"),
       ])
       .compile(),
