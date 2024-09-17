@@ -35,19 +35,23 @@ export const category = {
         db
           .selectFrom("category_counts")
           .leftJoin("word_count", "category_counts.W", "word_count.W")
-          .select(({ fn, ref }) => [
+          .select(({ ref }) => [
             sql`${ref("category_counts.c(C|W)")} / ${ref("word_count.c(W)")}`.as(
               "p(C|W)",
             ),
             "category_counts.C",
-            "category_counts.W",
           ])
-          .orderBy("p(C|W)", "desc")
-          .limit(5),
+          .distinctOn("C")
+          .orderBy(["C asc", "p(C|W) desc"])
       )
-      .selectFrom("category_probabilities")
-      .select(({ fn, ref, val }) => [
-        fn.agg("array_agg", [ref("category_probabilities.C")]).as("values"),
+      .with("category_values", (db) =>
+        db.selectFrom("category_probabilities")
+        .select("C as category_name")
+        .orderBy("p(C|W) desc")
+        .limit(5)
+      )
+      .selectFrom("category_values").select(({ fn, ref, val }) => [
+        fn.agg("array_agg", [ref("category_values.category_name")]).as("values"),
         val(CATEGORY_LABEL).as("label"),
       ])
       .compile(),

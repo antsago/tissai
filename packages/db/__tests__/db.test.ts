@@ -55,7 +55,7 @@ describe.concurrent("db", () => {
       await db.load({ schemas: [SCHEMA] })
     })
 
-    it("suggests most frequent categories", async ({ expect, db }) => {
+    it("suggests most likely categories", async ({ expect, db }) => {
       const otherCategory = "category2"
       await db.load({
         schemas: [
@@ -104,6 +104,43 @@ describe.concurrent("db", () => {
       expect(suggestions).toStrictEqual({
         label: CATEGORY_LABEL,
         values: [SCHEMA.category, otherCategory],
+      })
+    })
+
+    it("only considers most likely word per category", async ({ expect, db }) => {
+      const otherCategory = "category2"
+      const otherWord = "word2"
+      await db.load({
+        schemas: [
+          {
+            category: otherCategory,
+            label: CATEGORY_LABEL,
+            value: SCHEMA.value,
+            tally: 5,
+          },
+          {
+            category: otherCategory,
+            label: CATEGORY_LABEL,
+            value: otherWord,
+            tally: 2,
+          },
+          {
+            category: otherCategory,
+            label: "fodder",
+            value: otherWord,
+            tally: 10,
+          },
+        ],
+      })
+
+      const suggestions = await db.suggestions.category([
+        SCHEMA.value,
+        otherWord,
+      ])
+
+      expect(suggestions).toStrictEqual({
+        label: CATEGORY_LABEL,
+        values: [otherCategory, SCHEMA.category],
       })
     })
   })
