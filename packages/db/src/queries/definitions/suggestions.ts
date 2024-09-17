@@ -1,24 +1,48 @@
+import { sql } from "kysely"
 import builder from "../builder.js"
 
 export const CATEGORY_LABEL = "categoría"
 
-export const category = {
-  takeFirst: true,
-  query: (words: string[]) =>
+export const category = (words: string[]) =>
     builder
+      .with("word_count", (db) => db
+        .selectFrom("schemas")
+        .select(({ fn }) => [
+          "schemas.value as W",
+          fn.sum("schemas.tally").as("c(W)"),
+        ])
+        .where((eb) => eb("schemas.value", "=", eb.fn.any(eb.val(words))))
+        .groupBy("schemas.value")
+      )
       .with("category_counts", (db) =>
         db
           .selectFrom("schemas")
-          .select("schemas.category")
+          .select(({ fn }) => [
+            "schemas.category as C",
+            fn.sum("schemas.tally").as("c(C|W)"),
+            "schemas.value as W",
+          ])
           .where("schemas.label", "=", CATEGORY_LABEL)
           .where((eb) => eb("schemas.value", "=", eb.fn.any(eb.val(words))))
           .orderBy(({ fn }) => fn.agg("mul", ["schemas.tally"]), "desc")
-          .groupBy("category"),
+          .groupBy(["schemas.category", "schemas.value"]),
       )
-      .selectFrom("category_counts")
+      .with("category_probabilities", (db) =>
+        db
+          .selectFrom("category_counts")
+          .leftJoin("word_count", "category_counts.W", "word_count.W")
+          .select(({ fn, ref }) => [
+            sql`${ref("category_counts.c(C|W)")} / ${ref("word_count.c(W)")}`.as("p(C|W)"),
+            "category_counts.C",
+            "category_counts.W",
+          ])
+          .orderBy("p(C|W)", "desc")
+          .limit(5)
+      )
+      .selectFrom("category_probabilities")
       .select(({ fn, ref, val }) => [
-        fn.agg("array_agg", [ref("category_counts.category")]).as("values"),
+        fn.agg("array_agg", [ref("category_probabilities.C")]).as("values"),
         val(CATEGORY_LABEL).as("label"),
       ])
-      .compile(),
-}
+      .compile()
+

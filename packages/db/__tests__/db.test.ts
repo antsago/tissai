@@ -44,23 +44,60 @@ describe.concurrent("db", () => {
   })
 
   describe("suggestions", () => {
-    it.only("returns categories suggestion", async ({ expect, db }) => {
+    it("suggests most frequent categories", async ({ expect, db }) => {
+      const WORD = "word"
+      await db.load({ schemas: [
+        {
+        category: "category1",
+        label: CATEGORY_LABEL,
+        value: WORD,
+        tally: 2,
+      },
+        {
+        category: "category2",
+        label: CATEGORY_LABEL,
+        value: WORD,
+        tally: 4,
+      },
+    ] })
+
+      const suggestions = await db.suggestions.category([WORD])
+
+      expect(suggestions).toStrictEqual([{
+        label: CATEGORY_LABEL,
+        values: ["category2", "category1"],
+      }])
+    })
+
+    it("discounts word frequency", async ({ expect, db }) => {
       const WORD1 = "word1"
       const WORD2 = "word2"
-      const schema = {
-        category: "category",
+      await db.load({ schemas: [
+        {
+        category: "category1",
         label: CATEGORY_LABEL,
         value: WORD1,
         tally: 2,
+      },
+        {
+        category: "category2",
+        label: CATEGORY_LABEL,
+        value: WORD2,
+        tally: 4,
+      },
+      { category: "category2",
+        label: "fodder",
+        value: WORD2,
+        tally: 4,
       }
-      await db.load({ schemas: [schema] })
+    ] })
 
       const suggestions = await db.suggestions.category([WORD1, WORD2])
 
-      expect(suggestions).toStrictEqual({
+      expect(suggestions).toStrictEqual([{
         label: CATEGORY_LABEL,
-        values: [schema.category],
-      })
+        values: ["category1", "category2"],
+      }])
     })
   })
 
