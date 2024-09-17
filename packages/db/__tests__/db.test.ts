@@ -69,7 +69,10 @@ describe.concurrent("db", () => {
         ],
       })
 
-      const suggestions = await db.suggestions.category([SCHEMA.value, irrelevantWord])
+      const suggestions = await db.suggestions.category([
+        SCHEMA.value,
+        irrelevantWord,
+      ])
 
       expect(suggestions).toStrictEqual({
         label: CATEGORY_LABEL,
@@ -108,7 +111,10 @@ describe.concurrent("db", () => {
       })
     })
 
-    it("only considers most likely word per category", async ({ expect, db }) => {
+    it("only considers most likely word per category", async ({
+      expect,
+      db,
+    }) => {
       const otherCategory = "category2"
       const otherWord = "word2"
       await db.load({

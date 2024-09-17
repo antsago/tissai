@@ -1,6 +1,6 @@
-import type { Search } from "@tissai/db"
+import type { Search, Suggestion } from "@tissai/db"
 
-function mergeTiles({ products, suggestions }: Search) {
+function mergeTiles(products: Search[], suggestions: Suggestion[]) {
   let currentProduct = 0
   let currentSuggestion = 0
 

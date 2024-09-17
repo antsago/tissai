@@ -3,6 +3,14 @@ import mergeTiles from "./mergeTiles"
 import { ATTRIBUTE } from "@tissai/db/mocks"
 
 describe("mergeTiles", () => {
+  const SEARCH_RESULT = {
+    id: "product-id",
+    title: "Title",
+    brand: null,
+    price: null,
+    image: null,
+  }
+
   it("merges suggestions into products", async () => {
     const suggestions = [0.9, 0.7, 0.5, 0.3].map((frequency) => ({
       label: ATTRIBUTE.label,
@@ -10,13 +18,11 @@ describe("mergeTiles", () => {
       frequency,
     }))
     const products = new Array(20).fill(undefined).map((_, i) => ({
+      ...SEARCH_RESULT,
       id: String(i),
-      title: "Title",
-      brand: null,
-      price: undefined,
     }))
 
-    const result = mergeTiles({ suggestions, products })
+    const result = mergeTiles(products, suggestions)
 
     expect(result).toHaveLength(products.length + suggestions.length)
     expect(result).toStrictEqual(expect.arrayContaining(products))
@@ -34,16 +40,9 @@ describe("mergeTiles", () => {
         frequency: 1,
       },
     ]
-    const products = [
-      {
-        id: "product-id",
-        title: "Title",
-        brand: null,
-        price: undefined,
-      },
-    ]
+    const products = [SEARCH_RESULT]
 
-    const result = mergeTiles({ suggestions, products })
+    const result = mergeTiles(products, suggestions)
 
     expect(result).toStrictEqual(products)
   })
@@ -68,13 +67,12 @@ describe("mergeTiles", () => {
         frequency,
       }
       const products = new Array(4).fill(undefined).map((_, i) => ({
+        ...SEARCH_RESULT,
         id: String(i),
         title: "Title",
-        brand: null,
-        price: undefined,
       }))
 
-      const result = mergeTiles({ suggestions: [suggestion], products })
+      const result = mergeTiles(products, [suggestion])
 
       expect(result).toHaveLength(5)
       expect(result).toStrictEqual(expect.arrayContaining(products))

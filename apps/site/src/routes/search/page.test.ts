@@ -25,8 +25,6 @@ describe("Search page", () => {
   ) {
     db.pool.query.mockResolvedValueOnce({
       rows: [
-        {
-          products: [
             {
               ...SIMILAR,
               brand: BRAND,
@@ -38,10 +36,10 @@ describe("Search page", () => {
               brand: BRAND,
               price: undefined,
             })),
-          ],
-          suggestions: [SUGGESTION],
-        },
       ],
+    })
+    db.pool.query.mockResolvedValueOnce({
+      rows: [SUGGESTION],
     })
 
     const url = new URL(

@@ -6,4 +6,5 @@ export {
   type Search,
   type SearchParams,
   CATEGORY_LABEL,
+  Suggestion,
 } from "./queries/index.js"

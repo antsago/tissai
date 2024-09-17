@@ -3,6 +3,12 @@ import builder from "../builder.js"
 
 export const CATEGORY_LABEL = "categoría"
 
+export type Suggestion = {
+  frequency: number
+  label: string
+  values: string[]
+}
+
 // Pick the category-word pairs that maximize p(C|W) = p(C) * p(W|C) / p(W) ∝ c(W|C) / c(W)
 export const category = {
   takeFirst: true,
@@ -42,16 +48,20 @@ export const category = {
             "category_counts.C",
           ])
           .distinctOn("C")
-          .orderBy(["C asc", "p(C|W) desc"])
+          .orderBy(["C asc", "p(C|W) desc"]),
       )
       .with("category_values", (db) =>
-        db.selectFrom("category_probabilities")
-        .select("C as category_name")
-        .orderBy("p(C|W) desc")
-        .limit(5)
+        db
+          .selectFrom("category_probabilities")
+          .select("C as category_name")
+          .orderBy("p(C|W) desc")
+          .limit(5),
       )
-      .selectFrom("category_values").select(({ fn, ref, val }) => [
-        fn.agg<string[]>("array_agg", [ref("category_values.category_name")]).as("values"),
+      .selectFrom("category_values")
+      .select(({ fn, ref, val }) => [
+        fn
+          .agg<string[]>("array_agg", [ref("category_values.category_name")])
+          .as("values"),
         val(CATEGORY_LABEL).as("label"),
       ])
       .compile(),

@@ -78,7 +78,7 @@ describe.concurrent("search", () => {
     it("retrieves results", async ({ expect, db }) => {
       const result = await db.products.search({ query: product2.title })
 
-      expect(result.products).toStrictEqual([product2Result, product1Result])
+      expect(result).toStrictEqual([product2Result, product1Result])
     })
 
     it("ignores products without offers", async ({ expect, db }) => {
@@ -86,7 +86,7 @@ describe.concurrent("search", () => {
 
       const result = await db.products.search({ query: product2.title })
 
-      expect(result.products.length).toBe(2)
+      expect(result.length).toBe(2)
     })
 
     it("filters by brand", async ({ expect, db }) => {
@@ -95,7 +95,7 @@ describe.concurrent("search", () => {
         brand: BRAND.name,
       })
 
-      expect(result.products).toStrictEqual([product1Result])
+      expect(result).toStrictEqual([product1Result])
     })
 
     describe("attributes", () => {
@@ -105,7 +105,7 @@ describe.concurrent("search", () => {
           attributes: { [attribute1.label]: [attribute1.value] },
         })
 
-        expect(result.products).toStrictEqual([product1Result])
+        expect(result).toStrictEqual([product1Result])
       })
 
       it("accepts multiple values", async ({ expect, db }) => {
@@ -121,7 +121,7 @@ describe.concurrent("search", () => {
           },
         })
 
-        expect(result.products).toStrictEqual([product2Result, product1Result])
+        expect(result).toStrictEqual([product2Result, product1Result])
       })
     })
 
@@ -133,7 +133,7 @@ describe.concurrent("search", () => {
         min: OFFER.price,
       })
 
-      expect(result.products).toStrictEqual([
+      expect(result).toStrictEqual([
         {
           id: PRODUCT.id,
           title: PRODUCT.title,
@@ -152,13 +152,13 @@ describe.concurrent("search", () => {
         max: offer1.price,
       })
 
-      expect(result.products).toStrictEqual([product1Result])
+      expect(result).toStrictEqual([product1Result])
     })
 
     it("handles empty filters", async ({ expect, db }) => {
       const results = await db.products.search({ query: "" })
 
-      expect(results.products.length).toBe(2)
+      expect(results.length).toBe(2)
     })
 
     it("handles all filters", async ({ expect, db }) => {
@@ -174,172 +174,12 @@ describe.concurrent("search", () => {
     })
   })
 
-  describe("suggestions", () => {
-    it("retrieves suggestions", async ({ expect, db }) => {
-      const result = await db.products.search({ query: product2.title })
-
-      expect(result.suggestions).toStrictEqual([
-        {
-          label: attribute1.label,
-          frequency: 1,
-          values: [attribute2.value, attribute1.value],
-        },
-      ])
-    })
-
-    it("includes values from other attributes", async ({ expect, db }) => {
-      const result = await db.products.search({
-        query: product1.title,
-        brand: product1.brand,
-      })
-
-      expect(result.suggestions).toStrictEqual([
-        {
-          label: attribute1.label,
-          frequency: 1,
-          values: [attribute2.value, attribute1.value],
-        },
-      ])
-    })
-
-    it("only returns most frequent attributes", async ({ expect, db }) => {
-      await db.load({
-        attributes: [
-          {
-            id: "e62d7696-945f-4d1a-9486-3429b6e1df77",
-            label: "label1",
-            value: "value1",
-            product: product1.id,
-          },
-          {
-            id: "f6706010-9307-4972-aac3-1590a67d2383",
-            label: "label2",
-            value: "value2",
-            product: product1.id,
-          },
-          {
-            id: "03676c45-4715-4552-a054-6690b2196a10",
-            label: "label3",
-            value: "value3",
-            product: product1.id,
-          },
-          {
-            id: "b16108a4-cfb2-417b-a02b-3dc36219550c",
-            label: "label4",
-            value: "value4",
-            product: product1.id,
-          },
-        ],
-      })
-
-      const result = await db.products.search({
-        query: product1.title,
-      })
-
-      expect(result.suggestions).toHaveLength(4)
-      expect(result.suggestions[0]).toStrictEqual({
-        label: attribute1.label,
-        frequency: 1,
-        values: [attribute2.value, attribute1.value],
-      })
-    })
-
-    it("calculates frequency", async ({ expect, db }) => {
-      await db.load({ products: [PRODUCT], offers: [OFFER], sellers: [SELLER] })
-
-      const result = await db.products.search({
-        query: product1.title,
-        brand: product1.brand,
-      })
-
-      expect(result.suggestions).toStrictEqual([
-        {
-          label: attribute1.label,
-          frequency: 0.5,
-          values: [attribute2.value, attribute1.value],
-        },
-      ])
-    })
-
-    it("sorts by frequency", async ({ expect, db }) => {
-      const otherAttribute = {
-        id: "d50bc19c-14a6-4edd-890f-aab73fe6ce7f",
-        label: "foo",
-        value: "bar",
-        product: product1.id,
-      }
-
-      await db.load({ attributes: [otherAttribute] })
-
-      const result = await db.products.search({ query: product1.title })
-
-      expect(result.suggestions).toStrictEqual([
-        {
-          label: attribute1.label,
-          frequency: 1,
-          values: [attribute2.value, attribute1.value],
-        },
-        {
-          label: otherAttribute.label,
-          frequency: 0.5,
-          values: [otherAttribute.value],
-        },
-      ])
-    })
-
-    it("ignores attributes not on returned products", async ({
-      expect,
-      db,
-    }) => {
-      const otherAttribute = {
-        id: "d50bc19c-14a6-4edd-890f-aab73fe6ce7f",
-        label: "foo",
-        value: "bar",
-        product: PRODUCT.id,
-      }
-      await db.load({ products: [PRODUCT], attributes: [otherAttribute] })
-
-      const result = await db.products.search({ query: product1.title })
-
-      expect(result.suggestions).toStrictEqual([
-        {
-          label: attribute1.label,
-          frequency: 1,
-          values: [attribute2.value, attribute1.value],
-        },
-      ])
-    })
-
-    it("handles products with duplicate labels", async ({ expect, db }) => {
-      const otherAttribute = {
-        id: "d50bc19c-14a6-4edd-890f-aab73fe6ce7f",
-        label: attribute1.label,
-        value: "bar",
-        product: product1.id,
-      }
-      await db.load({ attributes: [otherAttribute] })
-
-      const result = await db.products.search({ query: product1.title })
-
-      expect(result.suggestions).toStrictEqual([
-        {
-          label: attribute1.label,
-          frequency: 1,
-          values: [attribute2.value, otherAttribute.value, attribute1.value],
-        },
-      ])
-    })
-  })
-
   it("handles no results found", async ({ expect, db }) => {
     const result = await db.products.search({
       query: product1.title,
       brand: "non-existing",
     })
 
-    expect(result).toStrictEqual({
-      products: [],
-      suggestions: [],
-    })
+    expect(result).toStrictEqual([])
   })
 })

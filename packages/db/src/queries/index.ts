@@ -3,6 +3,7 @@ export {
   type Search,
   type SearchParams,
   CATEGORY_LABEL,
+  Suggestion,
 } from "./definitions/index.js"
 
 export { default as builder } from "./builder.js"
