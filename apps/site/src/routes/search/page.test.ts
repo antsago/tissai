@@ -45,7 +45,7 @@ describe("Search page", () => {
     db.pool.query.mockResolvedValueOnce({
       rows: [SUGGESTION],
     })
-    python.mockReturnValue([{ isMeaningful: true, text: "asdf" }])
+    python.mockReturnValue(SUGGESTION.values.map(v => ({ isMeaningful: true, text: SUGGESTION.values[0] })))
 
     const url = new URL(
       `http://localhost:3000/search?q=${QUERY}${queryParams ? `&${queryParams}` : ""}`,
@@ -81,6 +81,8 @@ describe("Search page", () => {
     expect(product).toBeInTheDocument()
     expect(suggestion).toBeInTheDocument()
     expect(db).toHaveExecuted(queries.products.search({ query: QUERY }))
+    expect(db).toHaveExecuted(queries.suggestions.category(SUGGESTION.values))
+    expect(python.worker.send).toHaveBeenCalledWith(QUERY)
   })
 
   it("displays filters", async ({ db, python }) => {
