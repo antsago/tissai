@@ -15,6 +15,7 @@
     "@testing-library/jest-dom": "6.5.0",
     "@testing-library/svelte": "5.2.1",
     "@testing-library/user-event": "14.5.2",
+    "@tissai/python-pool": "workspace:*",
     "@types/pg": "8.11.10",
     "@typescript-eslint/eslint-plugin": "8.5.0",
     "@typescript-eslint/parser": "8.5.0",

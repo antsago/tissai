@@ -3,6 +3,8 @@ import { describe, test, expect, afterEach, vi } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
 import { MockPg, OFFER, mockDbFixture, queries } from "@tissai/db/mocks"
 import { Db } from "@tissai/db"
+import { MockPython, mockPythonFixture } from "@tissai/python-pool/mocks"
+import { Tokenizer } from "@tissai/tokenizer"
 import { QUERY, SIMILAR, BRAND, SUGGESTION } from "mocks"
 import * as stores from "$app/stores"
 import { load } from "./+page.server"
@@ -10,8 +12,9 @@ import page from "./+page.svelte"
 
 vi.mock("$app/stores", async () => (await import("mocks")).storesMock())
 
-const it = test.extend<{ db: mockDbFixture }>({
+const it = test.extend<{ db: mockDbFixture, python: mockPythonFixture }>({
   db: [mockDbFixture, { auto: true }],
+  python: [mockPythonFixture, { auto: true }]
 })
 
 describe("Search page", () => {
@@ -21,6 +24,7 @@ describe("Search page", () => {
 
   async function loadAndRender(
     db: MockPg,
+    python: MockPython,
     { queryParams, sectionName = "Resultados de la búsqueda" } = {} as any,
   ) {
     db.pool.query.mockResolvedValueOnce({
@@ -41,6 +45,7 @@ describe("Search page", () => {
     db.pool.query.mockResolvedValueOnce({
       rows: [SUGGESTION],
     })
+    python.mockReturnValue([{ isMeaningful: true, text: "asdf" }])
 
     const url = new URL(
       `http://localhost:3000/search?q=${QUERY}${queryParams ? `&${queryParams}` : ""}`,
@@ -52,7 +57,7 @@ describe("Search page", () => {
     render(page, {
       data: await load({
         url,
-        locals: { db: Db() },
+        locals: { db: Db(), tokenizer: Tokenizer() },
       } as any),
     } as any)
 
@@ -61,8 +66,8 @@ describe("Search page", () => {
     return within(results)
   }
 
-  it("displays search results", async ({ db }) => {
-    const results = await loadAndRender(db)
+  it("displays search results", async ({ db, python }) => {
+    const results = await loadAndRender(db, python)
 
     const product = results.getByRole("heading", {
       level: 3,
@@ -78,8 +83,8 @@ describe("Search page", () => {
     expect(db).toHaveExecuted(queries.products.search({ query: QUERY }))
   })
 
-  it("displays filters", async ({ db }) => {
-    const results = await loadAndRender(db, {
+  it("displays filters", async ({ db, python }) => {
+    const results = await loadAndRender(db, python, {
       queryParams: `brand=${BRAND.name}`,
       sectionName: "Filtros",
     })
