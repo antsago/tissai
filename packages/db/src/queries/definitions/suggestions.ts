@@ -41,6 +41,7 @@ export const attributes = (category: string, noLabels = 5) =>
           fn.agg<string[]>("array_agg", [ref("schemas.value")]).as("values"),
         ])
         .where("schemas.label", "!=", CATEGORY_LABEL)
+        .where("schemas.category", "=", category)
         .groupBy("label")
         .orderBy("count desc")
         .limit(noLabels),

@@ -132,6 +132,43 @@ describe.concurrent("db", () => {
       ])
     })
 
+    it("ignores labels from other categories", async ({ expect, db }) => {
+      const otherCategory = "category2"
+      const otherLabel = "label2"
+      await db.load({
+        schemas: [
+          {
+            category: SCHEMA.category,
+            label: otherLabel,
+            value: SCHEMA.value,
+            tally: 3,
+          },
+          {
+            ...SCHEMA,
+            category: otherCategory,
+          },
+          {
+            ...SCHEMA,
+            category: otherCategory,
+            label: "label3",
+          },
+        ],
+      })
+
+      const suggestions = await db.suggestions.attributes(SCHEMA.category)
+
+      expect(suggestions).toStrictEqual([
+        {
+          label: otherLabel,
+          values: [SCHEMA.value],
+        },
+        {
+          label: SCHEMA.label,
+          values: [SCHEMA.value],
+        },
+      ])
+    })
+
     it("ignores category label", async ({ expect, db }) => {
       await db.load({
         schemas: [
