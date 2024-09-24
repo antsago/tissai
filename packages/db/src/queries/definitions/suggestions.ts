@@ -40,7 +40,7 @@ export const attributes = (category: string, noLabels = 5) =>
           fn.sum("schemas.tally").as("count"),
           fn.agg<string[]>("array_agg", [ref("schemas.value")]).as("values"),
         ])
-        .where("category", "=", category)
+        .where("schemas.label", "!=", CATEGORY_LABEL)
         .groupBy("label")
         .orderBy("count desc")
         .limit(noLabels),

@@ -131,6 +131,28 @@ describe.concurrent("db", () => {
         },
       ])
     })
+
+    it("ignores category label", async ({ expect, db }) => {
+      await db.load({
+        schemas: [
+          {
+            category: SCHEMA.category,
+            label: CATEGORY_LABEL,
+            value: SCHEMA.value,
+            tally: 4,
+          },
+        ],
+      })
+
+      const suggestions = await db.suggestions.attributes(SCHEMA.category)
+
+      expect(suggestions).toStrictEqual([
+        {
+          label: SCHEMA.label,
+          values: [SCHEMA.value],
+        },
+      ])
+    })
   })
 
   describe("upsert schema", () => {
