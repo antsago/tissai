@@ -16,6 +16,7 @@ export const category = {
         db
           .selectFrom("schemas")
           .select(({ fn }) => ["category", fn.sum("schemas.tally").as("count")])
+          .where("schemas.label", "=", CATEGORY_LABEL)
           .groupBy("category")
           .orderBy("count desc")
           .limit(noValues),

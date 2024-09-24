@@ -76,6 +76,32 @@ describe.concurrent("db", () => {
       })
     })
 
+    it("ignores non-category counts", async ({ expect, db }) => {
+      const otherCategory = "category2"
+      await db.load({
+        schemas: [
+          {
+            category: otherCategory,
+            label: CATEGORY_LABEL,
+            value: SCHEMA.value,
+            tally: 4,
+          },
+          {
+            ...SCHEMA,
+            label: "non-category-label",
+            tally: 4,
+          }
+        ],
+      })
+
+      const suggestions = await db.suggestions.category()
+
+      expect(suggestions).toStrictEqual({
+        label: CATEGORY_LABEL,
+        values: [otherCategory, SCHEMA.category],
+      })
+    })
+
     it("limits suggested values", async ({ expect, db }) => {
       const limit = 5
       await db.load({
