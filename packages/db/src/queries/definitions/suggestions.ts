@@ -12,12 +12,13 @@ export const category = {
   takeFirst: true,
   query: (noValues = 5) =>
     builder
-      .with("category_values", (db) => db
-        .selectFrom("schemas")
-        .select(({ fn }) => ["category", fn.sum("schemas.tally").as("count")])
-        .groupBy("category")
-        .orderBy("count desc")
-        .limit(noValues)
+      .with("category_values", (db) =>
+        db
+          .selectFrom("schemas")
+          .select(({ fn }) => ["category", fn.sum("schemas.tally").as("count")])
+          .groupBy("category")
+          .orderBy("count desc")
+          .limit(noValues),
       )
       .selectFrom("category_values")
       .select(({ fn, ref, val }) => [
@@ -31,19 +32,18 @@ export const category = {
 
 export const attributes = (category: string, noLabels = 5) =>
   builder
-    .with("labels", (db) => db
-      .selectFrom("schemas")
-      .select(({ fn, ref }) => [
-        "label",
-        fn.sum("schemas.tally").as("count"),
-        fn
-          .agg<string[]>("array_agg", [ref("schemas.value")])
-          .as("values"),
-      ])
-      .where("category", "=", category)
-      .groupBy("label")
-      .orderBy("count desc")
-      .limit(noLabels)
+    .with("labels", (db) =>
+      db
+        .selectFrom("schemas")
+        .select(({ fn, ref }) => [
+          "label",
+          fn.sum("schemas.tally").as("count"),
+          fn.agg<string[]>("array_agg", [ref("schemas.value")]).as("values"),
+        ])
+        .where("category", "=", category)
+        .groupBy("label")
+        .orderBy("count desc")
+        .limit(noLabels),
     )
     .selectFrom("labels")
     .select(["label", "values"])

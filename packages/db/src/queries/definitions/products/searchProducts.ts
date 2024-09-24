@@ -26,8 +26,8 @@ export const search = ({
     .select(({ fn, selectFrom, ref }) => [
       "products.id",
       "products.title",
-      sql<string|null>`${ref("products.images")}[1]`.as("image"),
-      fn.min<string|null>("offers.price").as("price"),
+      sql<string | null>`${ref("products.images")}[1]`.as("image"),
+      fn.min<string | null>("offers.price").as("price"),
       selectFrom("brands")
         .select(({ fn }) => sql<Brand>`${fn.jsonAgg("brands")}->0`.as("brand"))
         .whereRef("brands.name", "=", "products.brand")

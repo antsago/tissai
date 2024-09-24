@@ -12,9 +12,9 @@ import page from "./+page.svelte"
 
 vi.mock("$app/stores", async () => (await import("mocks")).storesMock())
 
-const it = test.extend<{ db: mockDbFixture, python: mockPythonFixture }>({
+const it = test.extend<{ db: mockDbFixture; python: mockPythonFixture }>({
   db: [mockDbFixture, { auto: true }],
-  python: [mockPythonFixture, { auto: true }]
+  python: [mockPythonFixture, { auto: true }],
 })
 
 describe("Search page", () => {
@@ -29,23 +29,28 @@ describe("Search page", () => {
   ) {
     db.pool.query.mockResolvedValueOnce({
       rows: [
-            {
-              ...SIMILAR,
-              brand: BRAND,
-              price: String(OFFER.price),
-            },
-            ...new Array(4).fill(null).map((_, i) => ({
-              title: i,
-              id: i,
-              brand: BRAND,
-              price: undefined,
-            })),
+        {
+          ...SIMILAR,
+          brand: BRAND,
+          price: String(OFFER.price),
+        },
+        ...new Array(4).fill(null).map((_, i) => ({
+          title: i,
+          id: i,
+          brand: BRAND,
+          price: undefined,
+        })),
       ],
     })
     db.pool.query.mockResolvedValueOnce({
       rows: [SUGGESTION],
     })
-    python.mockReturnValue(SUGGESTION.values.map(v => ({ isMeaningful: true, text: SUGGESTION.values[0] })))
+    python.mockReturnValue(
+      SUGGESTION.values.map((v) => ({
+        isMeaningful: true,
+        text: SUGGESTION.values[0],
+      })),
+    )
 
     const url = new URL(
       `http://localhost:3000/search?q=${QUERY}${queryParams ? `&${queryParams}` : ""}`,
