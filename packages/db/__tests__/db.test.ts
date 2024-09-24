@@ -76,17 +76,18 @@ describe.concurrent("db", () => {
       })
     })
 
-    it("suggests up to 5 values", async ({ expect, db }) => {
-      await db.load({ schemas: new Array(5).fill(null).map((_, i) => ({
+    it("limits suggested values", async ({ expect, db }) => {
+      const limit = 5
+      await db.load({ schemas: new Array(limit+1).fill(null).map((_, i) => ({
         category: `${SCHEMA.category}${i}`,
         label: CATEGORY_LABEL,
         value: SCHEMA.value,
         tally: 4,
       }))})
 
-      const suggestions = await db.suggestions.category()
+      const suggestions = await db.suggestions.category(limit)
 
-      expect(suggestions.values.length).toStrictEqual(5)
+      expect(suggestions.values.length).toStrictEqual(limit)
     })
   })
 

@@ -10,14 +10,14 @@ export type Suggestion = {
 
 export const category = {
   takeFirst: true,
-  query: () =>
+  query: (noValues = 5) =>
     builder
       .with("category_values", (db) => db
         .selectFrom("schemas")
         .select(({ fn }) => ["category", fn.sum("schemas.tally").as("count")])
         .groupBy("category")
         .orderBy("count desc")
-        .limit(5)
+        .limit(noValues)
       )
       .selectFrom("category_values")
       .select(({ fn, ref, val }) => [
