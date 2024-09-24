@@ -43,11 +43,11 @@ describe.concurrent("db", () => {
     expect(schemas).toStrictEqual([SCHEMA])
   })
 
-  describe("suggestions", () => {
+  describe("category suggestion", () => {
     const SCHEMA = {
       category: "category",
       label: CATEGORY_LABEL,
-      value: "word1",
+      value: "value",
       tally: 2,
     }
 
@@ -88,6 +88,46 @@ describe.concurrent("db", () => {
       const suggestions = await db.suggestions.category(limit)
 
       expect(suggestions.values.length).toStrictEqual(limit)
+    })
+  })
+
+  describe("atttributes suggestions", () => {
+    const SCHEMA = {
+      category: "category",
+      label: "label",
+      value: "value",
+      tally: 2,
+    }
+
+    beforeEach<Fixtures>(async ({ db }) => {
+      await db.load({ schemas: [SCHEMA] })
+    })
+
+    it("suggests most likely labels", async ({ expect, db }) => {
+      const otherLabel = "label2"
+      await db.load({
+        schemas: [
+          {
+            category: SCHEMA.category,
+            label: otherLabel,
+            value: SCHEMA.value,
+            tally: 4,
+          },
+        ],
+      })
+
+      const suggestions = await db.suggestions.attributes(SCHEMA.category)
+
+      expect(suggestions).toStrictEqual([
+        {
+          label: otherLabel,
+          values: [SCHEMA.value],
+        },
+        {
+          label: SCHEMA.label,
+          values: [SCHEMA.value],
+        },
+      ])
     })
   })
 
