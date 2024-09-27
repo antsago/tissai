@@ -34,20 +34,14 @@ export const category = {
 
 export const attributes = (category: string, noLabels = 5) =>
   builder
-    .with("labels", (db) =>
-      db
-        .selectFrom("schemas")
-        .select(({ fn, ref }) => [
-          "label",
-          fn.sum("schemas.tally").as("count"),
-          fn.agg<string[]>("array_agg", [sql`${ref("schemas.value")} ORDER BY ${ref("schemas.tally")} DESC`]).as("values"),
-        ])
-        .where("schemas.label", "!=", CATEGORY_LABEL)
-        .where("schemas.category", "=", category)
-        .groupBy("label")
-        .orderBy("count desc")
-        .limit(noLabels),
-    )
-    .selectFrom("labels")
-    .select(["label", "values"])
+    .selectFrom("schemas")
+    .select(({ fn, ref }) => [
+      "label",
+      fn.agg<string[]>("array_agg", [sql`${ref("schemas.value")} ORDER BY ${ref("schemas.tally")} DESC`]).as("values"),
+    ])
+    .where("schemas.label", "!=", CATEGORY_LABEL)
+    .where("schemas.category", "=", category)
+    .groupBy("label")
+    .orderBy(({ fn }) => fn.sum("schemas.tally"), "desc")
+    .limit(noLabels)
     .compile()
