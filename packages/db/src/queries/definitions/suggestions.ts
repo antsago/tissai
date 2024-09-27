@@ -37,7 +37,11 @@ export const attributes = (category: string, noLabels = 5) =>
     .selectFrom("schemas")
     .select(({ fn, ref }) => [
       "label",
-      fn.agg<string[]>("array_agg", [sql`${ref("schemas.value")} ORDER BY ${ref("schemas.tally")} DESC`]).as("values"),
+      fn
+        .agg<
+          string[]
+        >("array_agg", [sql`${ref("schemas.value")} ORDER BY ${ref("schemas.tally")} DESC`])
+        .as("values"),
     ])
     .where("schemas.label", "!=", CATEGORY_LABEL)
     .where("schemas.category", "=", category)

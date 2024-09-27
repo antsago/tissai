@@ -90,7 +90,7 @@ describe.concurrent("db", () => {
             ...SCHEMA,
             label: "non-category-label",
             tally: 4,
-          }
+          },
         ],
       })
 
@@ -181,7 +181,7 @@ describe.concurrent("db", () => {
           {
             ...SCHEMA,
             category: otherCategory,
-            value: "value2"
+            value: "value2",
           },
         ],
       })
@@ -225,17 +225,18 @@ describe.concurrent("db", () => {
     it("limits number of suggestions", async ({ expect, db }) => {
       const limit = 3
       await db.load({
-        schemas: new Array(limit+1).fill(null).map((_, i) => 
-        ({
-            category: SCHEMA.category,
-            label: `${SCHEMA.label}_${i}`,
-            value: SCHEMA.value,
-            tally: 4,
-          })
-        )
+        schemas: new Array(limit + 1).fill(null).map((_, i) => ({
+          category: SCHEMA.category,
+          label: `${SCHEMA.label}_${i}`,
+          value: SCHEMA.value,
+          tally: 4,
+        })),
       })
 
-      const suggestions = await db.suggestions.attributes(SCHEMA.category, limit)
+      const suggestions = await db.suggestions.attributes(
+        SCHEMA.category,
+        limit,
+      )
 
       expect(suggestions.length).toStrictEqual(limit)
     })
@@ -243,11 +244,13 @@ describe.concurrent("db", () => {
     it("returns most likely values", async ({ expect, db }) => {
       const otherValue = "value1"
       await db.load({
-        schemas: [{
-          ...SCHEMA,
-          value: otherValue,
-          tally: 4,
-        }]
+        schemas: [
+          {
+            ...SCHEMA,
+            value: otherValue,
+            tally: 4,
+          },
+        ],
       })
 
       const suggestions = await db.suggestions.attributes(SCHEMA.category)
