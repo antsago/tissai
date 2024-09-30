@@ -1,5 +1,6 @@
 import { sql } from "kysely"
 import builder from "../builder.js"
+import { join } from "path"
 
 export const CATEGORY_LABEL = "categoría"
 
@@ -32,20 +33,34 @@ export const category = {
       .compile(),
 }
 
-export const attributes = (category: string, noLabels = 5) =>
+export const attributes = (category: string, noLabels = 5, noValues = 5) =>
   builder
-    .selectFrom("schemas")
-    .select(({ fn, ref }) => [
-      "label",
-      fn
-        .agg<
-          string[]
-        >("array_agg", [sql`${ref("schemas.value")} ORDER BY ${ref("schemas.tally")} DESC`])
+    .with("labels", (db) =>
+      db
+      .selectFrom("schemas")
+      .select(({ fn }) => [
+        "schemas.label",
+        fn.sum('schemas.tally').as("score"),
+      ])
+      .where("schemas.label", "!=", CATEGORY_LABEL)
+      .where("schemas.category", "=", category)
+      .groupBy("schemas.label")
+      .orderBy("score", "desc")
+      .limit(noLabels)
+    )
+    .selectFrom("labels")
+    .leftJoinLateral(
+      (eb) =>
+        eb.selectFrom("schemas")
+        .select("value")
+        .where("schemas.category", '=', category)
+        .where("schemas.label", "=", eb.ref("labels.label"))
+        .orderBy("schemas.tally", "desc")
+        .limit(noValues)
         .as("values"),
-    ])
-    .where("schemas.label", "!=", CATEGORY_LABEL)
-    .where("schemas.category", "=", category)
-    .groupBy("label")
-    .orderBy(({ fn }) => fn.sum("schemas.tally"), "desc")
-    .limit(noLabels)
+      (join) => join.onTrue(),
+    )
+    .select(({ fn }) => ["labels.label", fn.agg<string[]>("array_agg", ["values.value"]).as("values")])
+    .groupBy("labels.label")
+    .orderBy(({ fn }) => fn.sum("labels.score"), "desc")
     .compile()

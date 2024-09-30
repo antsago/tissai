@@ -262,6 +262,20 @@ describe.concurrent("db", () => {
         },
       ])
     })
+
+    it("limits suggested values", async ({ expect, db }) => {
+      const limit = 5
+      await db.load({
+        schemas: new Array(limit + 1).fill(null).map((_, i) => ({
+          ...SCHEMA,
+          value: `${SCHEMA.value}${i}`,
+        })),
+      })
+
+      const suggestions = await db.suggestions.attributes(SCHEMA.category, undefined, limit)
+
+      expect(suggestions[0].values.length).toStrictEqual(limit)
+    })
   })
 
   describe("upsert schema", () => {
