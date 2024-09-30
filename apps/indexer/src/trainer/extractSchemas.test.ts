@@ -3,7 +3,6 @@ import { Property } from "./LlmLabeler/index.js"
 import { extractSchemas } from "./extractSchemas.js"
 
 describe("extractSchemas", () => {
-  const CATEGORY = "myCategory"
   const WORD_PROPERTY = {
     value: "word",
     labels: ["foo", "bar"],
@@ -12,11 +11,10 @@ describe("extractSchemas", () => {
   it("converts property to schema", () => {
     const properties = [WORD_PROPERTY]
 
-    const result = extractSchemas(CATEGORY, properties)
+    const result = extractSchemas(properties)
 
     expect(result).toStrictEqual([
       {
-        category: CATEGORY,
         label: WORD_PROPERTY.labels[0],
         value: WORD_PROPERTY.value,
         tally: 1,
@@ -38,17 +36,15 @@ describe("extractSchemas", () => {
       },
     ]
 
-    const result = extractSchemas(CATEGORY, properties)
+    const result = extractSchemas(properties)
 
     expect(result).toStrictEqual([
       {
-        category: CATEGORY,
         label: "bar",
         value: "foo",
         tally: 1,
       },
       {
-        category: CATEGORY,
         label: "foobar",
         value: "foobar",
         tally: 1,
@@ -70,11 +66,10 @@ describe("extractSchemas", () => {
       },
     ] as Property[]
 
-    const result = extractSchemas(CATEGORY, properties)
+    const result = extractSchemas(properties)
 
     expect(result).toStrictEqual([
       {
-        category: CATEGORY,
         label: "foobar",
         value: "foobar",
         tally: 1,
@@ -94,17 +89,15 @@ describe("extractSchemas", () => {
       },
     ]
 
-    const result = extractSchemas(CATEGORY, properties)
+    const result = extractSchemas(properties)
 
     expect(result).toStrictEqual([
       {
-        category: CATEGORY,
         label: WORD_PROPERTY.labels[0],
         value: "foo",
         tally: 1,
       },
       {
-        category: CATEGORY,
         label: WORD_PROPERTY.labels[1],
         value: "bar",
         tally: 1,
@@ -115,17 +108,15 @@ describe("extractSchemas", () => {
   it("ignores properties without fallback labels", () => {
     const properties = [WORD_PROPERTY, WORD_PROPERTY, WORD_PROPERTY]
 
-    const result = extractSchemas(CATEGORY, properties)
+    const result = extractSchemas(properties)
 
     expect(result).toStrictEqual([
       {
-        category: CATEGORY,
         label: WORD_PROPERTY.labels[0],
         value: WORD_PROPERTY.value,
         tally: 1,
       },
       {
-        category: CATEGORY,
         label: WORD_PROPERTY.labels[1],
         value: WORD_PROPERTY.value,
         tally: 1,

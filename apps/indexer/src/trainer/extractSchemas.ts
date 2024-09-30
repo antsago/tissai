@@ -1,6 +1,6 @@
 import type { Property } from "./LlmLabeler/index.js"
 
-export function extractSchemas(category: string, properties: Property[]) {
+export function extractSchemas(properties: Property[]) {
   const seenLabels = [] as string[]
 
   return properties
@@ -17,7 +17,6 @@ export function extractSchemas(category: string, properties: Property[]) {
       seenLabels.push(label)
 
       return {
-        category,
         label,
         value: property.value,
         tally: 1,
