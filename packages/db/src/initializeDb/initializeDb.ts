@@ -7,10 +7,12 @@ import * as sites from "./sites.js"
 import * as pages from "./pages.js"
 import * as attributes from "./attributes.js"
 import * as schemas from "./schemas.js"
+import * as nodes from "./nodes.js"
 
 const Tables = {
   attributes,
   brands,
+  nodes,
   offers,
   pages,
   products,

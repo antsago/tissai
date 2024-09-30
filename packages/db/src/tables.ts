@@ -36,6 +36,12 @@ export type Schema = {
   value: string
   tally: number
 }
+export type Node = {
+  id: string
+  parent: string | null
+  name: string
+  tally: number
+}
 export type Seller = {
   name: string
 }
@@ -52,6 +58,7 @@ export type Site = {
 export type Database = {
   attributes: Attribute
   brands: Brand
+  nodes: Node
   offers: Offer
   pages: Page
   products: Product

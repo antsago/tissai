@@ -9,6 +9,7 @@ import {
   ATTRIBUTE,
   dbFixture,
   SCHEMA,
+  CATEGORY_NODE,
 } from "#mocks"
 
 type Fixtures = { db: dbFixture }
@@ -26,6 +27,7 @@ describe.concurrent("db", () => {
     await db.offers.create(OFFER)
     await db.attributes.create(ATTRIBUTE)
     await db.schemas.create(SCHEMA)
+    await db.nodes.create(CATEGORY_NODE)
 
     const products = await db.products.getAll()
     const offers = await db.offers.getAll()
@@ -33,6 +35,7 @@ describe.concurrent("db", () => {
     const sellers = await db.sellers.getAll()
     const attributes = await db.attributes.getAll()
     const schemas = await db.schemas.getAll()
+    const nodes = await db.nodes.getAll()
 
     expect(products).toStrictEqual([PRODUCT])
     expect(offers).toStrictEqual([OFFER])
@@ -40,6 +43,7 @@ describe.concurrent("db", () => {
     expect(sellers).toStrictEqual([SELLER])
     expect(attributes).toStrictEqual([ATTRIBUTE])
     expect(schemas).toStrictEqual([SCHEMA])
+    expect(nodes).toStrictEqual([CATEGORY_NODE])
   })
 
   describe("upsert schema", () => {

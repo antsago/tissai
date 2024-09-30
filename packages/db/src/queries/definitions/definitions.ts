@@ -1,12 +1,13 @@
-import {
-  type Brand,
-  type Offer,
-  type Page,
-  type Product,
-  type Attribute,
-  type Seller,
-  type Site,
-  type Schema,
+import type {
+  Brand,
+  Offer,
+  Page,
+  Product,
+  Attribute,
+  Seller,
+  Site,
+  Schema,
+  Node,
 } from "../../tables.js"
 import sharedQueries from "./sharedQueries.js"
 import * as sellers from "./sellers.js"
@@ -25,6 +26,7 @@ export const Definitions = {
     ...sharedQueries<Brand>("brands"),
     ...brands,
   },
+  nodes: sharedQueries<Node>("nodes"),
   offers: sharedQueries<Offer>("offers"),
   pages: sharedQueries<Page>("pages"),
   products: {

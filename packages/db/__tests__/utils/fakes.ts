@@ -55,3 +55,10 @@ export const SCHEMA = {
   value: "BL 900",
   tally: 3,
 }
+
+export const CATEGORY_NODE = {
+  id: "60a412f1-74c5-4671-9cca-dd49d0be2648",
+  parent: null,
+  name: "botines",
+  tally: 1,
+}
