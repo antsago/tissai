@@ -2,7 +2,6 @@ import { Compiler, Required, Tokenizer, Schema, Type } from "../parser/index.js"
 import type { Reporter } from "../PageServer/index.js"
 import { LLM } from "./LlmLabeler/index.js"
 import { extractSchemas } from "./extractSchemas.js"
-import { getCategory } from "./getCategory.js"
 import { getProperties } from "./getProperties.js"
 
 export const ProductType = Symbol("Product")
@@ -22,11 +21,6 @@ const getSchemas =
           as: "schemas",
           with: async (title: string) => {
             const words = await tokenizer.fromText(title)
-            const category = await getCategory(llm, title)
-
-            if (!category) {
-              throw new Error("No category detected")
-            }
 
             const properties = await getProperties(
               llm,
@@ -34,7 +28,7 @@ const getSchemas =
               words.map((w) => w.text),
             )
 
-            const schemas = extractSchemas(category, properties)
+            const schemas = extractSchemas(properties)
 
             if (!schemas.find((s) => s.label === "categoría")) {
               throw new Error("No property categoría found")
