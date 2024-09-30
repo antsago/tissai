@@ -14,6 +14,6 @@ export const initialize = (connection: Connection) =>
       ${NODES.parent}         uuid REFERENCES ${NODES}(id),
       ${NODES.name}           text NOT NULL,
       ${NODES.tally}          numeric NOT NULL,
-      UNIQUE (${NODES.parent}, ${NODES.name})
+      UNIQUE NULLS NOT DISTINCT (${NODES.parent}, ${NODES.name})
     );
   `)
