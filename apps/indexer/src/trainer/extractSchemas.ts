@@ -19,7 +19,6 @@ export function extractSchemas(properties: Property[]) {
       return {
         label,
         value: property.value,
-        tally: 1,
       }
     })
     .filter((schema) => !!schema)

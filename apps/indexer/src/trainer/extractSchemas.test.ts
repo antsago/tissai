@@ -17,7 +17,6 @@ describe("extractSchemas", () => {
       {
         label: WORD_PROPERTY.labels[0],
         value: WORD_PROPERTY.value,
-        tally: 1,
       },
     ])
   })
@@ -42,12 +41,10 @@ describe("extractSchemas", () => {
       {
         label: "bar",
         value: "foo",
-        tally: 1,
       },
       {
         label: "foobar",
         value: "foobar",
-        tally: 1,
       },
     ])
   })
@@ -72,7 +69,6 @@ describe("extractSchemas", () => {
       {
         label: "foobar",
         value: "foobar",
-        tally: 1,
       },
     ])
   })
@@ -95,12 +91,10 @@ describe("extractSchemas", () => {
       {
         label: WORD_PROPERTY.labels[0],
         value: "foo",
-        tally: 1,
       },
       {
         label: WORD_PROPERTY.labels[1],
         value: "bar",
-        tally: 1,
       },
     ])
   })
@@ -114,12 +108,10 @@ describe("extractSchemas", () => {
       {
         label: WORD_PROPERTY.labels[0],
         value: WORD_PROPERTY.value,
-        tally: 1,
       },
       {
         label: WORD_PROPERTY.labels[1],
         value: WORD_PROPERTY.value,
-        tally: 1,
       },
     ])
   })
