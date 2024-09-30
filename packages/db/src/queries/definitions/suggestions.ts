@@ -40,11 +40,12 @@ export const attributes = (category: string, noLabels = 5, noValues = 5) =>
       .selectFrom("schemas")
       .select(({ fn }) => [
         "schemas.label",
+        "schemas.category",
         fn.sum('schemas.tally').as("score"),
       ])
       .where("schemas.label", "!=", CATEGORY_LABEL)
       .where("schemas.category", "=", category)
-      .groupBy("schemas.label")
+      .groupBy(["schemas.category", "schemas.label"])
       .orderBy("score", "desc")
       .limit(noLabels)
     )
@@ -53,7 +54,7 @@ export const attributes = (category: string, noLabels = 5, noValues = 5) =>
       (eb) =>
         eb.selectFrom("schemas")
         .select("value")
-        .where("schemas.category", '=', category)
+        .where("schemas.category", '=', eb.ref("labels.category"))
         .where("schemas.label", "=", eb.ref("labels.label"))
         .orderBy("schemas.tally", "desc")
         .limit(noValues)
