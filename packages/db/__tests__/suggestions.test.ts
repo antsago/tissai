@@ -1,7 +1,5 @@
 import { describe, test, beforeEach } from "vitest"
-import {
-  dbFixture,
-} from "#mocks"
+import { dbFixture } from "#mocks"
 import { CATEGORY_LABEL } from "../src"
 
 type Fixtures = { db: dbFixture }
@@ -239,7 +237,11 @@ describe.concurrent("suggestions", () => {
         })),
       })
 
-      const suggestions = await db.suggestions.attributes(SCHEMA.category, undefined, limit)
+      const suggestions = await db.suggestions.attributes(
+        SCHEMA.category,
+        undefined,
+        limit,
+      )
 
       expect(suggestions[0].values.length).toStrictEqual(limit)
     })
