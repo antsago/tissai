@@ -16,17 +16,16 @@ export const category = {
     builder
       .with("category_values", (db) =>
         db
-          .selectFrom("schemas")
-          .select(({ fn }) => ["category", fn.sum("schemas.tally").as("count")])
-          .where("schemas.label", "=", CATEGORY_LABEL)
-          .groupBy("category")
-          .orderBy("count desc")
+          .selectFrom("nodes")
+          .select("name")
+          .where("nodes.parent", "is", null)
+          .orderBy("tally", "desc")
           .limit(noValues),
       )
       .selectFrom("category_values")
       .select(({ fn, ref, val }) => [
         fn
-          .agg<string[]>("array_agg", [ref("category_values.category")])
+          .agg<string[]>("array_agg", [ref("category_values.name")])
           .as("values"),
         val(CATEGORY_LABEL).as("label"),
       ])

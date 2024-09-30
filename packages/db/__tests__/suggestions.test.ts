@@ -1,6 +1,7 @@
 import { describe, test, beforeEach } from "vitest"
-import { dbFixture } from "#mocks"
+import { CATEGORY_NODE, dbFixture } from "#mocks"
 import { CATEGORY_LABEL } from "../src"
+import { randomUUID } from "crypto"
 
 type Fixtures = { db: dbFixture }
 const it = test.extend<Fixtures>({
@@ -9,71 +10,42 @@ const it = test.extend<Fixtures>({
 
 describe.concurrent("suggestions", () => {
   describe("category", () => {
-    const SCHEMA = {
-      category: "category",
-      label: CATEGORY_LABEL,
-      value: "value",
-      tally: 2,
-    }
-
     beforeEach<Fixtures>(async ({ db }) => {
-      await db.load({ schemas: [SCHEMA] })
+      await db.load({ nodes: [CATEGORY_NODE] })
     })
 
     it("suggests most likely categories", async ({ expect, db }) => {
-      const otherCategory = "category2"
+      const otherCategory = "category 2"
+
       await db.load({
-        schemas: [
-          {
-            category: otherCategory,
-            label: CATEGORY_LABEL,
-            value: SCHEMA.value,
-            tally: 4,
-          },
-        ],
+        nodes: [{
+          id: "d05f70aa-7629-4be3-ae54-3c8c8070251e",
+          parent: null,
+          name: otherCategory,
+          tally: CATEGORY_NODE.tally + 2, 
+        }, {
+          id: "89c472de-d6a3-4c3a-8b9a-c827820b6f91",
+          parent: CATEGORY_NODE.id,
+          name: "a label",
+          tally: 5,
+        }],
       })
 
       const suggestions = await db.suggestions.category()
 
       expect(suggestions).toStrictEqual({
         label: CATEGORY_LABEL,
-        values: [otherCategory, SCHEMA.category],
-      })
-    })
-
-    it("ignores non-category counts", async ({ expect, db }) => {
-      const otherCategory = "category2"
-      await db.load({
-        schemas: [
-          {
-            category: otherCategory,
-            label: CATEGORY_LABEL,
-            value: SCHEMA.value,
-            tally: 4,
-          },
-          {
-            ...SCHEMA,
-            label: "non-category-label",
-            tally: 4,
-          },
-        ],
-      })
-
-      const suggestions = await db.suggestions.category()
-
-      expect(suggestions).toStrictEqual({
-        label: CATEGORY_LABEL,
-        values: [otherCategory, SCHEMA.category],
+        values: [otherCategory, CATEGORY_NODE.name],
       })
     })
 
     it("limits suggested values", async ({ expect, db }) => {
       const limit = 5
       await db.load({
-        schemas: new Array(limit + 1).fill(null).map((_, i) => ({
-          category: `${SCHEMA.category}${i}`,
-          label: CATEGORY_LABEL,
-          value: SCHEMA.value,
+        nodes: new Array(limit + 1).fill(null).map((_, i) => ({
+          id: randomUUID(),
+          parent: null,
+          name: `${CATEGORY_NODE.name}${i}`,
           tally: 4,
         })),
       })
