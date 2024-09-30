@@ -1,3 +1,4 @@
+import { CATEGORY_LABEL } from "@tissai/db"
 import { Compiler, Required, Tokenizer, Schema, Type } from "../parser/index.js"
 import type { Reporter } from "../PageServer/index.js"
 import { LLM } from "./LlmLabeler/index.js"
@@ -22,19 +23,24 @@ const getSchemas =
           with: async (title: string) => {
             const words = await tokenizer.fromText(title)
 
-            const properties = await getProperties(
+            const propertyCandidates = await getProperties(
               llm,
               title,
               words.map((w) => w.text),
             )
 
-            const schemas = extractSchemas(properties)
+            const schemas = extractSchemas(propertyCandidates)
 
-            if (!schemas.find((s) => s.label === "categoría")) {
+            const categoryProperty = schemas.find((s) => s.label === CATEGORY_LABEL)
+            if (!categoryProperty) {
               throw new Error("No property categoría found")
             }
+            const properties = schemas.filter((s) => s.label !== CATEGORY_LABEL)
 
-            return schemas
+            return {
+              category: categoryProperty.value,
+              properties: properties,
+            }
           },
         },
       },
