@@ -1,5 +1,5 @@
 import { sql } from "kysely"
-import { type Schema } from "../../types.js"
+import { type Schema } from "../../tables.js"
 import builder from "../builder.js"
 
 export const upsert = (schema: Schema) =>

@@ -1,4 +1,4 @@
-import type { Brand } from "../../../types.js"
+import type { Brand } from "../../../tables.js"
 import { type CompiledQuery, sql } from "kysely"
 import builder from "../../builder.js"
 

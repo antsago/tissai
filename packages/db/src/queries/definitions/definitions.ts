@@ -7,7 +7,7 @@ import {
   type Seller,
   type Site,
   type Schema,
-} from "../../types.js"
+} from "../../tables.js"
 import sharedQueries from "./sharedQueries.js"
 import * as sellers from "./sellers.js"
 import * as brands from "./brands.js"

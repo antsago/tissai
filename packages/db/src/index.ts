@@ -1,5 +1,5 @@
 export { Db } from "./Db.js"
-export type * from "./types.js"
+export type * from "./tables.js"
 export { builder as query } from "./queries/index.js"
 export {
   type ProductDetails,

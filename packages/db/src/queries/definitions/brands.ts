@@ -1,4 +1,4 @@
-import type { Brand } from "../../types.js"
+import type { Brand } from "../../tables.js"
 import builder from "../builder.js"
 
 export const byName = {

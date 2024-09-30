@@ -1,4 +1,4 @@
-import type { Seller } from "../../types.js"
+import type { Seller } from "../../tables.js"
 import builder from "../builder.js"
 
 export const create = (seller: Seller) =>
