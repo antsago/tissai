@@ -6,7 +6,6 @@ export function Tokenizer() {
 
   return {
     fromText: (title: string) => parseText(lexer, title),
-    fromPage: parsePage,
     close: () => lexer.close(),
   }
 }

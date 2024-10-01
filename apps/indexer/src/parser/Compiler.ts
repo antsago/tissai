@@ -1,4 +1,4 @@
-import { Tokenizer } from "@tissai/tokenizer"
+import { Tokenizer, tokenizeFromPage } from "@tissai/tokenizer"
 import { Ontology, type Schema } from "./grammar/index.js"
 import { TokenReader } from "./TokenReader.js"
 
@@ -8,7 +8,7 @@ export function Compiler(getSchemas: (tokenizer: Tokenizer) => Schema[]) {
 
   return {
     parse: (page: string) => {
-      const tokens = tokenizer.fromPage(page)
+      const tokens = tokenizeFromPage(page)
       const reader = TokenReader(tokens)
       return Product(reader)
     },
