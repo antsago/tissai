@@ -1,72 +1,48 @@
 import { describe, test, expect } from "vitest"
 import { mockDbFixture, queries } from "@tissai/db/mocks"
 import { Db } from "@tissai/db"
-import { mockPythonFixture } from "@tissai/python-pool/mocks"
 import { Tokenizer } from "@tissai/tokenizer"
-import { QUERY, SUGGESTION } from "mocks"
+import { SUGGESTION } from "mocks"
 import { getSuggestions } from "./getSuggestions"
 
-const it = test.extend<{ db: mockDbFixture; python: mockPythonFixture }>({
+const it = test.extend<{ db: mockDbFixture }>({
   db: [mockDbFixture, { auto: true }],
-  python: [mockPythonFixture, { auto: true }],
 })
 
 describe("getSuggestions", () => {
-  it("returns suggestions", async ({ db, python }) => {
-    python.mockReturnValue(
-      SUGGESTION.values.map((v) => ({
-        isMeaningful: true,
-        text: SUGGESTION.values[0],
-      })),
-    )
+  it("returns suggestions", async ({ db }) => {
     db.pool.query.mockResolvedValueOnce({
       rows: [SUGGESTION],
     })
     const locals = { db: Db(), tokenizer: Tokenizer() }
 
-    const results = await getSuggestions(QUERY, locals)
+    const results = await getSuggestions(locals)
 
     expect(results).toStrictEqual([SUGGESTION])
-    expect(python.worker.send).toHaveBeenCalledWith(QUERY)
-    expect(db).toHaveExecuted(queries.suggestions.category(SUGGESTION.values))
+    expect(db).toHaveExecuted(queries.suggestions.category())
   })
 
-  it("filters meaningless words", async ({ db, python }) => {
-    python.mockReturnValue([
-      ...SUGGESTION.values.map((v) => ({
-        isMeaningful: true,
-        text: SUGGESTION.values[0],
-      })),
-      { isMeaningfull: false, text: "foo" },
-    ])
+  it("filters meaningless words", async ({ db }) => {
     db.pool.query.mockResolvedValueOnce({
       rows: [SUGGESTION],
     })
     const locals = { db: Db(), tokenizer: Tokenizer() }
 
-    const results = await getSuggestions(QUERY, locals)
+    const results = await getSuggestions(locals)
 
     expect(results).toStrictEqual([SUGGESTION])
-    expect(python.worker.send).toHaveBeenCalledWith(QUERY)
-    expect(db).toHaveExecuted(queries.suggestions.category(SUGGESTION.values))
+    expect(db).toHaveExecuted(queries.suggestions.category())
   })
 
   it.for([{ values: null }, { values: [] }])(
     "filters empty suggestions",
-    async ({ values }, { db, python }) => {
-      python.mockReturnValue([
-        ...SUGGESTION.values.map((v) => ({
-          isMeaningful: true,
-          text: SUGGESTION.values[0],
-        })),
-        { isMeaningfull: false, text: "foo" },
-      ])
+    async ({ values }, { db }) => {
       db.pool.query.mockResolvedValueOnce({
         rows: [{ ...SUGGESTION, values }],
       })
       const locals = { db: Db(), tokenizer: Tokenizer() }
 
-      const results = await getSuggestions(QUERY, locals)
+      const results = await getSuggestions(locals)
 
       expect(results).toStrictEqual([])
     },

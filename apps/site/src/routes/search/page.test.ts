@@ -86,8 +86,7 @@ describe("Search page", () => {
     expect(product).toBeInTheDocument()
     expect(suggestion).toBeInTheDocument()
     expect(db).toHaveExecuted(queries.products.search({ query: QUERY }))
-    expect(db).toHaveExecuted(queries.suggestions.category(SUGGESTION.values))
-    expect(python.worker.send).toHaveBeenCalledWith(QUERY)
+    expect(db).toHaveExecuted(queries.suggestions.category())
   })
 
   it("displays filters", async ({ db, python }) => {

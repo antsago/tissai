@@ -1,8 +1,5 @@
-export const getSuggestions = async (query: string, locals: App.Locals) => {
-  const words = (await locals.tokenizer.fromText(query))
-    .filter((w) => !!w.isMeaningful)
-    .map((w) => w.text)
-  const suggestion = await locals.db.suggestions.category(words)
+export const getSuggestions = async (locals: App.Locals) => {
+  const suggestion = await locals.db.suggestions.category()
 
   if (!suggestion.values?.length) {
     return []

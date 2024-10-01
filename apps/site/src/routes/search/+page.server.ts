@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
       query,
       ...filters,
     }),
-    getSuggestions(query, locals),
+    getSuggestions(locals),
   ])
 
   return {
