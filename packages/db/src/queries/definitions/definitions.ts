@@ -6,7 +6,6 @@ import type {
   Attribute,
   Seller,
   Site,
-  Schema,
   Node,
 } from "../../tables.js"
 import sharedQueries from "./sharedQueries.js"
@@ -14,15 +13,10 @@ import * as sellers from "./sellers.js"
 import * as brands from "./brands.js"
 import * as products from "./products/index.js"
 import * as nodes from "./nodes.js"
-import * as schemas from "./schemas.js"
 import * as suggestions from "./suggestions.js"
 
 export const Definitions = {
   attributes: sharedQueries<Attribute>("attributes"),
-  schemas: {
-    ...sharedQueries<Schema>("schemas"),
-    ...schemas,
-  },
   brands: {
     ...sharedQueries<Brand>("brands"),
     ...brands,

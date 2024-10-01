@@ -8,7 +8,6 @@ import {
   SELLER,
   ATTRIBUTE,
   dbFixture,
-  SCHEMA,
   CATEGORY_NODE,
 } from "#mocks"
 
@@ -26,7 +25,6 @@ describe.concurrent("db", () => {
     await db.products.create(PRODUCT)
     await db.offers.create(OFFER)
     await db.attributes.create(ATTRIBUTE)
-    await db.schemas.create(SCHEMA)
     await db.nodes.create(CATEGORY_NODE)
 
     const products = await db.products.getAll()
@@ -34,7 +32,6 @@ describe.concurrent("db", () => {
     const brands = await db.brands.getAll()
     const sellers = await db.sellers.getAll()
     const attributes = await db.attributes.getAll()
-    const schemas = await db.schemas.getAll()
     const nodes = await db.nodes.getAll()
 
     expect(products).toStrictEqual([PRODUCT])
@@ -42,38 +39,7 @@ describe.concurrent("db", () => {
     expect(brands).toStrictEqual([BRAND])
     expect(sellers).toStrictEqual([SELLER])
     expect(attributes).toStrictEqual([ATTRIBUTE])
-    expect(schemas).toStrictEqual([SCHEMA])
     expect(nodes).toStrictEqual([CATEGORY_NODE])
-  })
-
-  describe("upsert schema", () => {
-    const SCHEMA = {
-      category: "myCategory",
-      label: "theLabel",
-      value: "a value",
-      tally: 4,
-    }
-
-    beforeEach<Fixtures>(async ({ db }) => {
-      await db.load({
-        schemas: [SCHEMA],
-      })
-    })
-
-    it("creates new if it doesn't already exists", async ({ expect, db }) => {
-      const newSchema = { ...SCHEMA, label: "new label" }
-
-      await db.schemas.upsert(newSchema)
-      const schemas = await db.schemas.getAll()
-
-      expect(schemas).toStrictEqual([SCHEMA, newSchema])
-    })
-
-    it("updates tally if it already exists", async ({ expect, db }) => {
-      await db.schemas.upsert({ ...SCHEMA, tally: 1 })
-      const schemas = await db.schemas.getAll()
-      expect(schemas).toStrictEqual([{ ...SCHEMA, tally: SCHEMA.tally + 1 }])
-    })
   })
 
   describe("upsert node", () => {

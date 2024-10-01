@@ -6,7 +6,6 @@ import * as offers from "./offers.js"
 import * as sites from "./sites.js"
 import * as pages from "./pages.js"
 import * as attributes from "./attributes.js"
-import * as schemas from "./schemas.js"
 import * as nodes from "./nodes.js"
 
 const Tables = {
@@ -16,7 +15,6 @@ const Tables = {
   offers,
   pages,
   products,
-  schemas,
   sellers,
   sites,
 }

@@ -30,12 +30,6 @@ export type Product = {
   images?: string[]
   brand?: string
 }
-export type Schema = {
-  category: string
-  label: string
-  value: string
-  tally: number
-}
 export type Node = {
   id: string
   parent: string | null
@@ -62,7 +56,6 @@ export type Database = {
   offers: Offer
   pages: Page
   products: Product
-  schemas: Schema
   sellers: Seller
   sites: Site
 }
