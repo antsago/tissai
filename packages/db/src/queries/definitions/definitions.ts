@@ -29,7 +29,7 @@ export const Definitions = {
   },
   nodes: {
     ...sharedQueries<Node>("nodes"),
-    ...nodes, 
+    ...nodes,
   },
   offers: sharedQueries<Offer>("offers"),
   pages: sharedQueries<Page>("pages"),

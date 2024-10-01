@@ -19,12 +19,31 @@ const processPage: OnPage<Compiler> = async (
   const { category, properties } = entities
     .filter((entity) => entity[Type] === ProductType)
     .map((product) => product.schemas[0])[0]
-  
-  const { id: categoryId } = await db.nodes.upsert({ id: randomUUID(), parent: null, name: category, tally: 1 })
-  await Promise.all(properties.map(async (property: ReturnType<typeof extractSchemas>[number]) => {
-    const { id: labelId } = await db.nodes.upsert({ id: randomUUID(), parent: categoryId, name: property.label, tally: 1 })
-    await db.nodes.upsert({ id: randomUUID(), parent: labelId, name: property.value, tally: 1 })
-  }))
+
+  const { id: categoryId } = await db.nodes.upsert({
+    id: randomUUID(),
+    parent: null,
+    name: category,
+    tally: 1,
+  })
+  await Promise.all(
+    properties.map(
+      async (property: ReturnType<typeof extractSchemas>[number]) => {
+        const { id: labelId } = await db.nodes.upsert({
+          id: randomUUID(),
+          parent: categoryId,
+          name: property.label,
+          tally: 1,
+        })
+        await db.nodes.upsert({
+          id: randomUUID(),
+          parent: labelId,
+          name: property.value,
+          tally: 1,
+        })
+      },
+    ),
+  )
 }
 
 const createStream = async ({ db }: Helpers<Compiler>) => {

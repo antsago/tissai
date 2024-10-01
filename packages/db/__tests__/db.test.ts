@@ -84,7 +84,12 @@ describe.concurrent("db", () => {
     })
 
     it("creates new if it doesn't already exists", async ({ expect, db }) => {
-      const newNode = { id: "bd11bd26-ea86-48c4-935d-2176dc91bd56", parent: CATEGORY_NODE.id, name: "tela", tally: 1 }
+      const newNode = {
+        id: "bd11bd26-ea86-48c4-935d-2176dc91bd56",
+        parent: CATEGORY_NODE.id,
+        name: "tela",
+        tally: 1,
+      }
 
       await db.nodes.upsert(newNode)
       const nodes = await db.nodes.getAll()
@@ -96,14 +101,22 @@ describe.concurrent("db", () => {
       const { id } = await db.nodes.upsert({ ...CATEGORY_NODE, tally: 1 })
       const nodes = await db.nodes.getAll()
       expect(id).toStrictEqual(CATEGORY_NODE.id)
-      expect(nodes).toStrictEqual([{ ...CATEGORY_NODE, tally: CATEGORY_NODE.tally + 1 }])
+      expect(nodes).toStrictEqual([
+        { ...CATEGORY_NODE, tally: CATEGORY_NODE.tally + 1 },
+      ])
     })
 
     it("ignores different id", async ({ expect, db }) => {
-      const { id } = await db.nodes.upsert({ ...CATEGORY_NODE, id: "bd11bd26-ea86-48c4-935d-2176dc91bd57", tally: 1 })
+      const { id } = await db.nodes.upsert({
+        ...CATEGORY_NODE,
+        id: "bd11bd26-ea86-48c4-935d-2176dc91bd57",
+        tally: 1,
+      })
       const nodes = await db.nodes.getAll()
       expect(id).toStrictEqual(CATEGORY_NODE.id)
-      expect(nodes).toStrictEqual([{ ...CATEGORY_NODE, tally: CATEGORY_NODE.tally + 1 }])
+      expect(nodes).toStrictEqual([
+        { ...CATEGORY_NODE, tally: CATEGORY_NODE.tally + 1 },
+      ])
     })
   })
 
