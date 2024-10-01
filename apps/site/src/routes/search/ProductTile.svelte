@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Search } from "@tissai/db"
 
-  export let product: Search["products"][0]
+  export let product: Search
 </script>
 
 <a

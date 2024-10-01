@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Search, SearchParams } from "@tissai/db"
+  import type { Search, SearchParams, Suggestion } from "@tissai/db"
   import { page } from "$app/stores"
   import { Section } from "$lib/components"
   import Masonry from "./Masonry.svelte"
@@ -8,7 +8,7 @@
   import SuggestionTile from "./SuggestionTile.svelte"
 
   export let data: {
-    tiles: (Search["products"][0] | Search["suggestions"][0])[]
+    tiles: (Search | Suggestion)[]
     filters: Omit<SearchParams, "query">
   }
 </script>

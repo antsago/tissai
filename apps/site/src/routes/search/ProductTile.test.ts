@@ -81,7 +81,7 @@ describe("ProductTile", () => {
     render(ProductTile, {
       product: {
         ...SEARCH_RESULT,
-        price: undefined,
+        price: null,
       },
     })
 

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { Search } from "@tissai/db"
+  import type { Suggestion } from "@tissai/db"
 
-  export let suggestion: Search["suggestions"][0]
+  export let suggestion: Suggestion
   export let baseUrl: string
 </script>
 
