@@ -80,7 +80,7 @@ describe("Search page", () => {
     })
     const suggestion = results.getByRole("heading", {
       level: 3,
-      name: SUGGESTION.label,
+      name: `Filtrar por ${SUGGESTION.label}`,
     })
 
     expect(product).toBeInTheDocument()
