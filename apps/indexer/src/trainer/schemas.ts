@@ -31,7 +31,9 @@ const getSchemas =
 
             const schemas = extractSchemas(propertyCandidates)
 
-            const categoryProperty = schemas.find((s) => s.label === CATEGORY_LABEL)
+            const categoryProperty = schemas.find(
+              (s) => s.label === CATEGORY_LABEL,
+            )
             if (!categoryProperty) {
               throw new Error("No property categoría found")
             }

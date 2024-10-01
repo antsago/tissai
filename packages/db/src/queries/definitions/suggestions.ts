@@ -32,39 +32,32 @@ export const category = {
       .compile(),
 }
 
-export const attributes = (category: string, noLabels = 5, noValues = 5) =>
+export const attributes = (categoryId: string, noLabels = 5, noValues = 5) =>
   builder
     .with("labels", (db) =>
       db
-        .selectFrom("schemas")
-        .select(({ fn }) => [
-          "schemas.label",
-          "schemas.category",
-          fn.sum("schemas.tally").as("score"),
-        ])
-        .where("schemas.label", "!=", CATEGORY_LABEL)
-        .where("schemas.category", "=", category)
-        .groupBy(["schemas.category", "schemas.label"])
-        .orderBy("score", "desc")
+        .selectFrom("nodes")
+        .select(["nodes.id", "nodes.name", "nodes.tally"])
+        .where("nodes.parent", "=", categoryId)
+        .orderBy("tally", "desc")
         .limit(noLabels),
     )
     .selectFrom("labels")
     .leftJoinLateral(
       (eb) =>
         eb
-          .selectFrom("schemas")
-          .select("value")
-          .where("schemas.category", "=", eb.ref("labels.category"))
-          .where("schemas.label", "=", eb.ref("labels.label"))
-          .orderBy("schemas.tally", "desc")
+          .selectFrom("nodes")
+          .select("name")
+          .where("nodes.parent", "=", eb.ref("labels.id"))
+          .orderBy("nodes.tally", "desc")
           .limit(noValues)
           .as("values"),
       (join) => join.onTrue(),
     )
     .select(({ fn }) => [
-      "labels.label",
-      fn.agg<string[]>("array_agg", ["values.value"]).as("values"),
+      "labels.name as label",
+      fn.agg<string[]>("array_agg", ["values.name"]).as("values"),
     ])
-    .groupBy("labels.label")
-    .orderBy(({ fn }) => fn.sum("labels.score"), "desc")
+    .groupBy(["labels.name", "labels.tally"])
+    .orderBy("labels.tally", "desc")
     .compile()
