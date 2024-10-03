@@ -1,5 +1,5 @@
 import { describe, test, beforeEach } from "vitest"
-import { CATEGORY_NODE, dbFixture } from "#mocks"
+import { CATEGORY_NODE, LABEL_NODE, VALUE_NODE, dbFixture } from "#mocks"
 import { CATEGORY_LABEL } from "../src"
 import { randomUUID } from "crypto"
 
@@ -9,19 +9,6 @@ const it = test.extend<Fixtures>({
 })
 
 describe.concurrent("suggestions", () => {
-  const LABEL_NODE = {
-    id: "89c472de-d6a3-4c3a-8b9a-c827820b6f91",
-    parent: CATEGORY_NODE.id,
-    name: "a label",
-    tally: 5,
-  }
-  const VALUE_NODE = {
-    id: "761384ca-6756-49ff-bcb4-8a9a94e3ea8a",
-    parent: LABEL_NODE.id,
-    name: "a value",
-    tally: 5,
-  }
-
   beforeEach<Fixtures>(async ({ db }) => {
     await db.load({ nodes: [CATEGORY_NODE, LABEL_NODE, VALUE_NODE] })
   })

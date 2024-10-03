@@ -55,3 +55,15 @@ export const CATEGORY_NODE = {
   name: "botines",
   tally: 1,
 }
+export const LABEL_NODE = {
+  id: "89c472de-d6a3-4c3a-8b9a-c827820b6f91",
+  parent: CATEGORY_NODE.id,
+  name: "a label",
+  tally: 5,
+}
+export const VALUE_NODE = {
+  id: "761384ca-6756-49ff-bcb4-8a9a94e3ea8a",
+  parent: LABEL_NODE.id,
+  name: "a value",
+  tally: 5,
+}
