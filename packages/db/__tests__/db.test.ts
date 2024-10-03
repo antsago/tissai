@@ -27,6 +27,12 @@ describe.concurrent("db", () => {
         name: "foo",
         tally: 1,
       }
+      const categoryWithoutLabels = {
+        id: "2f311f14-b613-4a0d-ba84-5094d06cf3b6",
+        parent: null,
+        name: "labeless-category",
+        tally: 1,
+      }
       const labelWithoutValues = {
         ...LABEL_NODE,
         id: "2b3a9822-a8bd-4b13-9393-6640ce7bade3",
@@ -43,14 +49,24 @@ describe.concurrent("db", () => {
           LABEL_NODE,
           VALUE_NODE,
           nonMatchingCategory,
+          categoryWithoutLabels,
           labelWithoutValues,
           nonMatchingValue,
         ],
       })
 
-      const result = await db.nodes.infer([CATEGORY_NODE.name, VALUE_NODE.name])
+      const result = await db.nodes.infer([
+        CATEGORY_NODE.name,
+        VALUE_NODE.name,
+        categoryWithoutLabels.name,
+      ])
 
       expect(result).toStrictEqual([
+        {
+          id: categoryWithoutLabels.id,
+          tally: categoryWithoutLabels.tally,
+          children: [null],
+        },
         {
           id: CATEGORY_NODE.id,
           tally: CATEGORY_NODE.tally,
