@@ -76,7 +76,7 @@ describe.concurrent("suggestions", () => {
         ],
       })
 
-      const suggestions = await db.suggestions.attributes(CATEGORY_NODE.id)
+      const suggestions = await db.suggestions.attributes(CATEGORY_NODE.name)
 
       expect(suggestions).toStrictEqual([
         {
@@ -114,7 +114,7 @@ describe.concurrent("suggestions", () => {
         ],
       })
 
-      const suggestions = await db.suggestions.attributes(CATEGORY_NODE.id)
+      const suggestions = await db.suggestions.attributes(CATEGORY_NODE.name)
 
       expect(suggestions).toStrictEqual([
         {
@@ -136,7 +136,7 @@ describe.concurrent("suggestions", () => {
       })
 
       const suggestions = await db.suggestions.attributes(
-        CATEGORY_NODE.id,
+        CATEGORY_NODE.name,
         limit,
       )
 
@@ -155,7 +155,7 @@ describe.concurrent("suggestions", () => {
         ],
       })
 
-      const suggestions = await db.suggestions.attributes(CATEGORY_NODE.id)
+      const suggestions = await db.suggestions.attributes(CATEGORY_NODE.name)
 
       expect(suggestions).toStrictEqual([
         {
@@ -177,7 +177,7 @@ describe.concurrent("suggestions", () => {
       })
 
       const suggestions = await db.suggestions.attributes(
-        CATEGORY_NODE.id,
+        CATEGORY_NODE.name,
         undefined,
         limit,
       )

@@ -32,15 +32,15 @@ export const category = {
       .compile(),
 }
 
-export const attributes = (categoryId: string, noLabels = 5, noValues = 5) =>
+export const attributes = (category: string, noLabels = 5, noValues = 5) =>
   builder
-    .with("labels", (db) =>
-      db
-        .selectFrom("nodes")
-        .select(["nodes.id", "nodes.name", "nodes.tally"])
-        .where("nodes.parent", "=", categoryId)
-        .orderBy("tally", "desc")
-        .limit(noLabels),
+    .with("labels", (db) => 
+      db.selectFrom("nodes as category")
+      .innerJoin("nodes as label", "category.id", "label.parent")
+      .select(["label.id", "label.name", "label.tally"])
+      .where("category.parent", "is", null)
+      .where("category.name", "=", category)
+      .limit(noLabels)
     )
     .selectFrom("labels")
     .leftJoinLateral(
