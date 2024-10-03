@@ -9,6 +9,7 @@ import {
   ATTRIBUTE,
   dbFixture,
   CATEGORY_NODE,
+  LABEL_NODE,
 } from "#mocks"
 
 type Fixtures = { db: dbFixture }
@@ -19,21 +20,36 @@ const it = test.extend<Fixtures>({
 describe.concurrent("db", () => {
   describe.only("inference", () => {
     it("returns word-matching categories", async ({ expect, db }) => {
+      const nonMatchingCategory = {
+        id: "18399210-4ad5-41df-94b3-0f8fbf2c12c8",
+        parent: null,
+        name: "foo",
+        tally: 1,
+      }
+      const otherLabel = {
+        ...LABEL_NODE,
+        id: "2b3a9822-a8bd-4b13-9393-6640ce7bade3",
+        name: "foo",
+      }
       await db.load({
         nodes: [
           CATEGORY_NODE,
-          {
-            id: "18399210-4ad5-41df-94b3-0f8fbf2c12c8",
-            parent: null,
-            name: "foo",
-            tally: 1,
-          },
+          LABEL_NODE,
+          otherLabel,
+          nonMatchingCategory,
         ],
       })
 
       const result = await db.nodes.infer([CATEGORY_NODE.name])
 
-      expect(result).toStrictEqual([{ id: CATEGORY_NODE.id }])
+      expect(result).toStrictEqual([{
+        id: CATEGORY_NODE.id,
+        tally: CATEGORY_NODE.tally,
+        properties: [
+          { id: LABEL_NODE.id, tally: LABEL_NODE.tally },
+          { id: otherLabel.id, tally: otherLabel.tally },
+        ],
+      }])
     })
   })
 
