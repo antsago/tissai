@@ -26,10 +26,9 @@ export const infer = (words: string[]) =>
         lBuilder.selectFrom("nodes as label")
           .leftJoinLateral(vBuilder =>
             vBuilder.selectFrom("nodes as value")
-              .select(({ ref }) => [
+              .select([
                 "value.id",
                 "value.tally",
-                sql`${ref("value.tally")} / ${ref("label.tally")}`.as("probability"),
               ])
               .whereRef("value.parent", "=", "label.id")
               .where("value.name", "in", words)
@@ -38,11 +37,11 @@ export const infer = (words: string[]) =>
               .as("values"),
             (join) => join.onTrue(),
           )
-          .select([
+          .select(({ ref }) => [
             "label.id",
             "label.tally",
-            "values.probability",
             "values.id as value",
+            sql`${ref("values.tally")} / ${ref("label.tally")}`.as("probability"),
           ])
           .whereRef("label.parent", "=", "category.id")
           .as("labels"),
