@@ -1,8 +1,6 @@
 import { sql } from "kysely"
 import type { Node } from "../../tables.js"
 import builder from "../builder.js"
-import { join } from "path"
-import { jsonBuildObject } from "kysely/helpers/postgres"
 
 export const upsert = {
   takeFirst: true,
@@ -24,22 +22,27 @@ export const infer = (words: string[]) =>
   builder
     .selectFrom("nodes as category")
     .leftJoinLateral(
-      ({ selectFrom }) =>
-        selectFrom("nodes as label")
-          .select(({ fn, selectFrom }) => [
-            "label.id",
-            "label.tally",
-            selectFrom("nodes as value")
-              .select(({ ref }) =>
-                jsonBuildObject({
-                  id: ref("value.id"),
-                  tally: ref("value.tally"),
-                }).as("details"),
-              )
+      (lBuilder) =>
+        lBuilder.selectFrom("nodes as label")
+          .leftJoinLateral(vBuilder =>
+            vBuilder.selectFrom("nodes as value")
+              .select(({ ref }) => [
+                "value.id",
+                "value.tally",
+                sql`${ref("value.tally")} / ${ref("label.tally")}`.as("probability"),
+              ])
               .whereRef("value.parent", "=", "label.id")
               .where("value.name", "in", words)
+              .orderBy("value.tally", "desc")
               .limit(1)
-              .as("value"),
+              .as("values"),
+            (join) => join.onTrue(),
+          )
+          .select([
+            "label.id",
+            "label.tally",
+            "values.probability",
+            "values.id as value",
           ])
           .whereRef("label.parent", "=", "category.id")
           .as("labels"),
