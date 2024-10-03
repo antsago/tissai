@@ -21,27 +21,32 @@ const it = test.extend<Fixtures>({
 describe.concurrent("db", () => {
   describe.only("inference", () => {
     it("returns word-matching categories", async ({ expect, db }) => {
+      const nonMatchingName = "foo"
       const nonMatchingCategory = {
+        ...CATEGORY_NODE,
         id: "18399210-4ad5-41df-94b3-0f8fbf2c12c8",
-        parent: null,
-        name: "foo",
-        tally: 1,
+        name: nonMatchingName,
       }
       const categoryWithoutLabels = {
+        ...CATEGORY_NODE,
         id: "2f311f14-b613-4a0d-ba84-5094d06cf3b6",
-        parent: null,
         name: "labeless-category",
-        tally: 1,
       }
       const labelWithoutValues = {
         ...LABEL_NODE,
         id: "2b3a9822-a8bd-4b13-9393-6640ce7bade3",
-        name: "foo",
+        name: "valueless-label",
       }
       const nonMatchingValue = {
         ...VALUE_NODE,
         id: "fc30fca9-2a82-4d65-bb04-7b12a2e1fa4a",
-        name: "foo",
+        name: nonMatchingName,
+      }
+      const lessFrequentValue = {
+        ...VALUE_NODE,
+        id: "36c65865-58b2-49ef-b1ae-6b09a9ab60f1",
+        name: "unlikely value",
+        tally: 1,
       }
       await db.load({
         nodes: [
@@ -52,6 +57,7 @@ describe.concurrent("db", () => {
           categoryWithoutLabels,
           labelWithoutValues,
           nonMatchingValue,
+          lessFrequentValue,
         ],
       })
 
@@ -59,6 +65,7 @@ describe.concurrent("db", () => {
         CATEGORY_NODE.name,
         VALUE_NODE.name,
         categoryWithoutLabels.name,
+        lessFrequentValue.name,
       ])
 
       expect(result).toStrictEqual([
@@ -72,19 +79,17 @@ describe.concurrent("db", () => {
           tally: CATEGORY_NODE.tally,
           children: [
             {
-              id: labelWithoutValues.id,
-              tally: labelWithoutValues.tally,
-              children: [null],
-            },
-            {
               id: LABEL_NODE.id,
               tally: LABEL_NODE.tally,
-              children: [
-                {
-                  id: VALUE_NODE.id,
-                  tally: VALUE_NODE.tally,
-                },
-              ],
+              value: {
+                id: VALUE_NODE.id,
+                tally: VALUE_NODE.tally,
+              },
+            },
+            {
+              id: labelWithoutValues.id,
+              tally: labelWithoutValues.tally,
+              value: null,
             },
           ],
         },
