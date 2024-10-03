@@ -17,6 +17,26 @@ const it = test.extend<Fixtures>({
 })
 
 describe.concurrent("db", () => {
+  describe.only("inference", () => {
+    it("returns word-matching categories", async ({ expect, db }) => {
+      await db.load({
+        nodes: [
+          CATEGORY_NODE,
+          {
+            id: "18399210-4ad5-41df-94b3-0f8fbf2c12c8",
+            parent: null,
+            name: "foo",
+            tally: 1,
+          },
+        ],
+      })
+
+      const result = await db.nodes.infer([CATEGORY_NODE.name])
+
+      expect(result).toStrictEqual([{ id: CATEGORY_NODE.id }])
+    })
+  })
+
   it("creates entities", async ({ expect, db }) => {
     await db.sites.create(SITE)
     await db.pages.create(PAGE)

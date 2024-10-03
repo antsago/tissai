@@ -17,3 +17,6 @@ export const upsert = {
       .returning("id")
       .compile(),
 }
+
+export const infer = (words: string[]) =>
+  builder.selectFrom("nodes").select("id").where("name", "in", words).compile()
