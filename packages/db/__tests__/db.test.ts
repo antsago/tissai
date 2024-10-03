@@ -10,6 +10,7 @@ import {
   dbFixture,
   CATEGORY_NODE,
   LABEL_NODE,
+  VALUE_NODE,
 } from "#mocks"
 
 type Fixtures = { db: dbFixture }
@@ -26,30 +27,52 @@ describe.concurrent("db", () => {
         name: "foo",
         tally: 1,
       }
-      const otherLabel = {
+      const labelWithoutValues = {
         ...LABEL_NODE,
         id: "2b3a9822-a8bd-4b13-9393-6640ce7bade3",
+        name: "foo",
+      }
+      const nonMatchingValue = {
+        ...VALUE_NODE,
+        id: "fc30fca9-2a82-4d65-bb04-7b12a2e1fa4a",
         name: "foo",
       }
       await db.load({
         nodes: [
           CATEGORY_NODE,
           LABEL_NODE,
-          otherLabel,
+          VALUE_NODE,
           nonMatchingCategory,
+          labelWithoutValues,
+          nonMatchingValue,
         ],
       })
 
-      const result = await db.nodes.infer([CATEGORY_NODE.name])
+      const result = await db.nodes.infer([CATEGORY_NODE.name, VALUE_NODE.name])
 
-      expect(result).toStrictEqual([{
-        id: CATEGORY_NODE.id,
-        tally: CATEGORY_NODE.tally,
-        properties: [
-          { id: LABEL_NODE.id, tally: LABEL_NODE.tally },
-          { id: otherLabel.id, tally: otherLabel.tally },
-        ],
-      }])
+      expect(result).toStrictEqual([
+        {
+          id: CATEGORY_NODE.id,
+          tally: CATEGORY_NODE.tally,
+          children: [
+            {
+              id: labelWithoutValues.id,
+              tally: labelWithoutValues.tally,
+              children: [null],
+            },
+            {
+              id: LABEL_NODE.id,
+              tally: LABEL_NODE.tally,
+              children: [
+                {
+                  id: VALUE_NODE.id,
+                  tally: VALUE_NODE.tally,
+                },
+              ],
+            },
+          ],
+        },
+      ])
     })
   })
 
