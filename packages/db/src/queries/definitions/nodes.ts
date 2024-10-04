@@ -26,13 +26,11 @@ export const infer = (words: string[]) =>
       .leftJoin("nodes as label", "category.id", "label.parent")
       .leftJoin("nodes as value", "label.id", "value.parent")
       .distinctOn("label.id")
-      .select([
-        "category.id as categoryId",
-        "category.tally as categoryTally",
-        "label.id as labelId",
-        "label.tally as labelTally",
-        "value.id as valueId",
-        "value.tally as valueTally",
+      .select(({ ref }) => [
+        "category.id as category",
+        "label.id as label",
+        "value.id as value",
+        sql`${ref("value.tally")} / ${ref("category.tally")}`.as("probability"),
       ])
       .where((eb) =>
         eb("category.name", "in", words).and("category.parent", "is", null),
@@ -42,17 +40,17 @@ export const infer = (words: string[]) =>
     )
     .selectFrom("properties")
     .select(({ fn, ref }) => [
-      "categoryId as id",
+      "category as id",
       fn
         .jsonAgg(
           jsonBuildObject({
-            id: ref("labelId"),
-            value: ref("valueId"),
-            probability: sql`${ref("valueTally")} / ${ref("categoryTally")}`,
+            id: ref("label"),
+            value: ref("value"),
+            probability: ref("probability"),
           }),
         )
-        .filterWhere("labelId", "is not", null)
+        .filterWhere("label", "is not", null)
         .as("properties"),
     ])
-    .groupBy("id")
+    .groupBy("category")
     .compile()
