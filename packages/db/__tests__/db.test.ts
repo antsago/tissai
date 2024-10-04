@@ -81,7 +81,7 @@ describe.concurrent("db", () => {
             {
               id: LABEL_NODE.id,
               value: VALUE_NODE.id,
-              probability: VALUE_NODE.tally / LABEL_NODE.tally,
+              probability: VALUE_NODE.tally / CATEGORY_NODE.tally,
             },
             {
               id: labelWithoutValues.id,

@@ -42,7 +42,7 @@ export const infer = (words: string[]) =>
           jsonBuildObject({
             id: ref("label.id"),
             value: ref("value.id"),
-            probability: sql`${ref("value.tally")} / ${ref("label.tally")}`,
+            probability: sql`${ref("value.tally")} / ${ref("category.tally")}`,
           }),
         )
         .filterWhere("label.id", "is not", null)
