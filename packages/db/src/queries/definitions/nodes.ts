@@ -34,7 +34,9 @@ export const infer = (words: string[]) =>
           "value.id as value",
           fn
             .coalesce(
+              // Probability if property is expressed
               sql`${ref("value.tally")} / ${ref("category.tally")}`,
+              // Probability if property is hidden
               sql`(${ref("category.tally")}-${ref("label.tally")}) / ${ref("category.tally")}`,
             )
             .as("probability"),
@@ -48,16 +50,17 @@ export const infer = (words: string[]) =>
     .selectFrom("properties")
     .select(({ fn, ref, val }) => [
       "category as id",
+      fn
+        .agg<string>("array_agg", [ref("value")])
+        .filterWhere("value", "is not", null)
+        .as("properties"),
+      // Overall interpretation probability
       sql`${ref("tally")} * ${fn.coalesce(
         fn
           .agg("mul", [ref("probability")])
           .filterWhere("label", "is not", null),
         val(1),
       )}`.as("probability"),
-      fn
-        .agg<string>("array_agg", [ref("value")])
-        .filterWhere("value", "is not", null)
-        .as("properties"),
     ])
     .groupBy(["category", "tally"])
     .compile()
