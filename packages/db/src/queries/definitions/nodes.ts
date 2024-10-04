@@ -21,35 +21,38 @@ export const upsert = {
 
 export const infer = (words: string[]) =>
   builder
-    .selectFrom("nodes as category")
-    .leftJoin("nodes as label", "category.id", "label.parent")
-    .leftJoinLateral(eb =>
-      eb
-        .selectFrom("nodes as value")
-        .selectAll()
-        .whereRef("label.id", '=', "value.parent")
-        .where((eb) => eb("value.name", "in", words))
-        .orderBy("value.tally", "desc")
-        .limit(1)
-        .as("value"),
-      (join) => join.onTrue()
+    .with("properties", db =>
+      db.selectFrom("nodes as category")
+      .leftJoin("nodes as label", "category.id", "label.parent")
+      .leftJoin("nodes as value", "label.id", "value.parent")
+      .distinctOn("label.id")
+      .select([
+        "category.id as categoryId",
+        "category.tally as categoryTally",
+        "label.id as labelId",
+        "label.tally as labelTally",
+        "value.id as valueId",
+        "value.tally as valueTally",
+      ])
+      .where((eb) =>
+        eb("category.name", "in", words).and("category.parent", "is", null),
+      )
+      .where((eb) => eb("value.name", "in", words).or("value.id", "is", null))
+      .orderBy(["label.id", "value.tally desc"])
     )
+    .selectFrom("properties")
     .select(({ fn, ref }) => [
-      "category.id",
-      "category.tally",
+      "categoryId as id",
       fn
         .jsonAgg(
           jsonBuildObject({
-            id: ref("label.id"),
-            value: ref("value.id"),
-            probability: sql`${ref("value.tally")} / ${ref("category.tally")}`,
+            id: ref("labelId"),
+            value: ref("valueId"),
+            probability: sql`${ref("valueTally")} / ${ref("categoryTally")}`,
           }),
         )
-        .filterWhere("label.id", "is not", null)
+        .filterWhere("labelId", "is not", null)
         .as("properties"),
     ])
-    .where((eb) =>
-      eb("category.name", "in", words).and("category.parent", "is", null),
-    )
-    .groupBy("category.id")
+    .groupBy("id")
     .compile()
