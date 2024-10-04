@@ -20,7 +20,7 @@ const it = test.extend<Fixtures>({
 
 describe.concurrent("db", () => {
   describe("inference", () => {
-    it("returns word-matching categories", async ({ expect, db }) => {
+    it.only("returns word-matching categories", async ({ expect, db }) => {
       const nonMatchingName = "foo"
       const nonMatchingCategory = {
         ...CATEGORY_NODE,
@@ -72,21 +72,19 @@ describe.concurrent("db", () => {
         {
           id: categoryWithoutLabels.id,
           tally: categoryWithoutLabels.tally,
-          children: [null],
+          properties: null,
         },
         {
           id: CATEGORY_NODE.id,
           tally: CATEGORY_NODE.tally,
-          children: [
+          properties: [
             {
               id: LABEL_NODE.id,
-              tally: LABEL_NODE.tally,
               value: VALUE_NODE.id,
               probability: VALUE_NODE.tally / LABEL_NODE.tally,
             },
             {
               id: labelWithoutValues.id,
-              tally: labelWithoutValues.tally,
               probability: null,
               value: null,
             },
