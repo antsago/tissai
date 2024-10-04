@@ -71,23 +71,16 @@ describe.concurrent("db", () => {
       expect(result).toStrictEqual([
         {
           id: categoryWithoutLabels.id,
+          probability: categoryWithoutLabels.tally,
           properties: null,
         },
         {
           id: CATEGORY_NODE.id,
-          properties: [
-            {
-              id: labelWithoutValues.id,
-              probability:
-                (CATEGORY_NODE.tally - LABEL_NODE.tally) / CATEGORY_NODE.tally,
-              value: null,
-            },
-            {
-              id: LABEL_NODE.id,
-              value: VALUE_NODE.id,
-              probability: VALUE_NODE.tally / CATEGORY_NODE.tally,
-            },
-          ],
+          probability:
+            CATEGORY_NODE.tally *
+            ((CATEGORY_NODE.tally - LABEL_NODE.tally) / CATEGORY_NODE.tally) *
+            (VALUE_NODE.tally / CATEGORY_NODE.tally),
+          properties: [VALUE_NODE.id],
         },
       ])
     })

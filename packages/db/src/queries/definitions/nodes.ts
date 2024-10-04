@@ -29,6 +29,7 @@ export const infer = (words: string[]) =>
         .distinctOn("label.id")
         .select(({ ref, fn }) => [
           "category.id as category",
+          "category.tally as tally",
           "label.id as label",
           "value.id as value",
           fn
@@ -45,18 +46,18 @@ export const infer = (words: string[]) =>
         .orderBy(["label.id", "value.tally desc"]),
     )
     .selectFrom("properties")
-    .select(({ fn, ref }) => [
+    .select(({ fn, ref, val }) => [
       "category as id",
+      sql`${ref("tally")} * ${fn.coalesce(
+        fn
+          .agg("mul", [ref("probability")])
+          .filterWhere("label", "is not", null),
+        val(1),
+      )}`.as("probability"),
       fn
-        .jsonAgg(
-          jsonBuildObject({
-            id: ref("label"),
-            value: ref("value"),
-            probability: ref("probability"),
-          }),
-        )
-        .filterWhere("label", "is not", null)
+        .agg<string>("array_agg", [ref("value")])
+        .filterWhere("value", "is not", null)
         .as("properties"),
     ])
-    .groupBy("category")
+    .groupBy(["category", "tally"])
     .compile()
