@@ -30,6 +30,7 @@ export const infer = (words: string[]) =>
             .selectAll()
             .whereRef("label.id", "=", "value.parent")
             .where("value.name", "in", words)
+            .orderBy("value.tally desc")
             .limit(1)
             .as("value"),
           (join) => join.onTrue()

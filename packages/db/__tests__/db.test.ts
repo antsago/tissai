@@ -161,6 +161,53 @@ describe.concurrent("db", () => {
         },
       ])
     })
+
+    it("prefers most-likely interpretations", async ({ expect, db }) => {
+      const probableCategory = {
+        ...CATEGORY_NODE,
+        id: "36c65865-58b2-49ef-b1ae-6b09a9ab60f1",
+        name: "common-category",
+        tally: CATEGORY_NODE.tally+2,
+      }
+      const probableValue = {
+        ...VALUE_NODE,
+        id: "2b3a9822-a8bd-4b13-9393-6640ce7bade3",
+        name: "likely-value",
+        tally: VALUE_NODE.tally+2,
+      }
+      await db.load({
+        nodes: [
+          CATEGORY_NODE,
+          LABEL_NODE,
+          VALUE_NODE,
+          probableCategory,
+          probableValue,
+        ],
+      })
+
+      const result = await db.nodes.infer([
+        CATEGORY_NODE.name,
+        VALUE_NODE.name,
+        probableCategory.name,
+        probableValue.name
+      ])
+
+      expect(result).toStrictEqual([
+        {
+          id: CATEGORY_NODE.id,
+          probability:
+            CATEGORY_NODE.tally *
+            (probableValue.tally / CATEGORY_NODE.tally),
+          properties: [probableValue.id],
+        },
+        {
+          id: probableCategory.id,
+          probability:
+            probableCategory.tally,
+          properties: null,
+        },
+      ])
+    })
   })
 
   it("creates entities", async ({ expect, db }) => {
