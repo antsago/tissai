@@ -70,4 +70,5 @@ export const infer = (words: string[]) =>
     ])
     .groupBy(["category", "tally"])
     .orderBy(({ fn }) => fn.count("value"), "desc")
+    .orderBy("probability", "desc")
     .compile()

@@ -19,7 +19,7 @@ const it = test.extend<Fixtures>({
 })
 
 describe.concurrent("db", () => {
-  describe.only("inference", () => {
+  describe("inference", () => {
     it("returns interpretations", async ({ expect, db }) => {
       await db.load({
         nodes: [
@@ -163,25 +163,39 @@ describe.concurrent("db", () => {
     })
 
     it("prefers most-likely interpretations", async ({ expect, db }) => {
-      const probableCategory = {
-        ...CATEGORY_NODE,
-        id: "36c65865-58b2-49ef-b1ae-6b09a9ab60f1",
-        name: "common-category",
-        tally: CATEGORY_NODE.tally+2,
-      }
       const probableValue = {
         ...VALUE_NODE,
         id: "2b3a9822-a8bd-4b13-9393-6640ce7bade3",
         name: "likely-value",
         tally: VALUE_NODE.tally+2,
       }
+      const probableCategory = {
+        ...CATEGORY_NODE,
+        id: "36c65865-58b2-49ef-b1ae-6b09a9ab60f1",
+        name: "common-category",
+        tally: CATEGORY_NODE.tally+2,
+      }
+      const otherLabel = {
+        parent: probableCategory.id,
+        name: "other-label",
+        id: "2f311f14-b613-4a0d-ba84-5094d06cf3b6",
+        tally: LABEL_NODE.tally,
+      }
+      const otherValue = {
+        parent: otherLabel.id,
+        name: "other-value",
+        id: "18399210-4ad5-41df-94b3-0f8fbf2c12c8",
+        tally: probableValue.tally-1,
+      }
       await db.load({
         nodes: [
           CATEGORY_NODE,
           LABEL_NODE,
           VALUE_NODE,
-          probableCategory,
           probableValue,
+          probableCategory,
+          otherLabel,
+          otherValue
         ],
       })
 
@@ -189,7 +203,8 @@ describe.concurrent("db", () => {
         CATEGORY_NODE.name,
         VALUE_NODE.name,
         probableCategory.name,
-        probableValue.name
+        probableValue.name,
+        otherValue.name,
       ])
 
       expect(result).toStrictEqual([
@@ -203,8 +218,9 @@ describe.concurrent("db", () => {
         {
           id: probableCategory.id,
           probability:
-            probableCategory.tally,
-          properties: null,
+            probableCategory.tally *
+            (otherValue.tally / probableCategory.tally),
+          properties: [otherValue.id],
         },
       ])
     })
