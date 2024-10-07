@@ -19,7 +19,7 @@ export const upsert = {
       .compile(),
 }
 
-export const interpret = (words: string[]) =>
+export const match = (words: string[]) =>
   builder
     .selectFrom("nodes as category")
     .leftJoinLateral(
