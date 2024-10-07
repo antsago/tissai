@@ -25,15 +25,17 @@ export const infer = (words: string[]) =>
       db
         .selectFrom("nodes as category")
         .leftJoin("nodes as label", "category.id", "label.parent")
-        .leftJoinLateral((eb) =>
-          eb.selectFrom("nodes as value")
-            .selectAll()
-            .whereRef("label.id", "=", "value.parent")
-            .where("value.name", "in", words)
-            .orderBy("value.tally desc")
-            .limit(1)
-            .as("value"),
-          (join) => join.onTrue()
+        .leftJoinLateral(
+          (eb) =>
+            eb
+              .selectFrom("nodes as value")
+              .selectAll()
+              .whereRef("label.id", "=", "value.parent")
+              .where("value.name", "in", words)
+              .orderBy("value.tally desc")
+              .limit(1)
+              .as("value"),
+          (join) => join.onTrue(),
         )
         .select(({ ref, fn }) => [
           "category.id as category",
