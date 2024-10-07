@@ -19,14 +19,61 @@ const it = test.extend<Fixtures>({
 })
 
 describe.concurrent("db", () => {
-  describe("inference", () => {
-    it.only("returns word-matching categories", async ({ expect, db }) => {
-      const nonMatchingName = "foo"
+  describe.only("inference", () => {
+    it("returns interpretations", async ({ expect, db }) => {
+      await db.load({
+        nodes: [
+          CATEGORY_NODE,
+          LABEL_NODE,
+          VALUE_NODE,
+        ],
+      })
+
+      const result = await db.nodes.infer([
+        CATEGORY_NODE.name,
+        VALUE_NODE.name,
+      ])
+
+      expect(result).toStrictEqual([
+        {
+          id: CATEGORY_NODE.id,
+          probability:
+            CATEGORY_NODE.tally *
+            (VALUE_NODE.tally / CATEGORY_NODE.tally),
+          properties: [VALUE_NODE.id],
+        },
+      ])
+    })
+
+    it("filters non-matching categories and values", async ({ expect, db }) => {
       const nonMatchingCategory = {
         ...CATEGORY_NODE,
         id: "18399210-4ad5-41df-94b3-0f8fbf2c12c8",
-        name: nonMatchingName,
+        name: "foo",
       }
+      await db.load({
+        nodes: [
+          CATEGORY_NODE,
+          LABEL_NODE,
+          VALUE_NODE,
+          nonMatchingCategory,
+        ],
+      })
+
+      const result = await db.nodes.infer([
+        CATEGORY_NODE.name,
+      ])
+
+      expect(result).toStrictEqual([
+        {
+          id: CATEGORY_NODE.id,
+          probability: CATEGORY_NODE.tally * ((CATEGORY_NODE.tally - LABEL_NODE.tally) / CATEGORY_NODE.tally),
+          properties: null,
+        },
+      ])
+    })
+
+    it("handles nodes without children", async ({ expect, db }) => {
       const categoryWithoutLabels = {
         ...CATEGORY_NODE,
         id: "2f311f14-b613-4a0d-ba84-5094d06cf3b6",
@@ -37,35 +84,19 @@ describe.concurrent("db", () => {
         id: "2b3a9822-a8bd-4b13-9393-6640ce7bade3",
         name: "valueless-label",
       }
-      const nonMatchingValue = {
-        ...VALUE_NODE,
-        id: "fc30fca9-2a82-4d65-bb04-7b12a2e1fa4a",
-        name: nonMatchingName,
-      }
-      const lessFrequentValue = {
-        ...VALUE_NODE,
-        id: "36c65865-58b2-49ef-b1ae-6b09a9ab60f1",
-        name: "unlikely value",
-        tally: 1,
-      }
       await db.load({
         nodes: [
           CATEGORY_NODE,
           LABEL_NODE,
           VALUE_NODE,
-          nonMatchingCategory,
           categoryWithoutLabels,
           labelWithoutValues,
-          nonMatchingValue,
-          lessFrequentValue,
         ],
       })
 
       const result = await db.nodes.infer([
         CATEGORY_NODE.name,
-        VALUE_NODE.name,
         categoryWithoutLabels.name,
-        lessFrequentValue.name,
       ])
 
       expect(result).toStrictEqual([
@@ -79,8 +110,54 @@ describe.concurrent("db", () => {
           probability:
             CATEGORY_NODE.tally *
             ((CATEGORY_NODE.tally - LABEL_NODE.tally) / CATEGORY_NODE.tally) *
+            ((CATEGORY_NODE.tally - labelWithoutValues.tally) / CATEGORY_NODE.tally),
+          properties: null,
+        },
+      ])
+    })
+
+    it("prefers most-matching interpretations", async ({ expect, db }) => {
+      const probableCategory = {
+        ...CATEGORY_NODE,
+        id: "36c65865-58b2-49ef-b1ae-6b09a9ab60f1",
+        name: "common-category",
+        tally: CATEGORY_NODE.tally+2,
+      }
+      const probableValue = {
+        ...VALUE_NODE,
+        id: "2b3a9822-a8bd-4b13-9393-6640ce7bade3",
+        name: "likely-value",
+        tally: VALUE_NODE.tally+2,
+      }
+      await db.load({
+        nodes: [
+          CATEGORY_NODE,
+          LABEL_NODE,
+          VALUE_NODE,
+          probableCategory,
+          probableValue,
+        ],
+      })
+
+      const result = await db.nodes.infer([
+        CATEGORY_NODE.name,
+        VALUE_NODE.name,
+        probableCategory.name,
+      ])
+
+      expect(result).toStrictEqual([
+        {
+          id: CATEGORY_NODE.id,
+          probability:
+            CATEGORY_NODE.tally *
             (VALUE_NODE.tally / CATEGORY_NODE.tally),
           properties: [VALUE_NODE.id],
+        },
+        {
+          id: probableCategory.id,
+          probability:
+            probableCategory.tally,
+          properties: null,
         },
       ])
     })

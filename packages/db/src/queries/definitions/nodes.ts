@@ -25,8 +25,15 @@ export const infer = (words: string[]) =>
       db
         .selectFrom("nodes as category")
         .leftJoin("nodes as label", "category.id", "label.parent")
-        .leftJoin("nodes as value", "label.id", "value.parent")
-        .distinctOn("label.id")
+        .leftJoinLateral((eb) =>
+          eb.selectFrom("nodes as value")
+            .selectAll()
+            .whereRef("label.id", "=", "value.parent")
+            .where("value.name", "in", words)
+            .limit(1)
+            .as("value"),
+          (join) => join.onTrue()
+        )
         .select(({ ref, fn }) => [
           "category.id as category",
           "category.tally as tally",
@@ -43,9 +50,7 @@ export const infer = (words: string[]) =>
         ])
         .where((eb) =>
           eb("category.name", "in", words).and("category.parent", "is", null),
-        )
-        .where((eb) => eb("value.name", "in", words).or("value.id", "is", null))
-        .orderBy(["label.id", "value.tally desc"]),
+        ),
     )
     .selectFrom("properties")
     .select(({ fn, ref, val }) => [
@@ -63,4 +68,5 @@ export const infer = (words: string[]) =>
       )}`.as("probability"),
     ])
     .groupBy(["category", "tally"])
+    .orderBy(({ fn }) => fn.count("value"), "desc")
     .compile()
