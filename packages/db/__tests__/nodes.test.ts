@@ -13,7 +13,7 @@ describe.concurrent("nodes", () => {
         nodes: [CATEGORY_NODE, LABEL_NODE, VALUE_NODE],
       })
 
-      const result = await db.nodes.infer([CATEGORY_NODE.name, VALUE_NODE.name])
+      const result = await db.nodes.interpret([CATEGORY_NODE.name, VALUE_NODE.name])
 
       expect(result).toStrictEqual([
         {
@@ -45,7 +45,7 @@ describe.concurrent("nodes", () => {
         nodes: [CATEGORY_NODE, LABEL_NODE, VALUE_NODE, nonMatchingCategory],
       })
 
-      const result = await db.nodes.infer([CATEGORY_NODE.name])
+      const result = await db.nodes.interpret([CATEGORY_NODE.name])
 
       expect(result).toStrictEqual([
         {
@@ -72,7 +72,7 @@ describe.concurrent("nodes", () => {
         nodes: [CATEGORY_NODE, LABEL_NODE, VALUE_NODE, categoryValue],
       })
 
-      const result = await db.nodes.infer([CATEGORY_NODE.name])
+      const result = await db.nodes.interpret([CATEGORY_NODE.name])
 
       expect(result).toStrictEqual([
         {
@@ -110,7 +110,7 @@ describe.concurrent("nodes", () => {
         ],
       })
 
-      const result = await db.nodes.infer([
+      const result = await db.nodes.interpret([
         CATEGORY_NODE.name,
         categoryWithoutLabels.name,
       ])
@@ -163,7 +163,7 @@ describe.concurrent("nodes", () => {
         ],
       })
 
-      const result = await db.nodes.infer([
+      const result = await db.nodes.interpret([
         CATEGORY_NODE.name,
         VALUE_NODE.name,
         probableCategory.name,
@@ -221,7 +221,7 @@ describe.concurrent("nodes", () => {
         ],
       })
 
-      const result = await db.nodes.infer([
+      const result = await db.nodes.interpret([
         CATEGORY_NODE.name,
         VALUE_NODE.name,
         probableCategory.name,
