@@ -21,57 +21,43 @@ export const upsert = {
 
 export const infer = (words: string[]) =>
   builder
-    .with("properties", (db) =>
-      db
-        .selectFrom("nodes as category")
-        .leftJoin("nodes as label", "category.id", "label.parent")
-        .leftJoinLateral(
-          (eb) =>
-            eb
-              .selectFrom("nodes as value")
-              .selectAll()
-              .whereRef("label.id", "=", "value.parent")
-              .whereRef("value.name", "!=", "category.name")
-              .where("value.name", "in", words)
-              .orderBy("value.tally desc")
-              .limit(1)
-              .as("value"),
-          (join) => join.onTrue(),
-        )
-        .select(({ ref, fn }) => [
-          "category.id as category",
-          "category.tally as tally",
-          "label.id as label",
-          "value.id as value",
-          fn
-            .coalesce(
-              // Probability if property is expressed
-              sql`${ref("value.tally")} / ${ref("category.tally")}`,
-              // Probability if property is hidden
-              sql`(${ref("category.tally")}-${ref("label.tally")}) / ${ref("category.tally")}`,
-            )
-            .as("probability"),
-        ])
-        .where((eb) =>
-          eb("category.name", "in", words).and("category.parent", "is", null),
-        ),
+    .selectFrom("nodes as category")
+    .leftJoinLateral(
+      (lb) =>
+        lb
+          .selectFrom("nodes as label")
+          .leftJoinLateral(
+            (vb) =>
+              vb
+                .selectFrom("nodes as value")
+                .select(["value.id", "value.tally"])
+                .whereRef("label.id", "=", "value.parent")
+                .where((eb) =>
+                  eb("value.name", "in", words).and(
+                    "value.name",
+                    "!=",
+                    eb.ref("category.name"),
+                  ),
+                )
+                .as("value"),
+            (join) => join.onTrue(),
+          )
+          .select(({ fn }) => [
+            "label.id",
+            "label.tally",
+            fn.jsonAgg("value").filterWhere("value.id", "is not", null).as("children"),
+          ])
+          .whereRef("category.id", "=", "label.parent")
+          .groupBy("label.id")
+          .as("label"),
+      (join) => join.onTrue(),
     )
-    .selectFrom("properties")
-    .select(({ fn, ref, val }) => [
-      "category as id",
-      fn
-        .agg<string>("array_agg", [ref("value")])
-        .filterWhere("value", "is not", null)
-        .as("properties"),
-      // Overall interpretation probability
-      sql`${ref("tally")} * ${fn.coalesce(
-        fn
-          .agg("mul", [ref("probability")])
-          .filterWhere("label", "is not", null),
-        val(1),
-      )}`.as("probability"),
+    .select(({ fn }) => [
+      "category.id",
+      "category.tally",
+      fn.jsonAgg("label").filterWhere("label.id", "is not", null).as("children"),
     ])
-    .groupBy(["category", "tally"])
-    .orderBy(({ fn }) => fn.count("value"), "desc")
-    .orderBy("probability", "desc")
+    .where("category.parent", "is", null)
+    .where("category.name", "in", words)
+    .groupBy(["category.id", "category.tally"])
     .compile()
