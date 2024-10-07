@@ -31,6 +31,7 @@ export const infer = (words: string[]) =>
               .selectFrom("nodes as value")
               .selectAll()
               .whereRef("label.id", "=", "value.parent")
+              .whereRef("value.name", "!=", "category.name")
               .where("value.name", "in", words)
               .orderBy("value.tally desc")
               .limit(1)

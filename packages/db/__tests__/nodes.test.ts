@@ -48,6 +48,29 @@ describe.concurrent("nodes", () => {
       ])
     })
 
+    it("ignores already-matched words", async ({ expect, db }) => {
+      const categoryValue = {
+        ...VALUE_NODE,
+        id: "18399210-4ad5-41df-94b3-0f8fbf2c12c8",
+        name: CATEGORY_NODE.name,
+      }
+      await db.load({
+        nodes: [CATEGORY_NODE, LABEL_NODE, VALUE_NODE, categoryValue],
+      })
+
+      const result = await db.nodes.infer([CATEGORY_NODE.name])
+
+      expect(result).toStrictEqual([
+        {
+          id: CATEGORY_NODE.id,
+          probability:
+            CATEGORY_NODE.tally *
+            ((CATEGORY_NODE.tally - LABEL_NODE.tally) / CATEGORY_NODE.tally),
+          properties: null,
+        },
+      ])
+    })
+
     it("handles nodes without children", async ({ expect, db }) => {
       const categoryWithoutLabels = {
         ...CATEGORY_NODE,
