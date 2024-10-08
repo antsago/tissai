@@ -1,15 +1,33 @@
 import type { MatchedNodes } from "@tissai/db"
 
-export function createInterpretations(word: string[], nodes: MatchedNodes) {
-  const labelTally = nodes[0].children?.[0].tally ?? false
-  const categoryTally = nodes[0].tally
+function calculateProbability(category: MatchedNodes[number]) {
+  if (!category.children?.length) {
+    return category.tally
+  }
+
+  const label = category.children[0]
+  if (!label.children?.length) {
+    return category.tally - label.tally
+  }
+
+  const value = label.children[0]
+
+  return value.tally
+}
+
+export function createInterpretations(words: string[], nodes: MatchedNodes) {
+  const category = nodes[0]
+  const attributes =
+    category.children
+      ?.map((l) => l.children?.map((v) => v.id) ?? [])
+      .flat(Infinity) ?? []
 
   return [
     {
-      probability: labelTally === false ? categoryTally : (categoryTally - labelTally),
-      score: 1,
-      attributes: [],
-      category: nodes[0].id,
+      probability: calculateProbability(category),
+      score: attributes.length + 1,
+      attributes,
+      category: category.id,
     },
   ]
 }

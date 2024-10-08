@@ -2,17 +2,49 @@ import { expect, describe, it } from "vitest"
 import { createInterpretations } from "./interpretations.js"
 
 describe("createInterpretations", () => {
-  const WORDS = ["asdf"]
+  const WORDS = ["asdf", "foo"]
 
   it("returns interpretations", async () => {
     const nodeTree = {
-      id: "2b3a9822-a8bd-4b13-9393-6640ce7bade3",
+      id: "category-id",
       tally: 3,
-      children: [{
-        id: "2f311f14-b613-4a0d-ba84-5094d06cf3b6",
-        tally: 1,
-        children: null,
-      }],
+      children: [
+        {
+          id: "label-id",
+          tally: 2,
+          children: [
+            {
+              id: "value-id",
+              tally: 2,
+            },
+          ],
+        },
+      ],
+    }
+
+    const result = await createInterpretations(WORDS, [nodeTree])
+
+    expect(result).toStrictEqual([
+      {
+        category: nodeTree.id,
+        attributes: [nodeTree.children[0].children[0].id],
+        score: 2,
+        probability: 2,
+      },
+    ])
+  })
+
+  it("handles unexpressed labels", async () => {
+    const nodeTree = {
+      id: "category-id",
+      tally: 3,
+      children: [
+        {
+          id: "label-id",
+          tally: 1,
+          children: null,
+        },
+      ],
     }
 
     const result = await createInterpretations(WORDS, [nodeTree])
@@ -29,7 +61,7 @@ describe("createInterpretations", () => {
 
   it("handles categories without labels", async () => {
     const nodeTree = {
-      id: "2b3a9822-a8bd-4b13-9393-6640ce7bade3",
+      id: "category-id",
       tally: 1,
       children: null,
     }

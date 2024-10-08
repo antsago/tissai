@@ -60,6 +60,19 @@ export const match = (words: string[]) =>
       fn
         .jsonAgg("label")
         .filterWhere("label.id", "is not", null)
+        .$castTo<
+          | null
+          | {
+              id: string
+              tally: number
+              children:
+                | null
+                | {
+                    id: string
+                    tally: number
+                  }[]
+            }[]
+        >()
         .as("children"),
     ])
     .where("category.parent", "is", null)
@@ -67,10 +80,5 @@ export const match = (words: string[]) =>
     .groupBy(["category.id", "category.tally"])
     .compile()
 
-type NullChidren<Q> = Q extends { children: any }
-  ? Omit<Q, "children"> & { children: Q["children"] | null }
-  : never
 export type MatchedNodes =
-  ReturnType<typeof match> extends CompiledQuery<infer T>
-    ? NullChidren<T>[]
-    : never
+  ReturnType<typeof match> extends CompiledQuery<infer T> ? T[] : never
