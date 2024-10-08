@@ -16,18 +16,17 @@ function calculateProbability(category: MatchedNodes[number]) {
 }
 
 export function createInterpretations(nodes: MatchedNodes) {
-  const category = nodes[0]
-  const attributes =
-    category.children
-      ?.map((l) => l.children?.map((v) => v.id) ?? [])
-      .flat(Infinity) ?? []
+  return nodes.map(category => {
+    const attributes =
+      category.children
+        ?.map((l) => l.children?.map((v) => v.id) ?? [])
+        .flat(Infinity) ?? []
 
-  return [
-    {
+    return {
       probability: calculateProbability(category),
       score: attributes.length + 1,
       attributes,
       category: category.id,
-    },
-  ]
+    }
+  })
 }

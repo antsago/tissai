@@ -75,4 +75,45 @@ describe("createInterpretations", () => {
       },
     ])
   })
+
+  it("handles several categories", async () => {
+    const fullTree = {
+      id: "category-id",
+      tally: 5,
+      children: [
+        {
+          id: "label-id",
+          tally: 3,
+          children: [
+            {
+              id: "value-id",
+              tally: 1,
+            },
+          ],
+        },
+      ],
+    }
+    const categoryTree = {
+      id: "category-id",
+      tally: 1,
+      children: null,
+    }
+
+    const result = await createInterpretations([fullTree, categoryTree])
+
+    expect(result).toStrictEqual([
+      {
+        category: fullTree.id,
+        attributes: [fullTree.children[0].children[0].id],
+        score: 2,
+        probability: 1,
+      },
+      {
+        category: categoryTree.id,
+        attributes: [],
+        score: 1,
+        probability: categoryTree.tally,
+      },
+    ])
+  })
 })
