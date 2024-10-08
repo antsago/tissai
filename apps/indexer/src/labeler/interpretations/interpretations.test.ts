@@ -154,4 +154,44 @@ describe("createInterpretations", () => {
       },
     ])
   })
+
+  it("handles multiple values", async () => {
+    const nodeTree = {
+      id: "category-id",
+      tally: 5,
+      children: [
+        {
+          id: "label-id",
+          tally: 3,
+          children: [
+            {
+              id: "value-1-id",
+              tally: 2,
+            },
+            {
+              id: "value-2-id",
+              tally: 1,
+            },
+          ],
+        },
+      ],
+    }
+
+    const result = await createInterpretations([nodeTree])
+
+    expect(result).toStrictEqual([
+      {
+        category: nodeTree.id,
+        attributes: [nodeTree.children[0].children[0].id],
+        score: 2,
+        probability: 2,
+      },
+      {
+        category: nodeTree.id,
+        attributes: [nodeTree.children[0].children[1].id],
+        score: 2,
+        probability: 1,
+      },
+    ])
+  })
 })
