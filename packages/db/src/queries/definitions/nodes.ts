@@ -1,7 +1,6 @@
-import { sql } from "kysely"
+import { type CompiledQuery, sql } from "kysely"
 import type { Node } from "../../tables.js"
 import builder from "../builder.js"
-import { jsonBuildObject } from "kysely/helpers/postgres"
 
 export const upsert = {
   takeFirst: true,
@@ -45,7 +44,10 @@ export const match = (words: string[]) =>
           .select(({ fn }) => [
             "label.id",
             "label.tally",
-            fn.jsonAgg("value").filterWhere("value.id", "is not", null).as("children"),
+            fn
+              .jsonAgg("value")
+              .filterWhere("value.id", "is not", null)
+              .as("children"),
           ])
           .whereRef("category.id", "=", "label.parent")
           .groupBy("label.id")
@@ -55,9 +57,20 @@ export const match = (words: string[]) =>
     .select(({ fn }) => [
       "category.id",
       "category.tally",
-      fn.jsonAgg("label").filterWhere("label.id", "is not", null).as("children"),
+      fn
+        .jsonAgg("label")
+        .filterWhere("label.id", "is not", null)
+        .as("children"),
     ])
     .where("category.parent", "is", null)
     .where("category.name", "in", words)
     .groupBy(["category.id", "category.tally"])
     .compile()
+
+type NullChidren<Q> = Q extends { children: any }
+  ? Omit<Q, "children"> & { children: Q["children"] | null }
+  : never
+export type MatchedNodes =
+  ReturnType<typeof match> extends CompiledQuery<infer T>
+    ? NullChidren<T>[]
+    : never

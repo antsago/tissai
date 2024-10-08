@@ -1,9 +1,10 @@
 export {
+  type MatchedNodes,
   type ProductDetails,
   type Search,
   type SearchParams,
+  type Suggestion,
   CATEGORY_LABEL,
-  Suggestion,
 } from "./definitions/index.js"
 
 export { default as builder } from "./builder.js"
