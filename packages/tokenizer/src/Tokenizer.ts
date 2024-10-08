@@ -1,5 +1,4 @@
 import { parseText, Lexer } from "./parseText/index.js"
-import { parsePage } from "./parsePage/index.js"
 
 export function Tokenizer() {
   const lexer = Lexer()
