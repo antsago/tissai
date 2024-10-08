@@ -6,7 +6,7 @@ export function createInterpretations(word: string[], nodes: MatchedNodes) {
 
   return [
     {
-      probability: labelTally === false ? categoryTally : (categoryTally - labelTally) / categoryTally,
+      probability: labelTally === false ? categoryTally : (categoryTally - labelTally),
       score: 1,
       attributes: [],
       category: nodes[0].id,
