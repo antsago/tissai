@@ -15,7 +15,7 @@ function calculateProbability(category: MatchedNodes[number]) {
   return value.tally
 }
 
-export function createInterpretations(words: string[], nodes: MatchedNodes) {
+export function createInterpretations(nodes: MatchedNodes) {
   const category = nodes[0]
   const attributes =
     category.children
