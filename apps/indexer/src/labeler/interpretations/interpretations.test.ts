@@ -2,7 +2,8 @@ import { expect, describe, it } from "vitest"
 import { createInterpretations } from "./interpretations.js"
 
 describe("createInterpretations", () => {
-  const words = ["asdf"]
+  const WORDS = ["asdf"]
+
   it("returns interpretations", async () => {
     const nodeTree = {
       id: "2b3a9822-a8bd-4b13-9393-6640ce7bade3",
@@ -14,7 +15,7 @@ describe("createInterpretations", () => {
       }],
     }
 
-    const result = await createInterpretations(words, [nodeTree])
+    const result = await createInterpretations(WORDS, [nodeTree])
 
     expect(result).toStrictEqual([
       {
@@ -33,7 +34,7 @@ describe("createInterpretations", () => {
       children: null,
     }
 
-    const result = await createInterpretations(words, [nodeTree])
+    const result = await createInterpretations(WORDS, [nodeTree])
 
     expect(result).toStrictEqual([
       {
