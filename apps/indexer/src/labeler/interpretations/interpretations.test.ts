@@ -194,4 +194,94 @@ describe("createInterpretations", () => {
       },
     ])
   })
+
+  it("handles multiple labels with multiple values", async () => {
+    const root = {
+      id: "category-id",
+      tally: 5,
+      children: [
+        {
+          id: "label-1-id",
+          tally: 2,
+          children: [
+            {
+              id: "value-1-id",
+              tally: 1,
+            },
+            {
+              id: "value-2-id",
+              tally: 1,
+            },
+          ],
+        },
+        {
+          id: "label-2-id",
+          tally: 4,
+          children: [
+            {
+              id: "value-3-id",
+              tally: 2,
+            },
+            {
+              id: "value-4-id",
+              tally: 1,
+            },
+          ],
+        },
+      ],
+    }
+
+    const result = await createInterpretations([root])
+
+    expect(result).toStrictEqual([
+      {
+        category: root.id,
+        attributes: [
+          root.children[0].children[0].id,
+          root.children[1].children[0].id,
+        ],
+        score: 3,
+        probability:
+          root.tally *
+          (root.children[0].children[0].tally / root.tally) *
+          (root.children[1].children[0].tally / root.tally),
+      },
+      {
+        category: root.id,
+        attributes: [
+          root.children[0].children[0].id,
+          root.children[1].children[1].id,
+        ],
+        score: 3,
+        probability:
+          root.tally *
+          (root.children[0].children[0].tally / root.tally) *
+          (root.children[1].children[1].tally / root.tally),
+      },
+      {
+        category: root.id,
+        attributes: [
+          root.children[0].children[1].id,
+          root.children[1].children[0].id,
+        ],
+        score: 3,
+        probability:
+          root.tally *
+          (root.children[0].children[1].tally / root.tally) *
+          (root.children[1].children[0].tally / root.tally),
+      },
+      {
+        category: root.id,
+        attributes: [
+          root.children[0].children[1].id,
+          root.children[1].children[1].id,
+        ],
+        score: 3,
+        probability:
+          root.tally *
+          (root.children[0].children[1].tally / root.tally) *
+          (root.children[1].children[1].tally / root.tally),
+      },
+    ])
+  })
 })

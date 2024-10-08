@@ -24,28 +24,37 @@ function calculateProbability({ category, properties }: Interpretation) {
     .reduce(multiply, category.tally)
 }
 
-function normalize(root: MatchedNodes[number]): Interpretation[] {
-  const noValues = root.children?.[0].children?.length ?? 1
+function combineProperties(
+  children: NonNullable<MatchedNodes[number]["children"]>,
+  properties: Property[] = [],
+): Property[][] {
+  if (children.length === 0) {
+    return [properties]
+  }
 
-  return new Array(noValues).fill(null).map((_, i) => ({
+  const child = children[0]
+  const label = { id: child.id, tally: child.tally }
+  const propertyCandidates: Property[] = !child.children
+    ? [{ label }]
+    : child.children.map((value) => ({ label, value }))
+
+  const otherChildren = children.slice(1)
+  return propertyCandidates
+    .map((candidate) =>
+      combineProperties(otherChildren, [...properties, candidate]),
+    )
+    .flat()
+}
+
+function normalize(root: MatchedNodes[number]): Interpretation[] {
+  const combinations = combineProperties(root.children ?? [])
+
+  return combinations.map((properties) => ({
     category: {
       id: root.id,
       tally: root.tally,
     },
-    properties:
-      root.children?.map((l) => ({
-        label: {
-          id: l.id,
-          tally: l.tally,
-        },
-        value:
-          l.children !== null
-            ? {
-                id: l.children[i].id,
-                tally: l.children[i].tally,
-              }
-            : undefined,
-      })) ?? [],
+    properties,
   }))
 }
 
