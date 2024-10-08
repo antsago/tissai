@@ -78,7 +78,7 @@ describe("createInterpretations", () => {
 
   it("handles several categories", async () => {
     const fullTree = {
-      id: "category-id",
+      id: "categor-1-id",
       tally: 5,
       children: [
         {
@@ -94,7 +94,7 @@ describe("createInterpretations", () => {
       ],
     }
     const categoryTree = {
-      id: "category-id",
+      id: "category-2-id",
       tally: 1,
       children: null,
     }
@@ -113,6 +113,44 @@ describe("createInterpretations", () => {
         attributes: [],
         score: 1,
         probability: categoryTree.tally,
+      },
+    ])
+  })
+
+  it("handles multiple labels", async () => {
+    const nodeTree = {
+      id: "category-id",
+      tally: 3,
+      children: [
+        {
+          id: "label-1-id",
+          tally: 2,
+          children: [
+            {
+              id: "value-id",
+              tally: 2,
+            },
+          ],
+        },
+        {
+          id: "label-2-id",
+          tally: 1,
+          children: null,
+        },
+      ],
+    }
+
+    const result = await createInterpretations([nodeTree])
+
+    expect(result).toStrictEqual([
+      {
+        category: nodeTree.id,
+        attributes: [nodeTree.children[0].children![0].id],
+        score: 2,
+        probability:
+          nodeTree.tally *
+          (nodeTree.children![0].tally / nodeTree.tally) *
+          ((nodeTree.tally - nodeTree.children[1].tally) / nodeTree.tally),
       },
     ])
   })

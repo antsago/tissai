@@ -1,22 +1,28 @@
 import type { MatchedNodes } from "@tissai/db"
 
-function calculateProbability(category: MatchedNodes[number]) {
-  if (!category.children?.length) {
-    return category.tally
-  }
+type Category = MatchedNodes[number]
+type Label = NonNullable<Category["children"]>[number]
 
-  const label = category.children[0]
+function labelProbability(label: Label, categoryTally: number) {
   if (!label.children?.length) {
-    return category.tally - label.tally
+    return (categoryTally - label.tally) / categoryTally
   }
 
   const value = label.children[0]
 
-  return value.tally
+  return value.tally / categoryTally
+}
+
+function calculateProbability(category: Category) {
+  const labels = category.children ?? []
+  const multiply = (a: number, b: number) => a * b
+  return labels
+    .map((label) => labelProbability(label, category.tally))
+    .reduce(multiply, category.tally)
 }
 
 export function createInterpretations(nodes: MatchedNodes) {
-  return nodes.map(category => {
+  return nodes.map((category) => {
     const attributes =
       category.children
         ?.map((l) => l.children?.map((v) => v.id) ?? [])
