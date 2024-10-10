@@ -5,16 +5,10 @@ import { calculateProbability } from "./calculateProbability.js"
 export function interpret(nodes: MatchedNodes) {
   const interpretations = nodes.map(normalize).flat()
 
-  return interpretations.map((interpretation) => {
-    const attributes = interpretation.properties
-      .map(({ value }) => value?.name)
-      .filter((name) => !!name)
-
+  return interpretations.map(({ category, properties}) => {
     return {
-      probability: calculateProbability(interpretation),
-      score: attributes.length + 1,
-      attributes,
-      category: interpretation.category.name,
+      category: category.name,
+      properties: properties.filter(property => property.value).map(({ label, value}) => ({ label: label.name, value: value!.name })) 
     }
-  })
+  }).toSorted((a,b) => b.properties.length - a.properties.length)[0]
 }
