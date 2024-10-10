@@ -24,22 +24,21 @@ const pickBestScores = (best: typeof BASE_SCORE, interpretation: Interpretation)
 }
 
 export function interpret(nodes: MatchedNodes) {
-  return nodes
+  const { category, properties } = nodes
     .map(normalize)
     .flat()
     .reduce(pickBestScores, BASE_SCORE)
     .interpretations
     .map(i => ({ ...i, probability: calculateProbability(i)}))
-    .toSorted((a, b) => b.probability - a.probability)
-    .map(({ category, properties }) => {
-      return {
-        category: category.name,
-        properties: properties
-          .filter((property) => property.value)
-          .map(({ label, value }) => ({
-            label: label.name,
-            value: value!.name,
-          })),
-      }
-    })[0]
+    .toSorted((a, b) => b.probability - a.probability)[0]
+
+  return {
+    category: category.name,
+    properties: properties
+      .filter((property) => property.value)
+      .map(({ label, value }) => ({
+        label: label.name,
+        value: value!.name,
+      })),
+  }
 }
