@@ -1,6 +1,12 @@
-import { describe, it, expect, beforeEach } from "vitest"
+import { describe, test, expect, beforeEach } from "vitest"
+import { mockDbFixture } from "@tissai/db/mocks"
+import { mockPythonFixture } from "@tissai/python-pool/mocks"
+import { Db } from "@tissai/db"
+import { Tokenizer } from "@tissai/tokenizer"
 import { STRING_ATTRIBUTE, QUERY, BOOL_ATTRIBUTE } from "mocks"
-import { extractFilters } from "./parseSearchParams"
+import { extractFilters, parseSearchParams } from "./parseSearchParams"
+
+const it = test.extend({ db: mockDbFixture, python: mockPythonFixture })
 
 describe("extractFilters", () => {
   let params: URLSearchParams
@@ -73,8 +79,11 @@ describe("parseSearchParams", () => {
     params = new URLSearchParams()
   })
 
-  it("handles empty search", async () => {
-    const result = extractFilters(params)
+  it("handles empty search", async ({ db, python }) => {
+    db.pool.query.mockResolvedValue({ rows: [] })
+    python.mockReturnValue([])
+
+    const result = await parseSearchParams(params, { db: Db(), tokenizer: Tokenizer() })
 
     expect(result).toStrictEqual({
       brand: undefined,
@@ -84,5 +93,61 @@ describe("parseSearchParams", () => {
       query: "",
       attributes: {},
     })
+  })
+
+  it("infers from query if no explicit category filter", async ({ db, python }) => {
+    const WORDS = [
+      {  isMeaningful: true, trailing: " ", text: "category", originalText: "category"},
+      {  isMeaningful: true, trailing: "", text: "value", originalText: "value"},
+    ]
+    const CATEGORY = {
+      name: "category",
+      tally: 3,
+    }
+    const LABEL = {
+      name: "label",
+      tally: 2,
+    }
+    const VALUE = {
+      name: "value",
+      tally: 2,
+    }
+    const query = "category value"
+    const root = {
+      ...CATEGORY,
+      children: [
+        {
+          ...LABEL,
+          children: [VALUE],
+        },
+      ],
+    }
+    db.pool.query.mockReturnValueOnce({
+      rows: [root],
+    })
+    python.mockReturnValue(WORDS)
+    params.append("q", query)
+    params.append(STRING_ATTRIBUTE.label, STRING_ATTRIBUTE.value)
+
+    const result = await parseSearchParams(params, { db: Db(), tokenizer: Tokenizer() })
+
+    expect(result).toStrictEqual(expect.objectContaining({
+      category: CATEGORY.name,
+      attributes: {
+        [LABEL.name]: [VALUE.name],
+      },
+    }))
+  })
+
+  it("does not infer if explicit category filter", async () => {
+    const category = "the category"
+    params.append("cat", category)
+
+    const result = await parseSearchParams(params, {} as any)
+
+    expect(result).toStrictEqual(expect.objectContaining({
+      category,
+      attributes: {},
+    }))
   })
 })

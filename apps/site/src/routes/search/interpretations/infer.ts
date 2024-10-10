@@ -28,7 +28,7 @@ const pickBestScores = (
 export async function infer(words: string[], db: Db) {
   const nodes = await db.nodes.match(words)
 
-  const { category, properties } = nodes
+  const interpretation = nodes
     .map(normalize)
     .flat()
     .reduce(pickBestScores, BASE_SCORE)
@@ -39,12 +39,12 @@ export async function infer(words: string[], db: Db) {
     .toSorted((a, b) => b.probability - a.probability)[0]
 
   return {
-    category: category.name,
-    properties: properties
+    category: interpretation?.category.name,
+    properties: interpretation?.properties
       .filter((property) => property.value)
       .map(({ label, value }) => ({
         label: label.name,
         value: value!.name,
-      })),
+      })) ?? [],
   }
 }

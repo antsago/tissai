@@ -28,6 +28,9 @@ describe("Search page", () => {
     { queryParams, sectionName = "Resultados de la búsqueda" } = {} as any,
   ) {
     db.pool.query.mockResolvedValueOnce({
+      rows: [],
+    })
+    db.pool.query.mockResolvedValueOnce({
       rows: [
         {
           ...SIMILAR,

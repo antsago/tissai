@@ -98,4 +98,17 @@ describe("infer", () => {
       properties: [],
     })
   })
+
+  it("handles empty queries", async ({ db }) => {
+    db.pool.query.mockReturnValueOnce({
+      rows: [],
+    })
+
+    const result = await infer([], Db())
+
+    expect(result).toStrictEqual({
+      category: undefined,
+      properties: [],
+    })
+  })
 })
