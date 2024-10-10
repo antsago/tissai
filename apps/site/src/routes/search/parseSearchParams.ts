@@ -1,6 +1,6 @@
 import type { SearchParams } from "@tissai/db"
 
-function parseSearchParams(params: URLSearchParams) {
+export function extractFilters(params: URLSearchParams) {
   const defaultFilters: SearchParams = {
     query: "",
     attributes: {},
@@ -43,4 +43,6 @@ function parseSearchParams(params: URLSearchParams) {
   }, defaultFilters)
 }
 
-export default parseSearchParams
+export function parseSearchParams(params: URLSearchParams) {
+  return extractFilters(params)
+}

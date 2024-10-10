@@ -1,15 +1,15 @@
 import { describe, it, expect, beforeEach } from "vitest"
 import { STRING_ATTRIBUTE, CAT_ATTRIBUTE, QUERY } from "mocks"
-import parseSearchParams from "./parseSearchParams"
+import { extractFilters } from "./parseSearchParams"
 
-describe("parseSearchParams", () => {
+describe("extractFilters", () => {
   let params: URLSearchParams
   beforeEach(() => {
     params = new URLSearchParams()
   })
 
   it("sets defaults values", async () => {
-    const result = parseSearchParams(params)
+    const result = extractFilters(params)
 
     expect(result).toStrictEqual({
       brand: undefined,
@@ -30,7 +30,7 @@ describe("parseSearchParams", () => {
     params.append("brand", brand)
     params.append(STRING_ATTRIBUTE.label, STRING_ATTRIBUTE.value)
 
-    const result = parseSearchParams(params)
+    const result = extractFilters(params)
 
     expect(result).toStrictEqual({
       query: QUERY,
@@ -47,7 +47,7 @@ describe("parseSearchParams", () => {
     params.append(CAT_ATTRIBUTE.label, CAT_ATTRIBUTE.value)
     params.append(STRING_ATTRIBUTE.label, STRING_ATTRIBUTE.value)
 
-    const result = parseSearchParams(params)
+    const result = extractFilters(params)
 
     expect(result).toStrictEqual(
       expect.objectContaining({
@@ -64,7 +64,7 @@ describe("parseSearchParams", () => {
     params.append(STRING_ATTRIBUTE.label, STRING_ATTRIBUTE.value)
     params.append(STRING_ATTRIBUTE.label, otherValue)
 
-    const result = parseSearchParams(params)
+    const result = extractFilters(params)
 
     expect(result).toStrictEqual(
       expect.objectContaining({

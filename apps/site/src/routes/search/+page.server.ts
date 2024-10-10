@@ -1,5 +1,5 @@
 import type { PageServerLoad } from "./$types"
-import parseSearchParams from "./parseSearchParams"
+import { parseSearchParams } from "./parseSearchParams"
 import mergeTiles from "./mergeTiles"
 import { getSuggestions } from "./getSuggestions"
 
