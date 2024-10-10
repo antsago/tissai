@@ -33,7 +33,7 @@ describe("interpret", () => {
       ],
     }
     db.pool.query.mockReturnValueOnce({
-      rows: [root]
+      rows: [root],
     })
 
     const result = await interpret(WORDS, Db())
@@ -66,7 +66,7 @@ describe("interpret", () => {
       ],
     }
     db.pool.query.mockReturnValueOnce({
-      rows: [root]
+      rows: [root],
     })
 
     const result = await interpret(WORDS, Db())
@@ -84,11 +84,11 @@ describe("interpret", () => {
 
   it("uses probability to break ties", async ({ db }) => {
     const nodes = [
-      { name: `${CATEGORY.name}-2`, tally: CATEGORY.tally-1, children: null},
-      {...CATEGORY, children: null},
+      { name: `${CATEGORY.name}-2`, tally: CATEGORY.tally - 1, children: null },
+      { ...CATEGORY, children: null },
     ]
     db.pool.query.mockReturnValueOnce({
-      rows: nodes
+      rows: nodes,
     })
 
     const result = await interpret(WORDS, Db())

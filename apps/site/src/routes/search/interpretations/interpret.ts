@@ -3,9 +3,11 @@ import { type Interpretation, normalize } from "./normalize.js"
 import { calculateProbability } from "./calculateProbability.js"
 
 const BASE_SCORE = { score: 0, interpretations: [] as Interpretation[] }
-const pickBestScores = (best: typeof BASE_SCORE, interpretation: Interpretation) => {
-  const score =
-    1 + interpretation.properties.filter((p) => p.value).length
+const pickBestScores = (
+  best: typeof BASE_SCORE,
+  interpretation: Interpretation,
+) => {
+  const score = 1 + interpretation.properties.filter((p) => p.value).length
 
   if (best.score > score) {
     return best
@@ -30,8 +32,10 @@ export async function interpret(words: string[], db: Db) {
     .map(normalize)
     .flat()
     .reduce(pickBestScores, BASE_SCORE)
-    .interpretations
-    .map(i => ({ ...i, probability: calculateProbability(i)}))
+    .interpretations.map((i) => ({
+      ...i,
+      probability: calculateProbability(i),
+    }))
     .toSorted((a, b) => b.probability - a.probability)[0]
 
   return {
