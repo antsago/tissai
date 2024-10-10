@@ -38,4 +38,18 @@ describe("interpret", () => {
       ],
     })
   })
+
+  it("uses probability to break ties", async () => {
+    const nodes = [
+      { name: `${CATEGORY.name}-2`, tally: CATEGORY.tally-1, children: null},
+      {...CATEGORY, children: null},
+    ]
+
+    const result = await interpret(nodes)
+
+    expect(result).toStrictEqual({
+      category: CATEGORY.name,
+      properties: [],
+    })
+  })
 })

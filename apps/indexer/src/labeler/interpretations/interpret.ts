@@ -28,7 +28,10 @@ export function interpret(nodes: MatchedNodes) {
       },
       { score: 0, interpretations: [] as Interpretation[] },
     )
-    .interpretations.map(({ category, properties }) => {
+    .interpretations
+    .map(i => ({ ...i, probability: calculateProbability(i)}))
+    .toSorted((a, b) => b.probability - a.probability)
+    .map(({ category, properties }) => {
       return {
         category: category.name,
         properties: properties
