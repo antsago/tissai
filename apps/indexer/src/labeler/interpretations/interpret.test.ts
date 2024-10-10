@@ -1,7 +1,14 @@
-import { expect, describe, it } from "vitest"
+import { expect, describe, test } from "vitest"
+import { mockDbFixture, queries } from "@tissai/db/mocks"
+import { Db } from "@tissai/db"
 import { interpret } from "./interpret.js"
 
+const it = test.extend({
+  db: mockDbFixture,
+})
+
 describe("interpret", () => {
+  const WORDS = ["category", "value"]
   const CATEGORY = {
     name: "category",
     tally: 3,
@@ -15,7 +22,7 @@ describe("interpret", () => {
     tally: 2,
   }
 
-  it("returns interpretation that matches most words", async () => {
+  it("interprets given words", async ({ db }) => {
     const root = {
       ...CATEGORY,
       children: [
@@ -25,8 +32,44 @@ describe("interpret", () => {
         },
       ],
     }
+    db.pool.query.mockReturnValueOnce({
+      rows: [root]
+    })
 
-    const result = await interpret([root])
+    const result = await interpret(WORDS, Db())
+
+    expect(db).toHaveExecuted(queries.nodes.match(WORDS))
+    expect(result).toStrictEqual({
+      category: CATEGORY.name,
+      properties: [
+        {
+          label: LABEL.name,
+          value: VALUE.name,
+        },
+      ],
+    })
+  })
+
+  it("returns interpretation that matches most words", async ({ db }) => {
+    const root = {
+      ...CATEGORY,
+      children: [
+        {
+          ...LABEL,
+          name: `${LABEL.name}-2`,
+          children: null,
+        },
+        {
+          ...LABEL,
+          children: [VALUE],
+        },
+      ],
+    }
+    db.pool.query.mockReturnValueOnce({
+      rows: [root]
+    })
+
+    const result = await interpret(WORDS, Db())
 
     expect(result).toStrictEqual({
       category: CATEGORY.name,
@@ -39,13 +82,16 @@ describe("interpret", () => {
     })
   })
 
-  it("uses probability to break ties", async () => {
+  it("uses probability to break ties", async ({ db }) => {
     const nodes = [
       { name: `${CATEGORY.name}-2`, tally: CATEGORY.tally-1, children: null},
       {...CATEGORY, children: null},
     ]
+    db.pool.query.mockReturnValueOnce({
+      rows: nodes
+    })
 
-    const result = await interpret(nodes)
+    const result = await interpret(WORDS, Db())
 
     expect(result).toStrictEqual({
       category: CATEGORY.name,

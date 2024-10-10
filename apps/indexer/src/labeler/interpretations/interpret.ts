@@ -1,4 +1,4 @@
-import type { MatchedNodes } from "@tissai/db"
+import type { Db } from "@tissai/db"
 import { type Interpretation, normalize } from "./normalize.js"
 import { calculateProbability } from "./calculateProbability.js"
 
@@ -23,7 +23,9 @@ const pickBestScores = (best: typeof BASE_SCORE, interpretation: Interpretation)
   }
 }
 
-export function interpret(nodes: MatchedNodes) {
+export async function interpret(words: string[], db: Db) {
+  const nodes = await db.nodes.match(words)
+
   const { category, properties } = nodes
     .map(normalize)
     .flat()
