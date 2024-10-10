@@ -75,3 +75,22 @@ describe("extractFilters", () => {
     )
   })
 })
+
+describe("parseSearchParams", () => {
+  let params: URLSearchParams
+  beforeEach(() => {
+    params = new URLSearchParams()
+  })
+
+  it("handles empty search", async () => {
+    const result = extractFilters(params)
+
+    expect(result).toStrictEqual({
+      brand: undefined,
+      max: undefined,
+      min: undefined,
+      query: "",
+      attributes: {},
+    })
+  })
+})
