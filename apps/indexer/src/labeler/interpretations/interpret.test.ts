@@ -21,7 +21,7 @@ describe("interpret", () => {
       children: [
         {
           ...LABEL,
-          children: [VALUE]
+          children: [VALUE],
         },
       ],
     }
@@ -30,10 +30,12 @@ describe("interpret", () => {
 
     expect(result).toStrictEqual({
       category: CATEGORY.name,
-      properties: [{
-        label: LABEL.name,
-        value: VALUE.name,
-      }],
+      properties: [
+        {
+          label: LABEL.name,
+          value: VALUE.name,
+        },
+      ],
     })
   })
 })

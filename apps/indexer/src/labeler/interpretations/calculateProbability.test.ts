@@ -55,14 +55,15 @@ describe("calculateProbability", async () => {
     }
     const interpretation = {
       category: CATEGORY,
-      properties: [
-        { label: LABEL, value: VALUE },
-        { label: LABEL2 },
-      ],
+      properties: [{ label: LABEL, value: VALUE }, { label: LABEL2 }],
     }
 
     const result = await calculateProbability(interpretation)
 
-    expect(result).toStrictEqual(CATEGORY.tally * (VALUE.tally / CATEGORY.tally) * (LABEL.tally / CATEGORY.tally))
+    expect(result).toStrictEqual(
+      CATEGORY.tally *
+        (VALUE.tally / CATEGORY.tally) *
+        (LABEL.tally / CATEGORY.tally),
+    )
   })
 })

@@ -31,16 +31,20 @@ describe("normalize", () => {
     expect(result).toStrictEqual([
       {
         category: CATEGORY,
-        properties: [{
-          label: LABEL,
-        }]
+        properties: [
+          {
+            label: LABEL,
+          },
+        ],
       },
       {
         category: CATEGORY,
-        properties: [{
-          label: LABEL,
-          value: VALUE,
-        }]
+        properties: [
+          {
+            label: LABEL,
+            value: VALUE,
+          },
+        ],
       },
     ])
   })
@@ -61,9 +65,11 @@ describe("normalize", () => {
     expect(result).toStrictEqual([
       {
         category: CATEGORY,
-        properties: [{
-          label: LABEL,
-        }]
+        properties: [
+          {
+            label: LABEL,
+          },
+        ],
       },
     ])
   })
@@ -133,7 +139,7 @@ describe("normalize", () => {
           {
             label: LABEL2,
           },
-        ]
+        ],
       },
       {
         category: CATEGORY,
@@ -146,9 +152,9 @@ describe("normalize", () => {
             value: {
               name: "value-3",
               tally: 1,
-            }
+            },
           },
-        ]
+        ],
       },
       {
         category: CATEGORY,
@@ -161,9 +167,9 @@ describe("normalize", () => {
             value: {
               name: "value-4",
               tally: 1,
-            }
+            },
           },
-        ]
+        ],
       },
       {
         category: CATEGORY,
@@ -173,12 +179,12 @@ describe("normalize", () => {
             value: {
               name: "value-1",
               tally: 1,
-            }
+            },
           },
           {
             label: LABEL2,
           },
-        ]
+        ],
       },
       {
         category: CATEGORY,
@@ -188,16 +194,16 @@ describe("normalize", () => {
             value: {
               name: "value-1",
               tally: 1,
-            }
+            },
           },
           {
             label: LABEL2,
             value: {
               name: "value-3",
               tally: 1,
-            }
+            },
           },
-        ]
+        ],
       },
       {
         category: CATEGORY,
@@ -207,16 +213,16 @@ describe("normalize", () => {
             value: {
               name: "value-1",
               tally: 1,
-            }
+            },
           },
           {
             label: LABEL2,
             value: {
               name: "value-4",
               tally: 1,
-            }
+            },
           },
-        ]
+        ],
       },
       {
         category: CATEGORY,
@@ -226,12 +232,12 @@ describe("normalize", () => {
             value: {
               name: "value-2",
               tally: 1,
-            }
+            },
           },
           {
             label: LABEL2,
           },
-        ]
+        ],
       },
       {
         category: CATEGORY,
@@ -241,16 +247,16 @@ describe("normalize", () => {
             value: {
               name: "value-2",
               tally: 1,
-            }
+            },
           },
           {
             label: LABEL2,
             value: {
               name: "value-3",
               tally: 1,
-            }
+            },
           },
-        ]
+        ],
       },
       {
         category: CATEGORY,
@@ -260,16 +266,16 @@ describe("normalize", () => {
             value: {
               name: "value-2",
               tally: 1,
-            }
+            },
           },
           {
             label: LABEL2,
             value: {
               name: "value-4",
               tally: 1,
-            }
+            },
           },
-        ]
+        ],
       },
     ])
   })
@@ -284,15 +290,11 @@ describe("normalize", () => {
       children: [
         {
           ...LABEL,
-          children: [
-            VALUE,
-          ],
+          children: [VALUE],
         },
         {
           ...LABEL2,
-          children: [
-            VALUE,
-          ],
+          children: [VALUE],
         },
       ],
     }
@@ -309,7 +311,7 @@ describe("normalize", () => {
           {
             label: LABEL2,
           },
-        ]
+        ],
       },
       {
         category: CATEGORY,
@@ -321,7 +323,7 @@ describe("normalize", () => {
             label: LABEL2,
             value: VALUE,
           },
-        ]
+        ],
       },
       {
         category: CATEGORY,
@@ -333,7 +335,7 @@ describe("normalize", () => {
           {
             label: LABEL2,
           },
-        ]
+        ],
       },
     ])
   })
