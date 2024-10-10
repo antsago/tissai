@@ -25,7 +25,7 @@ const pickBestScores = (
   }
 }
 
-export async function interpret(words: string[], db: Db) {
+export async function infer(words: string[], db: Db) {
   const nodes = await db.nodes.match(words)
 
   const { category, properties } = nodes

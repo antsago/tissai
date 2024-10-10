@@ -1,13 +1,13 @@
 import { expect, describe, test } from "vitest"
 import { mockDbFixture, queries } from "@tissai/db/mocks"
 import { Db } from "@tissai/db"
-import { interpret } from "./interpret.js"
+import { infer } from "./infer.js"
 
 const it = test.extend({
   db: mockDbFixture,
 })
 
-describe("interpret", () => {
+describe("infer", () => {
   const WORDS = ["category", "value"]
   const CATEGORY = {
     name: "category",
@@ -36,7 +36,7 @@ describe("interpret", () => {
       rows: [root],
     })
 
-    const result = await interpret(WORDS, Db())
+    const result = await infer(WORDS, Db())
 
     expect(db).toHaveExecuted(queries.nodes.match(WORDS))
     expect(result).toStrictEqual({
@@ -69,7 +69,7 @@ describe("interpret", () => {
       rows: [root],
     })
 
-    const result = await interpret(WORDS, Db())
+    const result = await infer(WORDS, Db())
 
     expect(result).toStrictEqual({
       category: CATEGORY.name,
@@ -91,7 +91,7 @@ describe("interpret", () => {
       rows: nodes,
     })
 
-    const result = await interpret(WORDS, Db())
+    const result = await infer(WORDS, Db())
 
     expect(result).toStrictEqual({
       category: CATEGORY.name,
