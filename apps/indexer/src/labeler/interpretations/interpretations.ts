@@ -1,7 +1,7 @@
 import type { MatchedNodes } from "@tissai/db"
 import { normalize, type Interpretation } from "./normalize.js"
 
-function calculateProbability({ category, properties }: Interpretation) {
+export function calculateProbability({ category, properties }: Interpretation) {
   const multiply = (a: number, b: number) => a * b
   return properties
     .map(({ value, label }) =>
