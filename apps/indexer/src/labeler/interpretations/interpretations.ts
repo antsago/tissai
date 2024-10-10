@@ -46,7 +46,7 @@ function combineProperties(
     .flat()
 }
 
-function normalize(root: MatchedNodes[number]): Interpretation[] {
+export function normalize(root: MatchedNodes[number]): Interpretation[] {
   const combinations = combineProperties(root.children ?? [])
 
   return combinations.map((properties) => ({
