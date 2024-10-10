@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest"
-import { STRING_ATTRIBUTE, CAT_ATTRIBUTE, QUERY } from "mocks"
+import { STRING_ATTRIBUTE, QUERY, BOOL_ATTRIBUTE } from "mocks"
 import { extractFilters } from "./parseSearchParams"
 
 describe("extractFilters", () => {
@@ -8,26 +8,16 @@ describe("extractFilters", () => {
     params = new URLSearchParams()
   })
 
-  it("sets defaults values", async () => {
-    const result = extractFilters(params)
-
-    expect(result).toStrictEqual({
-      brand: undefined,
-      max: undefined,
-      min: undefined,
-      query: "",
-      attributes: {},
-    })
-  })
-
   it("parses filters", async () => {
     const min = 11.1
     const max = 22.2
     const brand = "a brand"
+    const category = "the category"
     params.append("q", QUERY)
     params.append("min", String(min))
     params.append("max", String(max))
     params.append("brand", brand)
+    params.append("cat", category)
     params.append(STRING_ATTRIBUTE.label, STRING_ATTRIBUTE.value)
 
     const result = extractFilters(params)
@@ -37,6 +27,7 @@ describe("extractFilters", () => {
       brand,
       min,
       max,
+      category,
       attributes: {
         [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value],
       },
@@ -44,7 +35,7 @@ describe("extractFilters", () => {
   })
 
   it("supports multiple attributes", async () => {
-    params.append(CAT_ATTRIBUTE.label, CAT_ATTRIBUTE.value)
+    params.append(BOOL_ATTRIBUTE.label, BOOL_ATTRIBUTE.value)
     params.append(STRING_ATTRIBUTE.label, STRING_ATTRIBUTE.value)
 
     const result = extractFilters(params)
@@ -52,7 +43,7 @@ describe("extractFilters", () => {
     expect(result).toStrictEqual(
       expect.objectContaining({
         attributes: {
-          [CAT_ATTRIBUTE.label]: [CAT_ATTRIBUTE.value],
+          [BOOL_ATTRIBUTE.label]: [BOOL_ATTRIBUTE.value],
           [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value],
         },
       }),
@@ -89,6 +80,7 @@ describe("parseSearchParams", () => {
       brand: undefined,
       max: undefined,
       min: undefined,
+      category: undefined,
       query: "",
       attributes: {},
     })

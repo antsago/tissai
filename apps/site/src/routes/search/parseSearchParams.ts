@@ -1,5 +1,6 @@
-import type { SearchParams } from "@tissai/db"
+import type { SearchParams as SP } from "@tissai/db"
 
+type SearchParams = SP & { category?: string }
 export function extractFilters(params: URLSearchParams) {
   const defaultFilters: SearchParams = {
     query: "",
@@ -7,6 +8,7 @@ export function extractFilters(params: URLSearchParams) {
     brand: undefined,
     max: undefined,
     min: undefined,
+    category: undefined,
   }
 
   return [...params.entries()].reduce((filters, [key, value]) => {
@@ -15,6 +17,11 @@ export function extractFilters(params: URLSearchParams) {
         return {
           ...filters,
           query: value,
+        }
+      case "cat":
+        return {
+          ...filters,
+          category: value,
         }
       case "brand":
         return {
