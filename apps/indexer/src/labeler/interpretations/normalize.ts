@@ -16,6 +16,7 @@ export type Interpretation = {
 function combineProperties(
   children: NonNullable<MatchedNodes[number]["children"]>,
   properties: Property[] = [],
+  matchedWords: string[] = []
 ): Property[][] {
   if (children.length === 0) {
     return [properties]
@@ -23,14 +24,16 @@ function combineProperties(
 
   const child = children[0]
   const label = { name: child.name, tally: child.tally }
-  const propertyCandidates: Property[] = !child.children
-    ? [{ label }]
-    : child.children.map((value) => ({ label, value }))
+  const propertyCandidates: Property[] = [{ label },
+    ...child.children
+    ? child.children.filter(value => !matchedWords.includes(value.name)).map((value) => ({ label, value }))
+    : [],
+  ]
 
   const otherChildren = children.slice(1)
   return propertyCandidates
     .map((candidate) =>
-      combineProperties(otherChildren, [...properties, candidate]),
+      combineProperties(otherChildren, [...properties, candidate], candidate.value?.name ? [...matchedWords, candidate.value.name] : matchedWords),
     )
     .flat()
 }

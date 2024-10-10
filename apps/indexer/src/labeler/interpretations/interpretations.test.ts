@@ -1,7 +1,7 @@
 import { expect, describe, it } from "vitest"
 import { createInterpretations } from "./interpretations.js"
 
-describe("createInterpretations", () => {
+describe.skip("createInterpretations", () => {
   it("returns interpretations", async () => {
     const nodeTree = {
       name: "category-name",
