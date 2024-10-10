@@ -17,14 +17,14 @@ export function createInterpretations(nodes: MatchedNodes) {
 
   return interpretations.map((interpretation) => {
     const attributes = interpretation.properties
-      .map(({ value }) => value?.id)
-      .filter((id) => !!id)
+      .map(({ value }) => value?.name)
+      .filter((name) => !!name)
 
     return {
       probability: calculateProbability(interpretation),
       score: attributes.length + 1,
       attributes,
-      category: interpretation.category.id,
+      category: interpretation.category.name,
     }
   })
 }

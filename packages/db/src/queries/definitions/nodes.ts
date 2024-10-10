@@ -29,7 +29,7 @@ export const match = (words: string[]) =>
             (vb) =>
               vb
                 .selectFrom("nodes as value")
-                .select(["value.id", "value.tally"])
+                .select(["value.name", "value.tally"])
                 .whereRef("label.id", "=", "value.parent")
                 .where((eb) =>
                   eb("value.name", "in", words).and(
@@ -42,33 +42,33 @@ export const match = (words: string[]) =>
             (join) => join.onTrue(),
           )
           .select(({ fn }) => [
-            "label.id",
+            "label.name",
             "label.tally",
             fn
               .jsonAgg("value")
-              .filterWhere("value.id", "is not", null)
+              .filterWhere("value.name", "is not", null)
               .as("children"),
           ])
           .whereRef("category.id", "=", "label.parent")
-          .groupBy("label.id")
+          .groupBy(["label.name", "label.tally"])
           .as("label"),
       (join) => join.onTrue(),
     )
     .select(({ fn }) => [
-      "category.id",
+      "category.name",
       "category.tally",
       fn
         .jsonAgg("label")
-        .filterWhere("label.id", "is not", null)
+        .filterWhere("label.name", "is not", null)
         .$castTo<
           | null
           | {
-              id: string
+              name: string
               tally: number
               children:
                 | null
                 | {
-                    id: string
+                    name: string
                     tally: number
                   }[]
             }[]

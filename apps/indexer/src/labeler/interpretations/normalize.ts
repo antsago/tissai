@@ -1,7 +1,7 @@
 import type { MatchedNodes } from "@tissai/db"
 
 export type Node = {
-  id: string
+  name: string
   tally: number
 }
 export type Property = {
@@ -22,7 +22,7 @@ function combineProperties(
   }
 
   const child = children[0]
-  const label = { id: child.id, tally: child.tally }
+  const label = { name: child.name, tally: child.tally }
   const propertyCandidates: Property[] = !child.children
     ? [{ label }]
     : child.children.map((value) => ({ label, value }))
@@ -40,7 +40,7 @@ export function normalize(root: MatchedNodes[number]): Interpretation[] {
 
   return combinations.map((properties) => ({
     category: {
-      id: root.id,
+      name: root.name,
       tally: root.tally,
     },
     properties,

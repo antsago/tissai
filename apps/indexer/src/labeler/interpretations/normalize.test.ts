@@ -3,15 +3,15 @@ import { normalize } from "./normalize.js"
 
 describe("normalize", () => {
   const CATEGORY = {
-    id: "category-id",
+    name: "category",
     tally: 3,
   }
   const LABEL = {
-    id: "label-id",
+    name: "label",
     tally: 2,
   }
   const VALUE = {
-    id: "value-id",
+    name: "value",
     tally: 2,
   }
 
@@ -81,7 +81,7 @@ describe("normalize", () => {
   it("handles multiple labels", async () => {
     const LABEL2 = {
       ...LABEL,
-      id: `${LABEL.id}-2`,
+      name: `${LABEL.name}-2`,
     }
     const root = {
       ...CATEGORY,
@@ -115,7 +115,7 @@ describe("normalize", () => {
   it("handles multiple values", async () => {
     const VALUE2 = {
       ...VALUE,
-      id: `${VALUE.id}_2`,
+      name: `${VALUE.name}-2`,
     }
     const root = {
       ...CATEGORY,
@@ -150,7 +150,7 @@ describe("normalize", () => {
   it("handles multiple labels with multiple values", async () => {
     const LABEL2 = {
       ...LABEL,
-      id: `${LABEL.id}-2`,
+      name: `${LABEL.name}-2`,
     }
     const root = {
       ...CATEGORY,
@@ -159,11 +159,11 @@ describe("normalize", () => {
           ...LABEL,
           children: [
             {
-              id: "value-1-id",
+              name: "value-1",
               tally: 1,
             },
             {
-              id: "value-2-id",
+              name: "value-2",
               tally: 1,
             },
           ],
@@ -172,11 +172,11 @@ describe("normalize", () => {
           ...LABEL2,
           children: [
             {
-              id: "value-3-id",
+              name: "value-3",
               tally: 1,
             },
             {
-              id: "value-4-id",
+              name: "value-4",
               tally: 1,
             },
           ],
@@ -193,14 +193,14 @@ describe("normalize", () => {
           {
             label: LABEL,
             value: {
-              id: "value-1-id",
+              name: "value-1",
               tally: 1,
             }
           },
           {
             label: LABEL2,
             value: {
-              id: "value-3-id",
+              name: "value-3",
               tally: 1,
             }
           },
@@ -212,14 +212,14 @@ describe("normalize", () => {
           {
             label: LABEL,
             value: {
-              id: "value-1-id",
+              name: "value-1",
               tally: 1,
             }
           },
           {
             label: LABEL2,
             value: {
-              id: "value-4-id",
+              name: "value-4",
               tally: 1,
             }
           },
@@ -231,14 +231,14 @@ describe("normalize", () => {
           {
             label: LABEL,
             value: {
-              id: "value-2-id",
+              name: "value-2",
               tally: 1,
             }
           },
           {
             label: LABEL2,
             value: {
-              id: "value-3-id",
+              name: "value-3",
               tally: 1,
             }
           },
@@ -250,14 +250,14 @@ describe("normalize", () => {
           {
             label: LABEL,
             value: {
-              id: "value-2-id",
+              name: "value-2",
               tally: 1,
             }
           },
           {
             label: LABEL2,
             value: {
-              id: "value-4-id",
+              name: "value-4",
               tally: 1,
             }
           },

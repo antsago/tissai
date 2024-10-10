@@ -4,15 +4,15 @@ import { createInterpretations } from "./interpretations.js"
 describe("createInterpretations", () => {
   it("returns interpretations", async () => {
     const nodeTree = {
-      id: "category-id",
+      name: "category-name",
       tally: 3,
       children: [
         {
-          id: "label-id",
+          name: "label-name",
           tally: 2,
           children: [
             {
-              id: "value-id",
+              name: "value-name",
               tally: 2,
             },
           ],
@@ -24,8 +24,8 @@ describe("createInterpretations", () => {
 
     expect(result).toStrictEqual([
       {
-        category: nodeTree.id,
-        attributes: [nodeTree.children[0].children[0].id],
+        category: nodeTree.name,
+        attributes: [nodeTree.children[0].children[0].name],
         score: 2,
         probability: 2,
       },
@@ -34,11 +34,11 @@ describe("createInterpretations", () => {
 
   it("handles unexpressed labels", async () => {
     const nodeTree = {
-      id: "category-id",
+      name: "category-name",
       tally: 3,
       children: [
         {
-          id: "label-id",
+          name: "label-name",
           tally: 1,
           children: null,
         },
@@ -49,7 +49,7 @@ describe("createInterpretations", () => {
 
     expect(result).toStrictEqual([
       {
-        category: nodeTree.id,
+        category: nodeTree.name,
         attributes: [],
         score: 1,
         probability: 2,
@@ -59,7 +59,7 @@ describe("createInterpretations", () => {
 
   it("handles categories without labels", async () => {
     const nodeTree = {
-      id: "category-id",
+      name: "category-name",
       tally: 1,
       children: null,
     }
@@ -68,7 +68,7 @@ describe("createInterpretations", () => {
 
     expect(result).toStrictEqual([
       {
-        category: nodeTree.id,
+        category: nodeTree.name,
         attributes: [],
         score: 1,
         probability: 1,
@@ -78,15 +78,15 @@ describe("createInterpretations", () => {
 
   it("handles several categories", async () => {
     const fullTree = {
-      id: "categor-1-id",
+      name: "categor-1-name",
       tally: 5,
       children: [
         {
-          id: "label-id",
+          name: "label-name",
           tally: 3,
           children: [
             {
-              id: "value-id",
+              name: "value-name",
               tally: 1,
             },
           ],
@@ -94,7 +94,7 @@ describe("createInterpretations", () => {
       ],
     }
     const categoryTree = {
-      id: "category-2-id",
+      name: "category-2-name",
       tally: 1,
       children: null,
     }
@@ -103,13 +103,13 @@ describe("createInterpretations", () => {
 
     expect(result).toStrictEqual([
       {
-        category: fullTree.id,
-        attributes: [fullTree.children[0].children[0].id],
+        category: fullTree.name,
+        attributes: [fullTree.children[0].children[0].name],
         score: 2,
         probability: 1,
       },
       {
-        category: categoryTree.id,
+        category: categoryTree.name,
         attributes: [],
         score: 1,
         probability: categoryTree.tally,
@@ -119,21 +119,21 @@ describe("createInterpretations", () => {
 
   it("handles multiple labels", async () => {
     const nodeTree = {
-      id: "category-id",
+      name: "category-name",
       tally: 3,
       children: [
         {
-          id: "label-1-id",
+          name: "label-1-name",
           tally: 2,
           children: [
             {
-              id: "value-id",
+              name: "value-name",
               tally: 2,
             },
           ],
         },
         {
-          id: "label-2-id",
+          name: "label-2-name",
           tally: 1,
           children: null,
         },
@@ -144,8 +144,8 @@ describe("createInterpretations", () => {
 
     expect(result).toStrictEqual([
       {
-        category: nodeTree.id,
-        attributes: [nodeTree.children[0].children![0].id],
+        category: nodeTree.name,
+        attributes: [nodeTree.children[0].children![0].name],
         score: 2,
         probability:
           nodeTree.tally *
@@ -157,19 +157,19 @@ describe("createInterpretations", () => {
 
   it("handles multiple values", async () => {
     const nodeTree = {
-      id: "category-id",
+      name: "category-name",
       tally: 5,
       children: [
         {
-          id: "label-id",
+          name: "label-name",
           tally: 3,
           children: [
             {
-              id: "value-1-id",
+              name: "value-1-name",
               tally: 2,
             },
             {
-              id: "value-2-id",
+              name: "value-2-name",
               tally: 1,
             },
           ],
@@ -181,14 +181,14 @@ describe("createInterpretations", () => {
 
     expect(result).toStrictEqual([
       {
-        category: nodeTree.id,
-        attributes: [nodeTree.children[0].children[0].id],
+        category: nodeTree.name,
+        attributes: [nodeTree.children[0].children[0].name],
         score: 2,
         probability: 2,
       },
       {
-        category: nodeTree.id,
-        attributes: [nodeTree.children[0].children[1].id],
+        category: nodeTree.name,
+        attributes: [nodeTree.children[0].children[1].name],
         score: 2,
         probability: 1,
       },
@@ -197,33 +197,33 @@ describe("createInterpretations", () => {
 
   it("handles multiple labels with multiple values", async () => {
     const root = {
-      id: "category-id",
+      name: "category-name",
       tally: 5,
       children: [
         {
-          id: "label-1-id",
+          name: "label-1-name",
           tally: 2,
           children: [
             {
-              id: "value-1-id",
+              name: "value-1-name",
               tally: 1,
             },
             {
-              id: "value-2-id",
+              name: "value-2-name",
               tally: 1,
             },
           ],
         },
         {
-          id: "label-2-id",
+          name: "label-2-name",
           tally: 4,
           children: [
             {
-              id: "value-3-id",
+              name: "value-3-name",
               tally: 2,
             },
             {
-              id: "value-4-id",
+              name: "value-4-name",
               tally: 1,
             },
           ],
@@ -235,10 +235,10 @@ describe("createInterpretations", () => {
 
     expect(result).toStrictEqual([
       {
-        category: root.id,
+        category: root.name,
         attributes: [
-          root.children[0].children[0].id,
-          root.children[1].children[0].id,
+          root.children[0].children[0].name,
+          root.children[1].children[0].name,
         ],
         score: 3,
         probability:
@@ -247,10 +247,10 @@ describe("createInterpretations", () => {
           (root.children[1].children[0].tally / root.tally),
       },
       {
-        category: root.id,
+        category: root.name,
         attributes: [
-          root.children[0].children[0].id,
-          root.children[1].children[1].id,
+          root.children[0].children[0].name,
+          root.children[1].children[1].name,
         ],
         score: 3,
         probability:
@@ -259,10 +259,10 @@ describe("createInterpretations", () => {
           (root.children[1].children[1].tally / root.tally),
       },
       {
-        category: root.id,
+        category: root.name,
         attributes: [
-          root.children[0].children[1].id,
-          root.children[1].children[0].id,
+          root.children[0].children[1].name,
+          root.children[1].children[0].name,
         ],
         score: 3,
         probability:
@@ -271,10 +271,10 @@ describe("createInterpretations", () => {
           (root.children[1].children[0].tally / root.tally),
       },
       {
-        category: root.id,
+        category: root.name,
         attributes: [
-          root.children[0].children[1].id,
-          root.children[1].children[1].id,
+          root.children[0].children[1].name,
+          root.children[1].children[1].name,
         ],
         score: 3,
         probability:

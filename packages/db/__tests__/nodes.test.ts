@@ -17,15 +17,15 @@ describe.concurrent("nodes", () => {
 
       expect(result).toStrictEqual([
         {
-          id: CATEGORY_NODE.id,
+          name: CATEGORY_NODE.name,
           tally: CATEGORY_NODE.tally,
           children: [
             {
-              id: LABEL_NODE.id,
+              name: LABEL_NODE.name,
               tally: LABEL_NODE.tally,
               children: [
                 {
-                  id: VALUE_NODE.id,
+                  name: VALUE_NODE.name,
                   tally: VALUE_NODE.tally,
                 },
               ],
@@ -49,11 +49,11 @@ describe.concurrent("nodes", () => {
 
       expect(result).toStrictEqual([
         {
-          id: CATEGORY_NODE.id,
+          name: CATEGORY_NODE.name,
           tally: CATEGORY_NODE.tally,
           children: [
             {
-              id: LABEL_NODE.id,
+              name: LABEL_NODE.name,
               tally: LABEL_NODE.tally,
               children: null,
             },
@@ -76,11 +76,11 @@ describe.concurrent("nodes", () => {
 
       expect(result).toStrictEqual([
         {
-          id: CATEGORY_NODE.id,
+          name: CATEGORY_NODE.name,
           tally: CATEGORY_NODE.tally,
           children: [
             {
-              id: LABEL_NODE.id,
+              name: LABEL_NODE.name,
               tally: LABEL_NODE.tally,
               children: null,
             },
@@ -117,21 +117,21 @@ describe.concurrent("nodes", () => {
 
       expect(result).toStrictEqual([
         {
-          id: categoryWithoutLabels.id,
+          name: categoryWithoutLabels.name,
           tally: categoryWithoutLabels.tally,
           children: null,
         },
         {
-          id: CATEGORY_NODE.id,
+          name: CATEGORY_NODE.name,
           tally: CATEGORY_NODE.tally,
           children: [
             {
-              id: labelWithoutValues.id,
+              name: LABEL_NODE.name,
               tally: LABEL_NODE.tally,
               children: null,
             },
             {
-              id: LABEL_NODE.id,
+              name: labelWithoutValues.name,
               tally: labelWithoutValues.tally,
               children: null,
             },
