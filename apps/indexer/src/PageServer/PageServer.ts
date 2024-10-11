@@ -8,31 +8,30 @@ import {
 } from "./FixtureManager.js"
 import { dbFixture } from "./dbFixture.js"
 
-export type Helpers<Compiler> = {
-  compiler: Compiler
+export type Helpers<Fixtures> = {
   db: Db
   reporter: Reporter
-}
-export type OnPage<Compiler> = (
+} & Fixtures
+export type OnPage<Fixtures> = (
   page: Page,
-  helpers: Helpers<Compiler>,
+  helpers: Helpers<Fixtures>,
 ) => Promise<any>
-type CreateStream<Compiler> = (helper: Helpers<Compiler>) => OptionalPromise<{
+type CreateStream<Fixtures> = (helper: Helpers<Fixtures>) => OptionalPromise<{
   total: number
   pages: AsyncGenerator<Page, void, unknown>
 }>
 
 export class PageServer<Compiler> {
-  private processPage?: OnPage<Compiler>
-  private fixtures?: ReturnType<typeof FixtureManager<Compiler>>
+  private processPage?: OnPage<{ compiler: Compiler }>
+  private fixtures?: FixtureManager<Compiler>
 
-  constructor(private createStream: CreateStream<Compiler>) {}
+  constructor(private createStream: CreateStream<{ compiler: Compiler }>) {}
 
   with = (fixture: Fixture<Compiler>) => {
     this.fixtures = FixtureManager(fixture, dbFixture)
     return this
   }
-  onPage = (fn: OnPage<Compiler>) => {
+  onPage = (fn: OnPage<{ compiler: Compiler }>) => {
     this.processPage = fn
     return this
   }

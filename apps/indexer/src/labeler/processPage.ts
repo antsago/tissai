@@ -13,7 +13,7 @@ import { brand } from "./brand.js"
 import seller from "./seller.js"
 import attribute from "./attribute.js"
 
-export const processPage: OnPage<Compiler> = async (page, { compiler, db }) => {
+export const processPage: OnPage<{ compiler: Compiler }> = async (page, { compiler, db }) => {
   const entities = await compiler.parse(page.body)
 
   if (entities !== NonMatch) {

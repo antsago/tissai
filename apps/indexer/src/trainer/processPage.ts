@@ -3,7 +3,7 @@ import { type OnPage } from "../PageServer/index.js"
 import { ProductType } from "./schemas.js"
 import { updateNetwork } from "./updateNetwork.js"
 
-export const processPage: OnPage<Compiler> = async (
+export const processPage: OnPage<{ compiler: Compiler }> = async (
   page,
   { compiler, db, reporter },
 ) => {

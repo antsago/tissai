@@ -26,3 +26,5 @@ export function FixtureManager<T>(
       Promise.all([closeDb && closeDb(), closeCompiler && closeCompiler()]),
   }
 }
+
+export type FixtureManager<T> = ReturnType<typeof FixtureManager<T>>

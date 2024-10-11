@@ -4,7 +4,7 @@ import { type Helpers, PageServer } from "../PageServer/index.js"
 import { compilerFixture } from "./schemas.js"
 import { processPage } from "./processPage.js"
 
-const createStream = async ({ db }: Helpers<Compiler>) => {
+const createStream = async ({ db }: Helpers<{ compiler: Compiler }>) => {
   const baseQuery = query.selectFrom("pages").limit(2)
   const [{ total }] = await db.query(
     baseQuery.select(({ fn }) => fn.countAll().as("total")).compile(),
