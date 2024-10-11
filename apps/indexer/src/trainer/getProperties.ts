@@ -1,7 +1,7 @@
-import type { LLM, Property } from "./LlmLabeler/index.js"
+import type { LLM, Labeled } from "./LlmLabeler/index.js"
 import { getFirstWord } from "./getFirstWord.js"
 
-const getPrompt = (title: string, properties: Property[]) => {
+const getPrompt = (title: string, properties: Labeled[]) => {
   const labeled = properties
     .map((p) => `${p.value} <> ${p.labels[0]}`)
     .join("\n    ")
@@ -49,9 +49,9 @@ const getPrompt = (title: string, properties: Property[]) => {
 const getLabels = async (
   llm: LLM,
   title: string,
-  previousProperties: Property[],
+  previousProperties: Labeled[],
   currentWord: string,
-): Promise<Property[]> => {
+): Promise<Labeled[]> => {
   const prompt = getPrompt(title, [
     ...previousProperties,
     { value: currentWord, labels: [""] },
@@ -83,7 +83,7 @@ export const getProperties = async (
   words: string[],
 ) => {
   return words.reduce(
-    async (previousProperties: Promise<Property[]>, currentWord: string) =>
+    async (previousProperties: Promise<Labeled[]>, currentWord: string) =>
       getLabels(llm, title, await previousProperties, currentWord),
     Promise.resolve([]),
   )

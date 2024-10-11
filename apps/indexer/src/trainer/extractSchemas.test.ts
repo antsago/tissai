@@ -1,5 +1,5 @@
 import { expect, describe, it } from "vitest"
-import { Property } from "./LlmLabeler/index.js"
+import { Labeled } from "./LlmLabeler/index.js"
 import { extractSchemas } from "./extractSchemas.js"
 
 describe("extractSchemas", () => {
@@ -61,7 +61,7 @@ describe("extractSchemas", () => {
         value: "foobar",
         labels: ["foobar"],
       },
-    ] as Property[]
+    ] as Labeled[]
 
     const result = extractSchemas(properties)
 

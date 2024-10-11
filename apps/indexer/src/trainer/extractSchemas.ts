@@ -1,12 +1,12 @@
-import type { Property } from "./LlmLabeler/index.js"
+import type { Labeled } from "./LlmLabeler/index.js"
 
-export function extractSchemas(properties: Property[]) {
+export function extractSchemas(words: Labeled[]) {
   const seenLabels = [] as string[]
 
-  return properties
-    .filter((token) => !!token.labels)
-    .map((property) => {
-      const label = property.labels!.find(
+  return words
+    .filter((word) => !!word.labels)
+    .map((word) => {
+      const label = word.labels!.find(
         (label) => !seenLabels.includes(label),
       )
 
@@ -18,7 +18,7 @@ export function extractSchemas(properties: Property[]) {
 
       return {
         label,
-        value: property.value,
+        value: word.value,
       }
     })
     .filter((schema) => !!schema)
