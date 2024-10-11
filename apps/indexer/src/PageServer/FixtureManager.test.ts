@@ -19,7 +19,7 @@ describe("FixtureManager", () => {
     dbFixture.mockResolvedValue([db, closeDb])
     compilerFixture.mockResolvedValue([compiler, closeCompiler])
 
-    manager = FixtureManager(compilerFixture, dbFixture)
+    manager = FixtureManager({ compiler: compilerFixture, db: dbFixture })
   })
 
   it("initializes passed fixtures", async ({ expect }) => {

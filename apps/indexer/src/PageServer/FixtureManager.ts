@@ -1,35 +1,32 @@
-import { type Db } from "@tissai/db"
 import { type Reporter } from "./Reporter.js"
 
 export type OptionalPromise<T> = Promise<T> | T
-type CloseFixture = () => OptionalPromise<unknown>
+type Closer = () => OptionalPromise<void>
 export type Fixture<T> = (
   reporter: Reporter,
-) => OptionalPromise<readonly [T, CloseFixture]>
+) => OptionalPromise<readonly [T, Closer]>
+type FixtureDefinition<T> = Record<string, Fixture<T>>
 
-export function FixtureManager<T>(
-  compilerFixture: Fixture<T>,
-  dbFixture: Fixture<Db>,
-) {
-  const close = {} as { compiler?: CloseFixture; db?: CloseFixture }
+export function FixtureManager<T extends FixtureDefinition<unknown>>(fixtures: T) {
+  const closers = {} as {
+    [K in keyof T]: Closer
+  }
 
   return {
     init: async (reporter: Reporter) => {
-      const fixtures = { db: dbFixture, compiler: compilerFixture }
-
       return Object.fromEntries(
         await Promise.all(
           Object.entries(fixtures).map(async ([name, initializer]) => {
             const [helper, closer] = await initializer(reporter)
-            close[name as "db" | "compiler"] = closer
+            closers[name as keyof T] = closer
 
             return [name, helper]
           }),
         ),
-      )
+      ) as { [K in keyof T]: Awaited<ReturnType<T[K]>>[0]}
     },
-    close: () => Promise.all(Object.values(close).map((c) => c())),
+    close: () => Promise.all(Object.values(closers).map((c) => c())),
   }
 }
 
-export type FixtureManager<T> = ReturnType<typeof FixtureManager<T>>
+export type FixtureManager<T extends FixtureDefinition<unknown>> = ReturnType<typeof FixtureManager<T>>

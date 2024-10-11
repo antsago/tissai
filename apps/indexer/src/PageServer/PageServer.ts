@@ -23,12 +23,12 @@ type CreateStream<Fixtures> = (helper: Helpers<Fixtures>) => OptionalPromise<{
 
 export class PageServer<Compiler> {
   private processPage?: OnPage<{ compiler: Compiler }>
-  private fixtures?: FixtureManager<Compiler>
+  private fixtures?: FixtureManager<{ compiler: Fixture<Compiler>, db: Fixture<Db> }>
 
   constructor(private createStream: CreateStream<{ compiler: Compiler }>) {}
 
   with = (fixture: Fixture<Compiler>) => {
-    this.fixtures = FixtureManager(fixture, dbFixture)
+    this.fixtures = FixtureManager({ compiler: fixture, db: dbFixture})
     return this
   }
   onPage = (fn: OnPage<{ compiler: Compiler }>) => {
