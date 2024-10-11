@@ -2,8 +2,8 @@ import { randomUUID } from "crypto"
 import { Page, query } from "@tissai/db"
 import { NonMatch, Type, type Compiler } from "../parser/index.js"
 import { type OnPage, type Helpers, PageServer } from "../PageServer/index.js"
+import { type Property } from "./labeler/index.js"
 import { compilerFixture, ProductType } from "./schemas.js"
-import { type Property } from "./extractSchemas.js"
 
 const processPage: OnPage<Compiler> = async (
   page,

@@ -1,7 +1,6 @@
 import { Compiler, Required, Tokenizer, Schema, Type } from "../parser/index.js"
 import type { Reporter } from "../PageServer/index.js"
-import { LLM } from "./LlmLabeler/index.js"
-import { label } from "./labeler/index.js"
+import { LLM, label } from "./labeler/index.js"
 
 export const ProductType = Symbol("Product")
 
