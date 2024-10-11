@@ -1,7 +1,7 @@
 import { type Reporter } from "./Reporter.js"
 
 export type OptionalPromise<T> = Promise<T> | T
-type Closer = () => OptionalPromise<void>
+type Closer = () => OptionalPromise<any>
 export type Fixture<T> = (
   reporter: Reporter,
 ) => OptionalPromise<readonly [T, Closer]>
