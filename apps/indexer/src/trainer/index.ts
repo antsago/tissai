@@ -3,7 +3,7 @@ import { Page, query } from "@tissai/db"
 import { NonMatch, Type, type Compiler } from "../parser/index.js"
 import { type OnPage, type Helpers, PageServer } from "../PageServer/index.js"
 import { compilerFixture, ProductType } from "./schemas.js"
-import { extractSchemas } from "./extractSchemas.js"
+import { type Property } from "./extractSchemas.js"
 
 const processPage: OnPage<Compiler> = async (
   page,
@@ -28,7 +28,7 @@ const processPage: OnPage<Compiler> = async (
   })
   await Promise.all(
     properties.map(
-      async (property: ReturnType<typeof extractSchemas>[number]) => {
+      async (property: Property) => {
         const { id: labelId } = await db.nodes.upsert({
           id: randomUUID(),
           parent: categoryId,

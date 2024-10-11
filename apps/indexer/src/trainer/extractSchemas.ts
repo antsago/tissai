@@ -23,3 +23,5 @@ export function extractSchemas(words: Labeled[]) {
     })
     .filter((schema) => !!schema)
 }
+
+export type Property = ReturnType<typeof extractSchemas>[number]
