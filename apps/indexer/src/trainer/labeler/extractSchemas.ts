@@ -6,9 +6,7 @@ export function extractSchemas(words: Labeled[]) {
   return words
     .filter((word) => !!word.labels)
     .map((word) => {
-      const label = word.labels!.find(
-        (label) => !seenLabels.includes(label),
-      )
+      const label = word.labels!.find((label) => !seenLabels.includes(label))
 
       if (!label) {
         return
@@ -25,10 +23,10 @@ export function extractSchemas(words: Labeled[]) {
 }
 
 export type Property = {
-  label: string,
-  value: string,
+  label: string
+  value: string
 }
 export type Entity = {
-  category: string,
-  properties: Property[],
+  category: string
+  properties: Property[]
 }

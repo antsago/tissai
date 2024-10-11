@@ -11,22 +11,20 @@ export async function updateNetwork({ category, properties }: Entity, db: Db) {
   })
 
   await Promise.all(
-    properties.map(
-      async (property) => {
-        const { id: labelId } = await db.nodes.upsert({
-          id: randomUUID(),
-          parent: categoryId,
-          name: property.label,
-          tally: 1,
-        })
+    properties.map(async (property) => {
+      const { id: labelId } = await db.nodes.upsert({
+        id: randomUUID(),
+        parent: categoryId,
+        name: property.label,
+        tally: 1,
+      })
 
-        await db.nodes.upsert({
-          id: randomUUID(),
-          parent: labelId,
-          name: property.value,
-          tally: 1,
-        })
-      },
-    ),
+      await db.nodes.upsert({
+        id: randomUUID(),
+        parent: labelId,
+        name: property.value,
+        tally: 1,
+      })
+    }),
   )
 }

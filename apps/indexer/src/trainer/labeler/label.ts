@@ -4,8 +4,8 @@ import type { LLM } from "./LLM/index.js"
 import { extractSchemas } from "./extractSchemas.js"
 import { getProperties } from "./getProperties.js"
 
-export const label = (llm: LLM, tokenizer: Tokenizer) =>
-  async (title: string) => {
+export const label =
+  (llm: LLM, tokenizer: Tokenizer) => async (title: string) => {
     const words = await tokenizer.fromText(title)
 
     const propertyCandidates = await getProperties(
@@ -16,9 +16,7 @@ export const label = (llm: LLM, tokenizer: Tokenizer) =>
 
     const schemas = extractSchemas(propertyCandidates)
 
-    const categoryProperty = schemas.find(
-      (s) => s.label === CATEGORY_LABEL,
-    )
+    const categoryProperty = schemas.find((s) => s.label === CATEGORY_LABEL)
     if (!categoryProperty) {
       throw new Error("No property categoría found")
     }

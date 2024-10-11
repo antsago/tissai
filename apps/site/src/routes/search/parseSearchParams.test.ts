@@ -83,7 +83,10 @@ describe("parseSearchParams", () => {
     db.pool.query.mockResolvedValue({ rows: [] })
     python.mockReturnValue([])
 
-    const result = await parseSearchParams(params, { db: Db(), tokenizer: Tokenizer() })
+    const result = await parseSearchParams(params, {
+      db: Db(),
+      tokenizer: Tokenizer(),
+    })
 
     expect(result).toStrictEqual({
       brand: undefined,
@@ -95,10 +98,23 @@ describe("parseSearchParams", () => {
     })
   })
 
-  it("infers from query if no explicit category filter", async ({ db, python }) => {
+  it("infers from query if no explicit category filter", async ({
+    db,
+    python,
+  }) => {
     const WORDS = [
-      {  isMeaningful: true, trailing: " ", text: "category", originalText: "category"},
-      {  isMeaningful: true, trailing: "", text: "value", originalText: "value"},
+      {
+        isMeaningful: true,
+        trailing: " ",
+        text: "category",
+        originalText: "category",
+      },
+      {
+        isMeaningful: true,
+        trailing: "",
+        text: "value",
+        originalText: "value",
+      },
     ]
     const CATEGORY = {
       name: "category",
@@ -129,14 +145,19 @@ describe("parseSearchParams", () => {
     params.append("q", query)
     params.append(STRING_ATTRIBUTE.label, STRING_ATTRIBUTE.value)
 
-    const result = await parseSearchParams(params, { db: Db(), tokenizer: Tokenizer() })
+    const result = await parseSearchParams(params, {
+      db: Db(),
+      tokenizer: Tokenizer(),
+    })
 
-    expect(result).toStrictEqual(expect.objectContaining({
-      category: CATEGORY.name,
-      attributes: {
-        [LABEL.name]: [VALUE.name],
-      },
-    }))
+    expect(result).toStrictEqual(
+      expect.objectContaining({
+        category: CATEGORY.name,
+        attributes: {
+          [LABEL.name]: [VALUE.name],
+        },
+      }),
+    )
   })
 
   it("does not infer if explicit category filter", async () => {
@@ -145,9 +166,11 @@ describe("parseSearchParams", () => {
 
     const result = await parseSearchParams(params, {} as any)
 
-    expect(result).toStrictEqual(expect.objectContaining({
-      category,
-      attributes: {},
-    }))
+    expect(result).toStrictEqual(
+      expect.objectContaining({
+        category,
+        attributes: {},
+      }),
+    )
   })
 })

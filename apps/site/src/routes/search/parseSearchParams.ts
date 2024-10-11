@@ -51,7 +51,10 @@ export function extractFilters(params: URLSearchParams) {
   }, defaultFilters)
 }
 
-export async function parseSearchParams(params: URLSearchParams, locals: App.Locals) {
+export async function parseSearchParams(
+  params: URLSearchParams,
+  locals: App.Locals,
+) {
   const explicitFilters = extractFilters(params)
 
   if (explicitFilters.category) {
@@ -59,11 +62,16 @@ export async function parseSearchParams(params: URLSearchParams, locals: App.Loc
   }
 
   const words = await locals.tokenizer.fromText(explicitFilters.query)
-  const infered = await infer(words.filter(w => w.isMeaningful).map(w => w.text), locals.db)
+  const infered = await infer(
+    words.filter((w) => w.isMeaningful).map((w) => w.text),
+    locals.db,
+  )
 
   return {
     ...explicitFilters,
     category: infered.category,
-    attributes: Object.fromEntries(infered.properties.map((p => [p.label, [p.value]]))),
+    attributes: Object.fromEntries(
+      infered.properties.map((p) => [p.label, [p.value]]),
+    ),
   }
 }

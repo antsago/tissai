@@ -40,11 +40,12 @@ export async function infer(words: string[], db: Db) {
 
   return {
     category: interpretation?.category.name,
-    properties: interpretation?.properties
-      .filter((property) => property.value)
-      .map(({ label, value }) => ({
-        label: label.name,
-        value: value!.name,
-      })) ?? [],
+    properties:
+      interpretation?.properties
+        .filter((property) => property.value)
+        .map(({ label, value }) => ({
+          label: label.name,
+          value: value!.name,
+        })) ?? [],
   }
 }

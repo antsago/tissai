@@ -4,19 +4,21 @@ import { LLM } from "./LLM/index.js"
 import { getProperties } from "./getProperties.js"
 
 const it = test.extend<{ python: mockPythonFixture }>({
-  python: [mockPythonFixture, { auto: true }]
+  python: [mockPythonFixture, { auto: true }],
 })
 
 describe("getProperties", () => {
   it("gives each word several labels", async ({ python }) => {
     const words = ["product", "title"]
-    const outputs = [["a", "b", "c"], ["d", "e", "f"]];
+    const outputs = [
+      ["a", "b", "c"],
+      ["d", "e", "f"],
+    ]
     let i = -1
     python.mockImplementation(() => {
-      i+= 1
+      i += 1
       return outputs[i]
     })
-    
 
     const result = await getProperties(LLM(), "the product title", words)
 

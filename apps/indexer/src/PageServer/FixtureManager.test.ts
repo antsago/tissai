@@ -9,15 +9,15 @@ describe("FixtureManager", () => {
   const closeCompiler = vi.fn()
   const dbFixture = vi.fn()
   const compilerFixture = vi.fn()
-  
+
   let manager: FixtureManager<any>
   beforeEach(() => {
     vi.resetAllMocks()
 
     closeDb.mockResolvedValue(undefined)
     closeCompiler.mockResolvedValue(undefined)
-    dbFixture.mockResolvedValue([db,closeDb])
-    compilerFixture.mockResolvedValue([compiler,closeCompiler])
+    dbFixture.mockResolvedValue([db, closeDb])
+    compilerFixture.mockResolvedValue([compiler, closeCompiler])
 
     manager = FixtureManager(compilerFixture, dbFixture)
   })
