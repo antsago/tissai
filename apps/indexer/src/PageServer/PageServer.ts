@@ -27,8 +27,8 @@ export class PageServer<Compiler> {
 
   constructor(private createStream: CreateStream<{ compiler: Compiler }>) {}
 
-  with = (fixture: Fixture<Compiler>) => {
-    this.fixtures = FixtureManager({ compiler: fixture, db: dbFixture})
+  with = (fixtures: { compiler: Fixture<Compiler>}) => {
+    this.fixtures = FixtureManager({ ...fixtures, db: dbFixture})
     return this
   }
   onPage = (fn: OnPage<{ compiler: Compiler }>) => {

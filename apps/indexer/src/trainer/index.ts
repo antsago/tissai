@@ -15,6 +15,6 @@ const createStream = async ({ db }: Helpers<{ compiler: Compiler }>) => {
 }
 
 await new PageServer(createStream)
-  .with(compilerFixture)
+  .with({ compiler: compilerFixture })
   .onPage(processPage)
   .start()
