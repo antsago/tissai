@@ -3,8 +3,9 @@ import { Reporter } from "./Reporter.js"
 import { streamFor } from "./streamFor.js"
 import {
   type Fixture,
+  type OptionalPromise,
+  type ToFixtures,
   FixtureManager,
-  OptionalPromise,
 } from "./FixtureManager.js"
 import { dbFixture } from "./dbFixture.js"
 
@@ -23,11 +24,11 @@ type CreateStream<Fixtures> = (helper: Helpers<Fixtures>) => OptionalPromise<{
 
 export class PageServer<Compiler> {
   private processPage?: OnPage<{ compiler: Compiler }>
-  private fixtures?: FixtureManager<{ compiler: Fixture<Compiler>, db: Fixture<Db> }>
+  private fixtures?: FixtureManager<{ compiler: Compiler, db: Db }>
 
   constructor(private createStream: CreateStream<{ compiler: Compiler }>) {}
 
-  with = (fixtures: { compiler: Fixture<Compiler>}) => {
+  with = (fixtures: ToFixtures<{ compiler: Compiler}>) => {
     this.fixtures = FixtureManager({ ...fixtures, db: dbFixture})
     return this
   }

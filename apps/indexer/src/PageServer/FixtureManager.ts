@@ -5,9 +5,9 @@ type Closer = () => OptionalPromise<any>
 export type Fixture<T> = (
   reporter: Reporter,
 ) => OptionalPromise<readonly [T, Closer]>
-type FixtureDefinition<T> = Record<string, Fixture<T>>
+export type ToFixtures<T> = { [K in keyof T]: Fixture<T[K]>}
 
-export function FixtureManager<T extends FixtureDefinition<unknown>>(fixtures: T) {
+export function FixtureManager<T extends Record<string, unknown>>(fixtures: ToFixtures<T>) {
   const closers = {} as {
     [K in keyof T]: Closer
   }
@@ -23,10 +23,10 @@ export function FixtureManager<T extends FixtureDefinition<unknown>>(fixtures: T
             return [name, helper]
           }),
         ),
-      ) as { [K in keyof T]: Awaited<ReturnType<T[K]>>[0]}
+      ) as T
     },
     close: () => Promise.all(Object.values(closers).map((c) => c())),
   }
 }
 
-export type FixtureManager<T extends FixtureDefinition<unknown>> = ReturnType<typeof FixtureManager<T>>
+export type FixtureManager<T extends Record<string, unknown>> = ReturnType<typeof FixtureManager<T>>
