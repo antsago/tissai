@@ -11,23 +11,20 @@ export function FixtureManager<T>(
   compilerFixture: Fixture<T>,
   dbFixture: Fixture<Db>,
 ) {
-  // const close = {} as { compiler?: CloseFixture, db?: CloseFixture }
-  let closeDb: CloseFixture
-  let closeCompiler: CloseFixture
+  const close = {} as { compiler?: CloseFixture, db?: CloseFixture }
 
   return {
     init: async (reporter: Reporter) => {
-      let db, compiler
-      ;[db, closeDb] = await dbFixture(reporter)
-      ;[compiler, closeCompiler] = await compilerFixture(reporter)
+      const [db, closeDb] = await dbFixture(reporter)
+      close.db = closeDb
 
-      // close.db = closeDb
-      // close.compiler = closeCompiler
+      const [compiler, closeCompiler] = await compilerFixture(reporter)
+      close.compiler = closeCompiler
 
       return { db, compiler }
     },
     close: () =>
-      Promise.all([closeDb && closeDb(), closeCompiler && closeCompiler()]),
+      Promise.all(Object.values(close).map(c => c())),
   }
 }
 
