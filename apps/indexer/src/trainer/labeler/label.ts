@@ -1,8 +1,8 @@
 import { CATEGORY_LABEL } from "@tissai/db"
-import type { Tokenizer } from "../parser/index.js"
-import type { LLM } from "./LlmLabeler/index.js"
-import { extractSchemas } from "./extractSchemas.js"
-import { getProperties } from "./getProperties.js"
+import type { Tokenizer } from "../../parser/index.js"
+import type { LLM } from "../LlmLabeler/index.js"
+import { extractSchemas } from "../extractSchemas.js"
+import { getProperties } from "../getProperties.js"
 
 export const label = (llm: LLM, tokenizer: Tokenizer) =>
   async (title: string) => {
