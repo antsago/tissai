@@ -19,17 +19,17 @@ type CreateStream<Fixtures> = (helper: Helpers<Fixtures>) => OptionalPromise<{
   pages: AsyncGenerator<Page, void, unknown>
 }>
 
-export class PageServer<Compiler> {
-  private processPage?: OnPage<{ compiler: Compiler, db: Db }>
-  private fixtures?: FixtureManager<{ compiler: Compiler, db: Db }>
+export class PageServer<T extends Record<string, unknown>> {
+  private processPage?: OnPage<T>
+  private fixtures?: FixtureManager<T>
 
-  constructor(private createStream: CreateStream<{ compiler: Compiler, db: Db }>) {}
+  constructor(private createStream: CreateStream<T>) {}
 
-  with = (fixtures: ToFixtures<{ compiler: Compiler, db: Db }>) => {
+  with = (fixtures: ToFixtures<T>) => {
     this.fixtures = FixtureManager(fixtures)
     return this
   }
-  onPage = (fn: OnPage<{ compiler: Compiler, db: Db }>) => {
+  onPage = (fn: OnPage<T>) => {
     this.processPage = fn
     return this
   }
