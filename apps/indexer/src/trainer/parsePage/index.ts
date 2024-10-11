@@ -1,1 +1,1 @@
-export { parsePage, type EntityToken } from "./parsePage.js"
+export { parsePage } from "./parsePage.js"

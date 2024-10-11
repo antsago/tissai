@@ -31,3 +31,18 @@ export const compilerFixture = (reporter: Reporter) => {
     () => Promise.all([compiler?.close(), llm?.close()]),
   ] as const
 }
+
+export const llmFixture = (reporter: Reporter) => {
+  const llm = LLM(reporter)
+  return [
+    llm,
+    () => llm?.close(),
+  ] as const
+}
+export const tokenizerFixture = () => {
+  const tokenizer = Tokenizer()
+  return [
+    tokenizer,
+    () => tokenizer?.close(),
+  ] as const
+}

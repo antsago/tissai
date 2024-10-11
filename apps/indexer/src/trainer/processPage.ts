@@ -1,23 +1,22 @@
-import { NonMatch, Type, type Compiler } from "../parser/index.js"
-import { type OnPage } from "../PageServer/index.js"
-import { ProductType } from "./schemas.js"
-import { updateNetwork } from "./updateNetwork.js"
 import type { Db } from "@tissai/db"
+import { type OnPage } from "../PageServer/index.js"
+import { type Tokenizer } from "../parser/index.js"
+import { type LLM, label } from "./labeler/index.js"
+import { updateNetwork } from "./updateNetwork.js"
+import { parsePage } from "./parsePage/index.js"
 
-export const processPage: OnPage<{ compiler: Compiler; db: Db }> = async (
+export const processPage: OnPage<{ llm: LLM; tokenizer: Tokenizer; db: Db }> = async (
   page,
-  { compiler, db, reporter },
+  { llm, tokenizer, db, reporter },
 ) => {
-  const entities = await compiler.parse(page.body)
+  const product = await parsePage(page.body)
 
-  if (entities === NonMatch) {
-    reporter.log(`Failed to match page ${page.id} (${page.url})`)
+  if (!product.title) {
+    reporter.log(`No title found for page ${page.id} (${page.url})`)
     return
   }
 
-  const entity = entities
-    .filter((entity) => entity[Type] === ProductType)
-    .map((product) => product.schemas[0])[0]
+  const entity = await label(llm, tokenizer)(product.title)
 
   await updateNetwork(entity, db)
 }
