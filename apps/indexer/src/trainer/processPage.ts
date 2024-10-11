@@ -14,9 +14,9 @@ export const processPage: OnPage<Compiler> = async (
     return
   }
 
-  const inference = entities
+  const entity = entities
     .filter((entity) => entity[Type] === ProductType)
     .map((product) => product.schemas[0])[0]
 
-  await updateNetwork(inference, db)
+  await updateNetwork(entity, db)
 }

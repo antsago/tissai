@@ -28,7 +28,7 @@ export type Property = {
   label: string,
   value: string,
 }
-export type Inference = {
+export type Entity = {
   category: string,
   properties: Property[],
 }

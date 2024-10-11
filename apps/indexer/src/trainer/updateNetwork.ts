@@ -1,8 +1,8 @@
 import { randomUUID } from "crypto"
-import type { Inference } from "./labeler/index.js"
+import type { Entity } from "./labeler/index.js"
 import { type Db } from "@tissai/db"
 
-export async function updateNetwork({ category, properties }: Inference, db: Db) {
+export async function updateNetwork({ category, properties }: Entity, db: Db) {
   const { id: categoryId } = await db.nodes.upsert({
     id: randomUUID(),
     parent: null,
