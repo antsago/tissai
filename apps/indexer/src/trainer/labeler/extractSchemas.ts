@@ -1,4 +1,4 @@
-import type { Labeled } from "./LlmLabeler/index.js"
+import type { Labeled } from "./LLM/index.js"
 
 export function extractSchemas(words: Labeled[]) {
   const seenLabels = [] as string[]

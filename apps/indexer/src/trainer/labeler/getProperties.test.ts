@@ -1,6 +1,6 @@
 import { expect, describe, test } from "vitest"
 import { mockPythonFixture } from "@tissai/python-pool/mocks"
-import { LLM } from "./LlmLabeler/index.js"
+import { LLM } from "./LLM/index.js"
 import { getProperties } from "./getProperties.js"
 
 const it = test.extend<{ python: mockPythonFixture }>({

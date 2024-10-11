@@ -1,6 +1,6 @@
 import { CATEGORY_LABEL } from "@tissai/db"
 import type { Tokenizer } from "../../parser/index.js"
-import type { LLM } from "./LlmLabeler/index.js"
+import type { LLM } from "./LLM/index.js"
 import { extractSchemas } from "./extractSchemas.js"
 import { getProperties } from "./getProperties.js"
 

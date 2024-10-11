@@ -1,4 +1,4 @@
-import type { LLM, Labeled } from "./LlmLabeler/index.js"
+import type { LLM, Labeled } from "./LLM/index.js"
 import { getFirstWord } from "./getFirstWord.js"
 
 const getPrompt = (title: string, properties: Labeled[]) => {
