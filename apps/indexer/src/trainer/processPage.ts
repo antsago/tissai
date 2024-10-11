@@ -4,7 +4,7 @@ import { ProductType } from "./schemas.js"
 import { updateNetwork } from "./updateNetwork.js"
 import type { Db } from "@tissai/db"
 
-export const processPage: OnPage<{ compiler: Compiler, db: Db }> = async (
+export const processPage: OnPage<{ compiler: Compiler; db: Db }> = async (
   page,
   { compiler, db, reporter },
 ) => {

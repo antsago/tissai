@@ -22,21 +22,25 @@ type CreateStream<Fixtures> = (helper: Helpers<Fixtures>) => OptionalPromise<{
 export class PageServer<T extends Record<string, unknown>> {
   private processPage?: OnPage<T>
   private fixtures?: FixtureManager<T>
+  private createStream?: CreateStream<T>
 
-  constructor(private createStream: CreateStream<T>) {}
-
-  with = (fixtures: ToFixtures<T>) => {
+  constructor(fixtures: ToFixtures<T>) {
     this.fixtures = FixtureManager(fixtures)
+  }
+
+  query = (fn: CreateStream<T>) => {
+    this.createStream = fn
     return this
   }
+
   onPage = (fn: OnPage<T>) => {
     this.processPage = fn
     return this
   }
 
   start = async () => {
-    if (!this.fixtures) {
-      throw new Error("No compiler fixture given")
+    if (!this.createStream || !this.fixtures) {
+      throw new Error("No query given") // Fixtures should never be unassigned
     }
 
     const reporter = Reporter()
