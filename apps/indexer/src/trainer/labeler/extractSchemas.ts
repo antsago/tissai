@@ -24,4 +24,11 @@ export function extractSchemas(words: Labeled[]) {
     .filter((schema) => !!schema)
 }
 
-export type Property = ReturnType<typeof extractSchemas>[number]
+export type Property = {
+  label: string,
+  value: string,
+}
+export type Inference = {
+  category: string,
+  properties: Property[],
+}
