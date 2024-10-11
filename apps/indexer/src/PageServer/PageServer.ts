@@ -2,15 +2,12 @@ import { Db, Page } from "@tissai/db"
 import { Reporter } from "./Reporter.js"
 import { streamFor } from "./streamFor.js"
 import {
-  type Fixture,
   type OptionalPromise,
   type ToFixtures,
   FixtureManager,
 } from "./FixtureManager.js"
-import { dbFixture } from "./dbFixture.js"
 
 export type Helpers<Fixtures> = {
-  db: Db
   reporter: Reporter
 } & Fixtures
 export type OnPage<Fixtures> = (
@@ -23,16 +20,16 @@ type CreateStream<Fixtures> = (helper: Helpers<Fixtures>) => OptionalPromise<{
 }>
 
 export class PageServer<Compiler> {
-  private processPage?: OnPage<{ compiler: Compiler }>
+  private processPage?: OnPage<{ compiler: Compiler, db: Db }>
   private fixtures?: FixtureManager<{ compiler: Compiler, db: Db }>
 
-  constructor(private createStream: CreateStream<{ compiler: Compiler }>) {}
+  constructor(private createStream: CreateStream<{ compiler: Compiler, db: Db }>) {}
 
-  with = (fixtures: ToFixtures<{ compiler: Compiler}>) => {
-    this.fixtures = FixtureManager({ ...fixtures, db: dbFixture})
+  with = (fixtures: ToFixtures<{ compiler: Compiler, db: Db }>) => {
+    this.fixtures = FixtureManager(fixtures)
     return this
   }
-  onPage = (fn: OnPage<{ compiler: Compiler }>) => {
+  onPage = (fn: OnPage<{ compiler: Compiler, db: Db }>) => {
     this.processPage = fn
     return this
   }
