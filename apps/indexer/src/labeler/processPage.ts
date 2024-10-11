@@ -12,8 +12,9 @@ import { ProductType } from "./schemas.js"
 import { brand } from "./brand.js"
 import seller from "./seller.js"
 import attribute from "./attribute.js"
+import type { Db } from "@tissai/db"
 
-export const processPage: OnPage<{ compiler: Compiler }> = async (
+export const processPage: OnPage<{ compiler: Compiler, db: Db }> = async (
   page,
   { compiler, db },
 ) => {

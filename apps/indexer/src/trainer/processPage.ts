@@ -2,8 +2,9 @@ import { NonMatch, Type, type Compiler } from "../parser/index.js"
 import { type OnPage } from "../PageServer/index.js"
 import { ProductType } from "./schemas.js"
 import { updateNetwork } from "./updateNetwork.js"
+import type { Db } from "@tissai/db"
 
-export const processPage: OnPage<{ compiler: Compiler }> = async (
+export const processPage: OnPage<{ compiler: Compiler, db: Db }> = async (
   page,
   { compiler, db, reporter },
 ) => {
