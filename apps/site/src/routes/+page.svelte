@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { Logo } from "$lib/components"
-  import SearchForm from "./SearchForm.svelte"
+  import { Logo, SearchForm } from "$lib/components"
 </script>
 
 <div class="px-2 py-8 flex flex-col justify-around items-center">

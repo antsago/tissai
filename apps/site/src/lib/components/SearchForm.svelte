@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { MagnifyingGlass as SearchIcon } from "$lib/components"
+  import SearchIcon from "./MagnifyingGlass.svelte"
 
   let classes = ""
   export { classes as class }
