@@ -4,7 +4,10 @@ import { mockPythonFixture } from "@tissai/python-pool/mocks"
 import { Db } from "@tissai/db"
 import { Tokenizer } from "@tissai/tokenizer"
 import { STRING_ATTRIBUTE, QUERY, BOOL_ATTRIBUTE } from "mocks"
-import { extractFilters, parseSearchParams } from "../../lib/server/parseSearchParams"
+import {
+  extractFilters,
+  parseSearchParams,
+} from "../../lib/server/parseSearchParams"
 
 const it = test.extend({ db: mockDbFixture, python: mockPythonFixture })
 

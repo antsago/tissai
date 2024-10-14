@@ -1,7 +1,13 @@
 <script lang="ts">
   import type { Search, SearchParams, Suggestion } from "@tissai/db"
   import { page } from "$app/stores"
-  import { Section, Masonry, ProductTile, SuggestionTile, Filters } from "$lib/components"
+  import {
+    Section,
+    Masonry,
+    ProductTile,
+    SuggestionTile,
+    Filters,
+  } from "$lib/components"
 
   export let data: {
     tiles: (Search | Suggestion)[]

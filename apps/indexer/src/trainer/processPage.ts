@@ -5,10 +5,11 @@ import { type LLM, label } from "./labeler/index.js"
 import { updateNetwork } from "./updateNetwork.js"
 import { parsePage } from "./parsePage/index.js"
 
-export const processPage: OnPage<{ llm: LLM; tokenizer: Tokenizer; db: Db }> = async (
-  page,
-  { llm, tokenizer, db, reporter },
-) => {
+export const processPage: OnPage<{
+  llm: LLM
+  tokenizer: Tokenizer
+  db: Db
+}> = async (page, { llm, tokenizer, db, reporter }) => {
   const product = await parsePage(page.body)
 
   if (!product.title) {
