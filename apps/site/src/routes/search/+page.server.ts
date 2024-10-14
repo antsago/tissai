@@ -1,6 +1,5 @@
 import type { PageServerLoad } from "./$types"
-import { getSuggestions, mergeTiles } from "$lib/server"
-import { parseSearchParams } from "./parseSearchParams"
+import { getSuggestions, mergeTiles, parseSearchParams } from "$lib/server"
 
 export const load: PageServerLoad = async ({ url, locals }) => {
   const { query, ...filters } = await parseSearchParams(
