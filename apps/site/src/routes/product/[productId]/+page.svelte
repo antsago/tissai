@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { ProductDetails } from "@tissai/db"
-  import { Section, ImageCarousel, Offer, TextInfo } from "$lib/components"
-  import ProductSnippet from "./ProductSnippet.svelte"
+  import { Section, ImageCarousel, Offer, TextInfo, ProductSnippet } from "$lib/components"
 
   export let data: ProductDetails
 </script>

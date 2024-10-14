@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ProductDetails } from "@tissai/db"
-  import { Chip, ChipContainer } from "$lib/components"
+  import Chip from "./Chip.svelte"
+  import ChipContainer from "./ChipContainer.svelte"
 
   export let details: ProductDetails
   let classes = ""
