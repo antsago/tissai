@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { Search, SearchParams, Suggestion } from "@tissai/db"
   import { page } from "$app/stores"
-  import { Section, Masonry, ProductTile, SuggestionTile } from "$lib/components"
-  import Filters from "./Filters.svelte"
+  import { Section, Masonry, ProductTile, SuggestionTile, Filters } from "$lib/components"
 
   export let data: {
     tiles: (Search | Suggestion)[]
