@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { Search, SearchParams, Suggestion } from "@tissai/db"
   import { page } from "$app/stores"
-  import { Section } from "$lib/components"
-  import Masonry from "./Masonry.svelte"
+  import { Section, Masonry } from "$lib/components"
   import Filters from "./Filters.svelte"
   import ProductTile from "./ProductTile.svelte"
   import SuggestionTile from "./SuggestionTile.svelte"
