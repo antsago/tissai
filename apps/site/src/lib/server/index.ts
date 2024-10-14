@@ -1,0 +1,1 @@
+export { getSuggestions } from "./getSuggestions"
