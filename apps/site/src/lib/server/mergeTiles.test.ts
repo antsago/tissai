@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest"
-import mergeTiles from "./mergeTiles"
 import { ATTRIBUTE } from "@tissai/db/mocks"
+import mergeTiles from "./mergeTiles"
 
 describe("mergeTiles", () => {
   const SEARCH_RESULT = {
