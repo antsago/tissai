@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Logo, SearchForm } from "$lib/components"
+  import Logo from "./Logo.svelte"
+  import SearchForm from "./SearchForm.svelte"
 
   export let searchQuery: string | null
 </script>
