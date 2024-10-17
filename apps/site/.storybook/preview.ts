@@ -1,14 +1,9 @@
 import type { Preview } from "@storybook/svelte"
+import '../src/app.css'
+import Page from "../src/lib/components/Page.svelte"
 
 const preview: Preview = {
-  parameters: {
-    controls: {
-      matchers: {
-        color: /(background|color)$/i,
-        date: /Date$/i,
-      },
-    },
-  },
+  decorators: [() => Page as any],
 }
 
 export default preview
