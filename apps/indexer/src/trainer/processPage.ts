@@ -17,7 +17,7 @@ export const processPage: OnPage<{
     return
   }
 
-  const entity = await label(llm, tokenizer)(product.title)
+  const interpretation = await label(llm, tokenizer)(product.title)
 
-  await updateNetwork(entity, db)
+  await updateNetwork(interpretation, db)
 }
