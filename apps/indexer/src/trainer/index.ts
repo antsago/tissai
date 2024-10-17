@@ -11,18 +11,21 @@ await new Crawler({
   tokenizer: tokenizerFixture,
   db: dbFixture,
 })
-  .query(async ({ db }) => {
-    const baseQuery = query.selectFrom("pages").limit(2)
+  .over(({ db }) =>
+    db.stream<Page>(query.selectFrom("pages").selectAll().compile()),
+  )
+  .expect(async ({ db }) => {
     const [{ total }] = await db.query(
-      baseQuery.select(({ fn }) => fn.countAll().as("total")).compile(),
+      query
+        .selectFrom("pages")
+        .select(({ fn }) => fn.countAll().as("total"))
+        .compile(),
     )
-    const pages = db.stream<Page>(baseQuery.selectAll().compile())
-
-    return { total: total as number, pages }
+    return total as number
   })
-  .onPage(async (page, { llm, tokenizer, db }) => {
+  .forEach(async (page, { llm, tokenizer, db }) => {
     const info = await parsePage(page.body)
     const interpretation = await label(llm, tokenizer)(info)
     await updateNetwork(interpretation, db)
   })
-  .start()
+  .crawl()

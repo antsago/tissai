@@ -7,40 +7,39 @@ import {
   FixtureManager,
 } from "./FixtureManager.js"
 
-export type Helpers<Fixtures> = {
-  reporter: Reporter
-} & Fixtures
-export type OnPage<Fixtures> = (
-  page: Page,
-  helpers: Helpers<Fixtures>,
-) => Promise<any>
-type CreateStream<Fixtures> = (helper: Helpers<Fixtures>) => OptionalPromise<{
-  total: number
-  pages: AsyncGenerator<Page, void, unknown>
-}>
+type Helpers<F> = F & { reporter: Reporter }
+type TotalFn<F> = (helpers: Helpers<F>) => OptionalPromise<number>
+type ProcessingFn<F> = (page: Page, helpers: Helpers<F>) => Promise<any>
+type StreamFn<F> = (
+  helpers: Helpers<F>,
+) => OptionalPromise<AsyncGenerator<Page, void, unknown>>
 
-export class Crawler<T extends Record<string, unknown>> {
-  private processPage?: OnPage<T>
-  private fixtures?: FixtureManager<T>
-  private createStream?: CreateStream<T>
+export class Crawler<F extends Record<string, unknown>> {
+  private fixtures?: FixtureManager<F>
+  private totalFn?: TotalFn<F>
+  private streamFn?: StreamFn<F>
+  private processingFn?: ProcessingFn<F>
 
-  constructor(fixtures: ToFixtures<T>) {
+  constructor(fixtures: ToFixtures<F>) {
     this.fixtures = FixtureManager(fixtures)
   }
 
-  query = (fn: CreateStream<T>) => {
-    this.createStream = fn
+  over = (fn: StreamFn<F>) => {
+    this.streamFn = fn
+    return this
+  }
+  expect = (fn: TotalFn<F>) => {
+    this.totalFn = fn
+    return this
+  }
+  forEach = (fn: ProcessingFn<F>) => {
+    this.processingFn = fn
     return this
   }
 
-  onPage = (fn: OnPage<T>) => {
-    this.processPage = fn
-    return this
-  }
-
-  start = async () => {
-    if (!this.createStream || !this.fixtures) {
-      throw new Error("No query given") // Fixtures should never be unassigned
+  crawl = async () => {
+    if (!this.streamFn || !this.processingFn || !this.fixtures) {
+      throw new Error("No query or processing function specified given") // Fixtures should never be unassigned
     }
 
     const reporter = Reporter()
@@ -48,18 +47,18 @@ export class Crawler<T extends Record<string, unknown>> {
       reporter.progress("Initializing...")
 
       const helpers = { ...(await this.fixtures.init(reporter)), reporter }
-      const { total, pages } = await this.createStream(helpers)
+      const total = await this.totalFn?.(helpers)
+      const pages = await this.streamFn(helpers)
 
-      const processedPages = await streamFor(
+      const pagesWithoutErrors = await streamFor(
         pages,
         async (page, index) => {
           reporter.progress(
-            `Processing page ${index}/${total}: ${page.id} (${page.url})`,
+            total
+              ? `Processing page ${index}/${total}: ${page.id} (${page.url})`
+              : `Processing page ${index}: ${page.id} (${page.url})`,
           )
-
-          if (this.processPage) {
-            await this.processPage(page, helpers)
-          }
+          await this.processingFn?.(page, helpers)
         },
         (err, page) => {
           const message = err instanceof Error ? err.message : String(err)
@@ -68,7 +67,9 @@ export class Crawler<T extends Record<string, unknown>> {
       )
 
       reporter.succeed(
-        `Successfully processed ${processedPages}/${total} pages`,
+        total
+          ? `Successfully processed ${pagesWithoutErrors}/${total} pages`
+          : `Successfully processed ${pagesWithoutErrors} pages`,
       )
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
