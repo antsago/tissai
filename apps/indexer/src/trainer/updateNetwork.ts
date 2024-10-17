@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto"
+import { randomUUID } from "node:crypto"
 import type { Interpretation } from "./label/index.js"
 import { type Db } from "@tissai/db"
 

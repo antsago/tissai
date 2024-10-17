@@ -1,5 +1,5 @@
+import { randomUUID } from "node:crypto"
 import _ from "lodash"
-import { randomUUID } from "crypto"
 import type { Db, Page } from "@tissai/db"
 import { type Entities } from "./extractEntities.js"
 

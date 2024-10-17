@@ -1,7 +1,7 @@
+import { randomUUID } from "node:crypto"
 import { describe, test, beforeEach } from "vitest"
 import { CATEGORY_NODE, LABEL_NODE, VALUE_NODE, dbFixture } from "#mocks"
 import { CATEGORY_LABEL } from "../src"
-import { randomUUID } from "crypto"
 
 type Fixtures = { db: dbFixture }
 const it = test.extend<Fixtures>({
