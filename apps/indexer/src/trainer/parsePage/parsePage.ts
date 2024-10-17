@@ -3,15 +3,15 @@ import { parseAndExpand } from "./parseAndExpand.js"
 
 export type EntityToken = string | symbol | number | boolean
 export type ParsedInfo = Partial<{
-  title: string,
-  description: string,
-  images: string[],
-  brandName: string,
-  brandLogo: string,
+  title: string
+  description: string
+  images: string[]
+  brandName: string
+  brandLogo: string
   offers: Partial<{
-    price: number,
-    currency: string,
-    seller: string,
+    price: number
+    currency: string
+    seller: string
   }>[]
 }>
 
