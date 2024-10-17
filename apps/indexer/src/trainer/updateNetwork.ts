@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto"
-import type { Interpretation } from "./labeler/index.js"
+import type { Interpretation } from "./label/index.js"
 import { type Db } from "@tissai/db"
 
 export async function updateNetwork(

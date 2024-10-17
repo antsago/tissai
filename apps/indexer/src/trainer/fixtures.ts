@@ -1,7 +1,7 @@
 import { Db } from "@tissai/db"
 import { Tokenizer } from "@tissai/tokenizer"
 import type { Fixture } from "../Crawler/index.js"
-import { LLM } from "./labeler/index.js"
+import { LLM } from "./label/index.js"
 
 export const dbFixture: Fixture<Db> = async () => {
   const db = Db()
