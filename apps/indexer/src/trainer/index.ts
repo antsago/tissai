@@ -6,9 +6,9 @@ import { label } from "./labeler/index.js"
 import { updateNetwork } from "./updateNetwork.js"
 
 await new Crawler({
+  db: dbFixture,
   llm: llmFixture,
   tokenizer: tokenizerFixture,
-  db: dbFixture,
 })
   .over(({ db }) =>
     db.stream<Page>(query.selectFrom("pages").selectAll().compile()),

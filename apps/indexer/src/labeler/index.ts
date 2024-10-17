@@ -5,8 +5,8 @@ import { parsePage } from "../trainer/parsePage/index.js"
 import { tokenizerFixture, dbFixture } from "../trainer/fixtures.js"
 
 await new Crawler({
-  tokenizer: tokenizerFixture,
   db: dbFixture,
+  tokenizer: tokenizerFixture,
 })
   .over(({ db }) =>
     db.stream<Page>(query.selectFrom("pages").selectAll().compile()),
