@@ -26,7 +26,7 @@ export type Property = {
   label: string
   value: string
 }
-export type Entity = {
+export type Interpretation = {
   category: string
   attributes: Property[]
 }
