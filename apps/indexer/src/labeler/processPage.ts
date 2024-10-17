@@ -1,12 +1,11 @@
 import _ from "lodash"
 import { randomUUID } from "crypto"
-import { OnPage } from "../PageServer/index.js"
-import { Db } from "@tissai/db"
-import { type ParsedInfo, parsePage } from "../trainer/parsePage/index.js"
+import type { Db, Page } from "@tissai/db"
+import { type ParsedInfo } from "../trainer/parsePage/index.js"
 import { infer } from "./interpretations/infer.js"
 import { type Tokenizer } from "@tissai/tokenizer"
 
-async function extractEntities(info: ParsedInfo, tokenizer: Tokenizer, db: Db) {
+export async function extractEntities(info: ParsedInfo, tokenizer: Tokenizer, db: Db) {
   if (!info.title) {
     throw new Error("No title found")
   }
@@ -45,14 +44,9 @@ async function extractEntities(info: ParsedInfo, tokenizer: Tokenizer, db: Db) {
   }
 }
 
-export const processPage: OnPage<{
-  db: Db
-  tokenizer: Tokenizer
-}> = async (page, { db, tokenizer }) => {
-  const info = await parsePage(page.body)
+type Entities = Awaited<ReturnType<typeof extractEntities>>
 
-  const entities = await extractEntities(info, tokenizer, db)
-
+export async function storeEntities(entities: Entities, page: Page, db: Db) {
   const brandId = entities.brand && await db.brands.create(entities.brand) // upsert and possibly retrieve and reuse id
   const productId = await db.products.create({
     ...entities.product,
