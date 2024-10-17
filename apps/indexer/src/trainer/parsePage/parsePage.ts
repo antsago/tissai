@@ -2,7 +2,7 @@ import { parse } from "node-html-parser"
 import { parseAndExpand } from "./parseAndExpand.js"
 
 export type EntityToken = string | symbol | number | boolean
-type ParsedInfo = Partial<{
+export type ParsedInfo = Partial<{
   title: string,
   description: string,
   images: string[],

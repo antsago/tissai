@@ -3,16 +3,20 @@ import type { Tokenizer } from "../../parser/index.js"
 import type { LLM } from "./LLM/index.js"
 import { assignLabels } from "./assignLabels.js"
 import { getProperties } from "./getProperties.js"
+import { ParsedInfo } from "../parsePage/index.js"
 
 export const label =
-  (llm: LLM, tokenizer: Tokenizer) => async (title: string) => {
-    const words = await tokenizer.fromText(title)
+  (llm: LLM, tokenizer: Tokenizer) => async (info: ParsedInfo) => {
+    if (!info.title) {
+      throw new Error("No title found")
+    }
+
+    const words = await tokenizer.fromText(info.title)
     const propertyCandidates = await getProperties(
       llm,
-      title,
+      info.title,
       words.map((w) => w.text),
     )
-
     const properties = assignLabels(propertyCandidates)
 
     const category = properties.find((s) => s.label === CATEGORY_LABEL)

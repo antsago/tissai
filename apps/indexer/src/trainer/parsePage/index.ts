@@ -1,1 +1,1 @@
-export { parsePage } from "./parsePage.js"
+export { parsePage, type ParsedInfo } from "./parsePage.js"
