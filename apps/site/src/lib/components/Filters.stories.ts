@@ -21,7 +21,7 @@ export const Empty: Story = {
 export const Brands: Story = {
   args: {
     filters: {
-      "brand": "Eg",
+      brand: "Eg",
     },
   },
 }

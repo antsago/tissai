@@ -10,7 +10,7 @@
   {#if $page.url.pathname !== HOMEPAGE}
     <Header searchQuery={$page.url.searchParams.get("q")} />
   {/if}
-  
+
   <div class="min-h-12 grow" />
   <main>
     <slot />
