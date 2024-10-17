@@ -1,7 +1,6 @@
 import { type Page, query } from "@tissai/db"
 import { Crawler } from "../Crawler/index.js"
-import { dbFixture } from "../Crawler/dbFixture.js"
-import { llmFixture, tokenizerFixture } from "./schemas.js"
+import { llmFixture, tokenizerFixture, dbFixture } from "./fixtures.js"
 import { parsePage } from "./parsePage/index.js"
 import { label } from "./labeler/index.js"
 import { updateNetwork } from "./updateNetwork.js"

@@ -2,8 +2,7 @@ import { Crawler } from "../Crawler/index.js"
 import { Page, query } from "@tissai/db"
 import { extractEntities, storeEntities } from "./processPage.js"
 import { parsePage } from "../trainer/parsePage/index.js"
-import { dbFixture } from "../Crawler/dbFixture.js"
-import { tokenizerFixture } from "../trainer/schemas.js"
+import { tokenizerFixture, dbFixture } from "../trainer/fixtures.js"
 
 await new Crawler({
   tokenizer: tokenizerFixture,
