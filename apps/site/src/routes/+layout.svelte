@@ -1,16 +1,16 @@
 <script lang="ts">
   import "../app.css"
   import { page } from "$app/stores"
-  import { Header } from "$lib/components"
+  import { Header, Page } from "$lib/components"
 
   const HOMEPAGE = "/"
 </script>
 
-<div class="flex flex-col min-h-screen w-full bg-stone-50">
+<Page>
   {#if $page.url.pathname !== HOMEPAGE}
     <Header searchQuery={$page.url.searchParams.get("q")} />
   {/if}
-
+  
   <div class="min-h-12 grow" />
   <main>
     <slot />
@@ -21,4 +21,4 @@
   >
     <small class="">2024 @ Tissai</small>
   </footer>
-</div>
+</Page>
