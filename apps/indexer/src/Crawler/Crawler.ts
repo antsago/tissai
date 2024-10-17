@@ -48,15 +48,15 @@ export class Crawler<F extends Record<string, unknown>> {
 
       const helpers = { ...(await this.fixtures.init(reporter)), reporter }
       const total = await this.totalFn?.(helpers)
-      const pages = await this.streamFn(helpers)
+      const items = await this.streamFn(helpers)
 
-      const pagesWithoutErrors = await streamFor(
-        pages,
+      const itemsWithoutErrors = await streamFor(
+        items,
         async (page, index) => {
           reporter.progress(
             total
-              ? `Processing page ${index}/${total}: ${page.id} (${page.url})`
-              : `Processing page ${index}: ${page.id} (${page.url})`,
+              ? `Processing item ${index}/${total}: ${page.id} (${page.url})`
+              : `Processing item ${index}: ${page.id} (${page.url})`,
           )
           await this.processingFn?.(page, helpers)
         },
@@ -68,8 +68,8 @@ export class Crawler<F extends Record<string, unknown>> {
 
       reporter.succeed(
         total
-          ? `Successfully processed ${pagesWithoutErrors}/${total} pages`
-          : `Successfully processed ${pagesWithoutErrors} pages`,
+          ? `Successfully processed ${itemsWithoutErrors}/${total} items`
+          : `Successfully processed ${itemsWithoutErrors} items`,
       )
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
