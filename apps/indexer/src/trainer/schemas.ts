@@ -1,5 +1,5 @@
 import { Tokenizer } from "@tissai/tokenizer"
-import type { Reporter } from "../PageServer/index.js"
+import type { Reporter } from "../Crawler/index.js"
 import { LLM } from "./labeler/index.js"
 
 export const llmFixture = (reporter: Reporter) => {

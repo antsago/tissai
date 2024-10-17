@@ -1,4 +1,4 @@
-import { Db, Page } from "@tissai/db"
+import { Page } from "@tissai/db"
 import { Reporter } from "./Reporter.js"
 import { streamFor } from "./streamFor.js"
 import {
@@ -19,7 +19,7 @@ type CreateStream<Fixtures> = (helper: Helpers<Fixtures>) => OptionalPromise<{
   pages: AsyncGenerator<Page, void, unknown>
 }>
 
-export class PageServer<T extends Record<string, unknown>> {
+export class Crawler<T extends Record<string, unknown>> {
   private processPage?: OnPage<T>
   private fixtures?: FixtureManager<T>
   private createStream?: CreateStream<T>

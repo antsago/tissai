@@ -1,12 +1,12 @@
 import { type Page, query } from "@tissai/db"
-import { PageServer } from "../PageServer/index.js"
-import { dbFixture } from "../PageServer/dbFixture.js"
+import { Crawler } from "../Crawler/index.js"
+import { dbFixture } from "../Crawler/dbFixture.js"
 import { llmFixture, tokenizerFixture } from "./schemas.js"
 import { parsePage } from "./parsePage/index.js"
 import { label } from "./labeler/index.js"
 import { updateNetwork } from "./updateNetwork.js"
 
-await new PageServer({
+await new Crawler({
   llm: llmFixture,
   tokenizer: tokenizerFixture,
   db: dbFixture,

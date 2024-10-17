@@ -1,12 +1,12 @@
-import { PageServer } from "../PageServer/index.js"
+import { Crawler } from "../Crawler/index.js"
 import { Page, query } from "@tissai/db"
 import { extractEntities, storeEntities } from "./processPage.js"
 import { compilerFixture } from "./schemas.js"
 import { parsePage } from "../trainer/parsePage/index.js"
-import { dbFixture } from "../PageServer/dbFixture.js"
+import { dbFixture } from "../Crawler/dbFixture.js"
 import { tokenizerFixture } from "../trainer/schemas.js"
 
-await new PageServer({
+await new Crawler({
   compiler: compilerFixture,
   tokenizer: tokenizerFixture,
   db: dbFixture,
