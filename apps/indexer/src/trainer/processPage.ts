@@ -1,6 +1,6 @@
 import type { Db } from "@tissai/db"
 import { type OnPage } from "../PageServer/index.js"
-import { type Tokenizer } from "../parser/index.js"
+import { type Tokenizer } from "@tissai/tokenizer"
 import { type LLM, label } from "./labeler/index.js"
 import { updateNetwork } from "./updateNetwork.js"
 import { parsePage } from "./parsePage/index.js"
