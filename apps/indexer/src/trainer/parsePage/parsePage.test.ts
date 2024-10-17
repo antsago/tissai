@@ -37,7 +37,7 @@ describe("parsePage", () => {
     expect(result).toStrictEqual({
       title: PRODUCT_SCHEMA.name,
       description: PRODUCT_SCHEMA.description,
-      image: [PRODUCT_SCHEMA.image],
+      images: [PRODUCT_SCHEMA.image],
       brandName: PRODUCT_SCHEMA.brand.name,
       brandLogo: PRODUCT_SCHEMA.brand.image[0],
       offers: [
@@ -61,7 +61,7 @@ describe("parsePage", () => {
     expect(result).toStrictEqual({
       title: undefined,
       description: undefined,
-      image: undefined,
+      images: undefined,
       brandName: undefined,
       brandLogo: undefined,
       offers: undefined,
@@ -76,7 +76,7 @@ describe("parsePage", () => {
     expect(result).toStrictEqual({
       title: undefined,
       description: undefined,
-      image: undefined,
+      images: undefined,
       brandName: undefined,
       brandLogo: undefined,
       offers: undefined,

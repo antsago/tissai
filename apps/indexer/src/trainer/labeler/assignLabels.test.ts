@@ -1,8 +1,8 @@
 import { expect, describe, it } from "vitest"
-import { Labeled } from "./LlmLabeler/index.js"
-import { extractSchemas } from "./extractSchemas.js"
+import { type Labeled } from "./LLM/index.js"
+import { assignLabels } from "./assignLabels.js"
 
-describe("extractSchemas", () => {
+describe("assignLabels", () => {
   const WORD_PROPERTY = {
     value: "word",
     labels: ["foo", "bar"],
@@ -11,7 +11,7 @@ describe("extractSchemas", () => {
   it("converts property to schema", () => {
     const properties = [WORD_PROPERTY]
 
-    const result = extractSchemas(properties)
+    const result = assignLabels(properties)
 
     expect(result).toStrictEqual([
       {
@@ -35,7 +35,7 @@ describe("extractSchemas", () => {
       },
     ]
 
-    const result = extractSchemas(properties)
+    const result = assignLabels(properties)
 
     expect(result).toStrictEqual([
       {
@@ -63,7 +63,7 @@ describe("extractSchemas", () => {
       },
     ] as Labeled[]
 
-    const result = extractSchemas(properties)
+    const result = assignLabels(properties)
 
     expect(result).toStrictEqual([
       {
@@ -85,7 +85,7 @@ describe("extractSchemas", () => {
       },
     ]
 
-    const result = extractSchemas(properties)
+    const result = assignLabels(properties)
 
     expect(result).toStrictEqual([
       {
@@ -102,7 +102,7 @@ describe("extractSchemas", () => {
   it("ignores properties without fallback labels", () => {
     const properties = [WORD_PROPERTY, WORD_PROPERTY, WORD_PROPERTY]
 
-    const result = extractSchemas(properties)
+    const result = assignLabels(properties)
 
     expect(result).toStrictEqual([
       {

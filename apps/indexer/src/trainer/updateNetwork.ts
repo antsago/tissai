@@ -2,7 +2,7 @@ import { randomUUID } from "crypto"
 import type { Entity } from "./labeler/index.js"
 import { type Db } from "@tissai/db"
 
-export async function updateNetwork({ category, properties }: Entity, db: Db) {
+export async function updateNetwork({ category, attributes }: Entity, db: Db) {
   const { id: categoryId } = await db.nodes.upsert({
     id: randomUUID(),
     parent: null,
@@ -11,18 +11,18 @@ export async function updateNetwork({ category, properties }: Entity, db: Db) {
   })
 
   await Promise.all(
-    properties.map(async (property) => {
+    attributes.map(async (attribute) => {
       const { id: labelId } = await db.nodes.upsert({
         id: randomUUID(),
         parent: categoryId,
-        name: property.label,
+        name: attribute.label,
         tally: 1,
       })
 
       await db.nodes.upsert({
         id: randomUUID(),
         parent: labelId,
-        name: property.value,
+        name: attribute.value,
         tally: 1,
       })
     }),

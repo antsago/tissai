@@ -2,6 +2,18 @@ import { parse } from "node-html-parser"
 import { parseAndExpand } from "./parseAndExpand.js"
 
 export type EntityToken = string | symbol | number | boolean
+type ParsedInfo = Partial<{
+  title: string,
+  description: string,
+  images: string[],
+  brandName: string,
+  brandLogo: string,
+  offers: Partial<{
+    price: number,
+    currency: string,
+    seller: string,
+  }>[]
+}>
 
 export const parsePage = (body: string) => {
   const page = parse(body)
@@ -16,7 +28,7 @@ export const parsePage = (body: string) => {
   return {
     title: productTag?.name[0],
     description: productTag?.description?.[0],
-    image: productTag?.image,
+    images: productTag?.image,
     brandName: productTag?.brand?.[0].name[0],
     brandLogo: productTag?.brand?.[0].image?.[0],
     offers: productTag?.offers?.map((offer: any) => ({
@@ -24,5 +36,5 @@ export const parsePage = (body: string) => {
       currency: offer.priceCurrency?.[0],
       seller: offer.seller?.[0].name[0],
     })),
-  }
+  } as ParsedInfo
 }

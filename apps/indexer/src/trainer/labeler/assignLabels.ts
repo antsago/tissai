@@ -1,6 +1,6 @@
 import type { Labeled } from "./LLM/index.js"
 
-export function extractSchemas(words: Labeled[]) {
+export function assignLabels(words: Labeled[]) {
   const seenLabels = [] as string[]
 
   return words
@@ -28,5 +28,5 @@ export type Property = {
 }
 export type Entity = {
   category: string
-  properties: Property[]
+  attributes: Property[]
 }
