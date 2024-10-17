@@ -1,5 +1,5 @@
 import { CATEGORY_LABEL } from "@tissai/db"
-import type { Tokenizer } from "../../parser/index.js"
+import type { Tokenizer } from "@tissai/tokenizer"
 import type { LLM } from "./LLM/index.js"
 import { assignLabels } from "./assignLabels.js"
 import { getProperties } from "./getProperties.js"
