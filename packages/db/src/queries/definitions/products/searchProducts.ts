@@ -7,7 +7,7 @@ export type SearchParams = {
   brand?: string
   min?: number
   max?: number
-  attributes?: { [label: string]: string[] }
+  attributes?: string[]
 }
 
 const PRODUCT_LIMIT = 20
@@ -17,7 +17,7 @@ export const search = ({
   min,
   max,
   brand,
-  attributes = {},
+  attributes = [],
 }: SearchParams) => {
   let query = builder
     .selectFrom("products")
@@ -45,18 +45,7 @@ export const search = ({
     .limit(PRODUCT_LIMIT)
 
   query = query.where((eb) =>
-    eb.and(
-      Object.entries(attributes).map(([label, values]) =>
-        eb.or(
-          values.map((value) =>
-            eb.and([
-              eb("attributes.label", "=", label),
-              eb("attributes.value", "=", value),
-            ]),
-          ),
-        ),
-      ),
-    ),
+    eb.and(attributes.map((value) => eb("attributes.value", "=", value))),
   )
   query =
     brand !== null && brand !== undefined

@@ -63,7 +63,6 @@ export const OFFER = {
 
 export const ATTRIBUTE = {
   id: "5f592540-9e7b-465b-89df-83527c2b7df0",
-  label: "modelo",
-  value: "BL 900",
+  value: VALUE_NODE.id,
   product: PRODUCT.id,
 }

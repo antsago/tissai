@@ -5,7 +5,7 @@ type SearchParams = SP & { category?: string }
 export function extractFilters(params: URLSearchParams) {
   const defaultFilters: SearchParams = {
     query: "",
-    attributes: {},
+    attributes: undefined,
     brand: undefined,
     max: undefined,
     min: undefined,
@@ -42,10 +42,10 @@ export function extractFilters(params: URLSearchParams) {
       default:
         return {
           ...filters,
-          attributes: {
-            ...filters.attributes,
-            [key]: [...(filters.attributes?.[key] ?? []), value],
-          },
+          attributes: [
+            ...filters.attributes ?? [],
+            value,
+          ],
         }
     }
   }, defaultFilters)
@@ -70,8 +70,6 @@ export async function parseSearchParams(
   return {
     ...explicitFilters,
     category: infered.category,
-    attributes: Object.fromEntries(
-      infered.properties.map((p) => [p.label, [p.value]]),
-    ),
+    attributes: infered.properties.map((p) => p.value),
   }
 }

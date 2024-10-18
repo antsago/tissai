@@ -34,9 +34,7 @@ describe("extractFilters", () => {
       min,
       max,
       category,
-      attributes: {
-        [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value],
-      },
+      attributes: [STRING_ATTRIBUTE.value],
     })
   })
 
@@ -48,26 +46,7 @@ describe("extractFilters", () => {
 
     expect(result).toStrictEqual(
       expect.objectContaining({
-        attributes: {
-          [BOOL_ATTRIBUTE.label]: [BOOL_ATTRIBUTE.value],
-          [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value],
-        },
-      }),
-    )
-  })
-
-  it("supports multiple attribute values", async () => {
-    const otherValue = "myValue"
-    params.append(STRING_ATTRIBUTE.label, STRING_ATTRIBUTE.value)
-    params.append(STRING_ATTRIBUTE.label, otherValue)
-
-    const result = extractFilters(params)
-
-    expect(result).toStrictEqual(
-      expect.objectContaining({
-        attributes: {
-          [STRING_ATTRIBUTE.label]: [STRING_ATTRIBUTE.value, otherValue],
-        },
+        attributes: [BOOL_ATTRIBUTE.value, STRING_ATTRIBUTE.value],
       }),
     )
   })
@@ -94,7 +73,7 @@ describe("parseSearchParams", () => {
       min: undefined,
       category: undefined,
       query: "",
-      attributes: {},
+      attributes: [],
     })
   })
 
@@ -153,9 +132,7 @@ describe("parseSearchParams", () => {
     expect(result).toStrictEqual(
       expect.objectContaining({
         category: CATEGORY.name,
-        attributes: {
-          [LABEL.name]: [VALUE.name],
-        },
+        attributes: [VALUE.name],
       }),
     )
   })
@@ -169,7 +146,7 @@ describe("parseSearchParams", () => {
     expect(result).toStrictEqual(
       expect.objectContaining({
         category,
-        attributes: {},
+        attributes: undefined,
       }),
     )
   })

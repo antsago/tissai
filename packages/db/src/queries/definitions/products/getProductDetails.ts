@@ -33,22 +33,26 @@ const getDetails = {
           .limit(4),
       )
       .selectFrom("products")
+      .leftJoin("nodes as category", "category.id", "products.category")
       .leftJoin("offers", "offers.product", "products.id")
       .innerJoin("sites", "offers.site", "sites.id")
       .leftJoin("brands", "brands.name", "products.brand")
       .leftJoin("attributes", "attributes.product", "products.id")
+      .leftJoin("nodes as values", "values.id", "attributes.value")
+      .leftJoin("nodes as labels", "labels.id", "values.parent")
       .leftJoin("similars", (join) => join.onTrue())
       .select(({ fn, ref }) => [
         "products.title",
         "products.description",
         "products.images",
+        "category.name as category",
         sql<Brand>`${fn.jsonAgg("brands")}->0`.as("brand"),
         fn
           .jsonAgg(
             toJsonb(
               jsonBuildObject({
-                label: ref("attributes.label"),
-                value: ref("attributes.value"),
+                label: ref("labels.name"),
+                value: ref("values.name"),
               }),
             ),
           )
@@ -74,7 +78,7 @@ const getDetails = {
         fn.jsonAgg("similars").distinct().as("similar"),
       ])
       .where("products.id", "=", productId)
-      .groupBy("products.id")
+      .groupBy(["products.id", "products.title", "products.description", "products.images", "category.id"])
       .compile(),
 }
 

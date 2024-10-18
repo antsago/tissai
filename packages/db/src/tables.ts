@@ -1,6 +1,5 @@
 export type Attribute = {
   id: string
-  label: string
   value: string
   product: string
 }
@@ -29,6 +28,7 @@ export type Product = {
   description?: string
   images?: string[]
   brand?: string
+  category?: string
 }
 export type Node = {
   id: string

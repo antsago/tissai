@@ -9,6 +9,8 @@ import {
   SELLER,
   ATTRIBUTE,
   CATEGORY_NODE,
+  LABEL_NODE,
+  VALUE_NODE,
 } from "#mocks"
 
 type Fixtures = { db: dbFixture }
@@ -61,13 +63,12 @@ describe.concurrent("search", () => {
   const attribute1 = { ...ATTRIBUTE, product: product1.id }
   const attribute2 = {
     id: "3ac16032-426e-4db3-bd71-cb6c2567387c",
-    label: ATTRIBUTE.label,
-    value: "asdf",
+    value: LABEL_NODE.id,
     product: product2.id,
   }
   beforeEach<Fixtures>(async ({ db }) => {
     await db.load({
-      nodes: [CATEGORY_NODE],
+      nodes: [CATEGORY_NODE, LABEL_NODE, VALUE_NODE],
       sites: [SITE],
       brands: [BRAND],
       products: [product1, product2],
@@ -100,31 +101,13 @@ describe.concurrent("search", () => {
       expect(result).toStrictEqual([product1Result])
     })
 
-    describe("attributes", () => {
-      it("filters by string attribute", async ({ expect, db }) => {
-        const result = await db.products.search({
-          query: product2.title,
-          attributes: { [attribute1.label]: [attribute1.value] },
-        })
-
-        expect(result).toStrictEqual([product1Result])
+    it("filters by attribute", async ({ expect, db }) => {
+      const result = await db.products.search({
+        query: product2.title,
+        attributes: [attribute1.value],
       })
 
-      it("accepts multiple values", async ({ expect, db }) => {
-        await db.load({
-          products: [PRODUCT],
-          offers: [{ ...OFFER, seller: undefined }],
-        })
-
-        const result = await db.products.search({
-          query: product2.title,
-          attributes: {
-            [ATTRIBUTE.label]: [attribute2.value, attribute1.value],
-          },
-        })
-
-        expect(result).toStrictEqual([product2Result, product1Result])
-      })
+      expect(result).toStrictEqual([product1Result])
     })
 
     it("filters by min price", async ({ expect, db }) => {
@@ -169,7 +152,7 @@ describe.concurrent("search", () => {
         brand: BRAND.name,
         max: OFFER.price,
         min: offer1.price,
-        attributes: { [attribute1.label]: [attribute1.value] },
+        attributes: [attribute1.value],
       })
 
       await expect(act).resolves.not.toThrow()
