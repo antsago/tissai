@@ -4,11 +4,11 @@ import type { Db, Page } from "@tissai/db"
 import { type Entities } from "./extractEntities.js"
 
 export async function storeEntities(entities: Entities, page: Page, db: Db) {
-  const brandId = entities.brand && (await db.brands.create(entities.brand)) // upsert and possibly retrieve and reuse id
+  const brand = entities.brand && (await db.brands.upsert(entities.brand))
   const productId = await db.products.create({
     ...entities.product,
     id: randomUUID(),
-    brand: brandId as any as string | undefined,
+    brand: brand?.name,
   }) // upsert to also handle category and attributes (either name or id, whatever is easier)
   // await Promise.all(
   //   product.attributes[0]
