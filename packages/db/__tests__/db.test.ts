@@ -49,6 +49,15 @@ describe.concurrent("db", () => {
     expect(nodes).toStrictEqual([CATEGORY_NODE])
   })
 
+  it("handles duplicated sellers", async ({ expect, db }) => {
+    await db.load({ sellers: [SELLER]})
+
+    await db.sites.create(SITE)
+
+    const sellers = await db.sellers.getAll()
+    expect(sellers).toStrictEqual([SELLER])
+  })
+
   it("gets product details", async ({ expect, db }) => {
     const SIMILAR = {
       id: "92b15b90-3673-4a0e-b57c-8f9835a4f4d9",
