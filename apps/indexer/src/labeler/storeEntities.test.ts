@@ -3,9 +3,10 @@ import {
   ATTRIBUTE,
   BRAND,
   mockDbFixture,
-  PAGE,
+  OFFER,
   PRODUCT,
   queries,
+  SELLER,
 } from "@tissai/db/mocks"
 import { Db } from "@tissai/db"
 import { storeEntities } from "./storeEntities.js"
@@ -20,14 +21,32 @@ describe("storeEntities", () => {
     const entities = {
       brand: BRAND,
       product: PRODUCT,
-      attributes: [{ label: "label", value: ATTRIBUTE.value }],
-      offers: [],
+      attributes: [ATTRIBUTE],
+      sellers: [SELLER],
+      offers: [OFFER],
     }
-    pg.pool.query.mockResolvedValueOnce({ rows: [{ name: BRAND.name }] })
 
-    await storeEntities(entities, PAGE, db)
+    await storeEntities(entities, db)
 
     expect(pg).toHaveExecuted(queries.brands.upsert(BRAND))
     expect(pg).toHaveExecuted(queries.products.create(PRODUCT))
+    expect(pg).toHaveExecuted(queries.attributes.create(ATTRIBUTE))
+    expect(pg).toHaveExecuted(queries.sellers.create(SELLER))
+    expect(pg).toHaveExecuted(queries.offers.create(OFFER))
+  })
+
+  it("handles undefined brand", async ({ expect, db: pg }) => {
+    const db = Db()
+    const entities = {
+      brand: undefined,
+      product: PRODUCT,
+      attributes: [],
+      sellers: [],
+      offers: [],
+    }
+
+    await storeEntities(entities, db)
+
+    expect(pg).not.toHaveExecuted(queries.brands.upsert({} as any))
   })
 })
