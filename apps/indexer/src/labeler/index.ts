@@ -23,7 +23,7 @@ await new Crawler({
   })
   .forEach(async (page, { db, tokenizer }) => {
     const info = await parsePage(page.body)
-    const entities = await extractEntities(info, tokenizer, db)
-    await storeEntities(entities, page, db)
+    const entities = await extractEntities(info, page, tokenizer, db)
+    await storeEntities(entities, db)
   })
   .crawl()
