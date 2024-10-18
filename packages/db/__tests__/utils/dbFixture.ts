@@ -9,6 +9,12 @@ type State = Partial<{
 const load = (db: Db) => async (state: State) => {
   const { pages, products, attributes, offers, nodes, ...others } = state
 
+  // Creating nodes in order since they are self-referencing
+  await nodes?.reduce(async (prevNode, currentNode) => {
+    await prevNode
+    await db.nodes.create(currentNode)
+  }, Promise.resolve())
+
   await Promise.all(
     Object.entries(others).flatMap(([entityName, entities]) =>
       entities.map((e) => db[entityName].create(e)),
@@ -28,12 +34,6 @@ const load = (db: Db) => async (state: State) => {
       attributes?.map((a) => db.attributes.create(a)),
     ].flat(),
   )
-
-  // Creating nodes in order since they are self-referencing
-  await nodes?.reduce(async (prevNode, currentNode) => {
-    await prevNode
-    await db.nodes.create(currentNode)
-  }, Promise.resolve())
 }
 
 export type dbFixture = Db & { name: string; load: ReturnType<typeof load> }

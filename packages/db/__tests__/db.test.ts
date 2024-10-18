@@ -22,10 +22,10 @@ describe.concurrent("db", () => {
     await db.pages.create(PAGE)
     await db.sellers.create(SELLER)
     await db.brands.create(BRAND)
+    await db.nodes.create(CATEGORY_NODE)
     await db.products.create(PRODUCT)
     await db.offers.create(OFFER)
     await db.attributes.create(ATTRIBUTE)
-    await db.nodes.create(CATEGORY_NODE)
 
     const products = await db.products.getAll()
     const offers = await db.offers.getAll()
@@ -49,6 +49,7 @@ describe.concurrent("db", () => {
       images: PRODUCT.images,
     }
     await db.load({
+      nodes: [CATEGORY_NODE],
       brands: [BRAND],
       sites: [SITE],
       sellers: [SELLER],

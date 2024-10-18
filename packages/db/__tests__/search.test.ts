@@ -8,6 +8,7 @@ import {
   SITE,
   SELLER,
   ATTRIBUTE,
+  CATEGORY_NODE,
 } from "#mocks"
 
 type Fixtures = { db: dbFixture }
@@ -66,6 +67,7 @@ describe.concurrent("search", () => {
   }
   beforeEach<Fixtures>(async ({ db }) => {
     await db.load({
+      nodes: [CATEGORY_NODE],
       sites: [SITE],
       brands: [BRAND],
       products: [product1, product2],

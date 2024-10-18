@@ -17,6 +17,24 @@ export const BRAND = {
   logo: "https://example.com/EG.jpg",
 }
 
+export const CATEGORY_NODE = {
+  id: "60a412f1-74c5-4671-9cca-dd49d0be2648",
+  parent: null,
+  name: "botines",
+  tally: 5,
+}
+export const LABEL_NODE = {
+  id: "89c472de-d6a3-4c3a-8b9a-c827820b6f91",
+  parent: CATEGORY_NODE.id,
+  name: "a label",
+  tally: 3,
+}
+export const VALUE_NODE = {
+  id: "761384ca-6756-49ff-bcb4-8a9a94e3ea8a",
+  parent: LABEL_NODE.id,
+  name: "a value",
+  tally: 2,
+}
 export const PRODUCT = {
   id: "1a13b49d-b43d-4eba-838d-a77c9d94f743",
   title: "Vaqueros ajustados",
@@ -26,6 +44,7 @@ export const PRODUCT = {
     "https://example.com/product-image-2.jpg",
   ],
   brand: BRAND.name,
+  category: CATEGORY_NODE.id,
 }
 
 export const SELLER = {
@@ -49,21 +68,3 @@ export const ATTRIBUTE = {
   product: PRODUCT.id,
 }
 
-export const CATEGORY_NODE = {
-  id: "60a412f1-74c5-4671-9cca-dd49d0be2648",
-  parent: null,
-  name: "botines",
-  tally: 5,
-}
-export const LABEL_NODE = {
-  id: "89c472de-d6a3-4c3a-8b9a-c827820b6f91",
-  parent: CATEGORY_NODE.id,
-  name: "a label",
-  tally: 3,
-}
-export const VALUE_NODE = {
-  id: "761384ca-6756-49ff-bcb4-8a9a94e3ea8a",
-  parent: LABEL_NODE.id,
-  name: "a value",
-  tally: 2,
-}
