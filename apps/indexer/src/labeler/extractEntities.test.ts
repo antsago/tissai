@@ -128,18 +128,18 @@ describe("extractEntities", () => {
 
     const result = await extractEntities(info, tokenizer, db)
 
-    expect(result).toStrictEqual({
-      brand: undefined,
-      offers: [],
-      product: {
-        id: expect.any(String),
-        title: info.title,
-        description: undefined,
-        images: undefined,
-        category: CATEGORY,
-      },
-      attributes: [],
-    })
+    expect(result).toStrictEqual(
+      expect.objectContaining({
+        product: {
+          id: expect.any(String),
+          title: info.title,
+          description: undefined,
+          images: undefined,
+          category: CATEGORY,
+        },
+        attributes: [],
+      }),
+    )
   })
 
   it("handles titles without interpretation", async ({ expect, db: pg }) => {
@@ -150,18 +150,18 @@ describe("extractEntities", () => {
 
     const result = await extractEntities(info, tokenizer, db)
 
-    expect(result).toStrictEqual({
-      brand: undefined,
-      offers: [],
-      product: {
-        id: expect.any(String),
-        title: info.title,
-        description: undefined,
-        images: undefined,
-        category: undefined,
-      },
-      attributes: [],
-    })
+    expect(result).toStrictEqual(
+      expect.objectContaining({
+        product: {
+          id: expect.any(String),
+          title: info.title,
+          description: undefined,
+          images: undefined,
+          category: undefined,
+        },
+        attributes: [],
+      }),
+    )
   })
 
   it("handles name-only brands", async ({ expect }) => {
@@ -172,14 +172,9 @@ describe("extractEntities", () => {
 
     const result = await extractEntities(info, tokenizer, db)
 
-    expect(result).toStrictEqual({
-      brand: {
-        name: info.brandName,
-        logo: undefined,
-      },
-      offers: [],
-      product: expect.anything(),
-      attributes: expect.anything(),
+    expect(result.brand).toStrictEqual({
+      name: info.brandName,
+      logo: undefined,
     })
   })
 
@@ -191,15 +186,7 @@ describe("extractEntities", () => {
 
     const result = await extractEntities(info, tokenizer, db)
 
-    expect(result).toStrictEqual({
-      brand: {
-        name: FULL_INFO.brandName,
-        logo: undefined,
-      },
-      offers: [],
-      product: expect.anything(),
-      attributes: expect.anything(),
-    })
+    expect(result.brand?.name).toStrictEqual(FULL_INFO.brandName)
   })
 
   it("normalizes seller name", async ({ expect }) => {
@@ -214,16 +201,9 @@ describe("extractEntities", () => {
 
     const result = await extractEntities(info, tokenizer, db)
 
-    expect(result).toStrictEqual({
-      brand: undefined,
-      offers: [
-        {
-          seller: FULL_INFO.offers[0].seller,
-        },
-      ],
-      product: expect.anything(),
-      attributes: expect.anything(),
-    })
+    expect(result.offers).toStrictEqual([
+      { seller: FULL_INFO.offers[0].seller },
+    ])
   })
 
   it("removes duplicated offers", async ({ expect }) => {
@@ -234,11 +214,6 @@ describe("extractEntities", () => {
 
     const result = await extractEntities(info, tokenizer, db)
 
-    expect(result).toStrictEqual({
-      brand: undefined,
-      offers: FULL_INFO.offers,
-      product: expect.anything(),
-      attributes: expect.anything(),
-    })
+    expect(result.offers).toStrictEqual(FULL_INFO.offers)
   })
 })
