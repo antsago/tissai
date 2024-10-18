@@ -16,6 +16,21 @@ export const byName = {
       .compile(),
 }
 
+export const upsert = {
+  takeFirst: true,
+  query: (brand: Brand) =>
+    builder
+      .insertInto("brands")
+      .onConflict((oc) =>
+        oc.columns(["name"]).doUpdateSet({
+          logo: brand.logo,
+        }),
+      )
+      .values(brand)
+      .returning("name")
+      .compile(),
+}
+
 export const update = (brand: Brand) =>
   builder
     .updateTable("brands")
