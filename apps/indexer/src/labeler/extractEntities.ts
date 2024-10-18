@@ -22,7 +22,7 @@ export async function extractEntities(
 
   const brand = info.brandName
     ? {
-        name: info.brandName,
+        name: info.brandName.toLocaleLowerCase(),
         logo: info.brandLogo,
       }
     : undefined

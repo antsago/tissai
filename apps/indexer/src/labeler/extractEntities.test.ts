@@ -100,4 +100,119 @@ describe("extractEntities", () => {
       }
     })
   })
+
+  it("handles category-only products", async ({ expect, db: pg }) => {
+    const info = {
+      title: FULL_INFO.title,
+    }
+    pg.pool.query.mockResolvedValue({ rows: [{
+      name: CATEGORY,
+      tally: 1,
+    }]})
+
+    const result = await extractEntities(info, tokenizer, db)
+
+    expect(result).toStrictEqual({
+      brand: undefined,
+      offers: [],
+      product: {
+        title: info.title,
+        description: undefined,
+        images: undefined,
+        category: CATEGORY,
+        attributes: [],
+      }
+    })
+  })
+
+  it("handles titles without interpretation", async ({ expect, db: pg }) => {
+    const info = {
+      title: FULL_INFO.title,
+    }
+    pg.pool.query.mockResolvedValue({ rows: [] })
+
+    const result = await extractEntities(info, tokenizer, db)
+
+    expect(result).toStrictEqual({
+      brand: undefined,
+      offers: [],
+      product: {
+        title: info.title,
+        description: undefined,
+        images: undefined,
+        category: undefined,
+        attributes: [],
+      }
+    })
+  })
+
+  it("handles name-only brands", async ({ expect }) => {
+    const info = {
+      title: FULL_INFO.title,
+      brandName: FULL_INFO.brandName,
+    }
+
+    const result = await extractEntities(info, tokenizer, db)
+
+    expect(result).toStrictEqual({
+      brand: {
+        name: info.brandName,
+        logo: undefined,
+      },
+      offers: [],
+      product: expect.anything()
+    })
+  })
+
+  it("normalizes brand name", async ({ expect }) => {
+    const info = {
+      title: FULL_INFO.title,
+      brandName: FULL_INFO.brandName.toUpperCase(),
+    }
+
+    const result = await extractEntities(info, tokenizer, db)
+
+    expect(result).toStrictEqual({
+      brand: {
+        name: FULL_INFO.brandName,
+        logo: undefined,
+      },
+      offers: [],
+      product: expect.anything()
+    })
+  })
+
+  it("normalizes seller name", async ({ expect }) => {
+    const info = {
+      title: FULL_INFO.title,
+      offers: [{
+        seller: FULL_INFO.offers[0].seller.toUpperCase()
+      }]
+    }
+
+    const result = await extractEntities(info, tokenizer, db)
+
+    expect(result).toStrictEqual({
+      brand: undefined,
+      offers: [{
+        seller: FULL_INFO.offers[0].seller,
+      }],
+      product: expect.anything()
+    })
+  })
+
+  it("removes duplicated offers", async ({ expect }) => {
+    const info = {
+      title: FULL_INFO.title,
+      offers: [FULL_INFO.offers[0], FULL_INFO.offers[0]],
+    }
+
+    const result = await extractEntities(info, tokenizer, db)
+
+    expect(result).toStrictEqual({
+      brand: undefined,
+      offers: FULL_INFO.offers,
+      product: expect.anything()
+    })
+  })
 })
