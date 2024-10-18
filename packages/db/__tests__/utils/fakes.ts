@@ -67,4 +67,3 @@ export const ATTRIBUTE = {
   value: "BL 900",
   product: PRODUCT.id,
 }
-

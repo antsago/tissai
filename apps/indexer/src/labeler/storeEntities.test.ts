@@ -22,7 +22,7 @@ describe("storeEntities", () => {
         images: undefined,
         description: undefined,
       },
-      offers: []
+      offers: [],
     }
 
     await storeEntities(entities, PAGE, db)

@@ -5,7 +5,7 @@ import { Tokenizer } from "@tissai/tokenizer"
 import { Db } from "@tissai/db"
 import { extractEntities } from "./extractEntities.js"
 
-type Fixtures = { db: mockDbFixture, python: mockPythonFixture }
+type Fixtures = { db: mockDbFixture; python: mockPythonFixture }
 
 const it = test.extend<Fixtures>({
   db: [mockDbFixture, { auto: true }],
@@ -19,11 +19,13 @@ describe("extractEntities", () => {
     brandName: "brand name",
     description: "description",
     images: ["a.jpg"],
-    offers: [{
-      currency: "EUR",
-      price: 10,
-      seller: "seller",
-    }]
+    offers: [
+      {
+        currency: "EUR",
+        price: 10,
+        seller: "seller",
+      },
+    ],
   }
   const CATEGORY = "category"
   const ATTRIBUTES = [{ label: "label", value: "value" }]
@@ -34,18 +36,26 @@ describe("extractEntities", () => {
     db = Db()
     tokenizer = Tokenizer()
 
-    pg.pool.query.mockResolvedValue({ rows: [{
-      name: CATEGORY,
-      tally: 1,
-      children: [{
-        name: ATTRIBUTES[0].label,
-        tally: 1,
-        children: [{
-          name: ATTRIBUTES[0].value,
+    pg.pool.query.mockResolvedValue({
+      rows: [
+        {
+          name: CATEGORY,
           tally: 1,
-        }]
-      }],
-    }]})
+          children: [
+            {
+              name: ATTRIBUTES[0].label,
+              tally: 1,
+              children: [
+                {
+                  name: ATTRIBUTES[0].value,
+                  tally: 1,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    })
     python.mockReturnValue([{ text: FULL_INFO.title }])
   })
 
@@ -57,7 +67,7 @@ describe("extractEntities", () => {
     expect(result).toStrictEqual({
       brand: {
         name: FULL_INFO.brandName,
-        logo: FULL_INFO.brandLogo, 
+        logo: FULL_INFO.brandLogo,
       },
       product: {
         title: FULL_INFO.title,
@@ -97,7 +107,7 @@ describe("extractEntities", () => {
         images: undefined,
         category: CATEGORY,
         attributes: ATTRIBUTES,
-      }
+      },
     })
   })
 
@@ -105,10 +115,14 @@ describe("extractEntities", () => {
     const info = {
       title: FULL_INFO.title,
     }
-    pg.pool.query.mockResolvedValue({ rows: [{
-      name: CATEGORY,
-      tally: 1,
-    }]})
+    pg.pool.query.mockResolvedValue({
+      rows: [
+        {
+          name: CATEGORY,
+          tally: 1,
+        },
+      ],
+    })
 
     const result = await extractEntities(info, tokenizer, db)
 
@@ -121,7 +135,7 @@ describe("extractEntities", () => {
         images: undefined,
         category: CATEGORY,
         attributes: [],
-      }
+      },
     })
   })
 
@@ -142,7 +156,7 @@ describe("extractEntities", () => {
         images: undefined,
         category: undefined,
         attributes: [],
-      }
+      },
     })
   })
 
@@ -160,7 +174,7 @@ describe("extractEntities", () => {
         logo: undefined,
       },
       offers: [],
-      product: expect.anything()
+      product: expect.anything(),
     })
   })
 
@@ -178,26 +192,30 @@ describe("extractEntities", () => {
         logo: undefined,
       },
       offers: [],
-      product: expect.anything()
+      product: expect.anything(),
     })
   })
 
   it("normalizes seller name", async ({ expect }) => {
     const info = {
       title: FULL_INFO.title,
-      offers: [{
-        seller: FULL_INFO.offers[0].seller.toUpperCase()
-      }]
+      offers: [
+        {
+          seller: FULL_INFO.offers[0].seller.toUpperCase(),
+        },
+      ],
     }
 
     const result = await extractEntities(info, tokenizer, db)
 
     expect(result).toStrictEqual({
       brand: undefined,
-      offers: [{
-        seller: FULL_INFO.offers[0].seller,
-      }],
-      product: expect.anything()
+      offers: [
+        {
+          seller: FULL_INFO.offers[0].seller,
+        },
+      ],
+      product: expect.anything(),
     })
   })
 
@@ -212,7 +230,7 @@ describe("extractEntities", () => {
     expect(result).toStrictEqual({
       brand: undefined,
       offers: FULL_INFO.offers,
-      product: expect.anything()
+      product: expect.anything(),
     })
   })
 })

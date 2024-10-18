@@ -46,7 +46,7 @@ export const dbFixture = async (
   const TEST_DB = randomUUID()
   await masterDb.raw(`CREATE DATABASE "${TEST_DB}";`)
   const db = Db(TEST_DB)
-  
+
   try {
     await db.initialize()
     await use({ name: TEST_DB, load: load(db), ...db })
