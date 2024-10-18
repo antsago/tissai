@@ -41,9 +41,7 @@ export async function extractEntities(
       seller: offer.seller?.toLowerCase(),
     })),
     _.isEqual,
-  ).map((o) => ({
-    ...o,
-  }))
+  )
 
   return {
     brand,
