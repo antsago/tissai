@@ -7,13 +7,10 @@ export async function storeEntities(entities: Entities, page: Page, db: Db) {
   const brand = entities.brand && (await db.brands.upsert(entities.brand))
   const productId = await db.products.create({
     ...entities.product,
-    id: randomUUID(),
     brand: brand?.name,
-  }) // upsert to also handle category and attributes (either name or id, whatever is easier)
+  })
   // await Promise.all(
-  //   product.attributes[0]
-  //     .filter((att: any) => "value" in att)
-  //     .map((att: any) => attribute(att, product[Id], db)),
+  //   entities.attributes.map((att) => db.attributes.create({ id: })),
   // )
 
   await Promise.all(

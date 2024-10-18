@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto"
 import _ from "lodash"
 import type { Db } from "@tissai/db"
 import { type ParsedInfo } from "../trainer/parsePage/index.js"
@@ -28,11 +29,11 @@ export async function extractEntities(
     : undefined
 
   const product = {
+    id: randomUUID() as string,
     title: info.title,
     description: info.description,
     images: info.images,
     category: interpretation.category,
-    attributes: interpretation.attributes,
   }
 
   const offers = _.uniqWith(
@@ -46,6 +47,7 @@ export async function extractEntities(
   return {
     brand,
     product,
+    attributes: interpretation.attributes,
     offers,
   }
 }

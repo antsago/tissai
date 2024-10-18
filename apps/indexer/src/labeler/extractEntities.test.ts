@@ -70,12 +70,13 @@ describe("extractEntities", () => {
         logo: FULL_INFO.brandLogo,
       },
       product: {
+        id: expect.any(String),
         title: FULL_INFO.title,
         description: FULL_INFO.description,
         images: FULL_INFO.images,
         category: CATEGORY,
-        attributes: ATTRIBUTES,
       },
+      attributes: ATTRIBUTES,
       offers: FULL_INFO.offers,
     })
   })
@@ -102,12 +103,13 @@ describe("extractEntities", () => {
       brand: undefined,
       offers: [],
       product: {
+        id: expect.any(String),
         title: info.title,
         description: undefined,
         images: undefined,
         category: CATEGORY,
-        attributes: ATTRIBUTES,
       },
+      attributes: ATTRIBUTES,
     })
   })
 
@@ -130,12 +132,13 @@ describe("extractEntities", () => {
       brand: undefined,
       offers: [],
       product: {
+        id: expect.any(String),
         title: info.title,
         description: undefined,
         images: undefined,
         category: CATEGORY,
-        attributes: [],
       },
+      attributes: [],
     })
   })
 
@@ -151,12 +154,13 @@ describe("extractEntities", () => {
       brand: undefined,
       offers: [],
       product: {
+        id: expect.any(String),
         title: info.title,
         description: undefined,
         images: undefined,
         category: undefined,
-        attributes: [],
       },
+      attributes: [],
     })
   })
 
@@ -175,6 +179,7 @@ describe("extractEntities", () => {
       },
       offers: [],
       product: expect.anything(),
+      attributes: expect.anything(),
     })
   })
 
@@ -193,6 +198,7 @@ describe("extractEntities", () => {
       },
       offers: [],
       product: expect.anything(),
+      attributes: expect.anything(),
     })
   })
 
@@ -216,6 +222,7 @@ describe("extractEntities", () => {
         },
       ],
       product: expect.anything(),
+      attributes: expect.anything(),
     })
   })
 
@@ -231,6 +238,7 @@ describe("extractEntities", () => {
       brand: undefined,
       offers: FULL_INFO.offers,
       product: expect.anything(),
+      attributes: expect.anything(),
     })
   })
 })
