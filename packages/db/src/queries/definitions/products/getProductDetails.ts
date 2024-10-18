@@ -78,7 +78,13 @@ const getDetails = {
         fn.jsonAgg("similars").distinct().as("similar"),
       ])
       .where("products.id", "=", productId)
-      .groupBy(["products.id", "products.title", "products.description", "products.images", "category.id"])
+      .groupBy([
+        "products.id",
+        "products.title",
+        "products.description",
+        "products.images",
+        "category.id",
+      ])
       .compile(),
 }
 

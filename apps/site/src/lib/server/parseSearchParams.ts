@@ -42,10 +42,7 @@ export function extractFilters(params: URLSearchParams) {
       default:
         return {
           ...filters,
-          attributes: [
-            ...filters.attributes ?? [],
-            value,
-          ],
+          attributes: [...(filters.attributes ?? []), value],
         }
     }
   }, defaultFilters)

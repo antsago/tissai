@@ -1,5 +1,12 @@
 import { describe, test } from "vitest"
-import { ATTRIBUTE, BRAND, mockDbFixture, PAGE, PRODUCT, queries } from "@tissai/db/mocks"
+import {
+  ATTRIBUTE,
+  BRAND,
+  mockDbFixture,
+  PAGE,
+  PRODUCT,
+  queries,
+} from "@tissai/db/mocks"
 import { Db } from "@tissai/db"
 import { storeEntities } from "./storeEntities.js"
 
