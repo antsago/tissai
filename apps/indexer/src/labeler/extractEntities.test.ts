@@ -5,59 +5,78 @@ import { Tokenizer } from "@tissai/tokenizer"
 import { Db } from "@tissai/db"
 import { extractEntities } from "./extractEntities.js"
 
-const it = test.extend<{ db: mockDbFixture, python: mockPythonFixture }>({
+type Fixtures = { db: mockDbFixture, python: mockPythonFixture }
+
+const it = test.extend<Fixtures>({
   db: [mockDbFixture, { auto: true }],
   python: [mockPythonFixture, { auto: true }],
 })
 
 describe("extractEntities", () => {
-  it("extracts entities", async ({ expect, python, db: pg }) => {
-    const info = {
-      title: "title",
-      brandLogo: "logo",
-      brandName: "brand name",
-      description: "description",
-      images: ["a.jpg"],
-      offers: [{
-        currency: "EUR",
-        price: 10,
-        seller: "seller",
-      }]
-    }
-    const nodes = {
-      name: "category",
+  const FULL_INFO = {
+    title: "title",
+    brandLogo: "logo",
+    brandName: "brand name",
+    description: "description",
+    images: ["a.jpg"],
+    offers: [{
+      currency: "EUR",
+      price: 10,
+      seller: "seller",
+    }]
+  }
+  const NODES = {
+    name: "category",
+    tally: 1,
+    children: [{
+      name: "label",
       tally: 1,
       children: [{
-        name: "label",
+        name: "value",
         tally: 1,
-        children: [{
-          name: "value",
-          tally: 1,
-        }]
-      }],
-    }
-    python.mockReturnValue([{ text: info.title }])
-    pg.pool.query.mockResolvedValue({ rows: [nodes]})
-    const tokenizer = Tokenizer()
-    const db = Db()
+      }]
+    }],
+  }
 
-    const result = await extractEntities(info, tokenizer, db)
+  let db: Db
+  let tokenizer: Tokenizer
+  beforeEach<Fixtures>(({ python, db: pg }) => {
+    db = Db()
+    tokenizer = Tokenizer()
 
-    expect(python.worker.send).toHaveBeenCalledWith(info.title)
-    expect(pg).toHaveExecuted(queries.nodes.match([info.title]))
+    pg.pool.query.mockResolvedValue({ rows: [NODES]})
+    python.mockReturnValue([{ text: FULL_INFO.title }])
+  })
+
+  it("extracts entities", async ({ expect, python, db: pg }) => {
+    const result = await extractEntities(FULL_INFO, tokenizer, db)
+
+    expect(python.worker.send).toHaveBeenCalledWith(FULL_INFO.title)
+    expect(pg).toHaveExecuted(queries.nodes.match([FULL_INFO.title]))
     expect(result).toStrictEqual({
       brand: {
-        name: info.brandName,
-        logo: info.brandLogo, 
+        name: FULL_INFO.brandName,
+        logo: FULL_INFO.brandLogo, 
       },
       product: {
-        title: info.title,
-        description: info.description,
-        images: info.images,
-        category: nodes.name,
-        attributes: [{ label: nodes.children[0].name, value: nodes.children[0].children[0].name }],
+        title: FULL_INFO.title,
+        description: FULL_INFO.description,
+        images: FULL_INFO.images,
+        category: NODES.name,
+        attributes: [{ label: NODES.children[0].name, value: NODES.children[0].children[0].name }],
       },
-      offers: info.offers,
+      offers: FULL_INFO.offers,
     })
+  })
+
+  it("throws if no title", async ({ expect }) => {
+    const info = {
+      ...FULL_INFO,
+      title: undefined,
+    }
+
+    const act = extractEntities(info, tokenizer, db)
+
+    expect(act).rejects.toThrow()
   })
 })
