@@ -38,7 +38,7 @@ export async function extractEntities(
   const offers = _.uniqWith(
     info.offers?.map((offer) => ({
       ...offer,
-      seller: offer.seller?.toLowerCase(),
+      seller: offer.seller?.toLocaleLowerCase(),
     })),
     _.isEqual,
   )
