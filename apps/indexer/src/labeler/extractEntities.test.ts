@@ -25,18 +25,8 @@ describe("extractEntities", () => {
       seller: "seller",
     }]
   }
-  const NODES = {
-    name: "category",
-    tally: 1,
-    children: [{
-      name: "label",
-      tally: 1,
-      children: [{
-        name: "value",
-        tally: 1,
-      }]
-    }],
-  }
+  const CATEGORY = "category"
+  const ATTRIBUTES = [{ label: "label", value: "value" }]
 
   let db: Db
   let tokenizer: Tokenizer
@@ -44,7 +34,18 @@ describe("extractEntities", () => {
     db = Db()
     tokenizer = Tokenizer()
 
-    pg.pool.query.mockResolvedValue({ rows: [NODES]})
+    pg.pool.query.mockResolvedValue({ rows: [{
+      name: CATEGORY,
+      tally: 1,
+      children: [{
+        name: ATTRIBUTES[0].label,
+        tally: 1,
+        children: [{
+          name: ATTRIBUTES[0].value,
+          tally: 1,
+        }]
+      }],
+    }]})
     python.mockReturnValue([{ text: FULL_INFO.title }])
   })
 
@@ -62,8 +63,8 @@ describe("extractEntities", () => {
         title: FULL_INFO.title,
         description: FULL_INFO.description,
         images: FULL_INFO.images,
-        category: NODES.name,
-        attributes: [{ label: NODES.children[0].name, value: NODES.children[0].children[0].name }],
+        category: CATEGORY,
+        attributes: ATTRIBUTES,
       },
       offers: FULL_INFO.offers,
     })
@@ -78,5 +79,25 @@ describe("extractEntities", () => {
     const act = extractEntities(info, tokenizer, db)
 
     expect(act).rejects.toThrow()
+  })
+
+  it("handles title-only pages", async ({ expect }) => {
+    const info = {
+      title: FULL_INFO.title,
+    }
+
+    const result = await extractEntities(info, tokenizer, db)
+
+    expect(result).toStrictEqual({
+      brand: undefined,
+      offers: [],
+      product: {
+        title: info.title,
+        description: undefined,
+        images: undefined,
+        category: CATEGORY,
+        attributes: ATTRIBUTES,
+      }
+    })
   })
 })
