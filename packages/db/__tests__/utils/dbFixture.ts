@@ -46,11 +46,13 @@ export const dbFixture = async (
   const TEST_DB = randomUUID()
   await masterDb.raw(`CREATE DATABASE "${TEST_DB}";`)
   const db = Db(TEST_DB)
-  await db.initialize()
-
-  await use({ name: TEST_DB, load: load(db), ...db })
-
-  await db.close()
-  await masterDb.raw(`DROP DATABASE "${TEST_DB}";`)
-  await masterDb.close()
+  
+  try {
+    await db.initialize()
+    await use({ name: TEST_DB, load: load(db), ...db })
+  } finally {
+    await db.close()
+    await masterDb.raw(`DROP DATABASE "${TEST_DB}";`)
+    await masterDb.close()
+  }
 }
