@@ -1,5 +1,5 @@
 <script lang="ts">
-  import MissingImage from "./Photo.svelte"
+  import { Photo as MissingImage } from "./icons"
 
   export let images: string[] | undefined
   export let alt: string

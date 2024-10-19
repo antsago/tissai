@@ -1,5 +1,4 @@
-export { default as Logo } from "./Logo.svelte"
-export { default as MagnifyingGlass } from "./MagnifyingGlass.svelte"
+export * from "./icons"
 export { default as Section } from "./Section.svelte"
 export { default as Chip } from "./Chip.svelte"
 export { default as ChipContainer } from "./ChipContainer.svelte"
