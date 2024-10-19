@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ProductDetails } from "@tissai/db"
-  import { ArrowTopRightOnSquare as OutlinkIcon } from "./icons"
+  import { ArrowTopRightOnSquare as OutlinkIcon } from "../icons"
 
   export let offer: ProductDetails["offers"][0]
 </script>
