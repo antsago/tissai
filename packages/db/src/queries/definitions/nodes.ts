@@ -29,7 +29,7 @@ export const match = (words: string[]) =>
             (vb) =>
               vb
                 .selectFrom("nodes as value")
-                .select(["value.name", "value.tally"])
+                .select(["value.id", "value.name", "value.tally"])
                 .whereRef("label.id", "=", "value.parent")
                 .where((eb) =>
                   eb("value.name", "in", words).and(
@@ -42,6 +42,7 @@ export const match = (words: string[]) =>
             (join) => join.onTrue(),
           )
           .select(({ fn }) => [
+            "label.id",
             "label.name",
             "label.tally",
             fn
@@ -50,11 +51,12 @@ export const match = (words: string[]) =>
               .as("children"),
           ])
           .whereRef("category.id", "=", "label.parent")
-          .groupBy(["label.name", "label.tally"])
+          .groupBy(["label.id"])
           .as("label"),
       (join) => join.onTrue(),
     )
     .select(({ fn }) => [
+      "category.id",
       "category.name",
       "category.tally",
       fn
@@ -63,11 +65,13 @@ export const match = (words: string[]) =>
         .$castTo<
           | null
           | {
+              id: string
               name: string
               tally: number
               children:
                 | null
                 | {
+                    id: string
                     name: string
                     tally: number
                   }[]
@@ -77,7 +81,7 @@ export const match = (words: string[]) =>
     ])
     .where("category.parent", "is", null)
     .where("category.name", "in", words)
-    .groupBy(["category.id", "category.tally"])
+    .groupBy(["category.id"])
     .compile()
 
 export type MatchedNodes =
