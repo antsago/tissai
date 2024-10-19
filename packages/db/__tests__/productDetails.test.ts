@@ -18,7 +18,7 @@ const it = test.extend<Fixtures>({
 })
 
 describe.concurrent("productDetails", () => {
-  it("gets product details", async ({ expect, db }) => {
+  it("retrieves all details", async ({ expect, db }) => {
     const SIMILAR = {
       id: "92b15b90-3673-4a0e-b57c-8f9835a4f4d9",
       title: PRODUCT.title,
@@ -73,6 +73,87 @@ describe.concurrent("productDetails", () => {
           price: OFFER.price + 10,
           currency: OFFER.currency,
           seller: OFFER.seller,
+          site: {
+            name: SITE.name,
+            icon: SITE.icon,
+          },
+        },
+      ],
+    })
+  })
+
+  it("handles title-only products", async ({ expect, db }) => {
+    await db.load({
+      products: [{
+        id: PRODUCT.id,
+        title: PRODUCT.title,
+      }],
+    })
+
+    const result = await db.products.getDetails(PRODUCT.id)
+
+    expect(result).toStrictEqual({
+      title: PRODUCT.title,
+      description: null,
+      images: null,
+      brand: null,
+      category: null,
+      attributes: null,
+      similar: null,
+      offers: null,
+    })
+  })
+
+  it("handles partial properties", async ({ expect, db }) => {
+    const SIMILAR = {
+      id: "92b15b90-3673-4a0e-b57c-8f9835a4f4d9",
+      title: PRODUCT.title,
+    }
+    await db.load({
+      brands: [{
+        name: BRAND.name
+      }],
+      sites: [SITE],
+      products: [SIMILAR, {
+        id: PRODUCT.id,
+        title: PRODUCT.title,
+        brand: PRODUCT.brand,
+      }],
+      offers: [
+        {
+          id: OFFER.id,
+          product: OFFER.product,
+          site: OFFER.site,
+          url: OFFER.url
+        },
+      ],
+    })
+
+    const result = await db.products.getDetails(PRODUCT.id)
+
+    expect(result).toStrictEqual({
+      title: PRODUCT.title,
+      description: null,
+      images: null,
+      category: null,
+      attributes: null,
+      brand: {
+        name: BRAND.name,
+        logo: null,
+      },
+      similar: [
+        {
+          id: SIMILAR.id,
+          title: SIMILAR.title,
+          image: null,
+        },
+      ],
+      offers: [
+        {
+          url: OFFER.url,
+          seller: null,
+          price: null,
+          currency: null,
           site: {
             name: SITE.name,
             icon: SITE.icon,

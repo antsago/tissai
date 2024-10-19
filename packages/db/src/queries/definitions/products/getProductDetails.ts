@@ -35,7 +35,7 @@ const getDetails = {
       .selectFrom("products")
       .leftJoin("nodes as category", "category.id", "products.category")
       .leftJoin("offers", "offers.product", "products.id")
-      .innerJoin("sites", "offers.site", "sites.id")
+      .leftJoin("sites", "offers.site", "sites.id")
       .leftJoin("brands", "brands.name", "products.brand")
       .leftJoin("attributes", "attributes.product", "products.id")
       .leftJoin("nodes as values", "values.id", "attributes.value")
@@ -46,17 +46,19 @@ const getDetails = {
         "products.description",
         "products.images",
         "category.name as category",
-        sql<Brand|undefined>`${fn.jsonAgg("brands")}->0`.as("brand"),
+        sql<Brand|null>`${fn.jsonAgg("brands")}->0`.as("brand"),
         fn
           .jsonAgg(
             toJsonb(
               jsonBuildObject({
                 label: ref("labels.name"),
                 value: ref("values.name"),
-              }),
+              }).$notNull(),
             ),
           )
+          .filterWhere("values.name", "is not", null)
           .distinct()
+          .$castTo<null | { label: string, value: string }[]>()
           .as("attributes"),
         fn
           .jsonAgg(
@@ -73,9 +75,27 @@ const getDetails = {
               }),
             ),
           )
+          .filterWhere("offers.id", "is not", null)
           .distinct()
+          .$castTo<null | {
+            url: string,
+            price: number | null,
+            currency: string | null,
+            seller: string | null,
+            site: {
+              name: string,
+              icon: string,
+            }
+          }[]>()
           .as("offers"),
-        fn.jsonAgg("similars").distinct().as("similar"),
+        fn.jsonAgg("similars")
+        .filterWhere("similars.id", "is not", null)
+        .$castTo<null | {
+          id: string,
+          title: string,
+          image: null | string,
+        }[]>()
+        .distinct().as("similar"),
       ])
       .where("products.id", "=", productId)
       .groupBy([
