@@ -7,5 +7,9 @@ const config: StorybookConfig = {
     name: "@storybook/sveltekit",
     options: {},
   },
+  features: {
+    viewportStoryGlobals: true,
+    backgroundsStoryGlobals: true,
+  },
 }
 export default config

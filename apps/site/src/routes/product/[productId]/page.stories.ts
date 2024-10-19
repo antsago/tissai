@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/svelte"
 import Page from "./+page.svelte"
 
 const meta = {
-  title: "pages/ProductDetails",
+  title: "pages/Product Details",
   component: Page,
   argTypes: {
     data: {
@@ -13,9 +13,6 @@ const meta = {
 type Story = StoryObj<typeof meta>
 
 export const TitleOnly: Story = {
-  parameters: {
-    viewport: { defaultViewport: "mobile1" }
-  },
   args: {
     data: {
       title: "Product title", 
