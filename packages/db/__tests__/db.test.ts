@@ -47,6 +47,25 @@ describe.concurrent("db", () => {
     expect(nodes).toStrictEqual([CATEGORY_NODE])
   })
 
+  it("handles partial entities", async ({ expect, db }) => {
+    db.load({ sites: [SITE], pages: [PAGE] })
+    const brand = { name: BRAND.name }
+    const product = { id: PRODUCT.id, title: PRODUCT.title }
+    const offer = { id: OFFER.id, product: PRODUCT.id, url: PAGE.url, site: SITE.id }
+
+    await db.brands.create(brand)
+    await db.products.create(product)
+    await db.offers.create(offer)
+
+    const brands = await db.brands.getAll()
+    const products = await db.products.getAll()
+    const offers = await db.offers.getAll()
+
+    expect(brands).toStrictEqual([{ ...brand, logo: null }])
+    expect(products).toStrictEqual([{ ...product, brand: null, images: null, description: null, category: null }])
+    expect(offers).toStrictEqual([{...offer, currency: null, price: null, seller: null }])
+  })
+
   it("handles duplicated sellers", async ({ expect, db }) => {
     await db.load({ sellers: [SELLER]})
 
