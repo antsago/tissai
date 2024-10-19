@@ -42,10 +42,10 @@ export const dbFixture = async (
   {}: TaskContext & TestContext,
   use: (db: dbFixture) => any,
 ) => {
-  const masterDb = Db()
+  const masterDb = Db(undefined, { max: 1 })
   const TEST_DB = randomUUID()
   await masterDb.raw(`CREATE DATABASE "${TEST_DB}";`)
-  const db = Db(TEST_DB)
+  const db = Db(TEST_DB, { max: 1 })
 
   try {
     await db.initialize()
