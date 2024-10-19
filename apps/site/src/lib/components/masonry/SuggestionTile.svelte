@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Suggestion } from "@tissai/db"
-  import ChipContainer from "./ChipContainer.svelte"
-  import Chip from "./Chip.svelte"
+  import ChipContainer from "../ChipContainer.svelte"
+  import Chip from "../Chip.svelte"
 
   export let suggestion: Suggestion
   export let baseUrl: string
