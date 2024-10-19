@@ -17,6 +17,7 @@ describe("Db", () => {
     const query = {
       sql: "A sql STATEMENT",
       parameters: [1, 2],
+      query: {} as any,
     }
     pg.cursor.read.mockResolvedValueOnce([expected[0]])
     pg.cursor.read.mockResolvedValueOnce([expected[1]])

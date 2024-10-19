@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto"
-import { TaskContext, TestContext } from "vitest"
-import { Database, Db } from "../../src/index.js"
+import type { TaskContext, TestContext } from "vitest"
+import { type Database, Db } from "../../src/index.js"
 
 type State = Partial<{
   [K in keyof Database]: Database[K][]
