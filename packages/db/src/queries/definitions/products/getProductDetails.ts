@@ -46,7 +46,7 @@ const getDetails = {
         "products.description",
         "products.images",
         "category.name as category",
-        sql<Brand>`${fn.jsonAgg("brands")}->0`.as("brand"),
+        sql<Brand|undefined>`${fn.jsonAgg("brands")}->0`.as("brand"),
         fn
           .jsonAgg(
             toJsonb(
