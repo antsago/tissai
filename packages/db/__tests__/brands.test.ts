@@ -8,30 +8,45 @@ const it = test.extend<Fixtures>({
 
 describe.concurrent("brands", () => {
   it("inserts if new", async ({ expect, db }) => {
-    const result = await db.brands.upsert(BRAND)
+    await db.brands.upsert(BRAND)
 
     const brands = await db.brands.getAll()
     expect(brands).toStrictEqual([BRAND])
-    expect(result).toStrictEqual({ name: BRAND.name })
+  })
+
+  it("handles partial brand", async ({ expect, db }) => {
+    const brand = { name: BRAND.name }
+
+    await db.brands.upsert(brand)
+
+    const brands = await db.brands.getAll()
+    expect(brands).toStrictEqual([{ ...brand, logo: null }])
   })
 
   it("updates logo if not set", async ({ expect, db }) => {
     await db.load({ brands: [{ name: BRAND.name }] })
 
-    const result = await db.brands.upsert(BRAND)
+    await db.brands.upsert(BRAND)
 
     const brands = await db.brands.getAll()
     expect(brands).toStrictEqual([BRAND])
-    expect(result).toStrictEqual({ name: BRAND.name })
   })
 
-  it("updates logo if already set", async ({ expect, db }) => {
-    await db.load({ brands: [{ name: BRAND.name, logo: "an old logo" }] })
+  it("preserves logo if not given", async ({ expect, db }) => {
+    await db.load({ brands: [BRAND] })
 
-    const result = await db.brands.upsert(BRAND)
+    await db.brands.upsert({ name: BRAND.name })
 
     const brands = await db.brands.getAll()
     expect(brands).toStrictEqual([BRAND])
-    expect(result).toStrictEqual({ name: BRAND.name })
+  })
+
+  it("updates logo if new is given", async ({ expect, db }) => {
+    await db.load({ brands: [{ name: BRAND.name, logo: "an old logo" }] })
+
+    await db.brands.upsert(BRAND)
+
+    const brands = await db.brands.getAll()
+    expect(brands).toStrictEqual([BRAND])
   })
 })

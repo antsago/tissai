@@ -7,11 +7,10 @@ export const upsert = {
     builder
       .insertInto("brands")
       .onConflict((oc) =>
-        oc.columns(["name"]).doUpdateSet({
-          logo: brand.logo,
-        }),
+        oc.columns(["name"]).doUpdateSet(({ ref, fn }) => ({
+          logo: fn.coalesce(ref("excluded.logo"), ref("brands.logo")),
+        })),
       )
       .values(brand)
-      .returning("name")
       .compile(),
 }
