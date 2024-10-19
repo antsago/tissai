@@ -1,11 +1,10 @@
 export * from "./icons"
-export * from "./masonry"
+export * from "./search"
 export * from "./productDetails"
 
 export { default as Section } from "./Section.svelte"
 export { default as Chip } from "./Chip.svelte"
 export { default as ChipContainer } from "./ChipContainer.svelte"
-export { default as Filters } from "./Filters.svelte"
 export { default as SearchForm } from "./SearchForm.svelte"
 export { default as Header } from "./Header.svelte"
 export { default as Page } from "./Page.svelte"

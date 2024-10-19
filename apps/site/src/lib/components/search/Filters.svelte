@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { SearchParams } from "@tissai/db"
-  import Chip from "./Chip.svelte"
-  import ChipContainer from "./ChipContainer.svelte"
+  import Chip from "../Chip.svelte"
+  import ChipContainer from "../ChipContainer.svelte"
 
   let classes = ""
   export { classes as class }
