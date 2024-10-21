@@ -84,10 +84,12 @@ describe.concurrent("productDetails", () => {
 
   it("handles title-only products", async ({ expect, db }) => {
     await db.load({
-      products: [{
-        id: PRODUCT.id,
-        title: PRODUCT.title,
-      }],
+      products: [
+        {
+          id: PRODUCT.id,
+          title: PRODUCT.title,
+        },
+      ],
     })
 
     const result = await db.products.getDetails(PRODUCT.id)
@@ -110,21 +112,26 @@ describe.concurrent("productDetails", () => {
       title: PRODUCT.title,
     }
     await db.load({
-      brands: [{
-        name: BRAND.name
-      }],
+      brands: [
+        {
+          name: BRAND.name,
+        },
+      ],
       sites: [SITE],
-      products: [SIMILAR, {
-        id: PRODUCT.id,
-        title: PRODUCT.title,
-        brand: PRODUCT.brand,
-      }],
+      products: [
+        SIMILAR,
+        {
+          id: PRODUCT.id,
+          title: PRODUCT.title,
+          brand: PRODUCT.brand,
+        },
+      ],
       offers: [
         {
           id: OFFER.id,
           product: OFFER.product,
           site: OFFER.site,
-          url: OFFER.url
+          url: OFFER.url,
         },
       ],
     })

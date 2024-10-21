@@ -14,7 +14,9 @@ export function toJsonb<T>(value: RawBuilder<T>): RawBuilder<T> {
 }
 
 type ToTable<T> = {
-  [K in keyof Required<T>]: undefined extends T[K] ? Exclude<T[K], undefined> | null : T[K]
+  [K in keyof Required<T>]: undefined extends T[K]
+    ? Exclude<T[K], undefined> | null
+    : T[K]
 }
 type ToTables<D> = {
   [K in keyof D]: ToTable<D[K]>

@@ -13,7 +13,10 @@ export function setPg(pool: typeof pg.Pool, cursor: typeof PgCursor) {
   Cursor = cursor
 }
 
-export const Connection = (database?: string, config?: Omit<PoolConfig, "connectionString">) => {
+export const Connection = (
+  database?: string,
+  config?: Omit<PoolConfig, "connectionString">,
+) => {
   const connectionString = `${process.env.PG_CONNECTION_STRING}/${database ?? process.env.PG_DATABASE}`
   const pool = new Pool({ ...config, connectionString })
 

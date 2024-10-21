@@ -15,7 +15,7 @@ type Story = StoryObj<typeof meta>
 export const Full: Story = {
   args: {
     data: {
-      title: "Product title", 
+      title: "Product title",
       brand: {
         name: "brand",
         logo: "logo.jpg",
@@ -24,11 +24,13 @@ export const Full: Story = {
       description: "The product description",
       images: ["foo.jpg", "faa.jpg"],
       attributes: [{ label: "label", value: "value" }],
-      similar: [{
-        id: "asdfasdf",
-        title: "Similar product",
-        image: "similar.jpg",
-      }],
+      similar: [
+        {
+          id: "asdfasdf",
+          title: "Similar product",
+          image: "similar.jpg",
+        },
+      ],
       offers: [
         {
           url: "foo.html",
@@ -38,8 +40,8 @@ export const Full: Story = {
           site: {
             name: "site",
             icon: "siteicon.jpg",
-          }
-        }
+          },
+        },
       ],
     },
   },
@@ -47,7 +49,7 @@ export const Full: Story = {
 export const Minimal: Story = {
   args: {
     data: {
-      title: "Product title", 
+      title: "Product title",
       brand: null,
       category: null,
       description: null,
