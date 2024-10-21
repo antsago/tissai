@@ -1,5 +1,12 @@
 import { describe, test, beforeEach } from "vitest"
-import { mockDbFixture, PAGE, queries } from "@tissai/db/mocks"
+import {
+  CATEGORY_NODE,
+  LABEL_NODE,
+  mockDbFixture,
+  PAGE,
+  queries,
+  VALUE_NODE,
+} from "@tissai/db/mocks"
 import { mockPythonFixture } from "@tissai/python-pool/mocks"
 import { Tokenizer } from "@tissai/tokenizer"
 import { Db } from "@tissai/db"
@@ -39,14 +46,17 @@ describe("extractEntities", () => {
     pg.pool.query.mockResolvedValue({
       rows: [
         {
+          id: CATEGORY_NODE.id,
           name: CATEGORY,
           tally: 1,
           children: [
             {
+              id: LABEL_NODE.id,
               name: ATTRIBUTES[0].label,
               tally: 1,
               children: [
                 {
+                  id: VALUE_NODE.id,
                   name: ATTRIBUTES[0].value,
                   tally: 1,
                 },
@@ -74,26 +84,32 @@ describe("extractEntities", () => {
         title: FULL_INFO.title,
         description: FULL_INFO.description,
         images: FULL_INFO.images,
-        category: CATEGORY,
+        category: CATEGORY_NODE.id,
         brand: result.brand?.name,
       },
-      attributes: [{
-        id: expect.any(String),
-        product: result.product.id,
-        value: ATTRIBUTES[0].value,
-      }],
-      sellers: [{
-        name: FULL_INFO.offers[0].seller,
-      }],
-      offers: [{
-        id: expect.any(String),
-        product: result.product.id,
-        site: PAGE.site,
-        url: PAGE.url,
-        price: FULL_INFO.offers[0].price,
-        currency: FULL_INFO.offers[0].currency,
-        seller: result.sellers[0].name,
-      }],
+      attributes: [
+        {
+          id: expect.any(String),
+          product: result.product.id,
+          value: VALUE_NODE.id,
+        },
+      ],
+      sellers: [
+        {
+          name: FULL_INFO.offers[0].seller,
+        },
+      ],
+      offers: [
+        {
+          id: expect.any(String),
+          product: result.product.id,
+          site: PAGE.site,
+          url: PAGE.url,
+          price: FULL_INFO.offers[0].price,
+          currency: FULL_INFO.offers[0].currency,
+          seller: result.sellers[0].name,
+        },
+      ],
     })
   })
 
@@ -125,13 +141,15 @@ describe("extractEntities", () => {
         description: undefined,
         images: undefined,
         brand: undefined,
-        category: CATEGORY,
+        category: CATEGORY_NODE.id,
       },
-      attributes: [{
-        id: expect.any(String),
-        product: result.product.id,
-        value: ATTRIBUTES[0].value,
-      }],
+      attributes: [
+        {
+          id: expect.any(String),
+          product: result.product.id,
+          value: VALUE_NODE.id,
+        },
+      ],
     })
   })
 
@@ -142,6 +160,7 @@ describe("extractEntities", () => {
     pg.pool.query.mockResolvedValue({
       rows: [
         {
+          id: CATEGORY_NODE.id,
           name: CATEGORY,
           tally: 1,
         },
@@ -150,16 +169,14 @@ describe("extractEntities", () => {
 
     const result = await extractEntities(info, PAGE, tokenizer, db)
 
-    expect(result.product).toStrictEqual(
-{
-          id: expect.any(String),
-          title: info.title,
-          description: undefined,
-          images: undefined,
-          category: CATEGORY,
-          brand: undefined,
-        }
-    )
+    expect(result.product).toStrictEqual({
+      id: expect.any(String),
+      title: info.title,
+      description: undefined,
+      images: undefined,
+      category: CATEGORY_NODE.id,
+      brand: undefined,
+    })
     expect(result.attributes).toStrictEqual([])
   })
 
@@ -195,9 +212,9 @@ describe("extractEntities", () => {
     const result = await extractEntities(info, PAGE, tokenizer, db)
 
     expect(result.brand).toStrictEqual({
-        name: FULL_INFO.brandName,
-        logo: undefined,
-      })
+      name: FULL_INFO.brandName,
+      logo: undefined,
+    })
     expect(result.product.brand).toStrictEqual(result.brand?.name)
   })
 
@@ -213,9 +230,7 @@ describe("extractEntities", () => {
 
     const result = await extractEntities(info, PAGE, tokenizer, db)
 
-    expect(result.sellers).toStrictEqual([
-      { name: FULL_INFO.offers[0].seller },
-    ])
+    expect(result.sellers).toStrictEqual([{ name: FULL_INFO.offers[0].seller }])
     expect(result.offers[0].seller).toStrictEqual(result.sellers[0].name)
   })
 
@@ -233,33 +248,40 @@ describe("extractEntities", () => {
   it("handles offers without sellers", async ({ expect }) => {
     const info = {
       title: FULL_INFO.title,
-      offers: [{
-        price: FULL_INFO.offers[0].price,
-        currency: FULL_INFO.offers[0].currency,
-      }],
+      offers: [
+        {
+          price: FULL_INFO.offers[0].price,
+          currency: FULL_INFO.offers[0].currency,
+        },
+      ],
     }
 
     const result = await extractEntities(info, PAGE, tokenizer, db)
 
-    expect(result.offers).toStrictEqual([{
-      id: expect.any(String),
-      product: result.product.id,
-      site: PAGE.site,
-      url: PAGE.url,
-      seller: undefined,
-      price: FULL_INFO.offers[0].price,
-      currency: FULL_INFO.offers[0].currency,
-    }])
+    expect(result.offers).toStrictEqual([
+      {
+        id: expect.any(String),
+        product: result.product.id,
+        site: PAGE.site,
+        url: PAGE.url,
+        seller: undefined,
+        price: FULL_INFO.offers[0].price,
+        currency: FULL_INFO.offers[0].currency,
+      },
+    ])
     expect(result.sellers).toStrictEqual([])
   })
 
   it("handles multiple offers from same seller", async ({ expect }) => {
     const info = {
       title: FULL_INFO.title,
-      offers: [FULL_INFO.offers[0], {
-        ...FULL_INFO.offers[0],
-        price: FULL_INFO.offers[0].price + 1,
-      }],
+      offers: [
+        FULL_INFO.offers[0],
+        {
+          ...FULL_INFO.offers[0],
+          price: FULL_INFO.offers[0].price + 1,
+        },
+      ],
     }
 
     const result = await extractEntities(info, PAGE, tokenizer, db)

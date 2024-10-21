@@ -1,5 +1,11 @@
 import { expect, describe, test } from "vitest"
-import { mockDbFixture, queries } from "@tissai/db/mocks"
+import {
+  CATEGORY_NODE,
+  LABEL_NODE,
+  mockDbFixture,
+  queries,
+  VALUE_NODE,
+} from "@tissai/db/mocks"
 import { Db } from "@tissai/db"
 import { infer } from "./infer.js"
 
@@ -10,14 +16,17 @@ const it = test.extend({
 describe("infer", () => {
   const WORDS = ["category", "value"]
   const CATEGORY = {
+    id: CATEGORY_NODE.id,
     name: "category",
     tally: 3,
   }
   const LABEL = {
+    id: LABEL_NODE.id,
     name: "label",
     tally: 2,
   }
   const VALUE = {
+    id: VALUE_NODE.id,
     name: "value",
     tally: 2,
   }
@@ -40,11 +49,11 @@ describe("infer", () => {
 
     expect(db).toHaveExecuted(queries.nodes.match(WORDS))
     expect(result).toStrictEqual({
-      category: CATEGORY.name,
+      category: CATEGORY,
       attributes: [
         {
-          label: LABEL.name,
-          value: VALUE.name,
+          label: LABEL,
+          value: VALUE,
         },
       ],
     })
@@ -72,11 +81,11 @@ describe("infer", () => {
     const result = await infer(WORDS, Db())
 
     expect(result).toStrictEqual({
-      category: CATEGORY.name,
+      category: CATEGORY,
       attributes: [
         {
-          label: LABEL.name,
-          value: VALUE.name,
+          label: LABEL,
+          value: VALUE,
         },
       ],
     })
@@ -94,7 +103,7 @@ describe("infer", () => {
     const result = await infer(WORDS, Db())
 
     expect(result).toStrictEqual({
-      category: CATEGORY.name,
+      category: CATEGORY,
       attributes: [],
     })
   })

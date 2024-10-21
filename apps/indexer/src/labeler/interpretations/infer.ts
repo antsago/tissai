@@ -1,5 +1,10 @@
 import type { Db } from "@tissai/db"
-import { type Interpretation, normalize } from "./normalize.js"
+import {
+  type Interpretation,
+  Node,
+  normalize,
+  type Property,
+} from "./normalize.js"
 import { calculateProbability } from "./calculateProbability.js"
 
 const BASE_SCORE = { score: 0, interpretations: [] as Interpretation[] }
@@ -39,13 +44,9 @@ export async function infer(words: string[], db: Db) {
     .toSorted((a, b) => b.probability - a.probability)[0]
 
   return {
-    category: interpretation?.category.name,
-    attributes:
-      interpretation?.properties
-        .filter((property) => property.value)
-        .map(({ label, value }) => ({
-          label: label.name,
-          value: value!.name,
-        })) ?? [],
+    category: interpretation?.category as Node | undefined,
+    attributes: (interpretation?.properties.filter(
+      (property) => property.value,
+    ) ?? []) as Required<Property>[],
   }
 }
