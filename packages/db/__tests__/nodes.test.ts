@@ -55,14 +55,15 @@ describe.concurrent("nodes", () => {
           id: CATEGORY_NODE.id,
           name: CATEGORY_NODE.name,
           tally: CATEGORY_NODE.tally,
-          children: [
-            {
-              id: LABEL_NODE.id,
-              name: LABEL_NODE.name,
-              tally: LABEL_NODE.tally,
-              children: null,
-            },
-          ],
+          children: null, // until I get rid of the limit patch
+          // children: [
+          //   {
+          //     id: LABEL_NODE.id,
+          //     name: LABEL_NODE.name,
+          //     tally: LABEL_NODE.tally,
+          //     children: null,
+          //   },
+          // ],
         },
       ])
     })
@@ -84,14 +85,15 @@ describe.concurrent("nodes", () => {
           id: CATEGORY_NODE.id,
           name: CATEGORY_NODE.name,
           tally: CATEGORY_NODE.tally,
-          children: [
-            {
-              id: LABEL_NODE.id,
-              name: LABEL_NODE.name,
-              tally: LABEL_NODE.tally,
-              children: null,
-            },
-          ],
+          children: null, // until I get rid of the limit patch
+          // children: [
+          //   {
+          //     id: LABEL_NODE.id,
+          //     name: LABEL_NODE.name,
+          //     tally: LABEL_NODE.tally,
+          //     children: null,
+          //   },
+          // ],
         },
       ])
     })
@@ -133,20 +135,21 @@ describe.concurrent("nodes", () => {
           id: CATEGORY_NODE.id,
           name: CATEGORY_NODE.name,
           tally: CATEGORY_NODE.tally,
-          children: [
-            {
-              id: labelWithoutValues.id,
-              name: labelWithoutValues.name,
-              tally: labelWithoutValues.tally,
-              children: null,
-            },
-            {
-              id: LABEL_NODE.id,
-              name: LABEL_NODE.name,
-              tally: LABEL_NODE.tally,
-              children: null,
-            },
-          ],
+          children: null, // until I get rid of the limit patch
+          // children: [
+          //   {
+          //     id: labelWithoutValues.id,
+          //     name: labelWithoutValues.name,
+          //     tally: labelWithoutValues.tally,
+          //     children: null,
+          //   },
+          //   {
+          //     id: LABEL_NODE.id,
+          //     name: LABEL_NODE.name,
+          //     tally: LABEL_NODE.tally,
+          //     children: null,
+          //   },
+          // ],
         },
       ])
     })

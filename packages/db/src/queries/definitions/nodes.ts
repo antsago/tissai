@@ -18,6 +18,8 @@ export const upsert = {
       .compile(),
 }
 
+// Temporary limiting to avoid combinatorial explosion until I can refine the schema
+const MAX_CHILDREN = 5
 export const match = (words: string[]) =>
   builder
     .selectFrom("nodes as category")
@@ -38,6 +40,8 @@ export const match = (words: string[]) =>
                     eb.ref("category.name"),
                   ),
                 )
+                .orderBy("value.tally desc") // to get most relevant children
+                .limit(MAX_CHILDREN)
                 .as("value"),
             (join) => join.onTrue(),
           )
@@ -52,6 +56,9 @@ export const match = (words: string[]) =>
           ])
           .whereRef("category.id", "=", "label.parent")
           .groupBy(["label.id"])
+          .where("value.name", "is not", null) // to get most relevant children
+          .orderBy("label.tally desc") // to get most relevant children
+          .limit(MAX_CHILDREN)
           .as("label"),
       (join) => join.onTrue(),
     )
