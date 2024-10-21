@@ -1,4 +1,4 @@
-import type { Db } from "@tissai/db"
+import type { Db, MatchedNodes } from "@tissai/db"
 import {
   type Interpretation,
   Node,
@@ -30,22 +30,39 @@ const pickBestScores = (
   }
 }
 
+function* normalizeNodes(nodes: MatchedNodes) {
+  for (let root of nodes) {
+    yield* normalize(root)
+  }
+}
+
 export async function infer(words: string[], db: Db) {
   const nodes = await db.nodes.match(words)
 
-  const interpretation = nodes
-    .map(normalize)
-    .flat()
-    .reduce(pickBestScores, BASE_SCORE)
-    .interpretations.map((i) => ({
-      ...i,
-      probability: calculateProbability(i),
-    }))
-    .toSorted((a, b) => b.probability - a.probability)[0]
+  let bestScore = 0
+  let bestInterpretation: Interpretation | undefined
+  let bestProbability: number | undefined
+  for (let interpretation of normalizeNodes(nodes)) {
+    const score = 1 + interpretation.properties.filter((p) => p.value).length
+
+    if (!bestInterpretation || bestScore < score) {
+      bestInterpretation = interpretation
+      bestScore = score
+      bestProbability = undefined
+    } else if (bestScore === score) {
+      bestProbability = bestProbability ?? calculateProbability(bestInterpretation)
+      const probability = calculateProbability(interpretation)
+
+      if (bestProbability < probability) {
+        bestInterpretation = interpretation
+        bestProbability = probability
+      }
+    }
+  }
 
   return {
-    category: interpretation?.category as Node | undefined,
-    attributes: (interpretation?.properties.filter(
+    category: bestInterpretation?.category,
+    attributes: (bestInterpretation?.properties.filter(
       (property) => property.value,
     ) ?? []) as Required<Property>[],
   }

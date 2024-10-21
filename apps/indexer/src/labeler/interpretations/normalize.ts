@@ -14,13 +14,13 @@ export type Interpretation = {
   properties: Property[]
 }
 
-function combineProperties(
+function* combineProperties(
   children: NonNullable<MatchedNodes[number]["children"]>,
   properties: Property[] = [],
   matchedWords: string[] = [],
-): Property[][] {
+): Generator<Property[]> {
   if (children.length === 0) {
-    return [properties]
+    return yield properties
   }
 
   const child = children[0]
@@ -33,28 +33,27 @@ function combineProperties(
   ]
 
   const otherChildren = children.slice(1)
-  return propertyCandidates
-    .map((candidate) =>
-      combineProperties(
-        otherChildren,
-        [...properties, candidate],
-        candidate.value?.name
-          ? [...matchedWords, candidate.value.name]
-          : matchedWords,
-      ),
+  for (let candidate of propertyCandidates) {
+    const combinations = combineProperties(
+      otherChildren,
+      [...properties, candidate],
+      candidate.value?.name
+        ? [...matchedWords, candidate.value.name]
+        : matchedWords,
     )
-    .flat()
+    yield* combinations
+  }
 }
 
-export function normalize(root: MatchedNodes[number]): Interpretation[] {
-  const combinations = combineProperties(root.children ?? [])
-
-  return combinations.map((properties) => ({
-    category: {
-      id: root.id,
-      name: root.name,
-      tally: root.tally,
-    },
-    properties,
-  }))
+export function* normalize(root: MatchedNodes[number]) {
+  for (let properties of combineProperties(root.children ?? [])) {
+    yield {
+      category: {
+        id: root.id,
+        name: root.name,
+        tally: root.tally,
+      },
+      properties,
+    }
+  }
 }

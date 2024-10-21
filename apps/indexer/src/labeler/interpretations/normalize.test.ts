@@ -19,7 +19,7 @@ describe("normalize", () => {
     tally: 2,
   }
 
-  it("identifies category and properties", async () => {
+  it("identifies category and properties", () => {
     const root = {
       ...CATEGORY,
       children: [
@@ -30,7 +30,7 @@ describe("normalize", () => {
       ],
     }
 
-    const result = await normalize(root)
+    const result = Array.from(normalize(root))
 
     expect(result).toStrictEqual([
       {
@@ -53,7 +53,7 @@ describe("normalize", () => {
     ])
   })
 
-  it("handles labels without values", async () => {
+  it("handles labels without values", () => {
     const root = {
       ...CATEGORY,
       children: [
@@ -64,7 +64,7 @@ describe("normalize", () => {
       ],
     }
 
-    const result = await normalize(root)
+    const result = Array.from(normalize(root))
 
     expect(result).toStrictEqual([
       {
@@ -78,13 +78,13 @@ describe("normalize", () => {
     ])
   })
 
-  it("handles categories without labels", async () => {
+  it("handles categories without labels", () => {
     const root = {
       ...CATEGORY,
       children: null,
     }
 
-    const result = await normalize(root)
+    const result = Array.from(normalize(root))
 
     expect(result).toStrictEqual([
       {
@@ -94,7 +94,7 @@ describe("normalize", () => {
     ])
   })
 
-  it("handles multiple labels and values", async () => {
+  it("handles multiple labels and values", () => {
     const LABEL2 = {
       ...LABEL,
       name: `${LABEL.name}-2`,
@@ -133,7 +133,7 @@ describe("normalize", () => {
       ],
     }
 
-    const result = await normalize(root)
+    const result = Array.from(normalize(root))
 
     expect(result).toStrictEqual([
       {
@@ -250,7 +250,7 @@ describe("normalize", () => {
     ])
   })
 
-  it("ignore already-present names", async () => {
+  it("ignore already-present names", () => {
     const LABEL2 = {
       ...LABEL,
       name: `${LABEL.name}-2`,
@@ -269,7 +269,7 @@ describe("normalize", () => {
       ],
     }
 
-    const result = await normalize(root)
+    const result = Array.from(normalize(root))
 
     expect(result).toStrictEqual([
       {
@@ -308,5 +308,26 @@ describe("normalize", () => {
         ],
       },
     ])
+  })
+
+  it("handles combinatorial explosion", () => {
+    const MAX_CHILDREN = 10
+    const root = {
+      ...CATEGORY,
+      children: new Array(MAX_CHILDREN).fill(null).map((_, labelIndex) => ({
+        id: `label-id-${labelIndex}`,
+        name: `label-name-${labelIndex}`,
+        tally: 1,
+        children: new Array(MAX_CHILDREN).fill(null).map((_, valueIndex) => ({
+          id: `value-id-${labelIndex}-${valueIndex}`,
+          name: `value-name-${labelIndex}-${valueIndex}`,
+          tally: 1,
+        })),
+      })),
+    }
+
+    const act = () => normalize(root)
+
+    expect(act).not.toThrow()
   })
 })
