@@ -14,6 +14,7 @@
     }
   },
   "devDependencies": {
+    "@tissai/db": "workspace:*",
     "@types/he": "1",
     "@types/lodash": "4.17.7",
     "@types/node": "20.14.8",

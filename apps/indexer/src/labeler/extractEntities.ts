@@ -10,8 +10,7 @@ import type {
   Seller,
 } from "@tissai/db"
 import { type ParsedInfo } from "../trainer/parsePage/index.js"
-import { infer } from "./interpretations/infer.js"
-import { type Tokenizer } from "@tissai/tokenizer"
+import { type Tokenizer, infer } from "@tissai/tokenizer"
 
 export type Entities = {
   product: Product

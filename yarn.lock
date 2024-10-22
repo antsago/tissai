@@ -1769,6 +1769,7 @@ __metadata:
   resolution: "@tissai/tokenizer@workspace:packages/tokenizer"
   dependencies:
     "@tissai/config": "workspace:*"
+    "@tissai/db": "workspace:*"
     "@tissai/python-pool": "workspace:*"
     "@types/he": "npm:1"
     "@types/lodash": "npm:4.17.7"
