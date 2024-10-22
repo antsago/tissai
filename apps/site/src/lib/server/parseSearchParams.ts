@@ -1,5 +1,5 @@
 import type { SearchParams as SP } from "@tissai/db"
-import { infer } from "./interpretations/infer"
+import { infer } from "@tissai/tokenizer"
 
 type SearchParams = SP & { category?: string }
 export function extractFilters(params: URLSearchParams) {
@@ -66,7 +66,7 @@ export async function parseSearchParams(
 
   return {
     ...explicitFilters,
-    category: infered.category,
-    attributes: infered.properties.map((p) => p.value),
+    category: infered.category?.name,
+    attributes: infered.attributes.map(att => att.value.name),
   }
 }
