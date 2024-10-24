@@ -3,7 +3,7 @@
   import AttributeCloud from "./AttributeCloud.svelte"
 
   export let details: ProductDetails
-  export let titleId: string
+  export let headerId: string
   let classes = ""
   export { classes as class }
 </script>
@@ -26,7 +26,7 @@
     {/if}
 
     <h1
-      id={titleId}
+      id={headerId}
       class="text-stone-900 uppercase text-lg font-medium"
     >
       {details.title}
