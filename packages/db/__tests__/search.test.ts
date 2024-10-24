@@ -24,6 +24,7 @@ describe.concurrent("search", () => {
     title: "Pantalones ajustados",
     images: PRODUCT.images,
     brand: PRODUCT.brand,
+    category: CATEGORY_NODE.id,
   }
   const product2 = {
     id: randomUUID(),
@@ -101,6 +102,15 @@ describe.concurrent("search", () => {
     expect(result).toStrictEqual([product1Result])
   })
 
+  it("filters by category", async ({ expect, db }) => {
+    const result = await db.products.search({
+      query: product2.title,
+      category: CATEGORY_NODE.id,
+    })
+
+    expect(result).toStrictEqual([product1Result])
+  })
+
   it("filters by attribute", async ({ expect, db }) => {
     const result = await db.products.search({
       query: product2.title,
@@ -108,6 +118,39 @@ describe.concurrent("search", () => {
     })
 
     expect(result).toStrictEqual([product1Result])
+  })
+
+  it("filters by multiple attributes", async ({ expect, db }) => {
+    await db.load({
+      products: [PRODUCT],
+      sellers: [SELLER],
+      offers: [OFFER],
+      attributes: [
+        {
+        id: "ef2f922a-8352-4baa-a76f-83b8bd9aa33d",
+        product: PRODUCT.id,
+        value: VALUE_NODE.id,
+      },
+        {
+        id: "ee08e71b-eee5-4069-a862-da15b1b468eb",
+        product: PRODUCT.id,
+        value: LABEL_NODE.id, // Using label node as a value node due to lazyness
+      },
+    ]
+    })
+
+    const result = await db.products.search({
+      query: product2.title,
+      attributes: [VALUE_NODE.id, LABEL_NODE.id],
+    })
+
+    expect(result).toStrictEqual([{
+      id: PRODUCT.id,
+      title: PRODUCT.title,
+      image: PRODUCT.images[0],
+      brand: BRAND,
+      price: OFFER.price,
+    }])
   })
 
   it("filters by min price", async ({ expect, db }) => {
