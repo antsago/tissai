@@ -11,6 +11,6 @@ const config: StorybookConfig = {
     viewportStoryGlobals: true,
     backgroundsStoryGlobals: true,
   },
-  staticDirs: ['./assets'],
+  staticDirs: ["./assets"],
 }
 export default config

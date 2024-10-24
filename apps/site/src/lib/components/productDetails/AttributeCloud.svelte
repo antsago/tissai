@@ -2,10 +2,12 @@
   import Chip from "../Chip.svelte"
   import ChipContainer from "../ChipContainer.svelte"
 
-  export let attributes: {
-    label: string
-    value: string
-  }[] | null
+  export let attributes:
+    | {
+        label: string
+        value: string
+      }[]
+    | null
   export let category: string | null
   export let background: string
   let classes = ""
@@ -23,8 +25,8 @@
 <ChipContainer class={classes}>
   {#if category}
     <Chip
-     style="order:{rng(attributes?.length ?? 0)}; z-index: {rng(0)};"
-     background={background}
+      style="order:{rng(attributes?.length ?? 0)}; z-index: {rng(0)};"
+      {background}
       orange
     >
       categoría: {category}
@@ -35,7 +37,7 @@
       style="order:{rng((attributes ?? []).length - index)}; z-index: {rng(
         index + 1,
       )};"
-     background={background}
+      {background}
     >
       {#if attribute.label === attribute.value}
         {attribute.value}

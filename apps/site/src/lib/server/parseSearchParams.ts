@@ -67,6 +67,6 @@ export async function parseSearchParams(
   return {
     ...explicitFilters,
     category: infered.category?.name,
-    attributes: infered.attributes.map(att => att.value.name),
+    attributes: infered.attributes.map((att) => att.value.name),
   }
 }

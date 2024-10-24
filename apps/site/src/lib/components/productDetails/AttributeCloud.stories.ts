@@ -13,16 +13,18 @@ const meta = {
     },
   },
   args: {
-    background: 'bg-stone-50'
-  }
+    background: "bg-stone-50",
+  },
 } satisfies Meta<AttributeCloud>
 type Story = StoryObj<typeof meta>
-
 
 export const CategoryAndAttributes: Story = {
   args: {
     category: "pantalon",
-    attributes: [{ label: "modelo", value: "501®" }, { label: "cordones", value: "cordones" }],
+    attributes: [
+      { label: "modelo", value: "501®" },
+      { label: "cordones", value: "cordones" },
+    ],
   },
 }
 export const CategoryOnly: Story = {

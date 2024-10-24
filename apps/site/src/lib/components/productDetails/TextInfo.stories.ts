@@ -13,40 +13,41 @@ const meta = {
 type Story = StoryObj<typeof meta>
 
 const FULL_DATA = {
+  title: "Puma Pantalones de chandal",
+  brand: {
+    name: "puma",
+    logo: "/logo.jpg",
+  },
+  category: "category",
+  description:
+    "Del sofá a la calle, refréscate con estos Core Sportswear Joggers para hombre de PUMA. En una combinación de colores Black, estos pantalones exclusivos de JD están confeccionados con una mezcla de algodón y poliéster reciclado para una comodidad afelpada. Tienen una pretina ajustable con cordón, tobillos con puños y bolsillos laterales para guardar lo esencial. Terminado con la marca PUMA blanca y roja en el muslo izquierdo. Lavable en la lavadora. | Nuestro modelo mide 5'9\" y usa una talla mediana.",
+  images: ["/product1.jpg", "/product2.jpg"],
+  attributes: [{ label: "label", value: "value" }],
+  similar: [
+    {
+      id: "similar-1",
       title: "Puma Pantalones de chandal",
-      brand: {
-        name: "puma",
-        logo: "/logo.jpg",
+      image: "/similar1.jpg",
+    },
+    {
+      id: "similar-2",
+      title: "Puma Pantalones de chandal",
+      image: "/similar2.jpg",
+    },
+  ],
+  offers: [
+    {
+      url: "https://example.com/foo.html",
+      price: 10.99,
+      currency: "EUR",
+      seller: "seller",
+      site: {
+        name: "site",
+        icon: "/shop.ico",
       },
-      category: "category",
-      description: "Del sofá a la calle, refréscate con estos Core Sportswear Joggers para hombre de PUMA. En una combinación de colores Black, estos pantalones exclusivos de JD están confeccionados con una mezcla de algodón y poliéster reciclado para una comodidad afelpada. Tienen una pretina ajustable con cordón, tobillos con puños y bolsillos laterales para guardar lo esencial. Terminado con la marca PUMA blanca y roja en el muslo izquierdo. Lavable en la lavadora. | Nuestro modelo mide 5'9\" y usa una talla mediana.",
-      images: ["/product1.jpg", "/product2.jpg"],
-      attributes: [{ label: "label", value: "value" }],
-      similar: [
-        {
-          id: "similar-1",
-          title: "Puma Pantalones de chandal",
-          image: "/similar1.jpg",
-        },
-        {
-          id: "similar-2",
-          title: "Puma Pantalones de chandal",
-          image: "/similar2.jpg",
-        },
-      ],
-      offers: [
-        {
-          url: "https://example.com/foo.html",
-          price: 10.99,
-          currency: "EUR",
-          seller: "seller",
-          site: {
-            name: "site",
-            icon: "/shop.ico",
-          },
-        },
-      ],
-    }
+    },
+  ],
+}
 
 export const Full: Story = {
   args: {
