@@ -53,7 +53,23 @@ export const Full: Story = {
     details: FULL_DATA,
   },
 }
-export const Minimal: Story = {
+export const BrandWithoutLogo: Story = {
+  args: {
+    details: {
+      title: FULL_DATA.title,
+      brand: {
+        name: FULL_DATA.brand.name,
+      },
+      category: null,
+      description: null,
+      images: null,
+      attributes: null,
+      similar: null,
+      offers: null,
+    },
+  },
+}
+export const TitleOnly: Story = {
   args: {
     details: {
       title: FULL_DATA.title,
