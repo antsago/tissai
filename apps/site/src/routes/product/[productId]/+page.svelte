@@ -12,7 +12,9 @@
 </script>
 
 <Section labelledBy="product-details" class="md:flex-row">
-  <ImageCarousel images={data.images} alt={data.title} />
+  {#if data.images}
+    <ImageCarousel images={data.images} alt={data.title} />
+  {/if}
   <div
     class="flex flex-col md:max-w-80 lg:max-w-sm p-8 bg-stone-200 md:rounded-r"
   >
@@ -22,7 +24,7 @@
 
 <Section labelledBy="compra-en" class="mt-12 p-8">
   <h2 id="compra-en" class="text-stone-700 text-xl font-medium">Compra en</h2>
-  {#if data.offers.length === 0}
+  {#if !data.offers?.length}
     <p class="mt-6 w-full text-center text-stone-500">
       producto descatalogado o sin ofertas
     </p>
@@ -37,15 +39,17 @@
   {/if}
 </Section>
 
-<Section labelledBy="similar-products" class="mt-12 py-8 space-y-5">
-  <h2 id="similar-products" class="mx-8 text-stone-700 text-xl font-medium">
-    Similares
-  </h2>
-  <ul class="flex flex-row overflow-x-scroll space-x-8 px-8">
-    {#each data.similar as similar}
-      <li class="min-w-56 max-w-56">
-        <ProductSnippet product={similar} />
-      </li>
-    {/each}
-  </ul>
-</Section>
+{#if data.similar}
+  <Section labelledBy="similar-products" class="mt-12 py-8 space-y-5">
+    <h2 id="similar-products" class="mx-8 text-stone-700 text-xl font-medium">
+      Similares
+    </h2>
+    <ul class="flex flex-row overflow-x-scroll space-x-8 px-8">
+      {#each data.similar as similar}
+        <li class="min-w-56 max-w-56">
+          <ProductSnippet product={similar} />
+        </li>
+      {/each}
+    </ul>
+  </Section>
+{/if}

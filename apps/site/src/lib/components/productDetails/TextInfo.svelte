@@ -7,16 +7,14 @@
   let classes = ""
   export { classes as class }
 
+  const attributes = details.attributes ?? []
   const rng = function (seed: number) {
-    const max = details.attributes.length
+    const max = attributes.length ?? 0 + 1
     const min = 0
 
     const rnd = Math.abs(Math.cos(seed))
     return Math.floor(rnd * (max - min) + min)
   }
-
-  const category = details.attributes.find((a) => a.label === "categoría")
-  const attributes = details.attributes.filter((a) => a.label !== "categoría")
 </script>
 
 <div class={classes}>
@@ -46,13 +44,13 @@
   {/if}
 
   <ChipContainer class="mt-4">
-    {#if category}
+    {#if details.category}
       <Chip
         background="bg-stone-200"
         style="order:{rng(attributes.length)}; z-index: {rng(0)};"
         orange
       >
-        {category?.label}: {category?.value}
+        categoría: {details.category}
       </Chip>
     {/if}
     {#each attributes as attribute, index}

@@ -1,15 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/svelte"
-import Page from "./+page.svelte"
+import TextInfo from "./TextInfo.svelte"
 
 const meta = {
-  title: "pages/Product Details",
-  component: Page,
+  title: "productDetails/TextInfo",
+  component: TextInfo,
   argTypes: {
-    data: {
+    details: {
       control: { type: "object" },
     },
   },
-} satisfies Meta<Page>
+} satisfies Meta<TextInfo>
 type Story = StoryObj<typeof meta>
 
 const FULL_DATA = {
@@ -50,12 +50,12 @@ const FULL_DATA = {
 
 export const Full: Story = {
   args: {
-    data: FULL_DATA,
+    details: FULL_DATA,
   },
 }
 export const Minimal: Story = {
   args: {
-    data: {
+    details: {
       title: FULL_DATA.title,
       brand: null,
       category: null,
