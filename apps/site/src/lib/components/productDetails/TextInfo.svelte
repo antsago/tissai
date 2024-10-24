@@ -17,7 +17,8 @@
   }
 </script>
 
-<div class={classes}>
+<div class="flex flex-col p-8 bg-stone-200 {classes}">
+<div class="max-w-prose m-auto">
   {#if details.brand}
     <div class="mb-2 flex flex-row items-center">
       {#if details.brand.logo}
@@ -68,4 +69,5 @@
       </Chip>
     {/each}
   </ChipContainer>
+</div>
 </div>

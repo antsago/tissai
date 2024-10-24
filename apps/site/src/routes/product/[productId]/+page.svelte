@@ -15,11 +15,7 @@
   {#if data.images}
     <ImageCarousel images={data.images} alt={data.title} />
   {/if}
-  <div
-    class="flex flex-col md:max-w-80 lg:max-w-sm p-8 bg-stone-200 md:rounded-r"
-  >
-    <TextInfo class="max-w-prose m-auto" details={data} />
-  </div>
+  <TextInfo class="md:max-w-80 lg:max-w-sm md:rounded-r" details={data} />
 </Section>
 
 <Section labelledBy="compra-en" class="mt-12 p-8">
