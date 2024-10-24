@@ -2,7 +2,7 @@
   import type { ProductDetails } from "@tissai/db"
   import { ArrowTopRightOnSquare as OutlinkIcon } from "../icons"
 
-  export let offer: ProductDetails["offers"][0]
+  export let offer: NonNullable<ProductDetails["offers"]>[0]
 </script>
 
 <a
@@ -12,20 +12,17 @@
   <div
     class="w-full flex flex-row border-b border-stone-200 pb-4 px-8 items-end"
   >
-    <div class="flex flex-row items-baseline text-stone-900">
-      <span
-        class="font-medium text-lg {offer.price === null ||
-        offer.price === undefined
+    <div class="flex flex-row items-baseline text-stone-900 {offer.price === null
           ? 'line-through'
-          : ''}"
+          : ''}">
+      <span
+        class="font-medium text-lg"
       >
         {offer.price ?? "00.00"}
       </span>
-      {#if offer.currency}
-        <span class="ml-[2px] font-light text-xs lowercase"
-          >{offer.currency}</span
-        >
-      {/if}
+      <span class="ml-[2px] font-light text-xs lowercase"
+        >{offer.currency ?? "???"}</span
+      >
     </div>
     <OutlinkIcon
       class="ml-auto mb-[3px] rounded-lg text-orange-500 stroke-2 w-6 h-6"
