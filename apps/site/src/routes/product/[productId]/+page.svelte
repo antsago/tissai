@@ -3,7 +3,7 @@
   import {
     Section,
     ImageCarousel,
-    Offer,
+    OfferList,
     TextInfo,
     ProductSnippet,
   } from "$lib/components"
@@ -21,20 +21,7 @@
 </Section>
 
 <Section labelledBy="compra-en" class="mt-12 p-8">
-  <h2 id="compra-en" class="text-stone-700 text-xl font-medium">Compra en</h2>
-  {#if !data.offers?.length}
-    <p class="mt-6 w-full text-center text-stone-500">
-      producto descatalogado o sin ofertas
-    </p>
-  {:else}
-    <ul class="mt-8 flex flex-row flex-wrap justify-center gap-8">
-      {#each data.offers as offer}
-        <li>
-          <Offer {offer} />
-        </li>
-      {/each}
-    </ul>
-  {/if}
+  <OfferList headerId="compra-en" offers={data.offers} />
 </Section>
 
 {#if data.similar}
