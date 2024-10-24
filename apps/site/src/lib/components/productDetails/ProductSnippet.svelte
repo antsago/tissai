@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ProductDetails } from "@tissai/db"
 
-  export let product: ProductDetails["similar"][0]
+  export let product: NonNullable<ProductDetails["similar"]>[0]
 </script>
 
 <a
