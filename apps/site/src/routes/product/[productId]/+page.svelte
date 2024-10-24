@@ -12,9 +12,7 @@
 </script>
 
 <Section labelledBy="product-details" class="md:flex-row">
-  {#if data.images}
-    <ImageCarousel images={data.images} alt={data.title} />
-  {/if}
+  <ImageCarousel images={data.images} alt={data.title} />
   <TextInfo class="md:max-w-80 lg:max-w-sm md:rounded-r" details={data} />
 </Section>
 

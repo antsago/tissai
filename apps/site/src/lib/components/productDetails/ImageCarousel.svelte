@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Photo as MissingImage } from "../icons"
 
-  export let images: string[] | undefined
+  export let images: string[] | null
   export let alt: string
 </script>
 
