@@ -17,30 +17,27 @@ export const category = {
       .with("category_values", (db) =>
         db
           .selectFrom("nodes")
-          .select("name")
+          .select(["name", "id"])
           .where("nodes.parent", "is", null)
           .orderBy("tally", "desc")
           .limit(noValues),
       )
       .selectFrom("category_values")
-      .select(({ fn, ref, val }) => [
-        fn
-          .agg<string[]>("array_agg", [ref("category_values.name")])
-          .as("values"),
+      .select(({ fn, val }) => [
+        fn.jsonAgg("category_values").as("values"),
         val(CATEGORY_LABEL).as("label"),
       ])
       .compile(),
 }
 
-export const attributes = (category: string, noLabels = 5, noValues = 5) =>
+export const attributes = (categoryId: string, noLabels = 5, noValues = 5) =>
   builder
     .with("labels", (db) =>
       db
         .selectFrom("nodes as category")
         .innerJoin("nodes as label", "category.id", "label.parent")
         .select(["label.id", "label.name", "label.tally"])
-        .where("category.parent", "is", null)
-        .where("category.name", "=", category)
+        .where("category.id", "=", categoryId)
         .limit(noLabels),
     )
     .selectFrom("labels")
@@ -48,7 +45,7 @@ export const attributes = (category: string, noLabels = 5, noValues = 5) =>
       (eb) =>
         eb
           .selectFrom("nodes")
-          .select("name")
+          .select(["nodes.name", "nodes.id"])
           .where("nodes.parent", "=", eb.ref("labels.id"))
           .orderBy("nodes.tally", "desc")
           .limit(noValues)
@@ -57,7 +54,7 @@ export const attributes = (category: string, noLabels = 5, noValues = 5) =>
     )
     .select(({ fn }) => [
       "labels.name as label",
-      fn.agg<string[]>("array_agg", ["values.name"]).as("values"),
+      fn.jsonAgg("values").as("values"),
     ])
     .groupBy(["labels.name", "labels.tally"])
     .orderBy("labels.tally", "desc")
