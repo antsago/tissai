@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/svelte"
 import Filters from "./Filters.svelte"
 
 const meta = {
-  title: "search/Filters",
+  title: "Search/Filters",
   component: Filters,
   argTypes: {
     filters: {
