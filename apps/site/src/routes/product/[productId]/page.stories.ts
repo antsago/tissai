@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/svelte"
 import Page from "./+page.svelte"
 
 const meta = {
-  title: "pages/Product Details",
+  title: "Product details/page",
   component: Page,
   argTypes: {
     data: {

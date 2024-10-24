@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/svelte"
 import TextInfo from "./TextInfo.svelte"
 
 const meta = {
-  title: "productDetails/TextInfo",
+  title: "Product details/TextInfo",
   component: TextInfo,
   argTypes: {
     details: {

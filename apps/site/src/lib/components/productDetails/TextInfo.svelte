@@ -1,20 +1,10 @@
 <script lang="ts">
   import type { ProductDetails } from "@tissai/db"
-  import Chip from "../Chip.svelte"
-  import ChipContainer from "../ChipContainer.svelte"
+  import AttributeCloud from "./AttributeCloud.svelte"
 
   export let details: ProductDetails
   let classes = ""
   export { classes as class }
-
-  const attributes = details.attributes ?? []
-  const rng = function (seed: number) {
-    const max = attributes.length ?? 0 + 1
-    const min = 0
-
-    const rnd = Math.abs(Math.cos(seed))
-    return Math.floor(rnd * (max - min) + min)
-  }
 </script>
 
 <div class="flex flex-col p-8 bg-stone-200 {classes}">
@@ -44,30 +34,11 @@
     </p>
   {/if}
 
-  <ChipContainer class="mt-4">
-    {#if details.category}
-      <Chip
-        background="bg-stone-200"
-        style="order:{rng(attributes.length)}; z-index: {rng(0)};"
-        orange
-      >
-        categoría: {details.category}
-      </Chip>
-    {/if}
-    {#each attributes as attribute, index}
-      <Chip
-        background="bg-stone-200"
-        style="order:{rng(attributes.length - index)}; z-index: {rng(
-          index + 1,
-        )};"
-      >
-        {#if attribute.label === attribute.value}
-          {attribute.value}
-        {:else}
-          {attribute.label}: {attribute.value}
-        {/if}
-      </Chip>
-    {/each}
-  </ChipContainer>
+  <AttributeCloud
+    class="mt-4"
+    background="bg-stone-200"
+    category={details.category}
+    attributes={details.attributes}
+  />
 </div>
 </div>
