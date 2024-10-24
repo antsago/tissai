@@ -60,12 +60,14 @@ const preview: Preview = {
     backgrounds: {
       options: {
         stone50: { name: "Stone 50", value: "#fafaf9" },
+        stone100: { name: "Stone 100", value: "#f5f5f4" },
+        stone200: { name: "Stone 200", value: "#e7e5e4" },
       },
     },
   },
   initialGlobals: {
     viewport: { value: "mobileS", isRotated: false },
-    backgrounds: { value: "stone50" },
+    backgrounds: { value: "stone100" },
   },
 }
 

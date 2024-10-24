@@ -13,8 +13,13 @@ const meta = {
     },
   },
   args: {
-    background: "bg-stone-50",
+    background: "bg-stone-200",
   },
+  globals: {
+    backgrounds: {
+      value: "stone200",
+    }
+  }
 } satisfies Meta<AttributeCloud>
 type Story = StoryObj<typeof meta>
 

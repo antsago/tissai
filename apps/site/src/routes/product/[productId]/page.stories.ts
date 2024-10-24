@@ -9,6 +9,11 @@ const meta = {
       control: { type: "object" },
     },
   },
+  globals: {
+    backgrounds: {
+      value: "slate50",
+    },
+  },
 } satisfies Meta<Page>
 type Story = StoryObj<typeof meta>
 
