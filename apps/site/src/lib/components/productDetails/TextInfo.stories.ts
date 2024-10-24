@@ -9,6 +9,9 @@ const meta = {
       control: { type: "object" },
     },
   },
+  args: {
+    titleId: "titleId",
+  }
 } satisfies Meta<TextInfo>
 type Story = StoryObj<typeof meta>
 

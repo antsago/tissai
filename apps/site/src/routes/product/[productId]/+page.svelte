@@ -13,7 +13,11 @@
 
 <Section labelledBy="product-details" class="md:flex-row">
   <ImageCarousel images={data.images} alt={data.title} />
-  <TextInfo class="md:max-w-80 lg:max-w-sm md:rounded-r" details={data} />
+  <TextInfo
+    class="md:max-w-80 lg:max-w-sm md:rounded-r"
+    titleId="product-details"
+    details={data}
+  />
 </Section>
 
 <Section labelledBy="compra-en" class="mt-12 p-8">
