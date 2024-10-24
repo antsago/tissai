@@ -24,7 +24,7 @@
   <OfferList headerId="compra-en" offers={data.offers} />
 </Section>
 
-{#if data.similar}
+{#if data.similar?.length}
   <Section labelledBy="similar-products" class="mt-12 py-8 space-y-5">
     <h2 id="similar-products" class="mx-8 text-stone-700 text-xl font-medium">
       Similares

@@ -59,6 +59,14 @@ export const Full: Story = {
     data: FULL_DATA,
   },
 }
+export const EmptySimilarArray: Story = {
+  args: {
+    data: {
+      ...FULL_DATA,
+      similar: [],
+    },
+  },
+}
 export const Minimal: Story = {
   args: {
     data: {
