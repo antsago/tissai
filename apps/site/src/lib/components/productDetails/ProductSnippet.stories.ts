@@ -18,7 +18,6 @@ const FULL_DATA = {
   image: "/similar1.jpg",
 }
 
-
 export const Full: Story = {
   args: {
     product: FULL_DATA,

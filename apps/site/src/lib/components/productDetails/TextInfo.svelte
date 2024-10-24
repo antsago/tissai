@@ -25,10 +25,7 @@
       </div>
     {/if}
 
-    <h1
-      id={headerId}
-      class="text-stone-900 uppercase text-lg font-medium"
-    >
+    <h1 id={headerId} class="text-stone-900 uppercase text-lg font-medium">
       {details.title}
     </h1>
 

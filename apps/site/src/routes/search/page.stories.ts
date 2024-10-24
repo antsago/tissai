@@ -20,7 +20,7 @@ const meta = {
       stores: {
         page: {
           url: {
-            href: 'https://example.com/page?foo=bar',
+            href: "https://example.com/page?foo=bar",
           },
         },
       },
@@ -30,22 +30,22 @@ const meta = {
 type Story = StoryObj<typeof meta>
 
 const TILES = [
-    {
-      id: "similar-1",
-      title: "Puma Pantalones de chandal",
-      image: "/product1.jpg",
-      brand: {
-        name: "puma",
-        logo: "/logo.jpg",
-      },
-      price: 10.99,
-      currency: "EUR",
+  {
+    id: "similar-1",
+    title: "Puma Pantalones de chandal",
+    image: "/product1.jpg",
+    brand: {
+      name: "puma",
+      logo: "/logo.jpg",
     },
-    {
-      frequency: 1,
-      label: "categoría",
-      values: ["Vaqueros", "Botines"],
-    }
+    price: 10.99,
+    currency: "EUR",
+  },
+  {
+    frequency: 1,
+    label: "categoría",
+    values: ["Vaqueros", "Botines"],
+  },
 ]
 
 export const Full: Story = {
@@ -53,7 +53,7 @@ export const Full: Story = {
     data: {
       tiles: TILES,
       filters: {},
-    }
+    },
   },
 }
 export const NoFilters: Story = {
@@ -61,7 +61,7 @@ export const NoFilters: Story = {
     data: {
       filters: {},
       tiles: TILES,
-    }
+    },
   },
 }
 export const Empty: Story = {

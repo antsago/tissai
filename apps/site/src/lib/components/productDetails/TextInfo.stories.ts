@@ -11,7 +11,7 @@ const meta = {
   },
   args: {
     headerId: "titleId",
-  }
+  },
 } satisfies Meta<TextInfo>
 type Story = StoryObj<typeof meta>
 

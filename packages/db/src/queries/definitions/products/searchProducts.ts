@@ -50,10 +50,11 @@ export const search = ({
     category !== null && category !== undefined
       ? query.where("products.category", "=", category)
       : query
-  query =
-    !!attributes?.length
-      ? query.where("attributes.value", "in", attributes).having(({ fn }) => fn.count("attributes.id"), "=", attributes.length)
-      : query
+  query = !!attributes?.length
+    ? query
+        .where("attributes.value", "in", attributes)
+        .having(({ fn }) => fn.count("attributes.id"), "=", attributes.length)
+    : query
   query =
     brand !== null && brand !== undefined
       ? query.where("products.brand", "=", brand)

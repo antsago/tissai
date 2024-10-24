@@ -12,12 +12,12 @@
   <div
     class="w-full flex flex-row border-b border-stone-200 pb-4 px-8 items-end"
   >
-    <div class="flex flex-row items-baseline text-stone-900 {offer.price === null
-          ? 'line-through'
-          : ''}">
-      <span
-        class="font-medium text-lg"
-      >
+    <div
+      class="flex flex-row items-baseline text-stone-900 {offer.price === null
+        ? 'line-through'
+        : ''}"
+    >
+      <span class="font-medium text-lg">
         {offer.price ?? "00.00"}
       </span>
       <span class="ml-[2px] font-light text-xs lowercase"
