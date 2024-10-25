@@ -1,15 +1,6 @@
 <script lang="ts">
   import ChipCloud from "../ChipCloud.svelte"
 
-  let classes = ""
-  export { classes as class }
-  export let filters: {
-    brand?: string,
-    max?: number,
-    min?: number,
-    category?: string,
-    attributes?: { label: string, value: string }[],
-  }
   const getPriceValue = (min?: number, max?: number) => {
     if (min !== undefined && max !== undefined) {
       return `${min} - ${max}`
@@ -19,6 +10,16 @@
     }
 
     return `< ${min}`
+  }
+
+  let classes = ""
+  export { classes as class }
+  export let filters: {
+    brand?: string,
+    max?: number,
+    min?: number,
+    category?: string,
+    attributes?: { label: string, value: string }[],
   }
 </script>
 
