@@ -38,7 +38,7 @@ export const CategoryOnly: Story = {
     attributes: null,
   },
 }
-export const EmptyArray: Story = {
+export const EmptyAttributeArray: Story = {
   args: {
     category: "pantalon",
     attributes: [],

@@ -1,6 +1,5 @@
 <script lang="ts">
-  import Chip from "../Chip.svelte"
-  import ChipContainer from "../ChipContainer.svelte"
+  import ChipCloud from "../ChipCloud.svelte"
 
   let classes = ""
   export { classes as class }
@@ -11,41 +10,25 @@
     category?: string,
     attributes?: { label: string, value: string }[],
   }
+  const getPriceValue = (min?: number, max?: number) => {
+    if (min !== undefined && max !== undefined) {
+      return `${min} - ${max}`
+    }
+    if (max !== undefined) {
+      return `> ${max}`
+    }
+
+    return `< ${min}`
+  }
 </script>
 
-<ChipContainer class={classes}>
-  {#if filters.category}
-    <Chip
-      orange
-      background="bg-stone-50"
-    >
-      categoría: {filters.category}
-    </Chip>
-  {/if}
-  {#if filters.brand}
-    <Chip background="bg-stone-50">
-      marca: {filters.brand}
-    </Chip>
-  {/if}
-  {#if filters.min || filters.max}
-    <Chip background="bg-stone-50">
-      precio:
-      {#if filters.min && filters.max}
-        {filters.min} - {filters.max}
-      {:else if filters.max}
-        &lt;{filters.max}
-      {:else}
-        &gt;{filters.min}
-      {/if}
-    </Chip>
-  {/if}
-  {#each filters.attributes ?? [] as attribute, index}
-    <Chip background="bg-stone-50">
-      {#if attribute.value === attribute.label}
-        {attribute.label}
-      {:else}
-        {attribute.label}: {attribute.value}
-      {/if}
-    </Chip>
-  {/each}
-</ChipContainer>
+<ChipCloud
+  class={classes}
+  background="bg-stone-50"
+  chips={[
+    filters.category && { text: `categoría: ${filters.category}`, orange: true },
+    filters.brand && { text: `marca: ${filters.brand}`},
+    (filters.min !== undefined || filters.max !== undefined) && { text: `price: ${getPriceValue(filters.min, filters.max)}`},
+    ...(filters.attributes?.map(({ label, value }) => ({ text: label === value ? value : `${label}: ${value}` })) ?? []),
+  ].filter(c => !!c)}
+/>

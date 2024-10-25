@@ -48,6 +48,15 @@ export const NoMaxPrice: Story = {
   },
 }
 
+export const ZeroPrice: Story = {
+  args: {
+    filters: {
+      max: 0,
+      min: 0,
+    },
+  },
+}
+
 export const Empty: Story = {
   args: {
     filters: {},
