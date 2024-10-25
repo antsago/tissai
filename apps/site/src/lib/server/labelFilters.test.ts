@@ -48,7 +48,7 @@ describe("labelFilters", () => {
 
   it("handles non-recognized category", async ({ db }) => {
     db.pool.query.mockResolvedValue({
-      rows: [{ id: null, name: null, attributes: null }],
+      rows: [],
     })
 
     const result = await labelFilters(CATEGORY_NODE.id, [VALUE_NODE.id], Db())

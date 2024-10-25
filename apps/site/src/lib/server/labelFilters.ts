@@ -7,7 +7,7 @@ export async function labelFilters(
 ) {
   const labeled = await db.nodes.toFilters(category, attributes)
 
-  if (!labeled.id) {
+  if (!labeled?.id) {
     return {}
   }
 
