@@ -12,7 +12,7 @@ const meta = {
   },
   globals: {
     backgrounds: {
-      value: "slate50",
+      value: "stone50",
     },
   },
   parameters: {
