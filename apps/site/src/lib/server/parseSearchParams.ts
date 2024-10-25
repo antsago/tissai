@@ -1,23 +1,19 @@
 import type { Db } from "@tissai/db"
 import { infer } from "@tissai/tokenizer"
-import { extractFilters, type UrlParams } from "./extractFilters"
+import { extractFilters } from "./extractFilters"
 
 export async function labelFilters(
-  { category, attributes, ...otherFilters }: UrlParams,
+  category: string,
+  attributes: undefined|string[],
   db: Db,
 ) {
-  if (!category) {
-    return otherFilters
-  }
-
   const labeled = await db.nodes.toFilters(category, attributes)
 
   if (!labeled.id) {
-    return otherFilters
+    return {}
   }
 
   return {
-    ...otherFilters,
     category: {
       label: "categoría",
       id: labeled.id,

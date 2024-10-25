@@ -20,13 +20,6 @@ const it = test.extend({ db: mockDbFixture, python: mockPythonFixture })
 
 describe("labelFilters", () => {
   it("labels category and attributes", async ({ db }) => {
-    const filters = {
-      category: CATEGORY_NODE.id,
-      attributes: [VALUE_NODE.id],
-      brand: "brand",
-      max: 10,
-      min: 0,
-    }
     db.pool.query.mockResolvedValue({
       rows: [
         {
@@ -43,7 +36,7 @@ describe("labelFilters", () => {
       ],
     })
 
-    const result = await labelFilters(filters, Db())
+    const result = await labelFilters(CATEGORY_NODE.id, [VALUE_NODE.id], Db())
 
     expect(result).toEqual({
       category: {
@@ -58,49 +51,46 @@ describe("labelFilters", () => {
           name: VALUE_NODE.name,
         },
       ],
-      brand: "brand",
-      max: 10,
-      min: 0,
     })
   })
 
-  it("handles undefined category", async ({ db }) => {
-    const filters = {
-      attributes: [VALUE_NODE.id],
-    }
-
-    const result = await labelFilters(filters, Db())
-
-    expect(result).toEqual({})
-    expect(db.pool.query).not.toHaveBeenCalled()
-  })
-
   it("handles non-recognized category", async ({ db }) => {
-    const filters = {
-      category: CATEGORY_NODE.id,
-      attributes: [VALUE_NODE.id],
-    }
     db.pool.query.mockResolvedValue({
       rows: [{ id: null, name: null, attributes: null }],
     })
 
-    const result = await labelFilters(filters, Db())
+    const result = await labelFilters(CATEGORY_NODE.id, [VALUE_NODE.id], Db())
 
     expect(result).toEqual({})
   })
 
-  it("handles non-recognized attributes", async ({ db }) => {
-    const filters = {
-      category: CATEGORY_NODE.id,
-      attributes: [VALUE_NODE.id],
-    }
+  it("handles undefined attributes", async ({ db }) => {
     db.pool.query.mockResolvedValue({
       rows: [
         { id: CATEGORY_NODE.id, name: CATEGORY_NODE.name, attributes: null },
       ],
     })
 
-    const result = await labelFilters(filters, Db())
+    const result = await labelFilters(CATEGORY_NODE.id, undefined, Db())
+
+    expect(result).toEqual({
+      category: {
+        label: "categoría",
+        id: CATEGORY_NODE.id,
+        name: CATEGORY_NODE.name,
+      },
+      attributes: undefined,
+    })
+  })
+
+  it("handles non-recognized attributes", async ({ db }) => {
+    db.pool.query.mockResolvedValue({
+      rows: [
+        { id: CATEGORY_NODE.id, name: CATEGORY_NODE.name, attributes: null },
+      ],
+    })
+
+    const result = await labelFilters(CATEGORY_NODE.id, [VALUE_NODE.id], Db())
 
     expect(result).toEqual({
       category: {
