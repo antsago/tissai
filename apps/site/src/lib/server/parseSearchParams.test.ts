@@ -68,11 +68,11 @@ describe("parseSearchParams", () => {
     })
 
     expect(result).toStrictEqual({
+      query: "",
       brand: undefined,
       max: undefined,
       min: undefined,
       category: undefined,
-      query: "",
       attributes: [],
     })
   })

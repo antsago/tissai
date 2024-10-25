@@ -198,6 +198,7 @@ describe.concurrent("search", () => {
       max: OFFER.price,
       min: offer1.price,
       attributes: [attribute1.value],
+      category: CATEGORY_NODE.id,
     })
 
     await expect(act).resolves.not.toThrow()
