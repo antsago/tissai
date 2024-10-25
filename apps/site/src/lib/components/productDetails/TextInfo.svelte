@@ -39,8 +39,12 @@
       class="mt-4"
       background="bg-stone-200"
       chips={[
-        ...(details.category ? [{ text: `categoría: ${details.category}`, orange: true }] : []),
-        ...(details.attributes?.map(({ label, value }) => ({ text: label === value ? value : `${label}: ${value}`})) ?? [])
+        ...(details.category
+          ? [{ text: `categoría: ${details.category}`, orange: true }]
+          : []),
+        ...(details.attributes?.map(({ label, value }) => ({
+          text: label === value ? value : `${label}: ${value}`,
+        })) ?? []),
       ]}
     />
   </div>

@@ -5,7 +5,7 @@
   let classes = ""
   export { classes as class }
   export let background: string
-  export let chips: { orange?: boolean, text: string }[]
+  export let chips: { orange?: boolean; text: string }[]
 
   const rng = function (seed: number) {
     const max = chips.length
@@ -19,9 +19,7 @@
 <ChipContainer class={classes}>
   {#each chips as chip, index}
     <Chip
-      style="order:{rng(chips.length - index)}; z-index: {rng(
-        index + 1,
-      )};"
+      style="order:{rng(chips.length - index)}; z-index: {rng(index + 1)};"
       {background}
       orange={chip.orange}
     >

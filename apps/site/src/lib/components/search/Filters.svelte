@@ -15,11 +15,11 @@
   let classes = ""
   export { classes as class }
   export let filters: {
-    brand?: string,
-    max?: number,
-    min?: number,
-    category?: string,
-    attributes?: { label: string, value: string }[],
+    brand?: string
+    max?: number
+    min?: number
+    category?: string
+    attributes?: { label: string; value: string }[]
   }
 </script>
 
@@ -27,9 +27,16 @@
   class={classes}
   background="bg-stone-50"
   chips={[
-    filters.category && { text: `categoría: ${filters.category}`, orange: true },
-    filters.brand && { text: `marca: ${filters.brand}`},
-    (filters.min !== undefined || filters.max !== undefined) && { text: `price: ${getPriceValue(filters.min, filters.max)}`},
-    ...(filters.attributes?.map(({ label, value }) => ({ text: label === value ? value : `${label}: ${value}` })) ?? []),
-  ].filter(c => !!c)}
+    filters.category && {
+      text: `categoría: ${filters.category}`,
+      orange: true,
+    },
+    filters.brand && { text: `marca: ${filters.brand}` },
+    (filters.min !== undefined || filters.max !== undefined) && {
+      text: `price: ${getPriceValue(filters.min, filters.max)}`,
+    },
+    ...(filters.attributes?.map(({ label, value }) => ({
+      text: label === value ? value : `${label}: ${value}`,
+    })) ?? []),
+  ].filter((c) => !!c)}
 />

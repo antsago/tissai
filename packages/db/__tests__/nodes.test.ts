@@ -198,25 +198,29 @@ describe.concurrent("nodes", () => {
       ])
     })
   })
-  
+
   describe("asAttributes", () => {
     it("returns attributes for nodes id", async ({ expect, db }) => {
       await db.load({
         nodes: [CATEGORY_NODE, LABEL_NODE, VALUE_NODE],
       })
 
-      const result = await db.nodes.asAttributes([CATEGORY_NODE.id, LABEL_NODE.id, VALUE_NODE.id])
+      const result = await db.nodes.asAttributes([
+        CATEGORY_NODE.id,
+        LABEL_NODE.id,
+        VALUE_NODE.id,
+      ])
 
       expect(result).toStrictEqual([
         {
           label: CATEGORY_NODE.name,
           id: LABEL_NODE.id,
-          name: LABEL_NODE.name
+          name: LABEL_NODE.name,
         },
         {
           label: LABEL_NODE.name,
           id: VALUE_NODE.id,
-          name: VALUE_NODE.name
+          name: VALUE_NODE.name,
         },
         {
           label: null,
