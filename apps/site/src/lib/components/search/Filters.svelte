@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ChipCloud from "../ChipCloud.svelte"
+  import { ChipCloud } from "../shared"
 
   const getPriceValue = (min?: number, max?: number) => {
     if (min !== undefined && max !== undefined) {

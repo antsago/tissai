@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ProductDetails } from "@tissai/db"
-  import ChipCloud from "../ChipCloud.svelte"
+  import { ChipCloud } from "../shared"
 
   export let details: ProductDetails
   export let headerId: string
