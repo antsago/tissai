@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ProductDetails } from "@tissai/db"
-  import AttributeCloud from "./AttributeCloud.svelte"
+  import ChipCloud from "../ChipCloud.svelte"
 
   export let details: ProductDetails
   export let headerId: string
@@ -35,11 +35,13 @@
       </p>
     {/if}
 
-    <AttributeCloud
+    <ChipCloud
       class="mt-4"
       background="bg-stone-200"
-      category={details.category}
-      attributes={details.attributes}
+      chips={[
+        ...(details.category ? [{ text: `categoría: ${details.category}`, orange: true }] : []),
+        ...(details.attributes?.map(({ label, value }) => ({ text: label === value ? value : `${label}: ${value}`})) ?? [])
+      ]}
     />
   </div>
 </div>

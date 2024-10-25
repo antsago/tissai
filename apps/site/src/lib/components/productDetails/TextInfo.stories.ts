@@ -21,11 +21,14 @@ const FULL_DATA = {
     name: "puma",
     logo: "/logo.jpg",
   },
-  category: "category",
+  category: "pantalon",
   description:
     "Del sofá a la calle, refréscate con estos Core Sportswear Joggers para hombre de PUMA. En una combinación de colores Black, estos pantalones exclusivos de JD están confeccionados con una mezcla de algodón y poliéster reciclado para una comodidad afelpada. Tienen una pretina ajustable con cordón, tobillos con puños y bolsillos laterales para guardar lo esencial. Terminado con la marca PUMA blanca y roja en el muslo izquierdo. Lavable en la lavadora. | Nuestro modelo mide 5'9\" y usa una talla mediana.",
   images: ["/product1.jpg", "/product2.jpg"],
-  attributes: [{ label: "label", value: "value" }],
+  attributes: [
+    { label: "modelo", value: "501®" },
+    { label: "cordones", value: "cordones" },
+  ],
   similar: [
     {
       id: "similar-1",
@@ -60,16 +63,18 @@ export const Full: Story = {
 export const BrandWithoutLogo: Story = {
   args: {
     details: {
-      title: FULL_DATA.title,
+      ...FULL_DATA,
       brand: {
         name: FULL_DATA.brand.name,
       },
-      category: null,
-      description: null,
-      images: null,
-      attributes: null,
-      similar: null,
-      offers: null,
+    },
+  },
+}
+export const EmptyAttributeArray: Story = {
+  args: {
+    details: {
+      ...FULL_DATA,
+      attributes: [],
     },
   },
 }
