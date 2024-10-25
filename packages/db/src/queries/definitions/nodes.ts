@@ -18,6 +18,14 @@ export const upsert = {
       .compile(),
 }
 
+export const asAttributes = (ids: string[]) =>
+  builder
+    .selectFrom("nodes")
+    .leftJoin("nodes as parents", "nodes.parent", "parents.id")
+    .select(["parents.name as label", "nodes.id", "nodes.name"])
+    .where("nodes.id", "in", ids)
+    .compile()
+
 // Temporary limiting to avoid combinatorial explosion until I can refine the schema
 const MAX_CHILDREN = 5
 export const match = (words: string[]) =>
