@@ -1,10 +1,14 @@
-import { describe, test, expect, beforeEach } from "vitest"
-import { CATEGORY_NODE, LABEL_NODE, mockDbFixture, VALUE_NODE } from "@tissai/db/mocks"
+import { describe, test, expect } from "vitest"
+import {
+  CATEGORY_NODE,
+  LABEL_NODE,
+  mockDbFixture,
+  VALUE_NODE,
+} from "@tissai/db/mocks"
 import { mockPythonFixture } from "@tissai/python-pool/mocks"
 import { Db } from "@tissai/db"
 import { Tokenizer } from "@tissai/tokenizer"
-import { STRING_ATTRIBUTE } from "mocks"
-import { normalizeFilters, parseSearchParams } from "./parseSearchParams"
+import { normalizeFilters } from "./normalizeFilters"
 
 const it = test.extend({ db: mockDbFixture, python: mockPythonFixture })
 
@@ -45,11 +49,13 @@ describe("normalizeFilters", () => {
         id: CATEGORY_NODE.id,
         name: CATEGORY_NODE.name,
       },
-      attributes: [{
-        label: LABEL_NODE.name,
-        id: VALUE_NODE.id,
-        name: VALUE_NODE.name,
-      }]
+      attributes: [
+        {
+          label: LABEL_NODE.name,
+          id: VALUE_NODE.id,
+          name: VALUE_NODE.name,
+        },
+      ],
     })
   })
 
@@ -96,11 +102,13 @@ describe("normalizeFilters", () => {
         id: CATEGORY_NODE.id,
         name: CATEGORY_NODE.name,
       },
-      attributes: [{
-        label: LABEL_NODE.name,
-        id: VALUE_NODE.id,
-        name: VALUE_NODE.name,
-      }]
+      attributes: [
+        {
+          label: LABEL_NODE.name,
+          id: VALUE_NODE.id,
+          name: VALUE_NODE.name,
+        },
+      ],
     })
   })
 
@@ -149,11 +157,13 @@ describe("normalizeFilters", () => {
         id: CATEGORY_NODE.id,
         name: CATEGORY_NODE.name,
       },
-      attributes: [{
-        label: LABEL_NODE.name,
-        id: VALUE_NODE.id,
-        name: VALUE_NODE.name,
-      }]
+      attributes: [
+        {
+          label: LABEL_NODE.name,
+          id: VALUE_NODE.id,
+          name: VALUE_NODE.name,
+        },
+      ],
     })
   })
 
@@ -176,116 +186,22 @@ describe("normalizeFilters", () => {
     expect(result).toStrictEqual(filters)
   })
 
-  it.for([[""], [undefined]])("does not infer if query is '%s'", async ([query], { db, python }) => {
-    const filters = {
-      brand: "Eg",
-      max: 10,
-      min: 5,
-    }
+  it.for([[""], [undefined]])(
+    "does not infer if query is '%s'",
+    async ([query], { db }) => {
+      const filters = {
+        brand: "Eg",
+        max: 10,
+        min: 5,
+      }
 
-    const result = await normalizeFilters(query, filters, {
-      db: Db(),
-      tokenizer: Tokenizer(),
-    })
+      const result = await normalizeFilters(query, filters, {
+        db: Db(),
+        tokenizer: Tokenizer(),
+      })
 
-    expect(result).toStrictEqual(filters)
-    expect(db.pool.query).not.toHaveBeenCalled()
-  })
-})
-
-describe("parseSearchParams", () => {
-  let params: URLSearchParams
-  beforeEach(() => {
-    params = new URLSearchParams()
-  })
-
-  it("handles empty search", async ({ db, python }) => {
-    db.pool.query.mockResolvedValue({ rows: [] })
-    python.mockReturnValue([])
-
-    const result = await parseSearchParams(params, {
-      db: Db(),
-      tokenizer: Tokenizer(),
-    })
-
-    expect(result).toStrictEqual({
-      query: "",
-      brand: undefined,
-      max: undefined,
-      min: undefined,
-      category: undefined,
-      attributes: [],
-    })
-  })
-
-  it("labels filters", async ({ db, python }) => {
-    const WORDS = [
-      {
-        isMeaningful: true,
-        trailing: " ",
-        text: "category",
-        originalText: "category",
-      },
-      {
-        isMeaningful: true,
-        trailing: "",
-        text: "value",
-        originalText: "value",
-      },
-    ]
-    const CATEGORY = {
-      name: "category",
-      tally: 3,
-    }
-    const LABEL = {
-      name: "label",
-      tally: 2,
-    }
-    const VALUE = {
-      name: "value",
-      tally: 2,
-    }
-    const query = "category value"
-    const root = {
-      ...CATEGORY,
-      children: [
-        {
-          ...LABEL,
-          children: [VALUE],
-        },
-      ],
-    }
-    db.pool.query.mockReturnValueOnce({
-      rows: [root],
-    })
-    python.mockReturnValue(WORDS)
-    params.append("q", query)
-    params.append(STRING_ATTRIBUTE.label, STRING_ATTRIBUTE.value)
-
-    const result = await parseSearchParams(params, {
-      db: Db(),
-      tokenizer: Tokenizer(),
-    })
-
-    expect(result).toStrictEqual(
-      expect.objectContaining({
-        category: CATEGORY.name,
-        attributes: [VALUE.name],
-      }),
-    )
-  })
-
-  it("does not infer if explicit category filter", async () => {
-    const category = "the category"
-    params.append("cat", category)
-
-    const result = await parseSearchParams(params, {} as any)
-
-    expect(result).toStrictEqual(
-      expect.objectContaining({
-        category,
-        attributes: undefined,
-      }),
-    )
-  })
+      expect(result).toStrictEqual(filters)
+      expect(db.pool.query).not.toHaveBeenCalled()
+    },
+  )
 })
