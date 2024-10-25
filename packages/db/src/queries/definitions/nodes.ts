@@ -1,4 +1,5 @@
 import { type CompiledQuery, sql } from "kysely"
+import { jsonBuildObject } from "kysely/helpers/postgres"
 import type { Node } from "../../tables.js"
 import builder from "../builder.js"
 
@@ -18,13 +19,38 @@ export const upsert = {
       .compile(),
 }
 
-export const asAttributes = (ids: string[]) =>
-  builder
-    .selectFrom("nodes")
-    .leftJoin("nodes as parents", "nodes.parent", "parents.id")
-    .select(["parents.name as label", "nodes.id", "nodes.name"])
-    .where("nodes.id", "in", ids)
-    .compile()
+export const toFilters = {
+  takeFirst: true,
+  query: (categoryId: string, valueIds?: string[]) => {
+    const baseQuery = builder
+      .selectFrom("nodes as category")
+      .select(["category.name", "category.id"])
+      .where("category.id", "=", categoryId)
+
+    if (!valueIds?.length) {
+      return baseQuery.select(({ val }) => val(null).as("attributes")).compile()
+    }
+
+    return baseQuery
+      .leftJoin("nodes as labels", "labels.parent", "category.id")
+      .leftJoin("nodes as values", "values.parent", "labels.id")
+      .select(({ fn, ref }) => [
+        fn
+          .jsonAgg(
+            jsonBuildObject({
+              id: ref("values.id").$notNull(),
+              name: ref("values.name").$notNull(),
+              label: ref("labels.name").$notNull(),
+            }),
+          )
+          .filterWhere("values.id", "in", valueIds)
+          .as("attributes"),
+      ])
+      .where("category.id", "=", categoryId)
+      .groupBy(["category.id", "category.name"])
+      .compile()
+  },
+}
 
 // Temporary limiting to avoid combinatorial explosion until I can refine the schema
 const MAX_CHILDREN = 5

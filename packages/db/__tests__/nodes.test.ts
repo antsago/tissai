@@ -199,43 +199,64 @@ describe.concurrent("nodes", () => {
     })
   })
 
-  describe("asAttributes", () => {
-    it("returns attributes for nodes id", async ({ expect, db }) => {
+  describe("toFilters", () => {
+    beforeEach<Fixtures>(async ({ db }) => {
       await db.load({
         nodes: [CATEGORY_NODE, LABEL_NODE, VALUE_NODE],
       })
-
-      const result = await db.nodes.asAttributes([
-        CATEGORY_NODE.id,
-        LABEL_NODE.id,
-        VALUE_NODE.id,
-      ])
-
-      expect(result).toStrictEqual([
-        {
-          label: CATEGORY_NODE.name,
-          id: LABEL_NODE.id,
-          name: LABEL_NODE.name,
-        },
-        {
-          label: LABEL_NODE.name,
-          id: VALUE_NODE.id,
-          name: VALUE_NODE.name,
-        },
-        {
-          label: null,
-          name: CATEGORY_NODE.name,
-          id: CATEGORY_NODE.id,
-        },
-      ])
     })
 
-    it("handles unknown ids", async ({ expect, db }) => {
-      await db.load({ nodes: [CATEGORY_NODE] })
+    it("labels ids", async ({ expect, db }) => {
+      const result = await db.nodes.toFilters(CATEGORY_NODE.id, [
+        VALUE_NODE.id,
+        "b24cfb54-c160-4190-9715-deeb0c7798ac",
+      ])
 
-      const result = await db.nodes.asAttributes([VALUE_NODE.id])
+      expect(result).toStrictEqual({
+        attributes: [
+          {
+            label: LABEL_NODE.name,
+            id: VALUE_NODE.id,
+            name: VALUE_NODE.name,
+          },
+        ],
+        name: CATEGORY_NODE.name,
+        id: CATEGORY_NODE.id,
+      })
+    })
 
-      expect(result).toStrictEqual([])
+    it.for([[undefined], [[]]])(
+      "handles %s values",
+      async ([values], { expect, db }) => {
+        const result = await db.nodes.toFilters(CATEGORY_NODE.id, values)
+
+        expect(result).toStrictEqual({
+          name: CATEGORY_NODE.name,
+          id: CATEGORY_NODE.id,
+          attributes: null,
+        })
+      },
+    )
+
+    it("ignores unknown categories", async ({ expect, db }) => {
+      const result = await db.nodes.toFilters(
+        "b24cfb54-c160-4190-9715-deeb0c7798ac",
+        [VALUE_NODE.id],
+      )
+
+      expect(result).toBeUndefined()
+    })
+
+    it("ignores unknown values", async ({ expect, db }) => {
+      const result = await db.nodes.toFilters(CATEGORY_NODE.id, [
+        "b24cfb54-c160-4190-9715-deeb0c7798ac",
+      ])
+
+      expect(result).toStrictEqual({
+        name: CATEGORY_NODE.name,
+        id: CATEGORY_NODE.id,
+        attributes: null,
+      })
     })
   })
 })
