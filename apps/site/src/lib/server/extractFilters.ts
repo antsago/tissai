@@ -1,18 +1,16 @@
 import type { SearchParams as SP } from "@tissai/db"
 import { infer } from "@tissai/tokenizer"
 
-type SearchParams = SP & { category?: string }
+type SearchParams = {
+  query?: string
+  attributes?: string[]
+  brand?: string
+  max?: number
+  min?: number
+  category?: string
+}
 export function extractFilters(params: URLSearchParams) {
-  const defaultFilters: SearchParams = {
-    query: "",
-    attributes: undefined,
-    brand: undefined,
-    max: undefined,
-    min: undefined,
-    category: undefined,
-  }
-
-  return [...params.entries()].reduce((filters, [key, value]) => {
+  return Array.from(params.entries()).reduce((filters, [key, value]) => {
     switch (key) {
       case "q":
         return {
@@ -23,6 +21,11 @@ export function extractFilters(params: URLSearchParams) {
         return {
           ...filters,
           category: value,
+        }
+      case "att":
+        return {
+          ...filters,
+          attributes: [...(filters.attributes ?? []), value],
         }
       case "brand":
         return {
@@ -40,33 +43,7 @@ export function extractFilters(params: URLSearchParams) {
           max: parseFloat(value),
         }
       default:
-        return {
-          ...filters,
-          attributes: [...(filters.attributes ?? []), value],
-        }
+        return filters
     }
-  }, defaultFilters)
-}
-
-export async function parseSearchParams(
-  params: URLSearchParams,
-  locals: App.Locals,
-) {
-  const explicitFilters = extractFilters(params)
-
-  if (explicitFilters.category) {
-    return explicitFilters
-  }
-
-  const words = await locals.tokenizer.fromText(explicitFilters.query)
-  const infered = await infer(
-    words.filter((w) => w.isMeaningful).map((w) => w.text),
-    locals.db,
-  )
-
-  return {
-    ...explicitFilters,
-    category: infered.category?.name,
-    attributes: infered.attributes.map((att) => att.value.name),
-  }
+  }, {} as SearchParams)
 }
