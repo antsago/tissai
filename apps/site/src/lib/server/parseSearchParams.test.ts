@@ -3,54 +3,10 @@ import { mockDbFixture } from "@tissai/db/mocks"
 import { mockPythonFixture } from "@tissai/python-pool/mocks"
 import { Db } from "@tissai/db"
 import { Tokenizer } from "@tissai/tokenizer"
-import { STRING_ATTRIBUTE, QUERY, BOOL_ATTRIBUTE } from "mocks"
-import { extractFilters, parseSearchParams } from "./parseSearchParams"
+import { STRING_ATTRIBUTE } from "mocks"
+import { parseSearchParams } from "./parseSearchParams"
 
 const it = test.extend({ db: mockDbFixture, python: mockPythonFixture })
-
-describe("extractFilters", () => {
-  let params: URLSearchParams
-  beforeEach(() => {
-    params = new URLSearchParams()
-  })
-
-  it("parses filters", async () => {
-    const min = 11.1
-    const max = 22.2
-    const brand = "a brand"
-    const category = "the category"
-    params.append("q", QUERY)
-    params.append("min", String(min))
-    params.append("max", String(max))
-    params.append("brand", brand)
-    params.append("cat", category)
-    params.append(STRING_ATTRIBUTE.label, STRING_ATTRIBUTE.value)
-
-    const result = extractFilters(params)
-
-    expect(result).toStrictEqual({
-      query: QUERY,
-      brand,
-      min,
-      max,
-      category,
-      attributes: [STRING_ATTRIBUTE.value],
-    })
-  })
-
-  it("supports multiple attributes", async () => {
-    params.append(BOOL_ATTRIBUTE.label, BOOL_ATTRIBUTE.value)
-    params.append(STRING_ATTRIBUTE.label, STRING_ATTRIBUTE.value)
-
-    const result = extractFilters(params)
-
-    expect(result).toStrictEqual(
-      expect.objectContaining({
-        attributes: [BOOL_ATTRIBUTE.value, STRING_ATTRIBUTE.value],
-      }),
-    )
-  })
-})
 
 describe("parseSearchParams", () => {
   let params: URLSearchParams
