@@ -1,4 +1,4 @@
-import { type UrlParams } from "./extractFilters"
+import { type UrlParams } from "../extractFilters"
 import { labelFilters } from "./labelFilters"
 import { inferFilters } from "./inferFilters"
 
