@@ -2,7 +2,7 @@ import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
 import userEvent from "@testing-library/user-event"
-import { PRODUCT } from "mocks"
+import { PRODUCT } from "@tissai/db/mocks"
 import SearchForm from "./SearchForm.svelte"
 
 describe("SearchForm", () => {

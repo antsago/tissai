@@ -1,10 +1,4 @@
-import { PRODUCT as DB_PRODUCT, ATTRIBUTE as ATTRIBUTE, LABEL_NODE, VALUE_NODE } from "@tissai/db/mocks"
-
-export { BRAND, OFFER, SITE } from "@tissai/db/mocks"
-
-export const PRODUCT = {
-  ...DB_PRODUCT,
-}
+import { LABEL_NODE, VALUE_NODE } from "@tissai/db/mocks"
 
 export const SIMILAR = {
   id: "000",

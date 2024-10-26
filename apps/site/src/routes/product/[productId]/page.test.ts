@@ -1,15 +1,9 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, test, expect, beforeEach } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
-import { mockDbFixture, MockPg } from "@tissai/db/mocks"
+import { mockDbFixture, MockPg, PRODUCT, BRAND, OFFER, SITE } from "@tissai/db/mocks"
 import { Db } from "@tissai/db"
-import {
-  PRODUCT,
-  SIMILAR,
-  BRAND,
-  OFFER,
-  SITE,
-} from "mocks"
+import { SIMILAR } from "mocks"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
 

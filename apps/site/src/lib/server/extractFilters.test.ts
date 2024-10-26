@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest"
-import { PRODUCT } from "mocks"
+import { PRODUCT } from "@tissai/db/mocks"
 import { extractFilters } from "./extractFilters"
 
 describe("extractFilters", () => {

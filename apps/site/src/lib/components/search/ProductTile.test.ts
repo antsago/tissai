@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, afterEach } from "vitest"
 import { render, screen, cleanup } from "@testing-library/svelte"
-import { OFFER } from "@tissai/db/mocks"
-import { SIMILAR, BRAND } from "mocks"
+import { OFFER, BRAND } from "@tissai/db/mocks"
+import { SIMILAR } from "mocks"
 import ProductTile from "./ProductTile.svelte"
 
 const SEARCH_RESULT = {
