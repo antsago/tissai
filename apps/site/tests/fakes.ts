@@ -7,8 +7,10 @@ export const SIMILAR = {
 }
 export const SUGGESTION = {
   label: LABEL_NODE.name,
-  values: [{
-    id: VALUE_NODE.id,
-    name: VALUE_NODE.name,
-  }],
+  values: [
+    {
+      id: VALUE_NODE.id,
+      name: VALUE_NODE.name,
+    },
+  ],
 }

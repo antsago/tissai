@@ -6,7 +6,7 @@ const meta = {
   component: Chip,
   argTypes: {
     emphasis: {
-      options: ['primary', 'secondary', 'default'],
+      options: ["primary", "secondary", "default"],
       control: { type: "select" },
     },
   },
@@ -18,7 +18,7 @@ type Story = StoryObj<typeof meta>
 
 export const Primary: Story = {
   args: {
-    emphasis: "primary"
+    emphasis: "primary",
   },
 }
 
@@ -26,10 +26,10 @@ export default meta
 
 export const Secondary: Story = {
   args: {
-    emphasis: "secondary"
-  }
-};
+    emphasis: "secondary",
+  },
+}
 
 export const Default: Story = {
-  args: {}
-};
+  args: {},
+}

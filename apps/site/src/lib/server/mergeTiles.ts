@@ -6,13 +6,17 @@ function mergeTiles(products: Search[], suggestions: Suggestion[]) {
   let productIndex = 0
   let suggestionIndex = 0
 
-  return new Array(suggestions.length + products.length).fill(undefined)
+  return new Array(suggestions.length + products.length)
+    .fill(undefined)
     .map((_, index) => {
       if (productIndex >= products.length) {
         return
       }
 
-      if (suggestionIndex < suggestions.length && index % SUGGESTION_DISTANCE === 0) {
+      if (
+        suggestionIndex < suggestions.length &&
+        index % SUGGESTION_DISTANCE === 0
+      ) {
         const tile = suggestions[suggestionIndex]
         suggestionIndex += 1
         return tile
@@ -22,7 +26,7 @@ function mergeTiles(products: Search[], suggestions: Suggestion[]) {
       productIndex += 1
       return tile
     })
-    .filter(tile => tile !== undefined)
+    .filter((tile) => tile !== undefined)
 }
 
 export default mergeTiles

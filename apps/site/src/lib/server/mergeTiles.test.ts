@@ -54,9 +54,6 @@ describe("mergeTiles", () => {
 
     const result = mergeTiles(products, suggestions)
 
-    expect(result).toStrictEqual([
-      suggestions[0],
-      SEARCH_RESULT,
-    ])
+    expect(result).toStrictEqual([suggestions[0], SEARCH_RESULT])
   })
 })
