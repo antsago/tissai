@@ -1,17 +1,9 @@
 import type { Db, Filters } from "@tissai/db"
 
 export const getSuggestions = async (filters: Filters, db: Db) => {
-  if (filters.category) {
-    const suggestions = await db.suggestions.attributes(filters.category.id) 
+  const suggestions = filters.category
+    ? await db.suggestions.attributes(filters.category.id) 
+    : [await db.suggestions.category()]
 
-    return suggestions
-  }
-
-  const suggestion = await db.suggestions.category()
-  
-  if (!suggestion.values?.length) {
-    return []
-  }
-  
-  return [suggestion]
+  return suggestions.filter(s => !!s.values?.length)
 }

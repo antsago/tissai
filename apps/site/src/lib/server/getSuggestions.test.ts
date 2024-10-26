@@ -9,6 +9,8 @@ const it = test.extend<{ db: mockDbFixture }>({
 })
 
 describe("getSuggestions", () => {
+  const category = { id: CATEGORY_NODE.id, name: CATEGORY_NODE.name }
+
   it("returns category suggestions", async ({ db }) => {
     db.pool.query.mockResolvedValueOnce({
       rows: [SUGGESTION],
@@ -33,8 +35,20 @@ describe("getSuggestions", () => {
     },
   )
 
+  it.for([{ values: null }, { values: [] }])(
+    "filters empty attribute suggestions",
+    async ({ values }, { db }) => {
+      db.pool.query.mockResolvedValueOnce({
+        rows: [{ ...SUGGESTION, values }],
+      })
+
+      const results = await getSuggestions({ category }, Db())
+
+      expect(results).toStrictEqual([])
+    },
+  )
+
   it("returns attribute suggestions with category filter", async ({ db }) => {
-    const category = { id: CATEGORY_NODE.id, name: CATEGORY_NODE.name }
     db.pool.query.mockResolvedValueOnce({
       rows: [SUGGESTION],
     })
