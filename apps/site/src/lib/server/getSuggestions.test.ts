@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest"
-import { mockDbFixture, queries } from "@tissai/db/mocks"
+import { CATEGORY_NODE, mockDbFixture, queries } from "@tissai/db/mocks"
 import { Db } from "@tissai/db"
 import { SUGGESTION } from "mocks"
 import { getSuggestions } from "./getSuggestions"
@@ -21,7 +21,7 @@ describe("getSuggestions", () => {
   })
 
   it.for([{ values: null }, { values: [] }])(
-    "filters empty suggestions",
+    "filters empty category suggestions",
     async ({ values }, { db }) => {
       db.pool.query.mockResolvedValueOnce({
         rows: [{ ...SUGGESTION, values }],
@@ -32,4 +32,16 @@ describe("getSuggestions", () => {
       expect(results).toStrictEqual([])
     },
   )
+
+  it("returns attribute suggestions with category filter", async ({ db }) => {
+    const category = { id: CATEGORY_NODE.id, name: CATEGORY_NODE.name }
+    db.pool.query.mockResolvedValueOnce({
+      rows: [SUGGESTION],
+    })
+
+    const results = await getSuggestions({ category }, Db())
+
+    expect(results).toStrictEqual([SUGGESTION])
+    expect(db).toHaveExecuted(queries.suggestions.attributes(category.id))
+  })
 })
