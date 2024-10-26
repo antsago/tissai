@@ -1,6 +1,5 @@
 <script lang="ts">
   import Chip from "./Chip.svelte"
-  import ChipContainer from "./ChipContainer.svelte"
 
   let classes = ""
   export { classes as class }
@@ -16,7 +15,7 @@
   }
 </script>
 
-<ChipContainer class={classes}>
+<div class="flex flex-row flex-wrap justify-center px-1 {classes}">
   {#each chips as chip, index}
     <Chip
       style="order:{rng(chips.length - index)}; z-index: {rng(index + 1)};"
@@ -26,4 +25,4 @@
       {chip.text}
     </Chip>
   {/each}
-</ChipContainer>
+</div>
