@@ -1,6 +1,4 @@
 <script lang="ts">
-  import Chip from "./Chip.svelte"
-
   let classes = ""
   export { classes as class }
   export let background: string
@@ -17,12 +15,17 @@
 
 <div class="flex flex-row flex-wrap justify-center px-1 {classes}">
   {#each chips as chip, index}
-    <Chip
+    <span
       style="order:{rng(chips.length - index)}; z-index: {rng(index + 1)};"
-      emphasis={chip.emphasis ?? ""}
-      {background}
+      class="rounded-full -mx-1 -my-px px-4 py-1 text-xs border whitespace-nowrap {chip.emphasis ===
+      'primary'
+        ? 'border-orange-500/50 bg-orange-400 text-orange-100'
+        : chip.emphasis === 'secondary'
+          ? `border-orange-700 text-orange-600 ${background}`
+          : `border-stone-500 text-stone-600 ${background}`}
+      "
     >
       {chip.text}
-    </Chip>
+    </span>
   {/each}
 </div>
