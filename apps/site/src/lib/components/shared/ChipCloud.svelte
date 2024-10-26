@@ -20,8 +20,8 @@
   {#each chips as chip, index}
     <Chip
       style="order:{rng(chips.length - index)}; z-index: {rng(index + 1)};"
+      emphasis={chip.orange ? "secondary" : "default"}
       {background}
-      orange={chip.orange}
     >
       {chip.text}
     </Chip>
