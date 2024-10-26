@@ -12,18 +12,10 @@ export const load: PageServerLoad = async ({ url, locals }) => {
   const filters = await normalizeFilters(query, urlFilters, locals)
 
   const products = await locals.db.products.search(query ?? "", filters)
-  const categorySuggestion = await locals.db.suggestions.category()
-
-  // const [products, suggestions] = await Promise.all([
-  //   locals.db.products.search({
-  //     query,
-  //     ...filters,
-  //   }),
-  //   getSuggestions(locals),
-  // ])
+  const suggestions = await getSuggestions(filters, locals.db)
 
   return {
-    tiles: [categorySuggestion, ...products], //mergeTiles(products, suggestions),
+    tiles: [...suggestions, ...products], //mergeTiles(products, suggestions),
     filters,
   }
 }

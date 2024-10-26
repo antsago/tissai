@@ -1,9 +1,12 @@
-export const getSuggestions = async (locals: App.Locals) => {
-  const suggestion = await locals.db.suggestions.category()
+import type { Db, Filters } from "@tissai/db"
 
-  if (!suggestion.values?.length) {
-    return []
-  }
+export const getSuggestions = async (filters: Filters, db: Db) => {
+  const suggestion = await db.suggestions.category()
+  return [suggestion]
 
-  return [{ ...suggestion }]
+  // if (!suggestion.values?.length) {
+  //   return []
+  // }
+
+  // return [{ ...suggestion }]
 }
