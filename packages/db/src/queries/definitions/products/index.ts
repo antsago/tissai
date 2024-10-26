@@ -1,5 +1,5 @@
-export type { ProductDetails } from "./getProductDetails.js"
-export type { Search, Filters } from "./searchProducts.js"
+export type { ProductDetails } from "./getDetails.js"
+export type { Search, Filters } from "./search.js"
 
-export { default as getDetails } from "./getProductDetails.js"
-export { default as search } from "./searchProducts.js"
+export { default as getDetails } from "./getDetails.js"
+export { default as search } from "./search.js"
