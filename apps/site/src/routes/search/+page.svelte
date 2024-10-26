@@ -15,7 +15,7 @@
   }
 </script>
 
-<Section label="Filtros" class="mb-12 bg-stone-50 px-8">
+<Section label="Filtros" class="mb-12 p-8">
   <Filters filters={data.filters} class="mx-auto" />
 </Section>
 

@@ -20,7 +20,7 @@
 
 <ChipCloud
   class={classes}
-  background="bg-stone-50"
+  background="bg-stone-100"
   chips={[
     filters.category && {
       text: `categoría: ${filters.category.name}`,

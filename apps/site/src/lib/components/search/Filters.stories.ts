@@ -9,11 +9,6 @@ const meta = {
       control: { type: "object" },
     },
   },
-  globals: {
-    backgrounds: {
-      value: "stone50",
-    },
-  },
 } satisfies Meta<Filters>
 type Story = StoryObj<typeof meta>
 
