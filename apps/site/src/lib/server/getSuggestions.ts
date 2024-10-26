@@ -5,5 +5,5 @@ export const getSuggestions = async (locals: App.Locals) => {
     return []
   }
 
-  return [{ ...suggestion, frequency: 1 }]
+  return [{ ...suggestion }]
 }

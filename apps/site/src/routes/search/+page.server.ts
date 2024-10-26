@@ -12,6 +12,8 @@ export const load: PageServerLoad = async ({ url, locals }) => {
   const filters = await normalizeFilters(query, urlFilters, locals)
 
   const products = await locals.db.products.search(query ?? "", filters)
+  const categorySuggestion = await locals.db.suggestions.category()
+
   // const [products, suggestions] = await Promise.all([
   //   locals.db.products.search({
   //     query,
@@ -21,7 +23,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
   // ])
 
   return {
-    tiles: products, //mergeTiles(products, suggestions),
+    tiles: [categorySuggestion, ...products], //mergeTiles(products, suggestions),
     filters,
   }
 }

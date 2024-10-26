@@ -12,7 +12,6 @@ export const SIMILAR = {
   image: "https://example.com/related_product.jpg",
 }
 export const SUGGESTION = {
-  frequency: 1,
   label: "label",
   values: ["value"],
 }
