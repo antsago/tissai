@@ -58,7 +58,11 @@ export const search = (searchQuery: string, filters: Filters = {}) => {
           "in",
           attributes.map((a) => a.id),
         )
-        .having(({ fn }) => fn.count("attributes.id").distinct(), "=", attributes.length)
+        .having(
+          ({ fn }) => fn.count("attributes.id").distinct(),
+          "=",
+          attributes.length,
+        )
     : query
   query =
     brand !== undefined ? query.where("products.brand", "=", brand) : query

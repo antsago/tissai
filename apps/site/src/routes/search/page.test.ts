@@ -22,13 +22,15 @@ describe("Search page", () => {
     cleanup()
   })
 
-  const SEARCH_RESULTS = [{
-    id: PRODUCT.id,
-    title: PRODUCT.title,
-    image: PRODUCT.images[0],
-    brand: BRAND,
-    price: OFFER.price,
-  }]
+  const SEARCH_RESULTS = [
+    {
+      id: PRODUCT.id,
+      title: PRODUCT.title,
+      image: PRODUCT.images[0],
+      brand: BRAND,
+      price: OFFER.price,
+    },
+  ]
 
   it("performs search", async ({ db, python }) => {
     python.mockReturnValue([])
@@ -37,8 +39,11 @@ describe("Search page", () => {
     const url = new URL(
       `http://localhost:3000/search?q=${QUERY}&brand=${BRAND.name}`,
     )
-    
-    const result = await load({ url, locals: { db: Db(), tokenizer: Tokenizer() }} as any)
+
+    const result = await load({
+      url,
+      locals: { db: Db(), tokenizer: Tokenizer() },
+    } as any)
 
     expect(result).toStrictEqual({
       filters: {
@@ -50,11 +55,12 @@ describe("Search page", () => {
 
   it("handles empty queries", async ({ db }) => {
     db.pool.query.mockResolvedValueOnce({ rows: SEARCH_RESULTS })
-    const url = new URL(
-      `http://localhost:3000/search?brand=${BRAND.name}`,
-    )
-    
-    const result = await load({ url, locals: { db: Db(), tokenizer: Tokenizer() }} as any)
+    const url = new URL(`http://localhost:3000/search?brand=${BRAND.name}`)
+
+    const result = await load({
+      url,
+      locals: { db: Db(), tokenizer: Tokenizer() },
+    } as any)
 
     expect(result).toStrictEqual({
       filters: {
@@ -62,17 +68,22 @@ describe("Search page", () => {
       },
       tiles: SEARCH_RESULTS,
     })
-    expect(db).toHaveExecuted(queries.products.search("", { brand: BRAND.name }))
+    expect(db).toHaveExecuted(
+      queries.products.search("", { brand: BRAND.name }),
+    )
   })
 
   it("renders", async ({ db, python }) => {
     db.pool.query.mockResolvedValueOnce({ rows: SEARCH_RESULTS })
-    const url = new URL(
-      `http://localhost:3000/search?brand=${BRAND.name}`,
-    )
+    const url = new URL(`http://localhost:3000/search?brand=${BRAND.name}`)
     ;(stores as any).setPage({ url })
-    
-    render(page, { data: await load({ url, locals: { db: Db(), tokenizer: Tokenizer() } } as any) } as any)
+
+    render(page, {
+      data: await load({
+        url,
+        locals: { db: Db(), tokenizer: Tokenizer() },
+      } as any),
+    } as any)
 
     const brandName = screen.getByText(BRAND.name, { exact: false })
     const product = screen.getByRole("heading", {
