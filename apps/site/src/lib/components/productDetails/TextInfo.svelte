@@ -40,7 +40,7 @@
       background="bg-stone-200"
       chips={[
         ...(details.category
-          ? [{ text: `categoría: ${details.category}`, orange: true }]
+          ? [{ text: `categoría: ${details.category}`, emphasis: "secondary" }]
           : []),
         ...(details.attributes?.map(({ label, value }) => ({
           text: label === value ? value : `${label}: ${value}`,

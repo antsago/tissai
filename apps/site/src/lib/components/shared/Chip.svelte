@@ -1,7 +1,7 @@
 <script lang="ts">
   export let style = ""
-  export let background: string | undefined
-  export let emphasis: "primary" | "secondary" | "default" = "default"
+  export let background: string
+  export let emphasis: "primary" | "secondary" | string
 </script>
 
 <span

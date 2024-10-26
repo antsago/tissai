@@ -24,7 +24,7 @@
   chips={[
     filters.category && {
       text: `categoría: ${filters.category.name}`,
-      orange: true,
+      emphasis: "secondary",
     },
     filters.brand && { text: `marca: ${filters.brand}` },
     (filters.min !== undefined || filters.max !== undefined) && {

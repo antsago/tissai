@@ -15,12 +15,13 @@ const meta = {
 } satisfies Meta<ChipCloud>
 type Story = StoryObj<typeof meta>
 
-export const OrangeAndNormal: Story = {
+export const AllChips: Story = {
   args: {
     chips: [
-      { text: "modelo: 501®" },
-      { text: "categoría", orange: true },
-      { text: "cordones con cuerdas" },
+      { text: "modelo: 501®", emphasis: 'primary' },
+      { text: "categoría", emphasis: 'secondary' },
+      { text: "cordones con cuerdas", emphasis: 'default' },
+      { text: "mezclilla" },
     ],
   },
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Suggestion } from "@tissai/db"
-  import { ChipContainer, Chip } from "../shared"
+  import ChipCloud from "../shared/ChipCloud.svelte"
 
   export let suggestion: Suggestion
   export let baseUrl: string
@@ -8,19 +8,15 @@
 
 <div class="w-full h-full flex flex-col rounded bg-stone-200">
   <div class="relative w-full flex-basis-6 min-h-20 max-h-[25rem] rounded-t">
-    <ChipContainer class="bg-stone-200">
-      {#each suggestion.values as value}
-        <a
-          href="{baseUrl}&{encodeURIComponent(
-            suggestion.label,
-          )}={encodeURIComponent(value)}"
-        >
-          <Chip background="bg-stone-100" orange>
-            {value}
-          </Chip>
+    <ChipCloud
+      background="bg-stone-200"
+      chips={suggestion.values.map(v => ({ text: v.name, emphasis: "secondary"}))}
+    />
+      <!-- {#each suggestion.values as value}
+        <a href="{baseUrl}&att={encodeURIComponent(value.id)}">
+          <Chip emphasis="primary" background="">{value.name}</Chip>
         </a>
-      {/each}
-    </ChipContainer>
+      {/each} -->
   </div>
   <h3
     class="block w-full px-4 py-3 border rounded-b border-stone-300/50 text-base text-center truncate text-stone-700"

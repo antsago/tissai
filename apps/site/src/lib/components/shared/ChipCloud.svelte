@@ -5,7 +5,7 @@
   let classes = ""
   export { classes as class }
   export let background: string
-  export let chips: { orange?: boolean; text: string }[]
+  export let chips: { emphasis?: "primary" | "secondary" | string; text: string }[]
 
   const rng = function (seed: number) {
     const max = chips.length
@@ -20,7 +20,7 @@
   {#each chips as chip, index}
     <Chip
       style="order:{rng(chips.length - index)}; z-index: {rng(index + 1)};"
-      emphasis={chip.orange ? "secondary" : "default"}
+      emphasis={chip.emphasis ?? ""}
       {background}
     >
       {chip.text}
