@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { Filters } from "@tissai/db"
   import { ChipCloud } from "../shared"
 
   const getPriceValue = (min?: number, max?: number) => {
@@ -14,15 +15,7 @@
 
   let classes = ""
   export { classes as class }
-  export let filters: {
-    brand?: string
-    max?: number
-    min?: number
-    category?: {
-      name: string
-    }
-    attributes?: { label: string; name: string }[]
-  }
+  export let filters: Filters
 </script>
 
 <ChipCloud

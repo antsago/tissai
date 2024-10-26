@@ -2,7 +2,7 @@ export {
   type MatchedNodes,
   type ProductDetails,
   type Search,
-  type SearchParams,
+  type Filters,
   type Suggestion,
   CATEGORY_LABEL,
 } from "./definitions/index.js"

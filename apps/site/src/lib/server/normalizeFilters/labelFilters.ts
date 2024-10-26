@@ -13,7 +13,6 @@ export async function labelFilters(
 
   return {
     category: {
-      label: "categoría",
       id: labeled.id,
       name: labeled.name,
     },

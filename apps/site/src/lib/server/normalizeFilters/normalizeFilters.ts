@@ -1,21 +1,7 @@
+import type { Filters } from "@tissai/db"
 import { type UrlParams } from "../extractFilters"
 import { labelFilters } from "./labelFilters"
 import { inferFilters } from "./inferFilters"
-
-export type Filters = {
-  brand?: string
-  max?: number
-  min?: number
-  category?: {
-    id: string
-    name: string
-  },
-  attributes?: {
-    label: string
-    id: string
-    name: string
-  }[]
-}
 
 export async function normalizeFilters(
   query: string | undefined,

@@ -80,7 +80,7 @@ describe.concurrent("search", () => {
   })
 
   it("retrieves results", async ({ expect, db }) => {
-    const result = await db.products.search({ query: product2.title })
+    const result = await db.products.search(product2.title)
 
     expect(result).toStrictEqual([product2Result, product1Result])
   })
@@ -88,14 +88,13 @@ describe.concurrent("search", () => {
   it("ignores products without offers", async ({ expect, db }) => {
     await db.load({ products: [PRODUCT] })
 
-    const result = await db.products.search({ query: product2.title })
+    const result = await db.products.search(product2.title)
 
     expect(result.length).toBe(2)
   })
 
   it("filters by brand", async ({ expect, db }) => {
-    const result = await db.products.search({
-      query: product2.title,
+    const result = await db.products.search(product2.title, {
       brand: BRAND.name,
     })
 
@@ -103,18 +102,18 @@ describe.concurrent("search", () => {
   })
 
   it("filters by category", async ({ expect, db }) => {
-    const result = await db.products.search({
-      query: product2.title,
-      category: CATEGORY_NODE.id,
+    const result = await db.products.search(product2.title, {
+      category: { id: CATEGORY_NODE.id, name: CATEGORY_NODE.name },
     })
 
     expect(result).toStrictEqual([product1Result])
   })
 
   it("filters by attribute", async ({ expect, db }) => {
-    const result = await db.products.search({
-      query: product2.title,
-      attributes: [attribute1.value],
+    const result = await db.products.search(product2.title, {
+      attributes: [
+        { id: attribute1.value, name: VALUE_NODE.name, label: LABEL_NODE.name },
+      ],
     })
 
     expect(result).toStrictEqual([product1Result])
@@ -139,9 +138,11 @@ describe.concurrent("search", () => {
       ],
     })
 
-    const result = await db.products.search({
-      query: product2.title,
-      attributes: [VALUE_NODE.id, LABEL_NODE.id],
+    const result = await db.products.search(product2.title, {
+      attributes: [
+        { id: VALUE_NODE.id, name: VALUE_NODE.name, label: LABEL_NODE.name },
+        { id: LABEL_NODE.id, name: VALUE_NODE.name, label: LABEL_NODE.name },
+      ],
     })
 
     expect(result).toStrictEqual([
@@ -158,8 +159,7 @@ describe.concurrent("search", () => {
   it("filters by min price", async ({ expect, db }) => {
     await db.load({ products: [PRODUCT], offers: [OFFER], sellers: [SELLER] })
 
-    const result = await db.products.search({
-      query: product2.title,
+    const result = await db.products.search(product2.title, {
       min: OFFER.price,
     })
 
@@ -177,8 +177,7 @@ describe.concurrent("search", () => {
   it("filters by max price", async ({ expect, db }) => {
     await db.load({ products: [PRODUCT], offers: [OFFER], sellers: [SELLER] })
 
-    const result = await db.products.search({
-      query: product2.title,
+    const result = await db.products.search(product2.title, {
       max: offer1.price,
     })
 
@@ -186,27 +185,27 @@ describe.concurrent("search", () => {
   })
 
   it("handles empty filters", async ({ expect, db }) => {
-    const results = await db.products.search({ query: "" })
+    const results = await db.products.search("")
 
     expect(results.length).toBe(2)
   })
 
   it("handles all filters", async ({ expect, db }) => {
-    const act = db.products.search({
-      query: product2.title,
+    const act = db.products.search(product2.title, {
       brand: BRAND.name,
       max: OFFER.price,
       min: offer1.price,
-      attributes: [attribute1.value],
-      category: CATEGORY_NODE.id,
+      attributes: [
+        { id: attribute1.value, name: VALUE_NODE.name, label: LABEL_NODE.name },
+      ],
+      category: { id: CATEGORY_NODE.id, name: CATEGORY_NODE.name },
     })
 
     await expect(act).resolves.not.toThrow()
   })
 
   it("handles no results found", async ({ expect, db }) => {
-    const result = await db.products.search({
-      query: product1.title,
+    const result = await db.products.search(product1.title, {
       brand: "non-existing",
     })
 

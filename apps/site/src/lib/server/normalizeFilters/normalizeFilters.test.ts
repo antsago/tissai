@@ -45,7 +45,6 @@ describe("normalizeFilters", () => {
     expect(result).toStrictEqual({
       ...filters,
       category: {
-        label: "categoría",
         id: CATEGORY_NODE.id,
         name: CATEGORY_NODE.name,
       },
@@ -98,7 +97,6 @@ describe("normalizeFilters", () => {
     expect(result).toStrictEqual({
       ...filters,
       category: {
-        label: "categoría",
         id: CATEGORY_NODE.id,
         name: CATEGORY_NODE.name,
       },
@@ -153,7 +151,6 @@ describe("normalizeFilters", () => {
     expect(result).toStrictEqual({
       ...filters,
       category: {
-        label: "categoría",
         id: CATEGORY_NODE.id,
         name: CATEGORY_NODE.name,
       },

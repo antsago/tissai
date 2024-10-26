@@ -2,25 +2,24 @@ import type { Brand } from "../../../tables.js"
 import { type CompiledQuery, sql } from "kysely"
 import builder from "../../builder.js"
 
-export type SearchParams = {
-  query: string
+export type Filters = {
   brand?: string
-  min?: number
   max?: number
-  category?: string
-  attributes?: string[]
+  min?: number
+  category?: {
+    id: string
+    name: string
+  }
+  attributes?: {
+    label: string
+    id: string
+    name: string
+  }[]
 }
 
 const PRODUCT_LIMIT = 20
 
-export const search = ({
-  query: searchQuery,
-  min,
-  max,
-  brand,
-  category,
-  attributes = [],
-}: SearchParams) => {
+export const search = (searchQuery: string, filters: Filters = {}) => {
   let query = builder
     .selectFrom("products")
     .innerJoin("offers", "offers.product", "products.id")
@@ -46,27 +45,25 @@ export const search = ({
     )
     .limit(PRODUCT_LIMIT)
 
+  const { min, max, brand, category, attributes } = filters
+
   query =
-    category !== null && category !== undefined
-      ? query.where("products.category", "=", category)
+    category !== undefined
+      ? query.where("products.category", "=", category.id)
       : query
   query = !!attributes?.length
     ? query
-        .where("attributes.value", "in", attributes)
+        .where(
+          "attributes.value",
+          "in",
+          attributes.map((a) => a.id),
+        )
         .having(({ fn }) => fn.count("attributes.id"), "=", attributes.length)
     : query
   query =
-    brand !== null && brand !== undefined
-      ? query.where("products.brand", "=", brand)
-      : query
-  query =
-    min !== null && min !== undefined
-      ? query.where("offers.price", ">=", min)
-      : query
-  query =
-    max !== null && max !== undefined
-      ? query.where("offers.price", "<=", max)
-      : query
+    brand !== undefined ? query.where("products.brand", "=", brand) : query
+  query = min !== undefined ? query.where("offers.price", ">=", min) : query
+  query = max !== undefined ? query.where("offers.price", "<=", max) : query
 
   return query.compile()
 }

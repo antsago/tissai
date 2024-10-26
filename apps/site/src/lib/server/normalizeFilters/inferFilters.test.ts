@@ -62,7 +62,6 @@ describe("inferFilters", () => {
 
     expect(result).toStrictEqual({
       category: {
-        label: "categoría",
         id: CATEGORY_NODE.id,
         name: CATEGORY_NODE.name,
       },

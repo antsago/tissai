@@ -32,7 +32,6 @@ describe("labelFilters", () => {
 
     expect(result).toEqual({
       category: {
-        label: "categoría",
         id: CATEGORY_NODE.id,
         name: CATEGORY_NODE.name,
       },
@@ -67,7 +66,6 @@ describe("labelFilters", () => {
 
     expect(result).toEqual({
       category: {
-        label: "categoría",
         id: CATEGORY_NODE.id,
         name: CATEGORY_NODE.name,
       },
@@ -86,7 +84,6 @@ describe("labelFilters", () => {
 
     expect(result).toEqual({
       category: {
-        label: "categoría",
         id: CATEGORY_NODE.id,
         name: CATEGORY_NODE.name,
       },

@@ -13,7 +13,6 @@ export async function inferFilters(query: string, locals: App.Locals) {
 
   return {
     category: {
-      label: "categoría",
       id: infered.category.id,
       name: infered.category.name,
     },
