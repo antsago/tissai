@@ -15,7 +15,7 @@ const meta = {
 } satisfies Meta<ChipCloud>
 type Story = StoryObj<typeof meta>
 
-export const AllChips: Story = {
+export const AllEmphasis: Story = {
   args: {
     chips: [
       { text: "modelo: 501®", emphasis: 'primary' },
