@@ -1,13 +1,10 @@
-import { sql } from "kysely"
 import builder from "../builder.js"
-import { join } from "path"
 
 export const CATEGORY_LABEL = "categoría"
 
 export type Suggestion = {
-  frequency: number
   label: string
-  values: string[]
+  values: { name: string, id: string }[]
 }
 
 export const category = {
