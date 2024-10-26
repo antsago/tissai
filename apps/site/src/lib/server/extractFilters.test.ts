@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest"
-import { QUERY } from "mocks"
+import { PRODUCT } from "mocks"
 import { extractFilters } from "./extractFilters"
 
 describe("extractFilters", () => {
@@ -14,7 +14,7 @@ describe("extractFilters", () => {
     const brand = "a brand"
     const category = "80be7c8e-26dd-47e8-8325-f4bac459dae1"
     const attributes = ["bc82024f-4532-4f98-ba66-6701f83f76ac"]
-    params.append("q", QUERY)
+    params.append("q", PRODUCT.title)
     params.append("min", String(min))
     params.append("max", String(max))
     params.append("brand", brand)
@@ -24,7 +24,7 @@ describe("extractFilters", () => {
     const result = extractFilters(params)
 
     expect(result).toStrictEqual({
-      query: QUERY,
+      query: PRODUCT.title,
       brand,
       min,
       max,

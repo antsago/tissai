@@ -2,7 +2,7 @@ import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { render, screen, within, cleanup } from "@testing-library/svelte"
 import userEvent from "@testing-library/user-event"
-import { QUERY } from "mocks"
+import { PRODUCT } from "mocks"
 import SearchForm from "./SearchForm.svelte"
 
 describe("SearchForm", () => {
@@ -48,10 +48,10 @@ describe("SearchForm", () => {
   })
 
   it("displays initial value if passed", async () => {
-    render(SearchForm, { initialValue: QUERY })
+    render(SearchForm, { initialValue: PRODUCT.title })
     const searchForm = screen.getByRole("search")
     const searchInput = within(searchForm).getByRole("searchbox")
 
-    expect(searchInput).toHaveValue(QUERY)
+    expect(searchInput).toHaveValue(PRODUCT.title)
   })
 })

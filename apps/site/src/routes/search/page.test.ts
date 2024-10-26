@@ -37,7 +37,7 @@ describe("Search page", () => {
     db.pool.query.mockResolvedValueOnce({ rows: [] })
     db.pool.query.mockResolvedValueOnce({ rows: SEARCH_RESULTS })
     const url = new URL(
-      `http://localhost:3000/search?q=${QUERY}&brand=${BRAND.name}`,
+      `http://localhost:3000/search?q=${PRODUCT.title}&brand=${BRAND.name}`,
     )
 
     const result = await load({

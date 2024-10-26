@@ -9,9 +9,6 @@ import {
   BRAND,
   OFFER,
   SITE,
-  STRING_ATTRIBUTE,
-  CAT_ATTRIBUTE,
-  BOOL_ATTRIBUTE,
 } from "mocks"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
@@ -36,7 +33,7 @@ describe("Product details page", () => {
     description: PRODUCT.description,
     images: PRODUCT.images,
     brand: BRAND,
-    attributes: [STRING_ATTRIBUTE, CAT_ATTRIBUTE, BOOL_ATTRIBUTE],
+    attributes: [],
     offers: [
       {
         url: OFFER.url,

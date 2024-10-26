@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { render, screen, cleanup, within } from "@testing-library/svelte"
+import { PRODUCT } from "@tissai/db/mocks"
 import * as stores from "$app/stores"
-import { QUERY } from "mocks"
 import page from "./+layout.svelte"
 
 vi.mock("$app/stores", async () => (await import("mocks")).storesMock())
@@ -41,7 +41,7 @@ describe("Layout", () => {
 
   it("shows search query when on search page", async () => {
     ;(stores as any).setPage({
-      url: new URL(`http://localhost:3000/search?q=${QUERY}`),
+      url: new URL(`http://localhost:3000/search?q=${PRODUCT.title}`),
     })
 
     render(page)
@@ -49,7 +49,7 @@ describe("Layout", () => {
     const searchForm = within(header).getByRole("search")
     const searchInput = within(searchForm).getByRole("searchbox")
 
-    expect(searchInput).toHaveValue(QUERY)
+    expect(searchInput).toHaveValue(PRODUCT.title)
   })
 
   it("hides header when on homepage", async () => {
