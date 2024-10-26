@@ -123,7 +123,12 @@ describe.concurrent("search", () => {
     await db.load({
       products: [PRODUCT],
       sellers: [SELLER],
-      offers: [OFFER],
+      offers: [OFFER, {
+        id: "92a1ab7f-3c33-4530-aa3b-f74ff298ecdc",
+        product: product1.id,
+        site: SITE.id,
+        url: OFFER.url,
+      }],
       attributes: [
         {
           id: "ef2f922a-8352-4baa-a76f-83b8bd9aa33d",
