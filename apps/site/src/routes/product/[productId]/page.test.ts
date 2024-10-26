@@ -74,8 +74,8 @@ describe("Product details page", () => {
   }
 
   it("renders", async ({ db }) => {
-    const act = loadAndRender(db, PRODUCT.title)
-
-    expect(act).resolves.not.toThrow()
+    const section = await loadAndRender(db, PRODUCT.title)
+    const heading = section.getByRole("heading")
+    expect(heading).toHaveTextContent(PRODUCT.title)
   })
 })
