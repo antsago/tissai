@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
   const suggestions = await getSuggestions(filters, locals.db)
 
   return {
-    tiles: [...suggestions, ...products], //mergeTiles(products, suggestions),
+    tiles: mergeTiles(products, suggestions),
     filters,
   }
 }
