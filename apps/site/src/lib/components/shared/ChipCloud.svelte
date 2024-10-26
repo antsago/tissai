@@ -1,8 +1,10 @@
 <script lang="ts">
+  type Chip = { emphasis?: "primary" | "secondary" | string; text: string }
+
   let classes = ""
   export { classes as class }
   export let background: string
-  export let chips: { emphasis?: "primary" | "secondary" | string; text: string }[]
+  export let chips: Chip[]
 
   const rng = function (seed: number) {
     const max = chips.length
@@ -11,19 +13,25 @@
     const rnd = Math.abs(Math.cos(seed))
     return Math.floor(rnd * (max - min) + min)
   }
-</script>
 
-<div class="flex flex-row flex-wrap justify-center px-1 {classes}">
-  {#each chips as chip, index}
-    <span
-      style="order:{rng(chips.length - index)}; z-index: {rng(index + 1)};"
-      class="rounded-full -mx-1 -my-px px-4 py-1 text-xs border whitespace-nowrap {chip.emphasis ===
+  const normalizeChips = (chip: Chip, index: number) => ({
+    text: chip.text,
+    order: rng(chips.length - index),
+    zIndex: rng(index+1), 
+    style: chip.emphasis ===
       'primary'
         ? 'border-orange-500/50 bg-orange-400 text-orange-100'
         : chip.emphasis === 'secondary'
           ? `border-orange-700 text-orange-600 ${background}`
-          : `border-stone-500 text-stone-600 ${background}`}
-      "
+          : `border-stone-500 text-stone-600 ${background}`,
+  })
+</script>
+
+<div class="flex flex-row flex-wrap justify-center px-1 {classes}">
+  {#each chips.map(normalizeChips) as chip}
+    <span
+      style="order:{chip.order}; z-index: {chip.zIndex};"
+      class="rounded-full -mx-1 -my-px px-4 py-1 text-xs border whitespace-nowrap {chip.style}"
     >
       {chip.text}
     </span>
