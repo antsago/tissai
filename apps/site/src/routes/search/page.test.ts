@@ -1,11 +1,11 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, test, expect, afterEach, vi } from "vitest"
-import { render, screen, within, cleanup } from "@testing-library/svelte"
-import { MockPg, OFFER, mockDbFixture, queries } from "@tissai/db/mocks"
+import { render, screen, cleanup } from "@testing-library/svelte"
+import { OFFER, mockDbFixture, queries } from "@tissai/db/mocks"
 import { Db } from "@tissai/db"
-import { MockPython, mockPythonFixture } from "@tissai/python-pool/mocks"
+import { mockPythonFixture } from "@tissai/python-pool/mocks"
 import { Tokenizer } from "@tissai/tokenizer"
-import { QUERY, SIMILAR, BRAND, SUGGESTION } from "mocks"
+import { QUERY, BRAND, PRODUCT } from "mocks"
 import * as stores from "$app/stores"
 import { load } from "./+page.server"
 import page from "./+page.svelte"
@@ -13,8 +13,8 @@ import page from "./+page.svelte"
 vi.mock("$app/stores", async () => (await import("mocks")).storesMock())
 
 const it = test.extend<{ db: mockDbFixture; python: mockPythonFixture }>({
-  db: [mockDbFixture, { auto: true }],
-  python: [mockPythonFixture, { auto: true }],
+  db: mockDbFixture,
+  python: mockPythonFixture,
 })
 
 describe("Search page", () => {
@@ -22,84 +22,70 @@ describe("Search page", () => {
     cleanup()
   })
 
-  async function loadAndRender(
-    db: MockPg,
-    python: MockPython,
-    { queryParams, sectionName = "Resultados de la búsqueda" } = {} as any,
-  ) {
-    db.pool.query.mockResolvedValueOnce({
-      rows: [],
-    })
-    db.pool.query.mockResolvedValueOnce({
-      rows: [
-        {
-          ...SIMILAR,
-          brand: BRAND,
-          price: String(OFFER.price),
-        },
-        ...new Array(4).fill(null).map((_, i) => ({
-          title: i,
-          id: i,
-          brand: BRAND,
-          price: undefined,
-        })),
-      ],
-    })
-    db.pool.query.mockResolvedValueOnce({
-      rows: [SUGGESTION],
-    })
-    python.mockReturnValue(
-      SUGGESTION.values.map((v) => ({
-        isMeaningful: true,
-        text: SUGGESTION.values[0],
-      })),
-    )
+  const SEARCH_RESULTS = [{
+    id: PRODUCT.id,
+    title: PRODUCT.title,
+    image: PRODUCT.images[0],
+    brand: BRAND,
+    price: OFFER.price,
+  }]
 
+  it("performs search", async ({ db, python }) => {
+    python.mockReturnValue([])
+    db.pool.query.mockResolvedValueOnce({ rows: [] })
+    db.pool.query.mockResolvedValueOnce({ rows: SEARCH_RESULTS })
     const url = new URL(
-      `http://localhost:3000/search?q=${QUERY}${queryParams ? `&${queryParams}` : ""}`,
+      `http://localhost:3000/search?q=${QUERY}&brand=${BRAND.name}`,
     )
-    ;(stores as any).setPage({
-      url,
+    
+    const result = await load({ url, locals: { db: Db(), tokenizer: Tokenizer() }} as any)
+
+    expect(result).toStrictEqual({
+      filters: {
+        brand: BRAND.name,
+      },
+      tiles: SEARCH_RESULTS,
     })
-
-    render(page, {
-      data: await load({
-        url,
-        locals: { db: Db(), tokenizer: Tokenizer() },
-      } as any),
-    } as any)
-
-    const results = screen.getByRole("region", { name: sectionName })
-
-    return within(results)
-  }
-
-  it("displays search results", async ({ db, python }) => {
-    const results = await loadAndRender(db, python)
-
-    const product = results.getByRole("heading", {
-      level: 3,
-      name: SIMILAR.title,
-    })
-    const suggestion = results.getByRole("heading", {
-      level: 3,
-      name: `Filtrar por ${SUGGESTION.label}`,
-    })
-
-    expect(product).toBeInTheDocument()
-    expect(suggestion).toBeInTheDocument()
-    expect(db).toHaveExecuted(queries.products.search({ query: QUERY }))
-    expect(db).toHaveExecuted(queries.suggestions.category())
   })
 
-  it.only("displays filters", async ({ db, python }) => {
-    const results = await loadAndRender(db, python, {
-      queryParams: `brand=${BRAND.name}`,
-      sectionName: "Filtros",
-    })
+  it("handles empty queries", async ({ db }) => {
+    db.pool.query.mockResolvedValueOnce({ rows: SEARCH_RESULTS })
+    const url = new URL(
+      `http://localhost:3000/search?brand=${BRAND.name}`,
+    )
+    
+    const result = await load({ url, locals: { db: Db(), tokenizer: Tokenizer() }} as any)
 
-    const brandName = results.getByText(BRAND.name, { exact: false })
+    expect(result).toStrictEqual({
+      filters: {
+        brand: BRAND.name,
+      },
+      tiles: SEARCH_RESULTS,
+    })
+    expect(db).toHaveExecuted(queries.products.search("", { brand: BRAND.name }))
+  })
+
+  it("renders", async ({ db, python }) => {
+    db.pool.query.mockResolvedValueOnce({ rows: SEARCH_RESULTS })
+    const url = new URL(
+      `http://localhost:3000/search?brand=${BRAND.name}`,
+    )
+    ;(stores as any).setPage({ url })
+    
+    render(page, { data: await load({ url, locals: { db: Db(), tokenizer: Tokenizer() } } as any) } as any)
+
+    const brandName = screen.getByText(BRAND.name, { exact: false })
+    const product = screen.getByRole("heading", {
+      level: 3,
+      name: PRODUCT.title,
+    })
+    // const suggestion = results.getByRole("heading", {
+    //   level: 3,
+    //   name: `Filtrar por ${SUGGESTION.label}`,
+    // })
 
     expect(brandName).toBeInTheDocument()
+    expect(product).toBeInTheDocument()
+    // expect(suggestion).toBeInTheDocument()
   })
 })

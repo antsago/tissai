@@ -171,9 +171,7 @@ describe("normalizeFilters", () => {
       min: 5,
     }
     python.mockReturnValue([])
-    db.pool.query.mockResolvedValue({
-      rows: [],
-    })
+    db.pool.query.mockResolvedValue({ rows: [] })
 
     const result = await normalizeFilters("the query", filters, {
       db: Db(),

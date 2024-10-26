@@ -7,10 +7,11 @@ import {
 } from "$lib/server"
 
 export const load: PageServerLoad = async ({ url, locals }) => {
-  const { query, ...urlFilters } = await extractFilters(url.searchParams)
+  const { query, ...urlFilters } = extractFilters(url.searchParams)
 
   const filters = await normalizeFilters(query, urlFilters, locals)
 
+  const products = await locals.db.products.search(query ?? "", filters)
   // const [products, suggestions] = await Promise.all([
   //   locals.db.products.search({
   //     query,
@@ -20,7 +21,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
   // ])
 
   return {
-    tiles: [], //mergeTiles(products, suggestions),
+    tiles: products, //mergeTiles(products, suggestions),
     filters,
   }
 }
