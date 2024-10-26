@@ -11,7 +11,20 @@
 
   export let data: {
     tiles: (Search | Suggestion)[]
-    filters: Omit<SearchParams, "query">
+    filters: {
+      brand?: string
+      max?: number
+      min?: number
+      category?: {
+        id: string
+        name: string
+      },
+      attributes?: {
+        label: string
+        id: string
+        name: string
+      }[]
+    }
   }
 </script>
 

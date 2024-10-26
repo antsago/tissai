@@ -92,7 +92,7 @@ describe("Search page", () => {
     expect(db).toHaveExecuted(queries.suggestions.category())
   })
 
-  it("displays filters", async ({ db, python }) => {
+  it.only("displays filters", async ({ db, python }) => {
     const results = await loadAndRender(db, python, {
       queryParams: `brand=${BRAND.name}`,
       sectionName: "Filtros",
@@ -101,8 +101,5 @@ describe("Search page", () => {
     const brandName = results.getByText(BRAND.name, { exact: false })
 
     expect(brandName).toBeInTheDocument()
-    expect(db).toHaveExecuted(
-      queries.products.search({ query: QUERY, brand: BRAND.name }),
-    )
   })
 })

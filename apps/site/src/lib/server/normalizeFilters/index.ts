@@ -1,1 +1,1 @@
-export { normalizeFilters } from "./normalizeFilters"
+export { normalizeFilters, type Filters } from "./normalizeFilters"

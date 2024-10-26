@@ -23,10 +23,12 @@ export const Full: Story = {
       brand: "Eg",
       max: 15.99,
       min: 14,
-      category: "pantalones",
+      category: {
+        name: "pantalones",
+      },
       attributes: [
-        { label: "modelo", value: "501®" },
-        { label: "cordones", value: "cordones" },
+        { label: "modelo", name: "501®" },
+        { label: "cordones", name: "cordones" },
       ],
     },
   },
