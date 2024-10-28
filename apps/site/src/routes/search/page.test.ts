@@ -48,13 +48,18 @@ describe("Search page", () => {
       filters: {
         brand: BRAND.name,
       },
-      tiles: [{
-        label: SUGGESTION.label,
-        values: [{
-          name: SUGGESTION.values[0].name,
-          href: expect.stringContaining(SUGGESTION.values[0].id),
-        }]
-      }, SEARCH_RESULT],
+      tiles: [
+        {
+          label: SUGGESTION.label,
+          values: [
+            {
+              name: SUGGESTION.values[0].name,
+              href: expect.stringContaining(SUGGESTION.values[0].id),
+            },
+          ],
+        },
+        SEARCH_RESULT,
+      ],
     })
   })
 

@@ -37,10 +37,13 @@ describe("normalizeFilters", () => {
       ],
     })
 
-    const result = await normalizeFilters({...filters, query: "the query"}, {
-      db: Db(),
-      tokenizer: Tokenizer(),
-    })
+    const result = await normalizeFilters(
+      { ...filters, query: "the query" },
+      {
+        db: Db(),
+        tokenizer: Tokenizer(),
+      },
+    )
 
     expect(result).toStrictEqual({
       ...filters,
@@ -71,7 +74,7 @@ describe("normalizeFilters", () => {
 
     const result = await normalizeFilters(
       { query: "", category: CATEGORY_NODE.id },
-      { db: Db(), tokenizer: Tokenizer()},
+      { db: Db(), tokenizer: Tokenizer() },
     )
 
     expect(result).toStrictEqual({
@@ -114,10 +117,13 @@ describe("normalizeFilters", () => {
       ],
     })
 
-    const result = await normalizeFilters({ query: "the query", ...filters }, {
-      db: Db(),
-      tokenizer: Tokenizer(),
-    })
+    const result = await normalizeFilters(
+      { query: "the query", ...filters },
+      {
+        db: Db(),
+        tokenizer: Tokenizer(),
+      },
+    )
 
     expect(result).toStrictEqual({
       ...filters,
@@ -168,10 +174,13 @@ describe("normalizeFilters", () => {
       ],
     })
 
-    const result = await normalizeFilters({ query: "the query", ...filters}, {
-      db: Db(),
-      tokenizer: Tokenizer(),
-    })
+    const result = await normalizeFilters(
+      { query: "the query", ...filters },
+      {
+        db: Db(),
+        tokenizer: Tokenizer(),
+      },
+    )
 
     expect(result).toStrictEqual({
       ...filters,
@@ -198,10 +207,13 @@ describe("normalizeFilters", () => {
     python.mockReturnValue([])
     db.pool.query.mockResolvedValue({ rows: [] })
 
-    const result = await normalizeFilters({ query: "the query", ...filters}, {
-      db: Db(),
-      tokenizer: Tokenizer(),
-    })
+    const result = await normalizeFilters(
+      { query: "the query", ...filters },
+      {
+        db: Db(),
+        tokenizer: Tokenizer(),
+      },
+    )
 
     expect(result).toStrictEqual(filters)
   })
@@ -213,10 +225,13 @@ describe("normalizeFilters", () => {
       min: 5,
     }
 
-    const result = await normalizeFilters({ query: "", ...filters}, {
-      db: Db(),
-      tokenizer: Tokenizer(),
-    })
+    const result = await normalizeFilters(
+      { query: "", ...filters },
+      {
+        db: Db(),
+        tokenizer: Tokenizer(),
+      },
+    )
 
     expect(result).toStrictEqual(filters)
     expect(db.pool.query).not.toHaveBeenCalled()

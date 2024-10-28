@@ -16,7 +16,7 @@ export const encodeParams = (params: UrlParams) => {
   if (params.category) {
     encoded.append("cat", params.category)
   }
-  params.attributes?.forEach(attribute => encoded.append("att", attribute))
+  params.attributes?.forEach((attribute) => encoded.append("att", attribute))
 
   return encoded.toString()
 }

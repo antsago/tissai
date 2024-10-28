@@ -28,10 +28,10 @@ export const AllEmphasis: Story = {
 export const WithLinks: Story = {
   args: {
     chips: [
-      { text: "modelo: 501®", emphasis: "primary", href:"/foo" },
-      { text: "categoría", emphasis: "secondary", href:"/foo" },
-      { text: "cordones con cuerdas", emphasis: "default", href:"/foo" },
-      { text: "mezclilla", href:"/foo" },
+      { text: "modelo: 501®", emphasis: "primary", href: "/foo" },
+      { text: "categoría", emphasis: "secondary", href: "/foo" },
+      { text: "cordones con cuerdas", emphasis: "default", href: "/foo" },
+      { text: "mezclilla", href: "/foo" },
     ],
   },
 }

@@ -1,5 +1,10 @@
 import { describe, test, expect } from "vitest"
-import { CATEGORY_NODE, mockDbFixture, queries, VALUE_NODE } from "@tissai/db/mocks"
+import {
+  CATEGORY_NODE,
+  mockDbFixture,
+  queries,
+  VALUE_NODE,
+} from "@tissai/db/mocks"
 import { Db } from "@tissai/db"
 import { SUGGESTION } from "mocks"
 import { getSuggestions } from "./getSuggestions"
@@ -19,13 +24,17 @@ describe("getSuggestions", () => {
 
     const results = await getSuggestions(query, {}, Db())
 
-    expect(results).toStrictEqual([{
-      label: SUGGESTION.label,
-      values: [{
-        name: VALUE_NODE.name,
-        href: `/search?q=${encodeURIComponent(query)}&cat=${encodeURIComponent(VALUE_NODE.id)}`
-      }]
-    }])
+    expect(results).toStrictEqual([
+      {
+        label: SUGGESTION.label,
+        values: [
+          {
+            name: VALUE_NODE.name,
+            href: `/search?q=${encodeURIComponent(query)}&cat=${encodeURIComponent(VALUE_NODE.id)}`,
+          },
+        ],
+      },
+    ])
     expect(db).toHaveExecuted(queries.suggestions.category())
   })
 
@@ -62,13 +71,17 @@ describe("getSuggestions", () => {
 
     const results = await getSuggestions(query, { category }, Db())
 
-    expect(results).toStrictEqual([{
-      label: SUGGESTION.label,
-      values: [{
-        name: VALUE_NODE.name,
-        href: `/search?q=${encodeURIComponent(query)}&cat=${encodeURIComponent(category.id)}&att=${encodeURIComponent(VALUE_NODE.id)}`
-      }]
-    }])
+    expect(results).toStrictEqual([
+      {
+        label: SUGGESTION.label,
+        values: [
+          {
+            name: VALUE_NODE.name,
+            href: `/search?q=${encodeURIComponent(query)}&cat=${encodeURIComponent(category.id)}&att=${encodeURIComponent(VALUE_NODE.id)}`,
+          },
+        ],
+      },
+    ])
     expect(db).toHaveExecuted(queries.suggestions.attributes(category.id))
   })
 })

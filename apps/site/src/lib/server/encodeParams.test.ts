@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach } from "vitest"
-import { PRODUCT } from "@tissai/db/mocks"
 import { encodeParams } from "./encodeParams"
 
 describe("encodeParams", () => {
@@ -20,7 +19,9 @@ describe("encodeParams", () => {
 
     const result = encodeParams(params)
 
-    expect(result).toStrictEqual(`q=busco+un+pantal%C3%B3n&brand=a+brand&max=${params.max}&min=${params.min}&cat=${params.category}&att=${params.attributes[0]}`)
+    expect(result).toStrictEqual(
+      `q=busco+un+pantal%C3%B3n&brand=a+brand&max=${params.max}&min=${params.min}&cat=${params.category}&att=${params.attributes[0]}`,
+    )
   })
 
   it("supports multiple attributes", async () => {
@@ -34,7 +35,9 @@ describe("encodeParams", () => {
 
     const result = encodeParams(params)
 
-    expect(result).toStrictEqual(`q=&att=${params.attributes[0]}&att=${params.attributes[1]}`)
+    expect(result).toStrictEqual(
+      `q=&att=${params.attributes[0]}&att=${params.attributes[1]}`,
+    )
   })
 
   it("handles empty search", async () => {

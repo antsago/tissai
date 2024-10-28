@@ -43,10 +43,13 @@ const TILES = [
   },
   {
     label: "categoría",
-    values: [{
-      name: "Vaqueros",
-      href: "/foo"
-    }, {name: "Botines", href: "/bar" }], 
+    values: [
+      {
+        name: "Vaqueros",
+        href: "/foo",
+      },
+      { name: "Botines", href: "/bar" },
+    ],
   },
 ]
 
