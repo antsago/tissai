@@ -42,9 +42,11 @@ const TILES = [
     currency: "EUR",
   },
   {
-    frequency: 1,
     label: "categoría",
-    values: ["Vaqueros", "Botines"],
+    values: [{
+      name: "Vaqueros",
+      href: "/foo"
+    }, {name: "Botines", href: "/bar" }], 
   },
 ]
 

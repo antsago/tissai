@@ -9,9 +9,6 @@ const meta = {
       control: { type: "object" },
     },
   },
-  args: {
-    baseUrl: "https://example.com/",
-  },
 } satisfies Meta<SuggestionTile>
 type Story = StoryObj<typeof meta>
 
@@ -21,11 +18,11 @@ export const Full: Story = {
       label: "Categoría",
       values: [
         {
-          id: "1",
+          href: "/search?foo=bar",
           name: "pantalones",
         },
         {
-          id: "2",
+          href: "/search?bar=foo",
           name: "vaqueros",
         },
       ],

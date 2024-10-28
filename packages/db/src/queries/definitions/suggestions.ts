@@ -4,7 +4,7 @@ export const CATEGORY_LABEL = "categoría"
 
 export type Suggestion = {
   label: string
-  values: { name: string; id: string }[]
+  values: { name: string; href: string }[]
 }
 
 export const category = {

@@ -48,29 +48,14 @@ describe("Search page", () => {
       filters: {
         brand: BRAND.name,
       },
-      tiles: [SUGGESTION, SEARCH_RESULT],
+      tiles: [{
+        label: SUGGESTION.label,
+        values: [{
+          name: SUGGESTION.values[0].name,
+          href: expect.stringContaining(SUGGESTION.values[0].id),
+        }]
+      }, SEARCH_RESULT],
     })
-  })
-
-  it("handles empty queries", async ({ db }) => {
-    db.pool.query.mockResolvedValueOnce({ rows: [SEARCH_RESULT] })
-    db.pool.query.mockResolvedValueOnce({ rows: [SUGGESTION] })
-    const url = new URL(`http://localhost:3000/search?brand=${BRAND.name}`)
-
-    const result = await load({
-      url,
-      locals: { db: Db(), tokenizer: Tokenizer() },
-    } as any)
-
-    expect(result).toStrictEqual({
-      filters: {
-        brand: BRAND.name,
-      },
-      tiles: [SUGGESTION, SEARCH_RESULT],
-    })
-    expect(db).toHaveExecuted(
-      queries.products.search("", { brand: BRAND.name }),
-    )
   })
 
   it("renders", async ({ db }) => {

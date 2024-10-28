@@ -24,7 +24,7 @@
     {#if "title" in tile}
       <ProductTile product={tile} />
     {:else}
-      <SuggestionTile suggestion={tile} baseUrl={$page.url.href} />
+      <SuggestionTile suggestion={tile} />
     {/if}
   </Masonry>
 </Section>

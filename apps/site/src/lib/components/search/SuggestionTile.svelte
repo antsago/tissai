@@ -3,7 +3,6 @@
   import ChipCloud from "../shared/ChipCloud.svelte"
 
   export let suggestion: Suggestion
-  export let baseUrl: string
 </script>
 
 <div class="w-full h-full flex flex-col rounded bg-stone-200">
@@ -13,7 +12,7 @@
       chips={suggestion.values.map((value) => ({
         text: value.name,
         emphasis: "primary",
-        href: `${baseUrl}&att=${encodeURIComponent(value.id)}`
+        href: value.href,
       }))}
     />
   </div>
