@@ -19,9 +19,9 @@
     >
       {#if product.price}
         <span
-          class="ml-auto rounded-full px-2 py-0.5 text-sm bg-orange-400 border border-orange-500/50 text-orange-100"
+          class="ml-auto rounded-full px-2 py-0.5 text-sm border border-orange-400 text-orange-400 bg-orange-50/80"
         >
-          {product.price}
+          {product.price} €
         </span>
       {/if}
       {#if product.brand}

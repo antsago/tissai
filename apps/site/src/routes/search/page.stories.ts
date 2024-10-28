@@ -39,7 +39,6 @@ const TILES = [
       logo: "/logo.jpg",
     },
     price: 10.99,
-    currency: "EUR",
   },
   {
     label: "categoría",
