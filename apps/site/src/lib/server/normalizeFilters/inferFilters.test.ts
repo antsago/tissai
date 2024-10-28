@@ -107,4 +107,40 @@ describe("inferFilters", () => {
 
     expect(result).toStrictEqual({})
   })
+
+  it("handles no infered atributes", async ({ db, python }) => {
+    const query = "foo"
+    const WORDS = [
+      {
+        isMeaningful: true,
+        trailing: " ",
+        text: "foo",
+        originalText: "foo",
+      },
+    ]
+    python.mockReturnValue(WORDS)
+    db.pool.query.mockReturnValueOnce({
+      rows: [
+        {
+          name: CATEGORY_NODE.name,
+          id: CATEGORY_NODE.id,
+          tally: CATEGORY_NODE.tally,
+          children: null,
+        },
+      ],
+    })
+
+    const result = await inferFilters(query, {
+      db: Db(),
+      tokenizer: Tokenizer(),
+    })
+
+    expect(result).toStrictEqual({
+      category: {
+        id: CATEGORY_NODE.id,
+        name: CATEGORY_NODE.name,
+      },
+      attributes: [],
+    })
+  })
 })

@@ -44,6 +44,6 @@ export function extractFilters(params: URLSearchParams) {
           return filters
       }
     },
-    {} as UrlParams & { query?: string },
+    { query: "" } as (UrlParams & { query: string }),
   )
 }

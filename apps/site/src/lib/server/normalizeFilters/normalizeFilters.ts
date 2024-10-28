@@ -8,10 +8,6 @@ export async function normalizeFilters(
   { category, attributes, ...otherFilters }: UrlParams,
   locals: App.Locals,
 ): Promise<Filters> {
-  if (!query) {
-    return otherFilters
-  }
-
   if (category) {
     const labeled = await labelFilters(category, attributes, locals.db)
 
@@ -21,6 +17,10 @@ export async function normalizeFilters(
         ...labeled,
       }
     }
+  }
+
+  if (!query) {
+    return otherFilters
   }
 
   const infered = await inferFilters(query, locals)

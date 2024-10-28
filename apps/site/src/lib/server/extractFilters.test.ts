@@ -47,10 +47,17 @@ describe("extractFilters", () => {
   })
 
   it("ignores other parameters", async () => {
+    params.append("q", PRODUCT.title)
     params.append("foo", "bar")
 
     const result = extractFilters(params)
 
-    expect(result).toStrictEqual({})
+    expect(result).toStrictEqual({ query: PRODUCT.title })
+  })
+
+  it("handles empty search", async () => {
+    const result = extractFilters(params)
+
+    expect(result).toStrictEqual({ query: "" })
   })
 })

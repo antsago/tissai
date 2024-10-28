@@ -58,6 +58,32 @@ describe("normalizeFilters", () => {
     })
   })
 
+  it("labels if category is given but query is empty", async ({ db }) => {
+    db.pool.query.mockResolvedValue({
+      rows: [
+        {
+          id: CATEGORY_NODE.id,
+          name: CATEGORY_NODE.name,
+          attributes: null,
+        },
+      ],
+    })
+
+    const result = await normalizeFilters(
+      "",
+      { category: CATEGORY_NODE.id },
+      { db: Db(), tokenizer: Tokenizer()},
+    )
+
+    expect(result).toStrictEqual({
+      category: {
+        id: CATEGORY_NODE.id,
+        name: CATEGORY_NODE.name,
+      },
+      attributes: undefined,
+    })
+  })
+
   it("infers if no category is given", async ({ db, python }) => {
     const filters = {
       brand: "Eg",
@@ -181,22 +207,19 @@ describe("normalizeFilters", () => {
     expect(result).toStrictEqual(filters)
   })
 
-  it.for([[""], [undefined]])(
-    "does not infer if query is '%s'",
-    async ([query], { db }) => {
-      const filters = {
-        brand: "Eg",
-        max: 10,
-        min: 5,
-      }
+  it("does not infer if query is empty", async ({ db }) => {
+    const filters = {
+      brand: "Eg",
+      max: 10,
+      min: 5,
+    }
 
-      const result = await normalizeFilters(query, filters, {
-        db: Db(),
-        tokenizer: Tokenizer(),
-      })
+    const result = await normalizeFilters("", filters, {
+      db: Db(),
+      tokenizer: Tokenizer(),
+    })
 
-      expect(result).toStrictEqual(filters)
-      expect(db.pool.query).not.toHaveBeenCalled()
-    },
-  )
+    expect(result).toStrictEqual(filters)
+    expect(db.pool.query).not.toHaveBeenCalled()
+  })
 })
