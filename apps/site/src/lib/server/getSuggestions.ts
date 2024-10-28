@@ -1,17 +1,5 @@
 import type { Db, Filters } from "@tissai/db"
-
-const encodeParams = (query: string, filters: Filters) => {
-  const params = new URLSearchParams()
-
-  params.append("q", query)
-  params.append("cat", filters.category!.id)
-
-  if(filters.attributes) {
-    params.append("att", filters.attributes?.[0].id)
-  }
-
-  return params.toString()
-}
+import { encodeParams } from "./encodeParams"
 
 export const getSuggestions = async (query: string, filters: Filters, db: Db) => {
   const suggestions = filters.category
