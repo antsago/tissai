@@ -6,7 +6,7 @@
 </script>
 
 <div class="w-full h-full flex flex-col rounded bg-stone-200">
-  <div class="relative w-full flex-basis-6 min-h-20 max-h-[25rem] rounded-t">
+  <div class="relative w-full flex-basis-6 min-h-20 max-h-[25rem] rounded-t content-center">
     <ChipCloud
       background="bg-stone-200"
       chips={suggestion.values.map((value) => ({
