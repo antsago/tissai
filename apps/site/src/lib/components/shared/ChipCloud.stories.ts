@@ -35,6 +35,17 @@ export const WithLinks: Story = {
     ],
   },
 }
+export const WithExtraHeight: Story = {
+  args: {
+    class: "min-h-[200px]",
+    chips: [
+      { text: "modelo: 501®" },
+      { text: "categoría" },
+      { text: "cordones con cuerdas" },
+      { text: "mezclilla" },
+    ],
+  },
+}
 export const Empty: Story = {
   args: {
     chips: [],
