@@ -4,8 +4,7 @@ import { labelFilters } from "./labelFilters"
 import { inferFilters } from "./inferFilters"
 
 export async function normalizeFilters(
-  query: string | undefined,
-  { category, attributes, ...otherFilters }: UrlParams,
+  { query, category, attributes, ...otherFilters }: UrlParams,
   locals: App.Locals,
 ): Promise<Filters> {
   if (category) {

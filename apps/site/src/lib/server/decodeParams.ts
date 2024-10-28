@@ -1,4 +1,5 @@
 export type UrlParams = {
+  query: string
   attributes?: string[]
   brand?: string
   max?: number
@@ -44,6 +45,6 @@ export function decodeParams(params: URLSearchParams) {
           return filters
       }
     },
-    { query: "" } as (UrlParams & { query: string }),
+    { query: "" } as UrlParams,
   )
 }

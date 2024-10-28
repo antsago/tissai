@@ -37,7 +37,7 @@ describe("normalizeFilters", () => {
       ],
     })
 
-    const result = await normalizeFilters("the query", filters, {
+    const result = await normalizeFilters({...filters, query: "the query"}, {
       db: Db(),
       tokenizer: Tokenizer(),
     })
@@ -70,8 +70,7 @@ describe("normalizeFilters", () => {
     })
 
     const result = await normalizeFilters(
-      "",
-      { category: CATEGORY_NODE.id },
+      { query: "", category: CATEGORY_NODE.id },
       { db: Db(), tokenizer: Tokenizer()},
     )
 
@@ -115,7 +114,7 @@ describe("normalizeFilters", () => {
       ],
     })
 
-    const result = await normalizeFilters("the query", filters, {
+    const result = await normalizeFilters({ query: "the query", ...filters }, {
       db: Db(),
       tokenizer: Tokenizer(),
     })
@@ -169,7 +168,7 @@ describe("normalizeFilters", () => {
       ],
     })
 
-    const result = await normalizeFilters("the query", filters, {
+    const result = await normalizeFilters({ query: "the query", ...filters}, {
       db: Db(),
       tokenizer: Tokenizer(),
     })
@@ -199,7 +198,7 @@ describe("normalizeFilters", () => {
     python.mockReturnValue([])
     db.pool.query.mockResolvedValue({ rows: [] })
 
-    const result = await normalizeFilters("the query", filters, {
+    const result = await normalizeFilters({ query: "the query", ...filters}, {
       db: Db(),
       tokenizer: Tokenizer(),
     })
@@ -214,7 +213,7 @@ describe("normalizeFilters", () => {
       min: 5,
     }
 
-    const result = await normalizeFilters("", filters, {
+    const result = await normalizeFilters({ query: "", ...filters}, {
       db: Db(),
       tokenizer: Tokenizer(),
     })

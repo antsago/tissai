@@ -7,12 +7,12 @@ import {
 } from "$lib/server"
 
 export const load: PageServerLoad = async ({ url, locals }) => {
-  const { query, ...urlFilters } = decodeParams(url.searchParams)
+  const params = decodeParams(url.searchParams)
 
-  const filters = await normalizeFilters(query, urlFilters, locals)
+  const filters = await normalizeFilters(params, locals)
 
-  const products = await locals.db.products.search(query, filters)
-  const suggestions = await getSuggestions(query, filters, locals.db)
+  const products = await locals.db.products.search(params.query, filters)
+  const suggestions = await getSuggestions(params.query, filters, locals.db)
 
   return {
     tiles: mergeTiles(products, suggestions),
