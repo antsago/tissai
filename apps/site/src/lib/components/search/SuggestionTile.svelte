@@ -10,9 +10,12 @@
   <div class="relative w-full flex-basis-6 min-h-20 max-h-[25rem] rounded-t">
     <ChipCloud
       background="bg-stone-200"
-      chips={suggestion.values.map(v => ({ text: v.name, emphasis: "secondary"}))}
+      chips={suggestion.values.map((v) => ({
+        text: v.name,
+        emphasis: "secondary",
+      }))}
     />
-      <!-- {#each suggestion.values as value}
+    <!-- {#each suggestion.values as value}
         <a href="{baseUrl}&att={encodeURIComponent(value.id)}">
           <Chip emphasis="primary" background="">{value.name}</Chip>
         </a>

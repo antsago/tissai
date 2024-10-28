@@ -14,17 +14,21 @@
     return Math.floor(rnd * (max - min) + min)
   }
 
-  const normalizeChips = (chip: Chip, index: number) => ({
-    text: chip.text,
-    order: rng(chips.length - index),
-    zIndex: rng(index+1), 
-    style: chip.emphasis ===
-      'primary'
-        ? 'border-orange-500/50 bg-orange-400 text-orange-100'
-        : chip.emphasis === 'secondary'
+  const normalizeChips = (chip: Chip, index: number) => {
+    const style =
+      chip.emphasis === "primary"
+        ? "border-orange-500/50 bg-orange-400 text-orange-100"
+        : chip.emphasis === "secondary"
           ? `border-orange-700 text-orange-600 ${background}`
-          : `border-stone-500 text-stone-600 ${background}`,
-  })
+          : `border-stone-500 text-stone-600 ${background}`
+
+    return {
+      text: chip.text,
+      order: rng(chips.length - index),
+      zIndex: rng(index + 1),
+      style,
+    }
+  }
 </script>
 
 <div class="flex flex-row flex-wrap justify-center px-1 {classes}">

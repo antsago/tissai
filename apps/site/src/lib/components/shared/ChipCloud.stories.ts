@@ -18,9 +18,9 @@ type Story = StoryObj<typeof meta>
 export const AllEmphasis: Story = {
   args: {
     chips: [
-      { text: "modelo: 501®", emphasis: 'primary' },
-      { text: "categoría", emphasis: 'secondary' },
-      { text: "cordones con cuerdas", emphasis: 'default' },
+      { text: "modelo: 501®", emphasis: "primary" },
+      { text: "categoría", emphasis: "secondary" },
+      { text: "cordones con cuerdas", emphasis: "default" },
       { text: "mezclilla" },
     ],
   },
