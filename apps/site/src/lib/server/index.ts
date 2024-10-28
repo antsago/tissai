@@ -1,4 +1,4 @@
 export { getSuggestions } from "./getSuggestions"
 export { default as mergeTiles } from "./mergeTiles"
 export { normalizeFilters } from "./normalizeFilters"
-export { extractFilters } from "./extractFilters"
+export { decodeParams } from "./decodeParams"

@@ -1,5 +1,5 @@
 import type { Filters } from "@tissai/db"
-import { type UrlParams } from "../extractFilters"
+import { type UrlParams } from "../decodeParams"
 import { labelFilters } from "./labelFilters"
 import { inferFilters } from "./inferFilters"
 

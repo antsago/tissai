@@ -2,12 +2,12 @@ import type { PageServerLoad } from "./$types"
 import {
   getSuggestions,
   mergeTiles,
-  extractFilters,
+  decodeParams,
   normalizeFilters,
 } from "$lib/server"
 
 export const load: PageServerLoad = async ({ url, locals }) => {
-  const { query, ...urlFilters } = extractFilters(url.searchParams)
+  const { query, ...urlFilters } = decodeParams(url.searchParams)
 
   const filters = await normalizeFilters(query, urlFilters, locals)
 

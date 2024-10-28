@@ -1,14 +1,14 @@
 import { describe, it, expect, beforeEach } from "vitest"
 import { PRODUCT } from "@tissai/db/mocks"
-import { extractFilters } from "./extractFilters"
+import { decodeParams } from "./decodeParams"
 
-describe("extractFilters", () => {
+describe("decodeParams", () => {
   let params: URLSearchParams
   beforeEach(() => {
     params = new URLSearchParams()
   })
 
-  it("parses filters", async () => {
+  it("parses parameters", async () => {
     const min = 11.1
     const max = 22.2
     const brand = "a brand"
@@ -21,7 +21,7 @@ describe("extractFilters", () => {
     params.append("cat", category)
     params.append("att", attributes[0])
 
-    const result = extractFilters(params)
+    const result = decodeParams(params)
 
     expect(result).toStrictEqual({
       query: PRODUCT.title,
@@ -41,7 +41,7 @@ describe("extractFilters", () => {
     params.append("att", attributes[0])
     params.append("att", attributes[1])
 
-    const result = extractFilters(params)
+    const result = decodeParams(params)
 
     expect(result.attributes).toStrictEqual(attributes)
   })
@@ -50,13 +50,13 @@ describe("extractFilters", () => {
     params.append("q", PRODUCT.title)
     params.append("foo", "bar")
 
-    const result = extractFilters(params)
+    const result = decodeParams(params)
 
     expect(result).toStrictEqual({ query: PRODUCT.title })
   })
 
   it("handles empty search", async () => {
-    const result = extractFilters(params)
+    const result = decodeParams(params)
 
     expect(result).toStrictEqual({ query: "" })
   })

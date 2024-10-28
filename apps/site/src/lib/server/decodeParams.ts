@@ -6,7 +6,7 @@ export type UrlParams = {
   category?: string
 }
 
-export function extractFilters(params: URLSearchParams) {
+export function decodeParams(params: URLSearchParams) {
   return Array.from(params.entries()).reduce(
     (filters, [key, value]) => {
       switch (key) {
