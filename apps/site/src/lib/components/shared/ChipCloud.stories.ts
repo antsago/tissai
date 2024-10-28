@@ -35,6 +35,30 @@ export const WithLinks: Story = {
     ],
   },
 }
+export const NonDense: Story = {
+  args: {
+    dense: false,
+    chips: [
+      { text: "modelo: 501®"},
+      { text: "categoría"},
+      { text: "cordones con cuerdas"},
+      { text: "mezclilla" },
+      { text: "a fifth very long argument" },
+    ],
+  },
+}
+export const NonDenseLinks: Story = {
+  args: {
+    dense: false,
+    chips: [
+      { text: "modelo: 501®", href: "/foo"},
+      { text: "categoría", href: "/foo"},
+      { text: "cordones con cuerdas", href: "/foo"},
+      { text: "mezclilla" , href: "/foo"},
+      { text: "a fifth very long argument", href: "/foo" },
+    ],
+  },
+}
 export const WithExtraHeight: Story = {
   args: {
     class: "min-h-[200px]",

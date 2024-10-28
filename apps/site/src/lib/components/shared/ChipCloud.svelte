@@ -7,6 +7,7 @@
 
   let classes = ""
   export { classes as class }
+  export let dense: boolean = true
   export let background: string
   export let chips: Chip[]
 
@@ -39,11 +40,11 @@
 <div class="flex flex-row flex-wrap justify-center content-center px-1 {classes}">
   {#each chips.map(normalizeChips) as chip}
     {@const style = `order:${chip.order}; z-index: ${chip.zIndex};`}
-    {@const chipClasses = `rounded-full -mx-1 -my-px px-4 py-1 text-xs border whitespace-nowrap ${chip.style}`}
+    {@const chipClasses = `rounded-full ${dense ? "-mx-1 -my-px" : "mx-1 my-1"} px-4 py-1 text-xs border whitespace-nowrap ${chip.style}`}
 
     {#if chip.href}
-      <a href={chip.href}>
-        <span {style} class={chipClasses}>{chip.text}</span>
+      <a {style} class={chipClasses} href={chip.href}>
+        {chip.text}
       </a>
     {:else}
       <span {style} class={chipClasses}>{chip.text}</span>

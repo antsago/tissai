@@ -15,7 +15,7 @@ type Story = StoryObj<typeof meta>
 export const Full: Story = {
   args: {
     suggestion: {
-      label: "Categoría",
+      label: "categoría",
       values: [
         {
           href: "/search?foo=bar",
@@ -24,6 +24,36 @@ export const Full: Story = {
         {
           href: "/search?bar=foo",
           name: "vaqueros",
+        },
+        {
+          href: "/search?bar=foo",
+          name: "vaquero",
+        },
+        {
+          href: "/search?bar=foo",
+          name: "jean",
+        },
+        {
+          href: "/search?bar=foo",
+          name: "jeans",
+        },
+      ],
+    },
+  },
+}
+
+export const Shorts: Story = {
+  args: {
+    suggestion: {
+      label: "categoría",
+      values: [
+        {
+          href: "/search?bar=foo",
+          name: "jean",
+        },
+        {
+          href: "/search?bar=foo",
+          name: "jeans",
         },
       ],
     },
