@@ -1,5 +1,5 @@
 <script lang="ts">
-  type Chip = { emphasis?: "primary" | "secondary" | string; text: string }
+  type Chip = { emphasis?: "primary" | "secondary" | string; text: string; href?: string }
 
   let classes = ""
   export { classes as class }
@@ -26,6 +26,7 @@
       text: chip.text,
       order: rng(chips.length - index),
       zIndex: rng(index + 1),
+      href: chip.href,
       style,
     }
   }
@@ -33,11 +34,15 @@
 
 <div class="flex flex-row flex-wrap justify-center px-1 {classes}">
   {#each chips.map(normalizeChips) as chip}
-    <span
-      style="order:{chip.order}; z-index: {chip.zIndex};"
-      class="rounded-full -mx-1 -my-px px-4 py-1 text-xs border whitespace-nowrap {chip.style}"
-    >
-      {chip.text}
-    </span>
+    {@const style = `order:${chip.order}; z-index: ${chip.zIndex};` }
+    {@const chipClasses = `rounded-full -mx-1 -my-px px-4 py-1 text-xs border whitespace-nowrap ${chip.style}` }
+
+    {#if chip.href}
+      <a href={chip.href}>
+        <span {style} class={chipClasses}>{chip.text}</span>
+      </a>
+    {:else}
+      <span {style} class={chipClasses}>{chip.text}</span>
+    {/if}
   {/each}
 </div>

@@ -10,16 +10,12 @@
   <div class="relative w-full flex-basis-6 min-h-20 max-h-[25rem] rounded-t">
     <ChipCloud
       background="bg-stone-200"
-      chips={suggestion.values.map((v) => ({
-        text: v.name,
-        emphasis: "secondary",
+      chips={suggestion.values.map((value) => ({
+        text: value.name,
+        emphasis: "primary",
+        href: `${baseUrl}&att=${encodeURIComponent(value.id)}`
       }))}
     />
-    <!-- {#each suggestion.values as value}
-        <a href="{baseUrl}&att={encodeURIComponent(value.id)}">
-          <Chip emphasis="primary" background="">{value.name}</Chip>
-        </a>
-      {/each} -->
   </div>
   <h3
     class="block w-full px-4 py-3 border rounded-b border-stone-300/50 text-base text-center truncate text-stone-700"
