@@ -1,14 +1,14 @@
-import type { Filters } from "@tissai/db"
+import type { UrlParams } from "./decodeParams"
 
-export const encodeParams = (query: string, filters: Filters) => {
-  const params = new URLSearchParams()
+export const encodeParams = (params: UrlParams) => {
+  const encoded = new URLSearchParams()
 
-  params.append("q", query)
-  params.append("cat", filters.category!.id)
+  encoded.append("q", params.query)
+  encoded.append("cat", params.category!)
 
-  if(filters.attributes) {
-    params.append("att", filters.attributes?.[0].id)
+  if(params.attributes) {
+    encoded.append("att", params.attributes[0])
   }
 
-  return params.toString()
+  return encoded.toString()
 }
