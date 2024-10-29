@@ -6,7 +6,6 @@
   },
   "deploy": {
     "numReplicas": 1,
-    "sleepApplication": true,
     "restartPolicyMaxRetries": 3,
     "restartPolicyType": "ON_FAILURE"
   }
