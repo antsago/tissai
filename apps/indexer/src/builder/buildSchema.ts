@@ -38,7 +38,7 @@ export function buildSchema(titles: string[]) {
     if (!match) {
       categories = [...categories, { name: words }]
     } else {
-      categories = [{
+      categories = categories.toSpliced(match.index, 1, {
         name: match.commonWords,
         categories: [
           {
@@ -48,7 +48,7 @@ export function buildSchema(titles: string[]) {
             name: words.slice(match.commonWords.length),
           },
         ]
-      }]
+      })
     }
   }
 
