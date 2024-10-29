@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom/vitest"
 import { describe, test, expect, afterEach, vi } from "vitest"
 import { render, screen, cleanup } from "@testing-library/svelte"
-import { OFFER, mockDbFixture, queries, BRAND, PRODUCT } from "@tissai/db/mocks"
+import { OFFER, mockDbFixture, BRAND, PRODUCT } from "@tissai/db/mocks"
 import { Db } from "@tissai/db"
 import { mockPythonFixture } from "@tissai/python-pool/mocks"
 import { Tokenizer } from "@tissai/tokenizer"

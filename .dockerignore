@@ -1,10 +1,12 @@
 # Misc
+.DS_Store
 **/.DS_Store
 .devcontainer
 .editorconfig
 .git
 
 # Node & TS
+node_modules
 **/node_modules
 **/coverage
 packages/*/build
@@ -17,23 +19,19 @@ apps/*/build
 **/.venv
 **/.pytest_cache
 
+# Turbo
+.turbo
+**/.turbo
+
 # Yarn
+.pnp.*
+.yarn/*
 **/.pnp.*
 **/.yarn/*
-!**/.yarn/patches
-!**/.yarn/plugins
-!**/.yarn/releases
-!**/.yarn/sdks
-!**/.yarn/versions
-
-# Env
-**/.env
-**/.env.*
 
 # Packages
 apps/site/.svelte-kit
 apps/site/vite.config.ts.timestamp-*
-apps/indexer
 
 # Data folder
 data

@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "vite dev --host",
     "build": "vite build",
+    "preview": "vite preview",
     "start": "node build",
     "test": "vitest run",
     "lint": "eslint .",
@@ -16,10 +17,10 @@
     "@sveltejs/adapter-node": "5.2.2",
     "@sveltejs/kit": "2.5.27",
     "@sveltejs/vite-plugin-svelte": "3.1.2",
+    "@testing-library/dom": "10.4.0",
     "@testing-library/jest-dom": "6.5.0",
     "@testing-library/svelte": "5.2.1",
     "@testing-library/user-event": "14.5.2",
-    "@tissai/python-pool": "workspace:*",
     "@types/pg": "8.11.10",
     "@typescript-eslint/eslint-plugin": "8.5.0",
     "@typescript-eslint/parser": "8.5.0",
@@ -40,8 +41,8 @@
     "vitest": "2.1.1"
   },
   "dependencies": {
-    "@testing-library/dom": "10.4.0",
     "@tissai/db": "workspace:*",
+    "@tissai/python-pool": "workspace:*",
     "@tissai/tokenizer": "workspace:*",
     "pg": "8.12.0"
   }
