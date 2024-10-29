@@ -1,6 +1,6 @@
 type Schema = { name: string[], categories?: Schema[] }
 
-const commonWordsFor = (a: string[], b: string[]) => {
+function commonWordsFor(a: string[], b: string[]) {
   let common = [] as string[]
   for (let i = 0; i < a.length; i += 1) {
     if (a[i] !== b[i]) {
@@ -13,34 +13,39 @@ const commonWordsFor = (a: string[], b: string[]) => {
   return common
 }
 
+function categoryMatching(words: string[], categories: Schema[]) {
+  for (let [index, category] of categories.entries()) {
+    const commonWords = commonWordsFor(words, category.name)
+
+    if (commonWords.length) {
+      return {
+        index,
+        category,
+        commonWords,
+      }
+    }
+  }
+}
+
 export function buildSchema(titles: string[]) {
   let categories = [] as Schema[]
 
   for (let title of titles) {
     const words = title.split(" ")
 
-    let commonWords = [] as string[]
-    let commonCategory
-    for (let category of categories) {
-      commonWords = commonWordsFor(words, category.name)
+    const match = categoryMatching(words, categories)
 
-      if (commonWords.length) {
-        commonCategory = category
-        break
-      }
-    }
-
-    if (!commonCategory) {
+    if (!match) {
       categories = [...categories, { name: words }]
     } else {
       categories = [{
-        name: commonWords,
+        name: match.commonWords,
         categories: [
           {
-            name: commonCategory.name.slice(commonWords.length),
+            name: match.category.name.slice(match.commonWords.length),
           },
           {
-            name: words.slice(commonWords.length),
+            name: words.slice(match.commonWords.length),
           },
         ]
       }]
