@@ -1,5 +1,10 @@
 FROM node:20.18.0 AS base
 
+# Don't run production as root
+# RUN addgroup --system --gid 1001 tissai
+# RUN adduser --system --uid 1001 tissai
+# USER tissai
+
 WORKDIR /tissai
 
 # Python & poetry
@@ -17,19 +22,17 @@ COPY . /tissai
 FROM base AS build
 
 RUN yarn
-RUN yarn site build
+RUN yarn build --filter=@tissai/site
 
-# # --- #
+# --- #
 
 FROM base AS final
 
 COPY --from=build /tissai/apps/site/build /tissai/apps/site/build
+COPY --from=build /tissai/packages/db/build /tissai/packages/db/build
+COPY --from=build /tissai/packages/python-pool/build /tissai/packages/python-pool/build
+COPY --from=build /tissai/packages/tokenizer/build /tissai/packages/tokenizer/build
 RUN yarn workspaces focus @tissai/site --production
+
 WORKDIR /tissai/apps/site
-
-# Don't run production as root
-# RUN addgroup --system --gid 1001 tissai
-# RUN adduser --system --uid 1001 tissai
-# USER tissai
-
 CMD ["node", "build"]
