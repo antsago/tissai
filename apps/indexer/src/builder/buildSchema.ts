@@ -13,17 +13,31 @@ function commonWordsFor(a: string[], b: string[]) {
   return common
 }
 
-function categoryMatching(words: string[], categories: Schema[]) {
+function createCategory(title: string[], categories: Schema[]) {
   for (let [index, category] of categories.entries()) {
-    const commonWords = commonWordsFor(words, category.name)
+    const commonWords = commonWordsFor(title, category.name)
 
     if (commonWords.length) {
       return {
-        index,
-        category,
-        commonWords,
+        replaceWith: index,
+        category: {
+          name: commonWords,
+          categories: [
+            {
+              name: category.name.slice(commonWords.length),
+            },
+            {
+              name: title.slice(commonWords.length),
+            },
+          ]
+        },
       }
     }
+  }
+
+  // No match, completely new category
+  return {
+    category: { name: title },
   }
 }
 
@@ -33,23 +47,11 @@ export function buildSchema(titles: string[]) {
   for (let title of titles) {
     const words = title.split(" ")
 
-    const match = categoryMatching(words, categories)
+    const { category, replaceWith } = createCategory(words, categories)
 
-    if (!match) {
-      categories = [...categories, { name: words }]
-    } else {
-      categories = categories.toSpliced(match.index, 1, {
-        name: match.commonWords,
-        categories: [
-          {
-            name: match.category.name.slice(match.commonWords.length),
-          },
-          {
-            name: words.slice(match.commonWords.length),
-          },
-        ]
-      })
-    }
+    categories = replaceWith === undefined
+      ? [...categories, category]
+      : categories.toSpliced(replaceWith, 1, category)
   }
 
   return categories
