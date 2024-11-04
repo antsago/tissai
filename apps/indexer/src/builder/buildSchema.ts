@@ -13,31 +13,38 @@ function commonWordsFor(a: string[], b: string[]) {
   return common
 }
 
-function createCategory(title: string[], categories: Schema[]) {
+function categorize(title: string[], categories: Schema[]) {
   for (let [index, category] of categories.entries()) {
     const commonWords = commonWordsFor(title, category.name)
 
     if (commonWords.length) {
-      return {
-        replaceWith: index,
-        category: {
-          name: commonWords,
-          categories: [
-            {
-              name: category.name.slice(commonWords.length),
-            },
-            {
-              name: title.slice(commonWords.length),
-            },
-          ]
-        },
-      }
+      return { commonWords, index }
+    }
+  }
+}
+
+function createCategory(title: string[], categories: Schema[]) {
+  const match = categorize(title, categories)
+
+  if(!match) {
+    return {
+      category: { name: title },
     }
   }
 
-  // No match, completely new category
   return {
-    category: { name: title },
+    replaceWith: match.index,
+    category: {
+      name: match.commonWords,
+      categories: [
+        {
+          name: categories[match.index].name.slice(match.commonWords.length),
+        },
+        {
+          name: title.slice(match.commonWords.length),
+        },
+      ]
+    },
   }
 }
 
