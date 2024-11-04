@@ -9,7 +9,7 @@ function commonWordsBetween(a: string[], b: string[]) {
 
     common = [...common, a[i]]
   }
-  
+
   return common
 }
 
@@ -60,18 +60,35 @@ function createCategory(title: string[], categories: Schema[]) {
     return {}
   }
 
+  const category = categories[match.category]
+
+  if (match.matched.length < category.name.length) {
+    return {
+      replaceWith: match.category,
+      category: {
+        name: match.matched,
+        categories: [
+          {
+            name: category.name.slice(match.matched.length),
+          },
+          {
+            name: match.remaining,
+          },
+        ]
+      },
+    }
+  }
+
   return {
     replaceWith: match.category,
     category: {
-      name: match.matched,
-      categories: [
-        {
-          name: categories[match.category].name.slice(match.matched.length),
-        },
+      name: category.name,
+      categories: category.categories ? [
+        ...category.categories,
         {
           name: match.remaining,
         },
-      ]
+      ] : [ { name: match.remaining }]
     },
   }
 }

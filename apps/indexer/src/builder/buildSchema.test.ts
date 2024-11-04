@@ -85,7 +85,7 @@ describe("buildSchema", () => {
     ])
   })
 
-  it.only("recognizes new categories", () => {
+  it("recognizes new subcategories", () => {
     const titles = ["jeans cropped azul", "jeans cropped camel", "jeans cropped negro"]
 
     const result = buildSchema(titles)
