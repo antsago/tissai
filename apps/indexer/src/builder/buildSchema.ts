@@ -32,6 +32,10 @@ function createCategory(title: string[], categories: Schema[]) {
     }
   }
 
+  if (match.commonWords.length === title.length) {
+    return {}
+  }
+
   return {
     replaceWith: match.index,
     category: {
@@ -57,7 +61,9 @@ export function buildSchema(titles: string[]) {
     const { category, replaceWith } = createCategory(words, categories)
 
     categories = replaceWith === undefined
-      ? [...categories, category]
+      ? category === undefined
+        ? categories
+        : [...categories, category]
       : categories.toSpliced(replaceWith, 1, category)
   }
 

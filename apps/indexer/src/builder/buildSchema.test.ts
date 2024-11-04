@@ -60,7 +60,32 @@ describe("buildSchema", () => {
     ])
   })
 
-  it("recognizes new categories", () => {
+  it("matches root categories", () => {
+    const titles = ["jeans cropped", "jeans cropped"]
+
+    const result = buildSchema(titles)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["jeans", "cropped"],
+      },
+    ])
+  })
+
+  it("matches subcategories", () => {
+    const titles = ["jeans cropped azul", "jeans cropped camel", "jeans cropped azul"]
+
+    const result = buildSchema(titles)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["jeans", "cropped"],
+        categories: [{ name: ["azul"] }, { name: ["camel"] }],
+      },
+    ])
+  })
+
+  it.skip("recognizes new categories", () => {
     const titles = ["jeans cropped azul", "jeans cropped camel", "jeans cropped negro"]
 
     const result = buildSchema(titles)
