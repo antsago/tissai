@@ -15,10 +15,14 @@ function commonWordsBetween(a: string[], b: string[]) {
 
 function categorize(title: string[], categories: Schema[]) {
   for (let [index, category] of categories.entries()) {
-    const commonWords = commonWordsBetween(title, category.name)
+    const matched = commonWordsBetween(title, category.name)
 
-    if (commonWords.length) {
-      return { commonWords, index }
+    if (matched.length) {
+      return {
+        matched,
+        category: index,
+        remaining: title.slice(matched.length) 
+      }
     }
   }
 }
@@ -32,20 +36,20 @@ function createCategory(title: string[], categories: Schema[]) {
     }
   }
 
-  if (match.commonWords.length === title.length) {
+  if (!match.remaining.length) {
     return {}
   }
 
   return {
-    replaceWith: match.index,
+    replaceWith: match.category,
     category: {
-      name: match.commonWords,
+      name: match.matched,
       categories: [
         {
-          name: categories[match.index].name.slice(match.commonWords.length),
+          name: categories[match.category].name.slice(match.matched.length),
         },
         {
-          name: title.slice(match.commonWords.length),
+          name: match.remaining,
         },
       ]
     },
