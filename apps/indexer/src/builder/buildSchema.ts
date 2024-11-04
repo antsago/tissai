@@ -1,6 +1,6 @@
 type Schema = { name: string[], categories?: Schema[] }
 
-function commonWordsFor(a: string[], b: string[]) {
+function commonWordsBetween(a: string[], b: string[]) {
   let common = [] as string[]
   for (let i = 0; i < a.length; i += 1) {
     if (a[i] !== b[i]) {
@@ -15,7 +15,7 @@ function commonWordsFor(a: string[], b: string[]) {
 
 function categorize(title: string[], categories: Schema[]) {
   for (let [index, category] of categories.entries()) {
-    const commonWords = commonWordsFor(title, category.name)
+    const commonWords = commonWordsBetween(title, category.name)
 
     if (commonWords.length) {
       return { commonWords, index }
