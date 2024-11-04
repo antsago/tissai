@@ -13,15 +13,35 @@ function commonWordsBetween(a: string[], b: string[]) {
   return common
 }
 
-function categorize(title: string[], categories: Schema[]) {
-  for (let [index, category] of categories.entries()) {
-    const matched = commonWordsBetween(title, category.name)
+type Categorized = {
+  category: number,
+  matched: string[],
+  remaining: string[],
+}
 
-    if (matched.length) {
+function categorize(title: string[], categories: Schema[]): Categorized|undefined {
+  for (let [index, category] of categories.entries()) {
+    const match = commonWordsBetween(title, category.name)
+
+    if (match.length) {
+      const remaining = title.slice(match.length) 
+
+      if (remaining.length && category.categories) {
+        const foo = categorize(remaining, category.categories)
+
+        if (foo) {
+          return {
+            matched: [...match, ...foo.matched],
+            category: index,
+            remaining: foo.remaining, 
+          }
+        }
+      }
+
       return {
-        matched,
+        matched: match,
         category: index,
-        remaining: title.slice(matched.length) 
+        remaining, 
       }
     }
   }

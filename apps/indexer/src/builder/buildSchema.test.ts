@@ -44,7 +44,7 @@ describe("buildSchema", () => {
     ])
   })
 
-  it("preserves other categories when matching", () => {
+  it("preserves other root categories when matching", () => {
     const titles = ["jegging", "jeans azul", "jeans camel"]
 
     const result = buildSchema(titles)
