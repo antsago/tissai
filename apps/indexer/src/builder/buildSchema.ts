@@ -27,13 +27,13 @@ function categorize(title: string[], categories: Schema[]): Categorized|undefine
       const remaining = title.slice(match.length) 
 
       if (remaining.length && category.categories) {
-        const foo = categorize(remaining, category.categories)
+        const recursiveMatch = categorize(remaining, category.categories)
 
-        if (foo) {
+        if (recursiveMatch) {
           return {
-            matched: [...match, ...foo.matched],
+            matched: [...match, ...recursiveMatch.matched],
             category: index,
-            remaining: foo.remaining, 
+            remaining: recursiveMatch.remaining, 
           }
         }
       }
