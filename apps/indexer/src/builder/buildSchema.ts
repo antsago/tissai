@@ -109,7 +109,7 @@ export function buildSchema(titles: string[]) {
         ? category === undefined
           ? categories
           : [...categories, category]
-        : categories.toSpliced(replaceWith, 1, category)
+        : categories.with(replaceWith, category)
   }
 
   return categories
