@@ -65,34 +65,31 @@ function createCategory(title: string[], categories: Schema[]) {
 
   const category = categories[match.category]
 
-  if (match.matched.length < category.name.length) {
-    return {
-      replaceWith: match.category,
-      category: {
-        name: match.matched,
-        categories: [
-          {
-            name: category.name.slice(match.matched.length),
-          },
-          {
-            name: match.remaining,
-          },
-        ]
-      },
-    }
-  }
+  const newNode = { name: match.remaining }
+
+  const newCategory =
+    match.matched.length < category.name.length
+      ? {
+          name: match.matched,
+          categories: [
+            {
+              name: category.name.slice(match.matched.length),
+              categories: category.categories,
+            },
+            newNode,
+          ],
+        }
+      : {
+          name: category.name,
+          categories: [
+            ...category.categories ?? [],
+            newNode,
+          ],
+        }
 
   return {
     replaceWith: match.category,
-    category: {
-      name: category.name,
-      categories: category.categories ? [
-        ...category.categories,
-        {
-          name: match.remaining,
-        },
-      ] : [ { name: match.remaining }]
-    },
+    category: newCategory,
   }
 }
 
