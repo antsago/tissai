@@ -89,7 +89,8 @@ describe("buildSchema", () => {
 
     expect(result).toStrictEqual([
       {
-        name: ["jegging"], children: []
+        name: ["jegging"],
+        children: [],
       },
       {
         name: ["jeans"],
@@ -108,23 +109,20 @@ describe("buildSchema", () => {
 
     expect(result).toStrictEqual([
       {
-        name: ["jeans", "cropped"], children: []
+        name: ["jeans", "cropped"],
+        children: [],
       },
     ])
   })
 
   it("matches subcategories", () => {
-    const titles = [
-      "jeans cropped azul",
-      "jeans cropped camel",
-      "jeans cropped azul",
-    ]
+    const titles = ["jeans azul", "jeans camel", "jeans azul"]
 
     const result = buildSchema(titles)
 
     expect(result).toStrictEqual([
       {
-        name: ["jeans", "cropped"],
+        name: ["jeans"],
         children: [
           { name: ["azul"], children: [] },
           { name: ["camel"], children: [] },
@@ -134,17 +132,13 @@ describe("buildSchema", () => {
   })
 
   it("recognizes new subcategories", () => {
-    const titles = [
-      "jeans cropped azul",
-      "jeans cropped camel",
-      "jeans cropped negro",
-    ]
+    const titles = ["jeans azul", "jeans camel", "jeans negro"]
 
     const result = buildSchema(titles)
 
     expect(result).toStrictEqual([
       {
-        name: ["jeans", "cropped"],
+        name: ["jeans"],
         children: [
           { name: ["azul"], children: [] },
           { name: ["camel"], children: [] },
@@ -175,7 +169,8 @@ describe("buildSchema", () => {
             ],
           },
           {
-            name: ["culotte"], children: [],
+            name: ["culotte"],
+            children: [],
           },
         ],
       },
@@ -183,11 +178,7 @@ describe("buildSchema", () => {
   })
 
   it("splits subcategories with common words", () => {
-    const titles = [
-      "jeans",
-      "jeans cropped azul",
-      "jeans cropped camel",
-    ]
+    const titles = ["jeans", "jeans cropped azul", "jeans cropped camel"]
 
     const result = buildSchema(titles)
 

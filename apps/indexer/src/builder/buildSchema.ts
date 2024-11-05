@@ -19,8 +19,10 @@ function matchNode(words: string[], node: Node) {
   if (common.length) {
     return {
       common,
-      remainingName: common.length < node.name.length && node.name.slice(common.length),
-      remainingWords: common.length < words.length && words.slice(common.length),
+      remainingName:
+        common.length < node.name.length && node.name.slice(common.length),
+      remainingWords:
+        common.length < words.length && words.slice(common.length),
     }
   }
 }
@@ -38,8 +40,8 @@ function updateNode(node: Node, match: Match): Node {
         {
           name: match.remainingWords,
           children: [],
-        }
-      ]
+        },
+      ],
     }
   }
 
@@ -51,14 +53,14 @@ function updateNode(node: Node, match: Match): Node {
           name: match.remainingName,
           children: node.children,
         },
-      ]
+      ],
     }
   }
 
   if (match.remainingWords) {
     return {
       name: node.name,
-      children: updateChildren(match.remainingWords, node.children)
+      children: updateChildren(match.remainingWords, node.children),
     }
   }
 
