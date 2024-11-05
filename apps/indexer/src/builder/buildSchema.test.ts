@@ -4,11 +4,11 @@ import { buildSchema } from "./buildSchema.js"
 describe("buildSchema", () => {
   it.skip("works", () => {
     const titles = [
-      "Jeans cropped marine azul",
-      "Jeans cropped marine camel",
-      "Jeans cropped marine negro",
-      "Jeans Culotte Lavado Sostenible",
-      "Jeans Culotte Lavado Sostenible",
+      "jeans cropped marine azul",
+      "jeans cropped marine camel",
+      "jeans cropped marine negro",
+      "jeans culotte lavado sostenible",
+      "jeans culotte lavado sostenible",
     ]
 
     const result = buildSchema(titles)
@@ -73,7 +73,11 @@ describe("buildSchema", () => {
   })
 
   it("matches subcategories", () => {
-    const titles = ["jeans cropped azul", "jeans cropped camel", "jeans cropped azul"]
+    const titles = [
+      "jeans cropped azul",
+      "jeans cropped camel",
+      "jeans cropped azul",
+    ]
 
     const result = buildSchema(titles)
 
@@ -86,14 +90,22 @@ describe("buildSchema", () => {
   })
 
   it("recognizes new subcategories", () => {
-    const titles = ["jeans cropped azul", "jeans cropped camel", "jeans cropped negro"]
+    const titles = [
+      "jeans cropped azul",
+      "jeans cropped camel",
+      "jeans cropped negro",
+    ]
 
     const result = buildSchema(titles)
 
     expect(result).toStrictEqual([
       {
         name: ["jeans", "cropped"],
-        categories: [{ name: ["azul"] }, { name: ["camel"] }, { name: ["negro"]}],
+        categories: [
+          { name: ["azul"] },
+          { name: ["camel"] },
+          { name: ["negro"] },
+        ],
       },
     ])
   })

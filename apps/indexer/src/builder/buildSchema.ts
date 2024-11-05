@@ -11,20 +11,23 @@ function commonWordsBetween(a: string[], b: string[]) {
   return common
 }
 
-type Schema = { name: string[], categories?: Schema[] }
+type Schema = { name: string[]; categories?: Schema[] }
 
 type Categorized = {
-  category: number,
-  matched: string[],
-  remaining: string[],
+  category: number
+  matched: string[]
+  remaining: string[]
 }
 
-function categorize(title: string[], categories: Schema[]): Categorized|undefined {
+function categorize(
+  title: string[],
+  categories: Schema[],
+): Categorized | undefined {
   for (let [index, category] of categories.entries()) {
     const match = commonWordsBetween(title, category.name)
 
     if (match.length) {
-      const remaining = title.slice(match.length) 
+      const remaining = title.slice(match.length)
 
       if (remaining.length && category.categories) {
         const recursiveMatch = categorize(remaining, category.categories)
@@ -33,7 +36,7 @@ function categorize(title: string[], categories: Schema[]): Categorized|undefine
           return {
             matched: [...match, ...recursiveMatch.matched],
             category: index,
-            remaining: recursiveMatch.remaining, 
+            remaining: recursiveMatch.remaining,
           }
         }
       }
@@ -41,7 +44,7 @@ function categorize(title: string[], categories: Schema[]): Categorized|undefine
       return {
         matched: match,
         category: index,
-        remaining, 
+        remaining,
       }
     }
   }
@@ -50,7 +53,7 @@ function categorize(title: string[], categories: Schema[]): Categorized|undefine
 function createCategory(title: string[], categories: Schema[]) {
   const match = categorize(title, categories)
 
-  if(!match) {
+  if (!match) {
     return {
       category: { name: title },
     }
@@ -101,11 +104,12 @@ export function buildSchema(titles: string[]) {
 
     const { category, replaceWith } = createCategory(words, categories)
 
-    categories = replaceWith === undefined
-      ? category === undefined
-        ? categories
-        : [...categories, category]
-      : categories.toSpliced(replaceWith, 1, category)
+    categories =
+      replaceWith === undefined
+        ? category === undefined
+          ? categories
+          : [...categories, category]
+        : categories.toSpliced(replaceWith, 1, category)
   }
 
   return categories

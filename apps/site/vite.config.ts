@@ -6,7 +6,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       external: ["@tissai/db", "@tissai/python-pool", "@tissai/tokenizer"],
-    }
+    },
   },
   test: {
     include: ["src/**/*.{test,spec}.{js,ts}"],

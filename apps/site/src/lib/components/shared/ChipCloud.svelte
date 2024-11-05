@@ -37,7 +37,9 @@
   }
 </script>
 
-<div class="flex flex-row flex-wrap justify-center content-center px-1 {classes}">
+<div
+  class="flex flex-row flex-wrap justify-center content-center px-1 {classes}"
+>
   {#each chips.map(normalizeChips) as chip}
     {@const style = `order:${chip.order}; z-index: ${chip.zIndex};`}
     {@const chipClasses = `rounded-full ${dense ? "-mx-1 -my-px" : "mx-1 my-1"} px-4 py-1 text-xs border whitespace-nowrap ${chip.style}`}
