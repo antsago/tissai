@@ -1,5 +1,3 @@
-type Schema = { name: string[], categories?: Schema[] }
-
 function commonWordsBetween(a: string[], b: string[]) {
   let common = [] as string[]
   for (let i = 0; i < a.length; i += 1) {
@@ -12,6 +10,8 @@ function commonWordsBetween(a: string[], b: string[]) {
 
   return common
 }
+
+type Schema = { name: string[], categories?: Schema[] }
 
 type Categorized = {
   category: number,
