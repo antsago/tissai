@@ -19,15 +19,15 @@ function matchNode(words: string[], node: Node) {
   if (common.length) {
     return {
       common,
-      remainingName: node.name.slice(common.length),
-      remainingWords: words.slice(common.length),
+      remainingName: common.length < node.name.length && node.name.slice(common.length),
+      remainingWords: common.length < words.length && words.slice(common.length),
     }
   }
 }
 type Match = NonNullable<ReturnType<typeof matchNode>>
 
 function updateNode(node: Node, match: Match): Node {
-  if (match.remainingName.length && match.remainingWords.length) {
+  if (match.remainingName && match.remainingWords) {
     return {
       name: match.common,
       children: [
@@ -43,7 +43,7 @@ function updateNode(node: Node, match: Match): Node {
     }
   }
 
-  if (match.remainingName.length) {
+  if (match.remainingName) {
     return {
       name: match.common,
       children: [
@@ -55,7 +55,7 @@ function updateNode(node: Node, match: Match): Node {
     }
   }
 
-  if (match.remainingWords.length) {
+  if (match.remainingWords) {
     return {
       name: node.name,
       children: updateChildren(match.remainingWords, node.children)
