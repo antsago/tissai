@@ -13,63 +13,64 @@ function commonWordsBetween(a: string[], b: string[]) {
 
 type Node = { name: string[]; children: Node[] }
 
-function buildNode(words: string[], node: Node): Node|undefined {
-  const match = commonWordsBetween(words, node.name)
+function matchNode(words: string[], node: Node) {
+  const common = commonWordsBetween(words, node.name)
 
-  // no match
-  if (!match.length) {
-    return
-  }
-
-  // Full match
-  if (match.length === node.name.length && match.length === words.length) {
-    return node
-  }
-
-  // name and remaining left
-  if (match.length < words.length && match.length < node.name.length) {
+  if (common.length) {
     return {
-      name: match,
+      common,
+      remainingName: node.name.slice(common.length),
+      remainingWords: words.slice(common.length),
+    }
+  }
+}
+type Match = NonNullable<ReturnType<typeof matchNode>>
+
+function updateNode(node: Node, match: Match): Node {
+  if (match.remainingName.length && match.remainingWords.length) {
+    return {
+      name: match.common,
       children: [
         {
-          name: node.name.slice(match.length),
+          name: match.remainingName,
           children: node.children,
         },
         {
-          name: words.slice(match.length),
+          name: match.remainingWords,
           children: [],
         }
       ]
     }
   }
 
-  // name left
-  if (match.length < node.name.length) {
+  if (match.remainingName.length) {
     return {
-      name: match,
+      name: match.common,
       children: [
         {
-          name: node.name.slice(match.length),
+          name: match.remainingName,
           children: node.children,
         },
       ]
     }
   }
 
-  // remaining left
-  if (match.length < words.length) {
+  if (match.remainingWords.length) {
     return {
-      name: match,
-      children: buildChildren(words.slice(match.length), node.children)
+      name: node.name,
+      children: updateChildren(match.remainingWords, node.children)
     }
   }
+
+  return node
 }
 
-function buildChildren(words: string[], nodes: Node[]): Node[] {
+function updateChildren(words: string[], nodes: Node[]): Node[] {
   for (let [index, node] of nodes.entries()) {
-    const match = buildNode(words, node)
+    const match = matchNode(words, node)
     if (match) {
-      return nodes.with(index, match)
+      const updated = updateNode(node, match)
+      return nodes.with(index, updated)
     }
   }
 
@@ -81,7 +82,7 @@ export function buildSchema(titles: string[]) {
 
   for (let title of titles) {
     const words = title.split(" ")
-    rootNodes = buildChildren(words, rootNodes)
+    rootNodes = updateChildren(words, rootNodes)
   }
 
   return rootNodes
