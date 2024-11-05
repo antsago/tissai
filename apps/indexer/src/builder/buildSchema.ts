@@ -11,80 +11,69 @@ function commonWordsBetween(a: string[], b: string[]) {
   return common
 }
 
-type Node = { name: string[]; children?: Node[] }
+type Node = { name: string[]; children: Node[] }
 
-type Categorized = {
-  category: number
-  matched: string[]
-  remaining: string[]
-}
+function buildNode(words: string[], node: Node): Node|undefined {
+  const match = commonWordsBetween(words, node.name)
 
-function categorize(title: string[], nodes: Node[]): Categorized | undefined {
-  for (let [index, category] of nodes.entries()) {
-    const match = commonWordsBetween(title, category.name)
-
-    if (match.length) {
-      const remaining = title.slice(match.length)
-
-      if (remaining.length && category.children) {
-        const recursiveMatch = categorize(remaining, category.children)
-
-        if (recursiveMatch) {
-          return {
-            matched: [...match, ...recursiveMatch.matched],
-            category: index,
-            remaining: recursiveMatch.remaining,
-          }
-        }
-      }
-
-      return {
-        matched: match,
-        category: index,
-        remaining,
-      }
-    }
+  // no match
+  if (!match.length) {
+    return
   }
-}
 
-function createCategory(title: string[], nodes: Node[]) {
-  const match = categorize(title, nodes)
+  // Full match
+  if (match.length === node.name.length && match.length === words.length) {
+    return node
+  }
 
-  if (!match) {
+  // name and remaining left
+  if (match.length < words.length && match.length < node.name.length) {
     return {
-      category: { name: title },
+      name: match,
+      children: [
+        {
+          name: node.name.slice(match.length),
+          children: node.children,
+        },
+        {
+          name: words.slice(match.length),
+          children: [],
+        }
+      ]
     }
   }
 
-  if (!match.remaining.length) {
-    return {}
+  // name left
+  if (match.length < node.name.length) {
+    return {
+      name: match,
+      children: [
+        {
+          name: node.name.slice(match.length),
+          children: node.children,
+        },
+      ]
+    }
   }
 
-  const category = nodes[match.category]
-
-  const newNode = { name: match.remaining }
-
-  const newCategory =
-    match.matched.length < category.name.length
-      ? {
-          name: match.matched,
-          children: [
-            {
-              name: category.name.slice(match.matched.length),
-              children: category.children,
-            },
-            newNode,
-          ],
-        }
-      : {
-          name: category.name,
-          children: [...(category.children ?? []), newNode],
-        }
-
-  return {
-    replaceWith: match.category,
-    category: newCategory,
+  // remaining left
+  if (match.length < words.length) {
+    return {
+      name: match,
+      children: buildChildren(words.slice(match.length), node.children)
+    }
   }
+}
+
+function buildChildren(words: string[], nodes: Node[]): Node[] {
+  for (let [index, node] of nodes.entries()) {
+    const match = buildNode(words, node)
+    if (match) {
+      return nodes.with(index, match)
+    }
+  }
+
+  return [...nodes, { name: words, children: [] }]
 }
 
 export function buildSchema(titles: string[]) {
@@ -92,15 +81,7 @@ export function buildSchema(titles: string[]) {
 
   for (let title of titles) {
     const words = title.split(" ")
-
-    const { category, replaceWith } = createCategory(words, rootNodes)
-
-    rootNodes =
-      replaceWith === undefined
-        ? category === undefined
-          ? rootNodes
-          : [...rootNodes, category]
-        : rootNodes.with(replaceWith, category)
+    rootNodes = buildChildren(words, rootNodes)
   }
 
   return rootNodes

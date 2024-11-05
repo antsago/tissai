@@ -57,9 +57,11 @@ describe("buildSchema", () => {
     expect(result).toStrictEqual([
       {
         name: ["jeans", "cropped"],
+        children: [],
       },
       {
         name: ["jegging"],
+        children: [],
       },
     ])
   })
@@ -73,8 +75,8 @@ describe("buildSchema", () => {
       {
         name: ["jeans", "cropped"],
         children: [
-          { name: ["azul"], children: undefined },
-          { name: ["camel"] },
+          { name: ["azul"], children: [] },
+          { name: ["camel"], children: [] },
         ],
       },
     ])
@@ -87,13 +89,13 @@ describe("buildSchema", () => {
 
     expect(result).toStrictEqual([
       {
-        name: ["jegging"],
+        name: ["jegging"], children: []
       },
       {
         name: ["jeans"],
         children: [
-          { name: ["azul"], children: undefined },
-          { name: ["camel"] },
+          { name: ["azul"], children: [] },
+          { name: ["camel"], children: [] },
         ],
       },
     ])
@@ -106,7 +108,7 @@ describe("buildSchema", () => {
 
     expect(result).toStrictEqual([
       {
-        name: ["jeans", "cropped"],
+        name: ["jeans", "cropped"], children: []
       },
     ])
   })
@@ -124,8 +126,8 @@ describe("buildSchema", () => {
       {
         name: ["jeans", "cropped"],
         children: [
-          { name: ["azul"], children: undefined },
-          { name: ["camel"] },
+          { name: ["azul"], children: [] },
+          { name: ["camel"], children: [] },
         ],
       },
     ])
@@ -144,9 +146,9 @@ describe("buildSchema", () => {
       {
         name: ["jeans", "cropped"],
         children: [
-          { name: ["azul"], children: undefined },
-          { name: ["camel"] },
-          { name: ["negro"] },
+          { name: ["azul"], children: [] },
+          { name: ["camel"], children: [] },
+          { name: ["negro"], children: [] },
         ],
       },
     ])
@@ -168,12 +170,37 @@ describe("buildSchema", () => {
           {
             name: ["cropped"],
             children: [
-              { name: ["azul"], children: undefined },
-              { name: ["camel"] },
+              { name: ["azul"], children: [] },
+              { name: ["camel"], children: [] },
             ],
           },
           {
-            name: ["culotte"],
+            name: ["culotte"], children: [],
+          },
+        ],
+      },
+    ])
+  })
+
+  it("splits subcategories with common words", () => {
+    const titles = [
+      "jeans",
+      "jeans cropped azul",
+      "jeans cropped camel",
+    ]
+
+    const result = buildSchema(titles)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["jeans"],
+        children: [
+          {
+            name: ["cropped"],
+            children: [
+              { name: ["azul"], children: [] },
+              { name: ["camel"], children: [] },
+            ],
           },
         ],
       },
