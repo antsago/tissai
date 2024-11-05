@@ -11,7 +11,7 @@ function commonWordsBetween(a: string[], b: string[]) {
   return common
 }
 
-type Schema = { name: string[]; categories?: Schema[] }
+type Node = { name: string[]; children?: Node[] }
 
 type Categorized = {
   category: number
@@ -19,18 +19,15 @@ type Categorized = {
   remaining: string[]
 }
 
-function categorize(
-  title: string[],
-  categories: Schema[],
-): Categorized | undefined {
-  for (let [index, category] of categories.entries()) {
+function categorize(title: string[], nodes: Node[]): Categorized | undefined {
+  for (let [index, category] of nodes.entries()) {
     const match = commonWordsBetween(title, category.name)
 
     if (match.length) {
       const remaining = title.slice(match.length)
 
-      if (remaining.length && category.categories) {
-        const recursiveMatch = categorize(remaining, category.categories)
+      if (remaining.length && category.children) {
+        const recursiveMatch = categorize(remaining, category.children)
 
         if (recursiveMatch) {
           return {
@@ -50,8 +47,8 @@ function categorize(
   }
 }
 
-function createCategory(title: string[], categories: Schema[]) {
-  const match = categorize(title, categories)
+function createCategory(title: string[], nodes: Node[]) {
+  const match = categorize(title, nodes)
 
   if (!match) {
     return {
@@ -63,7 +60,7 @@ function createCategory(title: string[], categories: Schema[]) {
     return {}
   }
 
-  const category = categories[match.category]
+  const category = nodes[match.category]
 
   const newNode = { name: match.remaining }
 
@@ -71,20 +68,17 @@ function createCategory(title: string[], categories: Schema[]) {
     match.matched.length < category.name.length
       ? {
           name: match.matched,
-          categories: [
+          children: [
             {
               name: category.name.slice(match.matched.length),
-              categories: category.categories,
+              children: category.children,
             },
             newNode,
           ],
         }
       : {
           name: category.name,
-          categories: [
-            ...category.categories ?? [],
-            newNode,
-          ],
+          children: [...(category.children ?? []), newNode],
         }
 
   return {
@@ -94,20 +88,20 @@ function createCategory(title: string[], categories: Schema[]) {
 }
 
 export function buildSchema(titles: string[]) {
-  let categories = [] as Schema[]
+  let rootNodes = [] as Node[]
 
   for (let title of titles) {
     const words = title.split(" ")
 
-    const { category, replaceWith } = createCategory(words, categories)
+    const { category, replaceWith } = createCategory(words, rootNodes)
 
-    categories =
+    rootNodes =
       replaceWith === undefined
         ? category === undefined
-          ? categories
-          : [...categories, category]
-        : categories.with(replaceWith, category)
+          ? rootNodes
+          : [...rootNodes, category]
+        : rootNodes.with(replaceWith, category)
   }
 
-  return categories
+  return rootNodes
 }

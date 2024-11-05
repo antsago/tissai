@@ -39,7 +39,10 @@ describe("buildSchema", () => {
     expect(result).toStrictEqual([
       {
         name: ["jeans", "cropped"],
-        categories: [{ name: ["azul"], categories: undefined }, { name: ["camel"] }],
+        children: [
+          { name: ["azul"], children: undefined },
+          { name: ["camel"] },
+        ],
       },
     ])
   })
@@ -55,7 +58,10 @@ describe("buildSchema", () => {
       },
       {
         name: ["jeans"],
-        categories: [{ name: ["azul"], categories: undefined }, { name: ["camel"] }],
+        children: [
+          { name: ["azul"], children: undefined },
+          { name: ["camel"] },
+        ],
       },
     ])
   })
@@ -73,48 +79,70 @@ describe("buildSchema", () => {
   })
 
   it("matches subcategories", () => {
-    const titles = ["jeans cropped azul", "jeans cropped camel", "jeans cropped azul"]
+    const titles = [
+      "jeans cropped azul",
+      "jeans cropped camel",
+      "jeans cropped azul",
+    ]
 
     const result = buildSchema(titles)
 
     expect(result).toStrictEqual([
       {
         name: ["jeans", "cropped"],
-        categories: [{ name: ["azul"], categories: undefined }, { name: ["camel"] }],
+        children: [
+          { name: ["azul"], children: undefined },
+          { name: ["camel"] },
+        ],
       },
     ])
   })
 
   it("recognizes new subcategories", () => {
-    const titles = ["jeans cropped azul", "jeans cropped camel", "jeans cropped negro"]
+    const titles = [
+      "jeans cropped azul",
+      "jeans cropped camel",
+      "jeans cropped negro",
+    ]
 
     const result = buildSchema(titles)
 
     expect(result).toStrictEqual([
       {
         name: ["jeans", "cropped"],
-        categories: [{ name: ["azul"], categories: undefined }, { name: ["camel"] }, { name: ["negro"]}],
+        children: [
+          { name: ["azul"], children: undefined },
+          { name: ["camel"] },
+          { name: ["negro"] },
+        ],
       },
     ])
   })
 
   it("preserves subcategories when splitting a category", () => {
-    const titles = ["jeans cropped azul", "jeans cropped camel", "jeans culotte"]
+    const titles = [
+      "jeans cropped azul",
+      "jeans cropped camel",
+      "jeans culotte",
+    ]
 
     const result = buildSchema(titles)
 
     expect(result).toStrictEqual([
       {
         name: ["jeans"],
-        categories: [
+        children: [
           {
             name: ["cropped"],
-            categories: [{ name: ["azul"], categories: undefined }, { name: ["camel"] }],
+            children: [
+              { name: ["azul"], children: undefined },
+              { name: ["camel"] },
+            ],
           },
           {
-            name: ["culotte"]
+            name: ["culotte"],
           },
-        ]
+        ],
       },
     ])
   })
