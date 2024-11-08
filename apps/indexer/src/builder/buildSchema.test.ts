@@ -56,10 +56,12 @@ describe("buildSchema", () => {
 
     expect(result).toStrictEqual([
       {
+        id: expect.any(String),
         name: ["jeans", "cropped"],
         children: [],
       },
       {
+        id: expect.any(String),
         name: ["jegging"],
         children: [],
       },
@@ -73,10 +75,19 @@ describe("buildSchema", () => {
 
     expect(result).toStrictEqual([
       {
+        id: expect.any(String),
         name: ["jeans", "cropped"],
         children: [
-          { name: ["azul"], children: [] },
-          { name: ["camel"], children: [] },
+          {
+            id: expect.any(String),
+            name: ["azul"],
+            children: [],
+          },
+          {
+            id: expect.any(String),
+            name: ["camel"],
+            children: [],
+          },
         ],
       },
     ])
@@ -89,14 +100,24 @@ describe("buildSchema", () => {
 
     expect(result).toStrictEqual([
       {
+        id: expect.any(String),
         name: ["jegging"],
         children: [],
       },
       {
+        id: expect.any(String),
         name: ["jeans"],
         children: [
-          { name: ["azul"], children: [] },
-          { name: ["camel"], children: [] },
+          {
+            id: expect.any(String),
+            name: ["azul"],
+            children: [],
+          },
+          {
+            id: expect.any(String),
+            name: ["camel"],
+            children: [],
+          },
         ],
       },
     ])
@@ -109,6 +130,7 @@ describe("buildSchema", () => {
 
     expect(result).toStrictEqual([
       {
+        id: expect.any(String),
         name: ["jeans", "cropped"],
         children: [],
       },
@@ -122,10 +144,19 @@ describe("buildSchema", () => {
 
     expect(result).toStrictEqual([
       {
+        id: expect.any(String),
         name: ["jeans"],
         children: [
-          { name: ["azul"], children: [] },
-          { name: ["camel"], children: [] },
+          {
+            id: expect.any(String),
+            name: ["azul"],
+            children: [],
+          },
+          {
+            id: expect.any(String),
+            name: ["camel"],
+            children: [],
+          },
         ],
       },
     ])
@@ -138,11 +169,24 @@ describe("buildSchema", () => {
 
     expect(result).toStrictEqual([
       {
+        id: expect.any(String),
         name: ["jeans"],
         children: [
-          { name: ["azul"], children: [] },
-          { name: ["camel"], children: [] },
-          { name: ["negro"], children: [] },
+          {
+            id: expect.any(String),
+            name: ["azul"],
+            children: [],
+          },
+          {
+            id: expect.any(String),
+            name: ["camel"],
+            children: [],
+          },
+          {
+            id: expect.any(String),
+            name: ["negro"],
+            children: [],
+          },
         ],
       },
     ])
@@ -159,16 +203,27 @@ describe("buildSchema", () => {
 
     expect(result).toStrictEqual([
       {
+        id: expect.any(String),
         name: ["jeans"],
         children: [
           {
+            id: expect.any(String),
             name: ["cropped"],
             children: [
-              { name: ["azul"], children: [] },
-              { name: ["camel"], children: [] },
+              {
+                id: expect.any(String),
+                name: ["azul"],
+                children: [],
+              },
+              {
+                id: expect.any(String),
+                name: ["camel"],
+                children: [],
+              },
             ],
           },
           {
+            id: expect.any(String),
             name: ["culotte"],
             children: [],
           },
@@ -184,13 +239,23 @@ describe("buildSchema", () => {
 
     expect(result).toStrictEqual([
       {
+        id: expect.any(String),
         name: ["jeans"],
         children: [
           {
+            id: expect.any(String),
             name: ["cropped"],
             children: [
-              { name: ["azul"], children: [] },
-              { name: ["camel"], children: [] },
+              {
+                id: expect.any(String),
+                name: ["azul"],
+                children: [],
+              },
+              {
+                id: expect.any(String),
+                name: ["camel"],
+                children: [],
+              },
             ],
           },
         ],

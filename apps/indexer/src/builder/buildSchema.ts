@@ -1,3 +1,4 @@
+import { randomUUID, type UUID } from "crypto"
 function commonWordsBetween(a: string[], b: string[]) {
   let common = [] as string[]
   for (let i = 0; i < a.length; i += 1) {
@@ -11,7 +12,7 @@ function commonWordsBetween(a: string[], b: string[]) {
   return common
 }
 
-type Node = { name: string[]; children: Node[] }
+type Node = { name: string[]; children: Node[]; id: UUID }
 
 function matchNode(words: string[], node: Node) {
   const common = commonWordsBetween(words, node.name)
@@ -31,13 +32,16 @@ type Match = NonNullable<ReturnType<typeof matchNode>>
 function updateNode(node: Node, match: Match): Node {
   if (match.remainingName && match.remainingWords) {
     return {
+      id: randomUUID(),
       name: match.common,
       children: [
         {
+          id: randomUUID(),
           name: match.remainingName,
           children: node.children,
         },
         {
+          id: randomUUID(),
           name: match.remainingWords,
           children: [],
         },
@@ -47,9 +51,11 @@ function updateNode(node: Node, match: Match): Node {
 
   if (match.remainingName) {
     return {
+      id: randomUUID(),
       name: match.common,
       children: [
         {
+          id: randomUUID(),
           name: match.remainingName,
           children: node.children,
         },
@@ -59,6 +65,7 @@ function updateNode(node: Node, match: Match): Node {
 
   if (match.remainingWords) {
     return {
+      id: randomUUID(),
       name: node.name,
       children: updateChildren(match.remainingWords, node.children),
     }
@@ -76,7 +83,14 @@ function updateChildren(words: string[], nodes: Node[]): Node[] {
     }
   }
 
-  return [...nodes, { name: words, children: [] }]
+  return [
+    ...nodes,
+    {
+      id: randomUUID(),
+      name: words,
+      children: [],
+    },
+  ]
 }
 
 export function buildSchema(titles: string[]) {
