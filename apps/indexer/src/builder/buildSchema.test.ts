@@ -58,11 +58,13 @@ describe("buildSchema", () => {
       {
         id: expect.any(String),
         name: ["jeans", "cropped"],
+        parent: null,
         children: [],
       },
       {
         id: expect.any(String),
         name: ["jegging"],
+        parent: null,
         children: [],
       },
     ])
@@ -77,14 +79,17 @@ describe("buildSchema", () => {
       {
         id: expect.any(String),
         name: ["jeans", "cropped"],
+        parent: null,
         children: [
           {
             id: expect.any(String),
             name: ["azul"],
+            parent: result[0].id,
             children: [],
           },
           {
             id: expect.any(String),
+            parent: result[0].id,
             name: ["camel"],
             children: [],
           },
@@ -102,20 +107,24 @@ describe("buildSchema", () => {
       {
         id: expect.any(String),
         name: ["jegging"],
+        parent: null,
         children: [],
       },
       {
         id: expect.any(String),
         name: ["jeans"],
+        parent: null,
         children: [
           {
             id: expect.any(String),
             name: ["azul"],
+            parent: result[1].id,
             children: [],
           },
           {
             id: expect.any(String),
             name: ["camel"],
+            parent: result[1].id,
             children: [],
           },
         ],
@@ -132,6 +141,7 @@ describe("buildSchema", () => {
       {
         id: expect.any(String),
         name: ["jeans", "cropped"],
+        parent: null,
         children: [],
       },
     ])
@@ -146,14 +156,17 @@ describe("buildSchema", () => {
       {
         id: expect.any(String),
         name: ["jeans"],
+        parent: null,
         children: [
           {
             id: expect.any(String),
+            parent: result[0].id,
             name: ["azul"],
             children: [],
           },
           {
             id: expect.any(String),
+            parent: result[0].id,
             name: ["camel"],
             children: [],
           },
@@ -171,20 +184,24 @@ describe("buildSchema", () => {
       {
         id: expect.any(String),
         name: ["jeans"],
+        parent: null,
         children: [
           {
             id: expect.any(String),
             name: ["azul"],
+            parent: result[0].id,
             children: [],
           },
           {
             id: expect.any(String),
             name: ["camel"],
+            parent: result[0].id,
             children: [],
           },
           {
             id: expect.any(String),
             name: ["negro"],
+            parent: result[0].id,
             children: [],
           },
         ],
@@ -205,18 +222,22 @@ describe("buildSchema", () => {
       {
         id: expect.any(String),
         name: ["jeans"],
+        parent: null,
         children: [
           {
             id: expect.any(String),
             name: ["cropped"],
+            parent: result[0].id,
             children: [
               {
                 id: expect.any(String),
                 name: ["azul"],
+                parent: result[0].children[0].id,
                 children: [],
               },
               {
                 id: expect.any(String),
+                parent: result[0].children[0].id,
                 name: ["camel"],
                 children: [],
               },
@@ -225,6 +246,7 @@ describe("buildSchema", () => {
           {
             id: expect.any(String),
             name: ["culotte"],
+            parent: result[0].id,
             children: [],
           },
         ],
@@ -241,19 +263,23 @@ describe("buildSchema", () => {
       {
         id: expect.any(String),
         name: ["jeans"],
+        parent: null,
         children: [
           {
             id: expect.any(String),
             name: ["cropped"],
+            parent: result[0].id,
             children: [
               {
                 id: expect.any(String),
                 name: ["azul"],
+                parent: result[0].children[0].id,
                 children: [],
               },
               {
                 id: expect.any(String),
                 name: ["camel"],
+                parent: result[0].children[0].id,
                 children: [],
               },
             ],

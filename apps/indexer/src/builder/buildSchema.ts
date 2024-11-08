@@ -12,7 +12,12 @@ function commonWordsBetween(a: string[], b: string[]) {
   return common
 }
 
-type Node = { name: string[]; children: Node[]; id: UUID }
+type Node = {
+  id: UUID
+  name: string[]
+  parent: UUID | null
+  children: Node[]
+}
 
 function matchNode(words: string[], node: Node) {
   const common = commonWordsBetween(words, node.name)
@@ -29,19 +34,24 @@ function matchNode(words: string[], node: Node) {
 }
 type Match = NonNullable<ReturnType<typeof matchNode>>
 
-function updateNode(node: Node, match: Match): Node {
+function updateNode(node: Node, match: Match, parent: UUID | null): Node {
   if (match.remainingName && match.remainingWords) {
+    const id = randomUUID()
+    const childId = randomUUID()
     return {
-      id: randomUUID(),
+      id,
+      parent,
       name: match.common,
       children: [
         {
-          id: randomUUID(),
+          id: childId,
+          parent: id,
           name: match.remainingName,
-          children: node.children,
+          children: node.children.map((c) => ({ ...c, parent: childId })),
         },
         {
           id: randomUUID(),
+          parent: id,
           name: match.remainingWords,
           children: [],
         },
@@ -50,35 +60,49 @@ function updateNode(node: Node, match: Match): Node {
   }
 
   if (match.remainingName) {
+    const id = randomUUID()
+    const childId = randomUUID()
     return {
-      id: randomUUID(),
+      id,
       name: match.common,
+      parent,
       children: [
         {
-          id: randomUUID(),
+          id: childId,
           name: match.remainingName,
-          children: node.children,
+          parent: id,
+          children: node.children.map((c) => ({ ...c, parent: childId })),
         },
       ],
     }
   }
 
   if (match.remainingWords) {
+    const id = randomUUID()
     return {
-      id: randomUUID(),
+      id,
       name: node.name,
-      children: updateChildren(match.remainingWords, node.children),
+      parent: node.parent,
+      children: updateChildren(
+        match.remainingWords,
+        node.children.map((c) => ({ ...c, parent: id })),
+        id,
+      ),
     }
   }
 
   return node
 }
 
-function updateChildren(words: string[], nodes: Node[]): Node[] {
+function updateChildren(
+  words: string[],
+  nodes: Node[],
+  parent: UUID | null,
+): Node[] {
   for (let [index, node] of nodes.entries()) {
     const match = matchNode(words, node)
     if (match) {
-      const updated = updateNode(node, match)
+      const updated = updateNode(node, match, parent)
       return nodes.with(index, updated)
     }
   }
@@ -88,6 +112,7 @@ function updateChildren(words: string[], nodes: Node[]): Node[] {
     {
       id: randomUUID(),
       name: words,
+      parent,
       children: [],
     },
   ]
@@ -98,7 +123,7 @@ export function buildSchema(titles: string[]) {
 
   for (let title of titles) {
     const words = title.split(" ")
-    rootNodes = updateChildren(words, rootNodes)
+    rootNodes = updateChildren(words, rootNodes, null)
   }
 
   return rootNodes
