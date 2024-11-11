@@ -44,7 +44,10 @@ describe("addToSchema", () => {
       // "jean de corte cónico ceñido 512™",
     ]
 
-    const result = titles.reduce((schema, title) => addToSchema(title, schema), [] as Node[])
+    const result = titles.reduce(
+      (schema, title) => addToSchema(title, schema),
+      [] as Node[],
+    )
 
     expect(result).toStrictEqual([])
   })
@@ -133,26 +136,25 @@ describe("addToSchema", () => {
 
     const result = addToSchema("jeans camel", schema)
 
-    expect(result).toStrictEqual(
-      [
-        {
-          name: ["jegging"],
-          children: [],
-        },
-        {
-          name: ["jeans"],
-          children: [
-            {
-              name: ["azul"],
-              children: [],
-            },
-            {
-              name: ["camel"],
-              children: [],
-            },
-          ],
-        },
-      ])
+    expect(result).toStrictEqual([
+      {
+        name: ["jegging"],
+        children: [],
+      },
+      {
+        name: ["jeans"],
+        children: [
+          {
+            name: ["azul"],
+            children: [],
+          },
+          {
+            name: ["camel"],
+            children: [],
+          },
+        ],
+      },
+    ])
   })
 
   it("matches subcategories", () => {
@@ -160,10 +162,10 @@ describe("addToSchema", () => {
       {
         name: ["jeans"],
         children: [
-{
-              name: ["azul"],
-              children: [],
-            }
+          {
+            name: ["azul"],
+            children: [],
+          },
         ],
       },
     ] as Node[]
@@ -178,10 +180,10 @@ describe("addToSchema", () => {
       {
         name: ["jeans"],
         children: [
-{
-              name: ["azul"],
-              children: [],
-            }
+          {
+            name: ["azul"],
+            children: [],
+          },
         ],
       },
     ] as Node[]
@@ -199,7 +201,7 @@ describe("addToSchema", () => {
           {
             name: ["camel"],
             children: [],
-          }
+          },
         ],
       },
     ])
@@ -213,7 +215,7 @@ describe("addToSchema", () => {
           {
             name: ["azul"],
             children: [],
-          }
+          },
         ],
       },
     ] as Node[]
@@ -250,7 +252,7 @@ describe("addToSchema", () => {
           {
             name: ["cropped", "azul"],
             children: [],
-          }
+          },
         ],
       },
     ] as Node[]
@@ -290,13 +292,13 @@ describe("addToSchema", () => {
               {
                 name: ["azul"],
                 children: [],
-              }
+              },
             ],
           },
           {
             name: ["pockets"],
             children: [],
-          }
+          },
         ],
       },
     ] as Node[]
