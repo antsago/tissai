@@ -54,9 +54,7 @@ describe("addToSchema", () => {
 
     expect(result).toStrictEqual([
       {
-        id: expect.any(String),
         name: ["jeans", "cropped"],
-        parent: null,
         children: [],
       },
     ])
@@ -65,9 +63,7 @@ describe("addToSchema", () => {
   it("preserves existing categories", () => {
     const schema = [
       {
-        id: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
         name: ["jeans", "cropped"],
-        parent: null,
         children: [],
       },
     ] as Node[]
@@ -77,9 +73,7 @@ describe("addToSchema", () => {
     expect(result).toStrictEqual([
       schema[0],
       {
-        id: expect.any(String),
         name: ["jegging"],
-        parent: null,
         children: [],
       },
     ])
@@ -88,9 +82,7 @@ describe("addToSchema", () => {
   it("matches existing categories", () => {
     const schema = [
       {
-        id: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
         name: ["jeans", "cropped"],
-        parent: null,
         children: [],
       },
     ] as Node[]
@@ -103,9 +95,7 @@ describe("addToSchema", () => {
   it("common initial words become a parent category", () => {
     const schema = [
       {
-        id: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
         name: ["jeans", "cropped", "azul"],
-        parent: null,
         children: [],
       },
     ] as Node[]
@@ -114,19 +104,13 @@ describe("addToSchema", () => {
 
     expect(result).toStrictEqual([
       {
-        id: expect.any(String),
-        parent: null,
         name: ["jeans", "cropped"],
         children: [
           {
-            id: expect.any(String),
             name: ["azul"],
-            parent: result[0].id,
             children: [],
           },
           {
-            id: expect.any(String),
-            parent: result[0].id,
             name: ["camel"],
             children: [],
           },
@@ -138,14 +122,10 @@ describe("addToSchema", () => {
   it("preserves other root categories when matching", () => {
     const schema = [
       {
-        id: "b0a18c36-a729-4544-ac5f-b90394acc324",
         name: ["jegging"],
-        parent: null,
         children: [],
       },
       {
-        id: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
-        parent: null,
         name: ["jeans", "azul"],
         children: [],
       },
@@ -156,25 +136,17 @@ describe("addToSchema", () => {
     expect(result).toStrictEqual(
       [
         {
-          id: "b0a18c36-a729-4544-ac5f-b90394acc324",
           name: ["jegging"],
-          parent: null,
           children: [],
         },
         {
-          id: expect.any(String),
-          parent: null,
           name: ["jeans"],
           children: [
             {
-              id: expect.any(String),
               name: ["azul"],
-              parent: result[1].id,
               children: [],
             },
             {
-              id: expect.any(String),
-              parent: result[1].id,
               name: ["camel"],
               children: [],
             },
@@ -186,14 +158,10 @@ describe("addToSchema", () => {
   it("matches subcategories", () => {
     const schema = [
       {
-        id: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
-        parent: null,
         name: ["jeans"],
         children: [
 {
-        id: "b0a18c36-a729-4544-ac5f-b90394acc324",
               name: ["azul"],
-              parent: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
               children: [],
             }
         ],
@@ -208,14 +176,10 @@ describe("addToSchema", () => {
   it("recognizes new subcategories", () => {
     const schema = [
       {
-        id: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
-        parent: null,
         name: ["jeans"],
         children: [
 {
-        id: "b0a18c36-a729-4544-ac5f-b90394acc324",
               name: ["azul"],
-              parent: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
               children: [],
             }
         ],
@@ -226,20 +190,14 @@ describe("addToSchema", () => {
 
     expect(result).toStrictEqual([
       {
-        id: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
-        parent: null,
         name: ["jeans"],
         children: [
           {
-            id: "b0a18c36-a729-4544-ac5f-b90394acc324",
             name: ["azul"],
-            parent: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
             children: [],
           },
           {
-            id: expect.any(String),
             name: ["camel"],
-            parent: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
             children: [],
           }
         ],
@@ -250,14 +208,10 @@ describe("addToSchema", () => {
   it("preserves subcategories when splitting a category", () => {
     const schema = [
       {
-        id: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
-        parent: null,
         name: ["jeans", "cropped"],
         children: [
           {
-            id: "b0a18c36-a729-4544-ac5f-b90394acc324",
             name: ["azul"],
-            parent: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
             children: [],
           }
         ],
@@ -268,27 +222,19 @@ describe("addToSchema", () => {
 
     expect(result).toStrictEqual([
       {
-        id: expect.any(String),
-        parent: null,
         name: ["jeans"],
         children: [
           {
-            id: expect.any(String),
-            parent: result[0].id,
             name: ["cropped"],
             children: [
               {
-                id: expect.any(String),
                 name: ["azul"],
-                parent: result[0].children[0].id,
                 children: [],
               },
             ],
           },
           {
-            id: expect.any(String),
             name: ["culotte"],
-            parent: result[0].id,
             children: [],
           },
         ],
@@ -299,14 +245,10 @@ describe("addToSchema", () => {
   it("splits subcategories with common words", () => {
     const schema = [
       {
-        id: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
-        parent: null,
         name: ["jeans"],
         children: [
           {
-            id: "b0a18c36-a729-4544-ac5f-b90394acc324",
             name: ["cropped", "azul"],
-            parent: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
             children: [],
           }
         ],
@@ -317,25 +259,17 @@ describe("addToSchema", () => {
 
     expect(result).toStrictEqual([
       {
-        id: expect.any(String),
-        parent: null,
         name: ["jeans"],
         children: [
           {
-            id: expect.any(String),
-            parent: result[0].id,
             name: ["cropped"],
             children: [
               {
-                id: expect.any(String),
                 name: ["azul"],
-                parent: result[0].children[0].id,
                 children: [],
               },
               {
-                id: expect.any(String),
                 name: ["camel"],
-                parent: result[0].children[0].id,
                 children: [],
               },
             ],
@@ -348,27 +282,19 @@ describe("addToSchema", () => {
   it("converts common subcategories into properties", () => {
     const schema = [
       {
-        id: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
-        parent: null,
         name: ["jeans"],
         children: [
           {
-            id: "b0a18c36-a729-4544-ac5f-b90394acc324",
             name: ["cropped"],
-            parent: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
             children: [
               {
-                id: "00eb914e-d109-4270-a04f-763a4db6594f",
                 name: ["azul"],
-                parent: "b0a18c36-a729-4544-ac5f-b90394acc324",
                 children: [],
               }
             ],
           },
           {
-            id: "2bbd72ca-dcb8-43da-954c-51b31134185b",
             name: ["pockets"],
-            parent: "006cb2b6-0851-4695-99cc-23a2e8a1909f",
             children: [],
           }
         ],
@@ -379,28 +305,20 @@ describe("addToSchema", () => {
 
     expect(result).toStrictEqual([
       {
-        id: expect.any(String),
-        parent: null,
         name: ["jeans"],
         properties: [
           {
-            id: expect.any(String),
             name: ["azul"],
-            parent: result[0].id,
             children: [],
           },
         ],
         children: [
           {
-            id: expect.any(String),
             name: ["cropped"],
-            parent: result[0].id,
             children: [],
           },
           {
-            id: expect.any(String),
             name: ["pockets"],
-            parent: result[0].id,
             children: [],
           },
         ],
