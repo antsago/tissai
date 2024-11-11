@@ -14,7 +14,7 @@ function commonWordsBetween(a: string[], b: string[]) {
 export type Node = {
   name: string[]
   children: Node[]
-  properties?: Node[]
+  properties: Node[]
 }
 
 function matchNode(words: string[], node: Node) {
@@ -36,13 +36,16 @@ function updateNode(node: Node, match: Match): Node {
   if (match.remainingName && match.remainingWords) {
     return {
       name: match.common,
+      properties: [],
       children: [
         {
           name: match.remainingName,
+          properties: [],
           children: node.children,
         },
         {
           name: match.remainingWords,
+          properties: [],
           children: [],
         },
       ],
@@ -52,10 +55,12 @@ function updateNode(node: Node, match: Match): Node {
   if (match.remainingName) {
     return {
       name: match.common,
+      properties: [],
       children: [
         {
           name: match.remainingName,
           children: node.children,
+          properties: [],
         },
       ],
     }
@@ -83,18 +88,18 @@ function matchChildren(children: Node[], otherNodes: Node[]) {
 
   const updatedNodes = children.reduce((nodes, child) => {
     let isChildMatched = false
-    const filteredNodes =  nodes.map(({children: nodeChildren, ...node}) => ({
+    const filteredNodes = nodes.map(({ children: nodeChildren, ...node }) => ({
       ...node,
       children: nodeChildren.filter((otherChild) => {
         const match = commonWordsBetween(child.name, otherChild.name)
 
-        if(match.length === child.name.length) {
+        if (match.length === child.name.length) {
           isChildMatched = true
           return false
         }
 
         return true
-      })
+      }),
     }))
 
     if (isChildMatched) {
@@ -121,7 +126,10 @@ function updateChildren(
     const match = matchNode(words, node)
     if (match) {
       const updated = updateNode(node, match)
-      const { commonChildren, updatedNodes, remainingChildren } = matchChildren(updated.children, nodes.toSpliced(index))
+      const { commonChildren, updatedNodes, remainingChildren } = matchChildren(
+        updated.children,
+        nodes.toSpliced(index),
+      )
 
       const finalNode = {
         ...updated,
@@ -140,6 +148,7 @@ function updateChildren(
       ...nodes,
       {
         name: words,
+        properties: [],
         children: [],
       },
     ],

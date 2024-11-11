@@ -58,6 +58,7 @@ describe("addToSchema", () => {
     expect(result).toStrictEqual([
       {
         name: ["jeans", "cropped"],
+        properties: [],
         children: [],
       },
     ])
@@ -68,6 +69,7 @@ describe("addToSchema", () => {
       {
         name: ["jeans", "cropped"],
         children: [],
+        properties: [],
       },
     ] as Node[]
 
@@ -78,6 +80,7 @@ describe("addToSchema", () => {
       {
         name: ["jegging"],
         children: [],
+        properties: [],
       },
     ])
   })
@@ -87,6 +90,7 @@ describe("addToSchema", () => {
       {
         name: ["jeans", "cropped"],
         children: [],
+        properties: [],
       },
     ] as Node[]
 
@@ -100,6 +104,7 @@ describe("addToSchema", () => {
       {
         name: ["jeans", "cropped", "azul"],
         children: [],
+        properties: [],
       },
     ] as Node[]
 
@@ -108,14 +113,17 @@ describe("addToSchema", () => {
     expect(result).toStrictEqual([
       {
         name: ["jeans", "cropped"],
+        properties: [],
         children: [
           {
             name: ["azul"],
             children: [],
+            properties: [],
           },
           {
             name: ["camel"],
             children: [],
+            properties: [],
           },
         ],
       },
@@ -127,10 +135,12 @@ describe("addToSchema", () => {
       {
         name: ["jegging"],
         children: [],
+        properties: [],
       },
       {
         name: ["jeans", "azul"],
         children: [],
+        properties: [],
       },
     ] as Node[]
 
@@ -139,17 +149,21 @@ describe("addToSchema", () => {
     expect(result).toStrictEqual([
       {
         name: ["jegging"],
+        properties: [],
         children: [],
       },
       {
         name: ["jeans"],
+        properties: [],
         children: [
           {
             name: ["azul"],
+            properties: [],
             children: [],
           },
           {
             name: ["camel"],
+            properties: [],
             children: [],
           },
         ],
@@ -165,6 +179,7 @@ describe("addToSchema", () => {
         children: [
           {
             name: ["azul"],
+            properties: [],
             children: [],
           },
         ],
@@ -180,9 +195,11 @@ describe("addToSchema", () => {
     const schema = [
       {
         name: ["jeans"],
+        properties: [],
         children: [
           {
             name: ["azul"],
+            properties: [],
             children: [],
           },
         ],
@@ -198,10 +215,12 @@ describe("addToSchema", () => {
         children: [
           {
             name: ["azul"],
+            properties: [],
             children: [],
           },
           {
             name: ["camel"],
+            properties: [],
             children: [],
           },
         ],
@@ -213,9 +232,11 @@ describe("addToSchema", () => {
     const schema = [
       {
         name: ["jeans", "cropped"],
+        properties: [],
         children: [
           {
             name: ["azul"],
+            properties: [],
             children: [],
           },
         ],
@@ -227,18 +248,22 @@ describe("addToSchema", () => {
     expect(result).toStrictEqual([
       {
         name: ["jeans"],
+        properties: [],
         children: [
           {
             name: ["cropped"],
+            properties: [],
             children: [
               {
                 name: ["azul"],
+                properties: [],
                 children: [],
               },
             ],
           },
           {
             name: ["culotte"],
+            properties: [],
             children: [],
           },
         ],
@@ -250,9 +275,11 @@ describe("addToSchema", () => {
     const schema = [
       {
         name: ["jeans"],
+        properties: [],
         children: [
           {
             name: ["cropped", "azul"],
+            properties: [],
             children: [],
           },
         ],
@@ -268,13 +295,16 @@ describe("addToSchema", () => {
         children: [
           {
             name: ["cropped"],
+            properties: [],
             children: [
               {
                 name: ["azul"],
+                properties: [],
                 children: [],
               },
               {
                 name: ["camel"],
+                properties: [],
                 children: [],
               },
             ],
@@ -288,18 +318,22 @@ describe("addToSchema", () => {
     const schema = [
       {
         name: ["jeans"],
+        properties: [],
         children: [
           {
             name: ["cropped"],
+            properties: [],
             children: [
               {
                 name: ["azul"],
+                properties: [],
                 children: [],
               },
             ],
           },
           {
             name: ["pockets"],
+            properties: [],
             children: [],
           },
         ],
@@ -314,12 +348,14 @@ describe("addToSchema", () => {
         properties: [
           {
             name: ["azul"],
+            properties: [],
             children: [],
           },
         ],
         children: [
           {
             name: ["cropped"],
+            properties: [],
             children: [],
           },
           {
@@ -336,18 +372,22 @@ describe("addToSchema", () => {
     const schema = [
       {
         name: ["jeans"],
+        properties: [],
         children: [
           {
             name: ["cropped"],
+            properties: [],
             children: [
               {
                 name: ["azul"],
+                properties: [],
                 children: [],
               },
             ],
           },
           {
             name: ["pockets", "azul"],
+            properties: [],
             children: [],
           },
         ],
@@ -362,19 +402,23 @@ describe("addToSchema", () => {
         properties: [
           {
             name: ["azul"],
+            properties: [],
             children: [],
           },
         ],
         children: [
           {
             name: ["cropped"],
+            properties: [],
             children: [],
           },
           {
             name: ["pockets"],
+            properties: [],
             children: [
               {
                 name: ["camel"],
+                properties: [],
                 children: [],
               },
             ],
