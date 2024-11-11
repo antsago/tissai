@@ -10,15 +10,15 @@ describe("addToSchema", () => {
       "jeans high waist pockets azul",
       "jeans high waist pockets azul oscuro",
       "jeans high waist pockets camel",
-      // "jeans flare azul",
+      "jeans flare azul",
       // "jeans flare verde kaki",
       // "jeans slim straight lavado claro",
-      // "jeans culotte lavado sostenibl",
-      // "jeans slim lavado medio ensuciao",
-      // "jeans regular lavado oscur",
-      // "jeans regular negro lavad",
-      // "jeans regular lavado medio oscuo",
-      // "jeans mom algodó",
+      // "jeans culotte lavado sostenible",
+      // "jeans slim lavado medio ensuciado",
+      // "jeans regular lavado oscuro",
+      // "jeans regular negro lavado",
+      // "jeans regular lavado medio oscuro",
+      // "jeans mom algodón",
       // "jeans kick flare lavado sostenible",
       // "jeans skinny lavado medio ensuciado",
       // "jeans straight lavado sostenible",
@@ -366,6 +366,32 @@ describe("addToSchema", () => {
         ],
       },
     ])
+  })
+
+  it("matches existing properties", () => {
+    const schema = [
+      {
+        name: ["jeans"],
+        properties: [
+          {
+            name: ["azul"],
+            properties: [],
+            children: [],
+          }
+        ],
+        children: [
+          {
+            name: ["cropped"],
+            properties: [],
+            children: [],
+          },
+        ],
+      },
+    ] as Node[]
+
+    const result = addToSchema("jeans cropped azul", schema)
+
+    expect(result).toStrictEqual(schema)
   })
 
   it("identifies newly-split properties", () => {

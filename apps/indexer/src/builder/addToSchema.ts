@@ -1,4 +1,4 @@
-function commonWordsBetween(a: string[], b: string[]) {
+function commonStartBetween(a: string[], b: string[]) {
   let common = [] as string[]
   for (let i = 0; i < a.length; i += 1) {
     if (a[i] !== b[i]) {
@@ -11,22 +11,64 @@ function commonWordsBetween(a: string[], b: string[]) {
   return common
 }
 
+const hasSubstring = (title: string[], substring: string[]) => {
+  for (let startIndex = 0; startIndex < title.length; startIndex += 1) {
+    const match = commonStartBetween(title.slice(startIndex), substring)
+
+    if (match.length === substring.length) {
+      return title.toSpliced(startIndex, substring.length)
+    }
+  }
+
+  return title
+}
+
 export type Node = {
   name: string[]
   children: Node[]
   properties: Node[]
 }
 
+function matchProperties(words: string[], properties: Node[]) {
+  const matchedProperties = [] as Node[]
+  
+  const remainingWords = properties.reduce((nonMatchedWords, property) => {
+    if (!nonMatchedWords.length) {
+      return nonMatchedWords
+    }
+
+    const match = hasSubstring(nonMatchedWords, property.name)
+
+    if (match.length < nonMatchedWords.length) {
+      matchedProperties.push(property)
+    }
+    return match
+  }, words)
+
+  return { remainingWords, matchedProperties }
+}
+
 function matchNode(words: string[], node: Node) {
-  const common = commonWordsBetween(words, node.name)
+  const common = commonStartBetween(words, node.name)
 
   if (common.length) {
+    const remainingWords = common.length < words.length && words.slice(common.length)
+    const remainingName = common.length < node.name.length && node.name.slice(common.length)
+
+    if (!remainingWords) {
+      return {
+        common,
+        remainingName,
+        remainingWords,
+      }
+    }
+
+    const nonMatched = matchProperties(remainingWords, node.properties)
+
     return {
       common,
-      remainingName:
-        common.length < node.name.length && node.name.slice(common.length),
-      remainingWords:
-        common.length < words.length && words.slice(common.length),
+      remainingName,
+      remainingWords: nonMatched.remainingWords,
     }
   }
 }
@@ -91,7 +133,7 @@ function matchChildren(children: Node[], otherNodes: Node[]) {
     const filteredNodes = nodes.map(({ children: nodeChildren, ...node }) => ({
       ...node,
       children: nodeChildren.filter((otherChild) => {
-        const match = commonWordsBetween(child.name, otherChild.name)
+        const match = commonStartBetween(child.name, otherChild.name)
 
         if (match.length === child.name.length) {
           isChildMatched = true
