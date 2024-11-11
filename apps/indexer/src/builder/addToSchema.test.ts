@@ -1,5 +1,5 @@
 import { expect, describe, it } from "vitest"
-import { addToSchema, type Node } from "./buildSchema.js"
+import { addToSchema, type Node } from "./addToSchema.js"
 
 describe("addToSchema", () => {
   it.skip("works", () => {
