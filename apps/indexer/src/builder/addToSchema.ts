@@ -17,6 +17,7 @@ export type Node = {
   name: string[]
   parent: UUID | null
   children: Node[]
+  properties?: Node[]
 }
 
 function matchNode(words: string[], node: Node) {
@@ -79,35 +80,91 @@ function updateNode(node: Node, match: Match, parent: UUID | null): Node {
 
   if (match.remainingWords) {
     const id = node.id
+    const { children, newProperty } = updateChildren(
+        match.remainingWords,
+        node.children.map((c) => ({ ...c, parent: id })),
+        id,
+      )
+    
+    if(newProperty) {
+      return {
+        id,
+        name: node.name,
+        parent: node.parent,
+        children,
+        properties: [...node.properties ?? [], newProperty],
+      }
+    }
+
     return {
       id,
       name: node.name,
       parent: node.parent,
-      children: updateChildren(
-        match.remainingWords,
-        node.children.map((c) => ({ ...c, parent: id })),
-        id,
-      ),
+      children,
     }
   }
 
   return node
 }
 
+function findCommonSubcategories(nodes: Node[], forIndex: number) {
+  const newChild = nodes[forIndex].children.at(-1)
+  if (!newChild) {
+    return 
+  }
+
+  for (let [index, node] of nodes.entries()) {
+    if (index === forIndex) {
+      continue
+    }
+
+    const commonSubcategory = node.children.findIndex(child => {
+      const match = commonWordsBetween(child.name, newChild.name)
+      return match.length === newChild.name.length
+    })
+
+    if (commonSubcategory !== -1) {
+      return [index, commonSubcategory] as const
+    }
+  }
+}
+
 function updateChildren(
   words: string[],
   nodes: Node[],
   parent: UUID | null,
-): Node[] {
+): { children: Node[], newProperty?: Node } {
   for (let [index, node] of nodes.entries()) {
     const match = matchNode(words, node)
     if (match) {
       const updated = updateNode(node, match, parent)
-      return nodes.with(index, updated)
+      const newNodes = nodes.with(index, updated)
+
+      const commonSubcategory = findCommonSubcategories(newNodes, index)
+
+      if (!commonSubcategory) {
+        return {
+          children: newNodes,
+        }
+      }
+
+      const newChild = newNodes[index].children.splice(-1)
+      const existingChild = newNodes[commonSubcategory[0]].children.splice(commonSubcategory[1])
+
+      return {
+        children: newNodes,
+        newProperty: {
+          id: randomUUID(),
+          parent,
+          children: [],
+          name: newChild[0].name,
+        }
+      }
     }
   }
 
-  return [
+  return {
+    children: [
     ...nodes,
     {
       id: randomUUID(),
@@ -115,10 +172,11 @@ function updateChildren(
       parent,
       children: [],
     },
-  ]
+  ],
+  }
 }
 
 export function addToSchema(title: string, schema: Node[]) {
   const words = title.split(" ")
-  return updateChildren(words, schema, null)
+  return updateChildren(words, schema, null).children
 }
