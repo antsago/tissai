@@ -12,7 +12,7 @@ function commonWordsBetween(a: string[], b: string[]) {
   return common
 }
 
-type Node = {
+export type Node = {
   id: UUID
   name: string[]
   parent: UUID | null
@@ -78,7 +78,7 @@ function updateNode(node: Node, match: Match, parent: UUID | null): Node {
   }
 
   if (match.remainingWords) {
-    const id = randomUUID()
+    const id = node.id
     return {
       id,
       name: node.name,
@@ -118,13 +118,7 @@ function updateChildren(
   ]
 }
 
-export function buildSchema(titles: string[]) {
-  let rootNodes = [] as Node[]
-
-  for (let title of titles) {
-    const words = title.split(" ")
-    rootNodes = updateChildren(words, rootNodes, null)
-  }
-
-  return rootNodes
+export function addToSchema(title: string, schema: Node[]) {
+  const words = title.split(" ")
+  return updateChildren(words, schema, null)
 }
