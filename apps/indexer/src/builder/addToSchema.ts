@@ -75,7 +75,7 @@ function updateNode(node: Node, match: Match): Node {
     return {
       name: node.name,
       children,
-      properties: [...(node.properties ?? []), ...(newProperties ?? [])],
+      properties: [...node.properties, ...newProperties],
     }
   }
 
@@ -121,7 +121,7 @@ function matchChildren(children: Node[], otherNodes: Node[]) {
 function updateChildren(
   words: string[],
   nodes: Node[],
-): { children: Node[]; newProperties?: Node[] } {
+): { children: Node[]; newProperties: Node[] } {
   for (let [index, node] of nodes.entries()) {
     const match = matchNode(words, node)
     if (match) {
@@ -144,6 +144,7 @@ function updateChildren(
   }
 
   return {
+    newProperties: [],
     children: [
       ...nodes,
       {
