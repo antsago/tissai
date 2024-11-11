@@ -62,79 +62,75 @@ function updateNode(node: Node, match: Match): Node {
   }
 
   if (match.remainingWords) {
-    const { children, newProperty } = updateChildren(
+    const { children, newProperties } = updateChildren(
       match.remainingWords,
       node.children,
     )
 
-    if (newProperty) {
-      return {
-        name: node.name,
-        children,
-        properties: [...(node.properties ?? []), newProperty],
-      }
-    }
-
     return {
       name: node.name,
       children,
+      properties: [...(node.properties ?? []), ...(newProperties ?? [])],
     }
   }
 
   return node
 }
 
-function findCommonSubcategories(nodes: Node[], forIndex: number) {
-  const newChild = nodes[forIndex].children.at(-1)
-  if (!newChild) {
-    return
-  }
+function matchChildren(children: Node[], otherNodes: Node[]) {
+  const common = [] as Node[]
+  const remaining = [] as Node[]
 
-  for (let [index, node] of nodes.entries()) {
-    if (index === forIndex) {
-      continue
+  const updatedNodes = children.reduce((nodes, child) => {
+    let isChildMatched = false
+    const filteredNodes =  nodes.map(({children: nodeChildren, ...node}) => ({
+      ...node,
+      children: nodeChildren.filter((otherChild) => {
+        const match = commonWordsBetween(child.name, otherChild.name)
+
+        if(match.length === child.name.length) {
+          isChildMatched = true
+          return false
+        }
+
+        return true
+      })
+    }))
+
+    if (isChildMatched) {
+      common.push(child)
+    } else {
+      remaining.push(child)
     }
 
-    const commonSubcategory = node.children.findIndex((child) => {
-      const match = commonWordsBetween(child.name, newChild.name)
-      return match.length === newChild.name.length
-    })
+    return filteredNodes
+  }, otherNodes)
 
-    if (commonSubcategory !== -1) {
-      return [index, commonSubcategory] as const
-    }
+  return {
+    commonChildren: common,
+    remainingChildren: remaining,
+    updatedNodes,
   }
 }
 
 function updateChildren(
   words: string[],
   nodes: Node[],
-): { children: Node[]; newProperty?: Node } {
+): { children: Node[]; newProperties?: Node[] } {
   for (let [index, node] of nodes.entries()) {
     const match = matchNode(words, node)
     if (match) {
       const updated = updateNode(node, match)
-      const newNodes = nodes.with(index, updated)
+      const { commonChildren, updatedNodes, remainingChildren } = matchChildren(updated.children, nodes.toSpliced(index))
 
-      const commonSubcategory = findCommonSubcategories(newNodes, index)
-
-      if (!commonSubcategory) {
-        return {
-          children: newNodes,
-        }
+      const finalNode = {
+        ...updated,
+        children: remainingChildren,
       }
 
-      const newChild = newNodes[index].children.splice(-1)
-      const existingChild = newNodes[commonSubcategory[0]].children.splice(
-        commonSubcategory[1],
-      )
-
       return {
-        children: newNodes,
-        newProperty: {
-          children: [],
-          name: newChild[0].name,
-        },
+        children: updatedNodes.toSpliced(index, 0, finalNode),
+        newProperties: commonChildren,
       }
     }
   }

@@ -161,6 +161,7 @@ describe("addToSchema", () => {
     const schema = [
       {
         name: ["jeans"],
+        properties: [],
         children: [
           {
             name: ["azul"],
@@ -193,6 +194,7 @@ describe("addToSchema", () => {
     expect(result).toStrictEqual([
       {
         name: ["jeans"],
+        properties: [],
         children: [
           {
             name: ["azul"],
@@ -262,6 +264,7 @@ describe("addToSchema", () => {
     expect(result).toStrictEqual([
       {
         name: ["jeans"],
+        properties: [],
         children: [
           {
             name: ["cropped"],
@@ -322,6 +325,59 @@ describe("addToSchema", () => {
           {
             name: ["pockets"],
             children: [],
+            properties: [],
+          },
+        ],
+      },
+    ])
+  })
+
+  it("identifies newly-split properties", () => {
+    const schema = [
+      {
+        name: ["jeans"],
+        children: [
+          {
+            name: ["cropped"],
+            children: [
+              {
+                name: ["azul"],
+                children: [],
+              },
+            ],
+          },
+          {
+            name: ["pockets", "azul"],
+            children: [],
+          },
+        ],
+      },
+    ] as Node[]
+
+    const result = addToSchema("jeans pockets camel", schema)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["jeans"],
+        properties: [
+          {
+            name: ["azul"],
+            children: [],
+          },
+        ],
+        children: [
+          {
+            name: ["cropped"],
+            children: [],
+          },
+          {
+            name: ["pockets"],
+            children: [
+              {
+                name: ["camel"],
+                children: [],
+              },
+            ],
           },
         ],
       },
