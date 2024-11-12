@@ -31,7 +31,7 @@ export type Node = {
 
 function matchProperties(words: string[], properties: Node[]) {
   const matchedProperties = [] as Node[]
-  
+
   const remainingWords = properties.reduce((nonMatchedWords, property) => {
     if (!nonMatchedWords.length) {
       return nonMatchedWords
@@ -52,8 +52,10 @@ function matchNode(words: string[], node: Node) {
   const common = commonStartBetween(words, node.name)
 
   if (common.length) {
-    const remainingWords = common.length < words.length && words.slice(common.length)
-    const remainingName = common.length < node.name.length && node.name.slice(common.length)
+    const remainingWords =
+      common.length < words.length && words.slice(common.length)
+    const remainingName =
+      common.length < node.name.length && node.name.slice(common.length)
 
     if (!remainingWords) {
       return {

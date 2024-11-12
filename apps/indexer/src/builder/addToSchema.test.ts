@@ -377,7 +377,7 @@ describe("addToSchema", () => {
             name: ["azul"],
             properties: [],
             children: [],
-          }
+          },
         ],
         children: [
           {
