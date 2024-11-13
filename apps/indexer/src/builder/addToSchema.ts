@@ -172,7 +172,7 @@ function updateChildren(
       const updated = updateNode(node, match)
       const { commonChildren, updatedNodes, remainingChildren } = matchChildren(
         updated.children,
-        nodes.toSpliced(index),
+        nodes.toSpliced(index, 1),
       )
 
       const finalNode = {

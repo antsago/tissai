@@ -453,4 +453,57 @@ describe("addToSchema", () => {
       },
     ])
   })
+
+  it("preserves follow-up children when splitting", () => {
+    const schema = [
+      {
+        name: ["jeans"],
+        properties: [],
+        children: [
+          {
+            name: ["slim", "straight"],
+            properties: [],
+            children: [],
+          },
+          {
+            name: ["culotte"],
+            properties: [],
+            children: [],
+          },
+        ],
+      },
+    ] as Node[]
+
+    const result = addToSchema("jeans slim lavado", schema)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["jeans"],
+        properties: [],
+        children: [
+          {
+            name: ["slim"],
+            properties: [],
+            children: [
+              {
+                name: ["straight"],
+                properties: [],
+                children: [],
+              },
+              {
+                name: ["lavado"],
+                properties: [],
+                children: [],
+              },
+            ],
+          },
+          {
+            name: ["culotte"],
+            properties: [],
+            children: [],
+          },
+        ],
+      },
+    ])
+  })
 })
