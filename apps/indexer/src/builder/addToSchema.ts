@@ -204,24 +204,28 @@ function updateChildren(
   }
 }
 
-function interpret(words: string[], nodes: Node[]): { remainingWords: string[], path: number[] } {
+type Interpretation = { index: number, matched: string[] }[]
+
+function interpret(words: string[], nodes: Node[]): { remainingWords: string[], path: Interpretation } {
   for (let [index, node] of nodes.entries()) {
-    const common = commonStartBetween(words, node.name)
-    if (!common.length) {
+    const matched = commonStartBetween(words, node.name)
+    if (!matched.length) {
       continue
     }
 
-    const { remainingWords, path } = interpret(words.slice(common.length), node.children)
+    const { remainingWords, path } = interpret(words.slice(matched.length), node.children)
     return {
       remainingWords,
-      path: [index, ...path],
+      path: [{
+        index, matched,
+      }, ...path],
     }
   }
 
   return { remainingWords: words, path: [] }
 }
 
-function addNewNode(words: string[], path: number[], schema: Node[]): Node[] {
+function addNewNode(words: string[], path: Interpretation, schema: Node[]): Node[] {
   if (!words.length) {
     return schema
   }
@@ -230,7 +234,7 @@ function addNewNode(words: string[], path: number[], schema: Node[]): Node[] {
     return [...schema, { name: words, children: [], properties: [] }]
   }
 
-  const index = path[0]
+  const { index } = path[0]
   const node = schema[index]
   const children = addNewNode(words, path.slice(1), node.children)
 
@@ -240,10 +244,37 @@ function addNewNode(words: string[], path: number[], schema: Node[]): Node[] {
   })
 }
 
+function splitNode(path: Interpretation, schema: Node[]) {
+  if (!path.length) {
+    return schema
+  }
+
+  const { index, matched } = path[0]
+  const node = schema[index]
+
+  if (matched.length === node.name.length) {
+    return schema
+  }
+  const newNode = {
+    name: matched,
+    children: [
+      {
+        name: node.name.slice(matched.length),
+        children: node.children,
+        properties: [],
+      }
+    ],
+    properties: [],
+  }
+
+  return schema.with(index, newNode)
+}
+
 export function addToSchema(title: string, schema: Node[]) {
   const words = title.split(" ")
   const { remainingWords, path } = interpret(words, schema)
   let updatedSchema = addNewNode(remainingWords, path, schema)
+  updatedSchema = splitNode(path, updatedSchema)
   return updatedSchema
 }
 

@@ -125,6 +125,32 @@ describe("addToSchema", () => {
     ])
   })
 
+  it("splits partially matches nodes", () => {
+    const schema = [
+      {
+        name: ["jeans", "cropped"],
+        children: [],
+        properties: [],
+      },
+    ] as Node[]
+
+    const result = addToSchema("jeans", schema)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["jeans"],
+        properties: [],
+        children: [
+          {
+            name: ["cropped"],
+            children: [],
+            properties: [],
+          },
+        ],
+      },
+    ])
+  })
+
   // it("common initial words become a parent category", () => {
   //   const schema = [
   //     {
