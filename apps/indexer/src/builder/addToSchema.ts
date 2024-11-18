@@ -217,14 +217,19 @@ function interpret(words: string[], nodes: Node[]) {
   return words
 }
 
-function addNewNode(words: string[], schema: Node[]): Node[] {
+function addNewNode(words: string[], schema: Node[]) {
+  if (!words.length) {
+    return schema
+  }
+
   return [...schema, { name: words, children: [], properties: [] }]
 }
 
 export function addToSchema(title: string, schema: Node[]) {
   const words = title.split(" ")
   const remainingWords = interpret(words, schema)
-  return addNewNode(remainingWords, schema)
+  let updatedSchema = addNewNode(remainingWords, schema)
+  return updatedSchema
 }
 
 // export function addToSchema(title: string, schema: Node[]) {

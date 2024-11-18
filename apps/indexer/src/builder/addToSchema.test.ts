@@ -52,7 +52,7 @@ describe("addToSchema", () => {
     expect(result).toStrictEqual([])
   })
 
-  it.only("recognizes new titles as categories", () => {
+  it("recognizes new titles as categories", () => {
     const result = addToSchema("jeans cropped", [])
 
     expect(result).toStrictEqual([
@@ -64,7 +64,7 @@ describe("addToSchema", () => {
     ])
   })
 
-  it.only("preserves existing categories", () => {
+  it("preserves existing categories", () => {
     const schema = [
       {
         name: ["jeans", "cropped"],
@@ -85,7 +85,7 @@ describe("addToSchema", () => {
     ])
   })
 
-  it.only("matches existing categories", () => {
+  it("matches existing categories", () => {
     const schema = [
       {
         name: ["jeans", "cropped"],
@@ -99,411 +99,411 @@ describe("addToSchema", () => {
     expect(result).toStrictEqual(schema)
   })
 
-  it("common initial words become a parent category", () => {
-    const schema = [
-      {
-        name: ["jeans", "cropped", "azul"],
-        children: [],
-        properties: [],
-      },
-    ] as Node[]
+  // it.only("common initial words become a parent category", () => {
+  //   const schema = [
+  //     {
+  //       name: ["jeans", "cropped", "azul"],
+  //       children: [],
+  //       properties: [],
+  //     },
+  //   ] as Node[]
 
-    const result = addToSchema("jeans cropped camel", schema)
+  //   const result = addToSchema("jeans cropped camel", schema)
 
-    expect(result).toStrictEqual([
-      {
-        name: ["jeans", "cropped"],
-        properties: [],
-        children: [
-          {
-            name: ["azul"],
-            children: [],
-            properties: [],
-          },
-          {
-            name: ["camel"],
-            children: [],
-            properties: [],
-          },
-        ],
-      },
-    ])
-  })
+  //   expect(result).toStrictEqual([
+  //     {
+  //       name: ["jeans", "cropped"],
+  //       properties: [],
+  //       children: [
+  //         {
+  //           name: ["azul"],
+  //           children: [],
+  //           properties: [],
+  //         },
+  //         {
+  //           name: ["camel"],
+  //           children: [],
+  //           properties: [],
+  //         },
+  //       ],
+  //     },
+  //   ])
+  // })
 
-  it("preserves other root categories when matching", () => {
-    const schema = [
-      {
-        name: ["jegging"],
-        children: [],
-        properties: [],
-      },
-      {
-        name: ["jeans", "azul"],
-        children: [],
-        properties: [],
-      },
-    ] as Node[]
+  // it("preserves other root categories when matching", () => {
+  //   const schema = [
+  //     {
+  //       name: ["jegging"],
+  //       children: [],
+  //       properties: [],
+  //     },
+  //     {
+  //       name: ["jeans", "azul"],
+  //       children: [],
+  //       properties: [],
+  //     },
+  //   ] as Node[]
 
-    const result = addToSchema("jeans camel", schema)
+  //   const result = addToSchema("jeans camel", schema)
 
-    expect(result).toStrictEqual([
-      {
-        name: ["jegging"],
-        properties: [],
-        children: [],
-      },
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["azul"],
-            properties: [],
-            children: [],
-          },
-          {
-            name: ["camel"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ])
-  })
+  //   expect(result).toStrictEqual([
+  //     {
+  //       name: ["jegging"],
+  //       properties: [],
+  //       children: [],
+  //     },
+  //     {
+  //       name: ["jeans"],
+  //       properties: [],
+  //       children: [
+  //         {
+  //           name: ["azul"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //         {
+  //           name: ["camel"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //   ])
+  // })
 
-  it("matches subcategories", () => {
-    const schema = [
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["azul"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ] as Node[]
+  // it("matches subcategories", () => {
+  //   const schema = [
+  //     {
+  //       name: ["jeans"],
+  //       properties: [],
+  //       children: [
+  //         {
+  //           name: ["azul"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //   ] as Node[]
 
-    const result = addToSchema("jeans azul", schema)
+  //   const result = addToSchema("jeans azul", schema)
 
-    expect(result).toStrictEqual(schema)
-  })
+  //   expect(result).toStrictEqual(schema)
+  // })
 
-  it("recognizes new subcategories", () => {
-    const schema = [
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["azul"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ] as Node[]
+  // it("recognizes new subcategories", () => {
+  //   const schema = [
+  //     {
+  //       name: ["jeans"],
+  //       properties: [],
+  //       children: [
+  //         {
+  //           name: ["azul"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //   ] as Node[]
 
-    const result = addToSchema("jeans camel", schema)
+  //   const result = addToSchema("jeans camel", schema)
 
-    expect(result).toStrictEqual([
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["azul"],
-            properties: [],
-            children: [],
-          },
-          {
-            name: ["camel"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ])
-  })
+  //   expect(result).toStrictEqual([
+  //     {
+  //       name: ["jeans"],
+  //       properties: [],
+  //       children: [
+  //         {
+  //           name: ["azul"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //         {
+  //           name: ["camel"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //   ])
+  // })
 
-  it("preserves subcategories when splitting a category", () => {
-    const schema = [
-      {
-        name: ["jeans", "cropped"],
-        properties: [],
-        children: [
-          {
-            name: ["azul"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ] as Node[]
+  // it("preserves subcategories when splitting a category", () => {
+  //   const schema = [
+  //     {
+  //       name: ["jeans", "cropped"],
+  //       properties: [],
+  //       children: [
+  //         {
+  //           name: ["azul"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //   ] as Node[]
 
-    const result = addToSchema("jeans culotte", schema)
+  //   const result = addToSchema("jeans culotte", schema)
 
-    expect(result).toStrictEqual([
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["cropped"],
-            properties: [],
-            children: [
-              {
-                name: ["azul"],
-                properties: [],
-                children: [],
-              },
-            ],
-          },
-          {
-            name: ["culotte"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ])
-  })
+  //   expect(result).toStrictEqual([
+  //     {
+  //       name: ["jeans"],
+  //       properties: [],
+  //       children: [
+  //         {
+  //           name: ["cropped"],
+  //           properties: [],
+  //           children: [
+  //             {
+  //               name: ["azul"],
+  //               properties: [],
+  //               children: [],
+  //             },
+  //           ],
+  //         },
+  //         {
+  //           name: ["culotte"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //   ])
+  // })
 
-  it("splits subcategories with common words", () => {
-    const schema = [
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["cropped", "azul"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ] as Node[]
+  // it("splits subcategories with common words", () => {
+  //   const schema = [
+  //     {
+  //       name: ["jeans"],
+  //       properties: [],
+  //       children: [
+  //         {
+  //           name: ["cropped", "azul"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //   ] as Node[]
 
-    const result = addToSchema("jeans cropped camel", schema)
+  //   const result = addToSchema("jeans cropped camel", schema)
 
-    expect(result).toStrictEqual([
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["cropped"],
-            properties: [],
-            children: [
-              {
-                name: ["azul"],
-                properties: [],
-                children: [],
-              },
-              {
-                name: ["camel"],
-                properties: [],
-                children: [],
-              },
-            ],
-          },
-        ],
-      },
-    ])
-  })
+  //   expect(result).toStrictEqual([
+  //     {
+  //       name: ["jeans"],
+  //       properties: [],
+  //       children: [
+  //         {
+  //           name: ["cropped"],
+  //           properties: [],
+  //           children: [
+  //             {
+  //               name: ["azul"],
+  //               properties: [],
+  //               children: [],
+  //             },
+  //             {
+  //               name: ["camel"],
+  //               properties: [],
+  //               children: [],
+  //             },
+  //           ],
+  //         },
+  //       ],
+  //     },
+  //   ])
+  // })
 
-  it("converts common subcategories into properties", () => {
-    const schema = [
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["cropped"],
-            properties: [],
-            children: [
-              {
-                name: ["azul"],
-                properties: [],
-                children: [],
-              },
-            ],
-          },
-          {
-            name: ["pockets"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ] as Node[]
+  // it("converts common subcategories into properties", () => {
+  //   const schema = [
+  //     {
+  //       name: ["jeans"],
+  //       properties: [],
+  //       children: [
+  //         {
+  //           name: ["cropped"],
+  //           properties: [],
+  //           children: [
+  //             {
+  //               name: ["azul"],
+  //               properties: [],
+  //               children: [],
+  //             },
+  //           ],
+  //         },
+  //         {
+  //           name: ["pockets"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //   ] as Node[]
 
-    const result = addToSchema("jeans pockets azul", schema)
+  //   const result = addToSchema("jeans pockets azul", schema)
 
-    expect(result).toStrictEqual([
-      {
-        name: ["jeans"],
-        properties: [
-          {
-            name: ["azul"],
-            properties: [],
-            children: [],
-          },
-        ],
-        children: [
-          {
-            name: ["cropped"],
-            properties: [],
-            children: [],
-          },
-          {
-            name: ["pockets"],
-            children: [],
-            properties: [],
-          },
-        ],
-      },
-    ])
-  })
+  //   expect(result).toStrictEqual([
+  //     {
+  //       name: ["jeans"],
+  //       properties: [
+  //         {
+  //           name: ["azul"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //       ],
+  //       children: [
+  //         {
+  //           name: ["cropped"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //         {
+  //           name: ["pockets"],
+  //           children: [],
+  //           properties: [],
+  //         },
+  //       ],
+  //     },
+  //   ])
+  // })
 
-  it("matches existing properties", () => {
-    const schema = [
-      {
-        name: ["jeans"],
-        properties: [
-          {
-            name: ["azul"],
-            properties: [],
-            children: [],
-          },
-        ],
-        children: [
-          {
-            name: ["cropped"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ] as Node[]
+  // it("matches existing properties", () => {
+  //   const schema = [
+  //     {
+  //       name: ["jeans"],
+  //       properties: [
+  //         {
+  //           name: ["azul"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //       ],
+  //       children: [
+  //         {
+  //           name: ["cropped"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //   ] as Node[]
 
-    const result = addToSchema("jeans cropped azul", schema)
+  //   const result = addToSchema("jeans cropped azul", schema)
 
-    expect(result).toStrictEqual(schema)
-  })
+  //   expect(result).toStrictEqual(schema)
+  // })
 
-  it("identifies newly-split properties", () => {
-    const schema = [
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["cropped"],
-            properties: [],
-            children: [
-              {
-                name: ["azul"],
-                properties: [],
-                children: [],
-              },
-            ],
-          },
-          {
-            name: ["pockets", "azul"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ] as Node[]
+  // it("identifies newly-split properties", () => {
+  //   const schema = [
+  //     {
+  //       name: ["jeans"],
+  //       properties: [],
+  //       children: [
+  //         {
+  //           name: ["cropped"],
+  //           properties: [],
+  //           children: [
+  //             {
+  //               name: ["azul"],
+  //               properties: [],
+  //               children: [],
+  //             },
+  //           ],
+  //         },
+  //         {
+  //           name: ["pockets", "azul"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //   ] as Node[]
 
-    const result = addToSchema("jeans pockets camel", schema)
+  //   const result = addToSchema("jeans pockets camel", schema)
 
-    expect(result).toStrictEqual([
-      {
-        name: ["jeans"],
-        properties: [
-          {
-            name: ["azul"],
-            properties: [],
-            children: [],
-          },
-        ],
-        children: [
-          {
-            name: ["cropped"],
-            properties: [],
-            children: [],
-          },
-          {
-            name: ["pockets"],
-            properties: [],
-            children: [
-              {
-                name: ["camel"],
-                properties: [],
-                children: [],
-              },
-            ],
-          },
-        ],
-      },
-    ])
-  })
+  //   expect(result).toStrictEqual([
+  //     {
+  //       name: ["jeans"],
+  //       properties: [
+  //         {
+  //           name: ["azul"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //       ],
+  //       children: [
+  //         {
+  //           name: ["cropped"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //         {
+  //           name: ["pockets"],
+  //           properties: [],
+  //           children: [
+  //             {
+  //               name: ["camel"],
+  //               properties: [],
+  //               children: [],
+  //             },
+  //           ],
+  //         },
+  //       ],
+  //     },
+  //   ])
+  // })
 
-  it("preserves follow-up children when splitting", () => {
-    const schema = [
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["slim", "straight"],
-            properties: [],
-            children: [],
-          },
-          {
-            name: ["culotte"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ] as Node[]
+  // it("preserves follow-up children when splitting", () => {
+  //   const schema = [
+  //     {
+  //       name: ["jeans"],
+  //       properties: [],
+  //       children: [
+  //         {
+  //           name: ["slim", "straight"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //         {
+  //           name: ["culotte"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //   ] as Node[]
 
-    const result = addToSchema("jeans slim lavado", schema)
+  //   const result = addToSchema("jeans slim lavado", schema)
 
-    expect(result).toStrictEqual([
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["slim"],
-            properties: [],
-            children: [
-              {
-                name: ["straight"],
-                properties: [],
-                children: [],
-              },
-              {
-                name: ["lavado"],
-                properties: [],
-                children: [],
-              },
-            ],
-          },
-          {
-            name: ["culotte"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ])
-  })
+  //   expect(result).toStrictEqual([
+  //     {
+  //       name: ["jeans"],
+  //       properties: [],
+  //       children: [
+  //         {
+  //           name: ["slim"],
+  //           properties: [],
+  //           children: [
+  //             {
+  //               name: ["straight"],
+  //               properties: [],
+  //               children: [],
+  //             },
+  //             {
+  //               name: ["lavado"],
+  //               properties: [],
+  //               children: [],
+  //             },
+  //           ],
+  //         },
+  //         {
+  //           name: ["culotte"],
+  //           properties: [],
+  //           children: [],
+  //         },
+  //       ],
+  //     },
+  //   ])
+  // })
 })
