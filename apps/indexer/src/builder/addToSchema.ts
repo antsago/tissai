@@ -244,7 +244,7 @@ function addNewNode(words: string[], path: Interpretation, schema: Node[]): Node
   })
 }
 
-function splitNode(path: Interpretation, schema: Node[]) {
+function splitNodes(path: Interpretation, schema: Node[]): Node[] {
   if (!path.length) {
     return schema
   }
@@ -252,10 +252,12 @@ function splitNode(path: Interpretation, schema: Node[]) {
   const { index, matched } = path[0]
   const node = schema[index]
 
-  if (matched.length === node.name.length) {
-    return schema
-  }
-  const newNode = {
+  const children = splitNodes(path.slice(1), node.children)
+
+  const newNode = matched.length === node.name.length ? {
+    ...node,
+    children,
+  } : {
     name: matched,
     children: [
       {
@@ -274,7 +276,7 @@ export function addToSchema(title: string, schema: Node[]) {
   const words = title.split(" ")
   const { remainingWords, path } = interpret(words, schema)
   let updatedSchema = schema
-  updatedSchema = splitNode(path, updatedSchema)
+  updatedSchema = splitNodes(path, updatedSchema)
   updatedSchema = addNewNode(remainingWords, path, updatedSchema)
   return updatedSchema
 }

@@ -151,6 +151,44 @@ describe("addToSchema", () => {
     ])
   })
 
+  it("splits child nodes", () => {
+    const schema = [
+      {
+        name: ["jeans"],
+        children: [
+          {
+            name: ["cropped", "azul"],
+            children: [],
+            properties: [],
+          },
+        ],
+        properties: [],
+      },
+    ] as Node[]
+
+    const result = addToSchema("jeans cropped", schema)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["jeans"],
+        properties: [],
+        children: [
+          {
+            name: ["cropped"],
+            children: [
+              {
+                name: ["azul"],
+                children: [],
+                properties: [],
+              },
+            ],
+            properties: [],
+          },
+        ],
+      },
+    ])
+  })
+
   it("splits and adds nodes", () => {
     const schema = [
       {
