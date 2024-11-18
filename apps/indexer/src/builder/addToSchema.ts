@@ -1,4 +1,8 @@
 function commonStartBetween(a: string[], b: string[]) {
+  if (!a.length || !b.length) {
+    return []
+  }
+
   let common = [] as string[]
   for (let i = 0; i < a.length; i += 1) {
     if (a[i] !== b[i]) {
@@ -200,7 +204,30 @@ function updateChildren(
   }
 }
 
+function interpret(words: string[], nodes: Node[]) {
+  for (let node of nodes) {
+    const common = commonStartBetween(words, node.name)
+    if (!common.length) {
+      continue
+    }
+
+    return interpret(words.slice(common.length), node.children)
+  }
+
+  return words
+}
+
+function addNewNode(words: string[], schema: Node[]): Node[] {
+  return [...schema, { name: words, children: [], properties: [] }]
+}
+
 export function addToSchema(title: string, schema: Node[]) {
   const words = title.split(" ")
-  return updateChildren(words, schema).children
+  const remainingWords = interpret(words, schema)
+  return addNewNode(remainingWords, schema)
 }
+
+// export function addToSchema(title: string, schema: Node[]) {
+//   const words = title.split(" ")
+//   return updateChildren(words, schema).children
+// }

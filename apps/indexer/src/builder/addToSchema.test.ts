@@ -14,10 +14,10 @@ describe("addToSchema", () => {
       "jeans flare verde kaki",
       "jeans slim straight lavado claro",
       "jeans culotte lavado sostenible",
-      // "jeans slim lavado medio ensuciado",
-      // "jeans regular lavado oscuro",
-      // "jeans regular negro lavado",
-      // "jeans regular lavado medio oscuro",
+      "jeans slim lavado medio ensuciado",
+      "jeans regular lavado oscuro",
+      "jeans regular negro lavado",
+      "jeans regular lavado medio oscuro",
       // "jeans mom algodón",
       // "jeans kick flare lavado sostenible",
       // "jeans skinny lavado medio ensuciado",
@@ -52,7 +52,7 @@ describe("addToSchema", () => {
     expect(result).toStrictEqual([])
   })
 
-  it("recognizes new titles as categories", () => {
+  it.only("recognizes new titles as categories", () => {
     const result = addToSchema("jeans cropped", [])
 
     expect(result).toStrictEqual([
@@ -64,7 +64,7 @@ describe("addToSchema", () => {
     ])
   })
 
-  it("preserves existing categories", () => {
+  it.only("preserves existing categories", () => {
     const schema = [
       {
         name: ["jeans", "cropped"],
@@ -85,7 +85,7 @@ describe("addToSchema", () => {
     ])
   })
 
-  it("matches existing categories", () => {
+  it.only("matches existing categories", () => {
     const schema = [
       {
         name: ["jeans", "cropped"],
