@@ -202,6 +202,10 @@ function updateChildren(
 
 type Interpretation = { index: number, matched: string[] }[]
 
+function removeProperties(words: string[], properties: Node[]) {
+  return words.filter(word => properties.every(property => property.name[0] !== word))
+}
+
 function interpret(words: string[], nodes: Node[]): { remainingWords: string[], path: Interpretation } {
   for (let [index, node] of nodes.entries()) {
     const matched = commonStartBetween(words, node.name)
@@ -209,7 +213,10 @@ function interpret(words: string[], nodes: Node[]): { remainingWords: string[], 
       continue
     }
 
-    const { remainingWords, path } = interpret(words.slice(matched.length), node.children)
+    const unmatchedWords = removeProperties(words.slice(matched.length), node.properties)
+
+    const { remainingWords, path } = interpret(unmatchedWords, node.children)
+
     return {
       remainingWords,
       path: [{

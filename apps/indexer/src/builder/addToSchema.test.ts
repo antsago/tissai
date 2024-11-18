@@ -458,31 +458,31 @@ describe("addToSchema", () => {
   //   ])
   // })
 
-  // it("matches existing properties", () => {
-  //   const schema = [
-  //     {
-  //       name: ["jeans"],
-  //       properties: [
-  //         {
-  //           name: ["azul"],
-  //           properties: [],
-  //           children: [],
-  //         },
-  //       ],
-  //       children: [
-  //         {
-  //           name: ["cropped"],
-  //           properties: [],
-  //           children: [],
-  //         },
-  //       ],
-  //     },
-  //   ] as Node[]
+  it("matches existing properties", () => {
+    const schema = [
+      {
+        name: ["jeans"],
+        properties: [
+          {
+            name: ["azul"],
+            properties: [],
+            children: [],
+          },
+        ],
+        children: [
+          {
+            name: ["cropped"],
+            properties: [],
+            children: [],
+          },
+        ],
+      },
+    ] as Node[]
 
-  //   const result = addToSchema("jeans cropped azul", schema)
+    const result = addToSchema("jeans cropped azul", schema)
 
-  //   expect(result).toStrictEqual(schema)
-  // })
+    expect(result).toStrictEqual(schema)
+  })
 
   // it("identifies newly-split properties", () => {
   //   const schema = [
