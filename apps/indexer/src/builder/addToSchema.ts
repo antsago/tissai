@@ -204,31 +204,46 @@ function updateChildren(
   }
 }
 
-function interpret(words: string[], nodes: Node[]) {
-  for (let node of nodes) {
+function interpret(words: string[], nodes: Node[]): { remainingWords: string[], path: number[] } {
+  for (let [index, node] of nodes.entries()) {
     const common = commonStartBetween(words, node.name)
     if (!common.length) {
       continue
     }
 
-    return interpret(words.slice(common.length), node.children)
+    const { remainingWords, path } = interpret(words.slice(common.length), node.children)
+    return {
+      remainingWords,
+      path: [index, ...path],
+    }
   }
 
-  return words
+  return { remainingWords: words, path: [] }
 }
 
-function addNewNode(words: string[], schema: Node[]) {
+function addNewNode(words: string[], path: number[], schema: Node[]): Node[] {
   if (!words.length) {
     return schema
   }
 
-  return [...schema, { name: words, children: [], properties: [] }]
+  if (!path.length) {
+    return [...schema, { name: words, children: [], properties: [] }]
+  }
+
+  const index = path[0]
+  const node = schema[index]
+  const children = addNewNode(words, path.slice(1), node.children)
+
+  return schema.with(index, {
+    ...node,
+    children,
+  })
 }
 
 export function addToSchema(title: string, schema: Node[]) {
   const words = title.split(" ")
-  const remainingWords = interpret(words, schema)
-  let updatedSchema = addNewNode(remainingWords, schema)
+  const { remainingWords, path } = interpret(words, schema)
+  let updatedSchema = addNewNode(remainingWords, path, schema)
   return updatedSchema
 }
 

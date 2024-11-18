@@ -99,7 +99,33 @@ describe("addToSchema", () => {
     expect(result).toStrictEqual(schema)
   })
 
-  // it.only("common initial words become a parent category", () => {
+  it("adds new child nodes", () => {
+    const schema = [
+      {
+        name: ["jeans"],
+        children: [],
+        properties: [],
+      },
+    ] as Node[]
+
+    const result = addToSchema("jeans camel", schema)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["jeans"],
+        properties: [],
+        children: [
+          {
+            name: ["camel"],
+            children: [],
+            properties: [],
+          },
+        ],
+      },
+    ])
+  })
+
+  // it("common initial words become a parent category", () => {
   //   const schema = [
   //     {
   //       name: ["jeans", "cropped", "azul"],
