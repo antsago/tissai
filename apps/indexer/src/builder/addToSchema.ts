@@ -1,11 +1,7 @@
 function commonStartBetween(a: string[], b: string[]) {
-  if (!a.length || !b.length) {
-    return []
-  }
-
   let common = [] as string[]
   for (let i = 0; i < a.length; i += 1) {
-    if (a[i] !== b[i]) {
+    if (a[i] === undefined || a[i] !== b[i]) {
       return common
     }
 
