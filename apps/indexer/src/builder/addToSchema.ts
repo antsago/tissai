@@ -273,8 +273,9 @@ function splitNode(path: Interpretation, schema: Node[]) {
 export function addToSchema(title: string, schema: Node[]) {
   const words = title.split(" ")
   const { remainingWords, path } = interpret(words, schema)
-  let updatedSchema = addNewNode(remainingWords, path, schema)
+  let updatedSchema = schema
   updatedSchema = splitNode(path, updatedSchema)
+  updatedSchema = addNewNode(remainingWords, path, updatedSchema)
   return updatedSchema
 }
 

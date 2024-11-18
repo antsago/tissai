@@ -151,36 +151,36 @@ describe("addToSchema", () => {
     ])
   })
 
-  // it("common initial words become a parent category", () => {
-  //   const schema = [
-  //     {
-  //       name: ["jeans", "cropped", "azul"],
-  //       children: [],
-  //       properties: [],
-  //     },
-  //   ] as Node[]
+  it("splits and adds nodes", () => {
+    const schema = [
+      {
+        name: ["jeans", "cropped", "azul"],
+        children: [],
+        properties: [],
+      },
+    ] as Node[]
 
-  //   const result = addToSchema("jeans cropped camel", schema)
+    const result = addToSchema("jeans cropped camel", schema)
 
-  //   expect(result).toStrictEqual([
-  //     {
-  //       name: ["jeans", "cropped"],
-  //       properties: [],
-  //       children: [
-  //         {
-  //           name: ["azul"],
-  //           children: [],
-  //           properties: [],
-  //         },
-  //         {
-  //           name: ["camel"],
-  //           children: [],
-  //           properties: [],
-  //         },
-  //       ],
-  //     },
-  //   ])
-  // })
+    expect(result).toStrictEqual([
+      {
+        name: ["jeans", "cropped"],
+        properties: [],
+        children: [
+          {
+            name: ["azul"],
+            children: [],
+            properties: [],
+          },
+          {
+            name: ["camel"],
+            children: [],
+            properties: [],
+          },
+        ],
+      },
+    ])
+  })
 
   // it("preserves other root categories when matching", () => {
   //   const schema = [
