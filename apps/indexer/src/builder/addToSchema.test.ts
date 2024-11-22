@@ -3,6 +3,11 @@ import { addToSchema, type Node } from "./addToSchema.js"
 
 describe("addToSchema", () => {
   it.skip("works", () => {
+    const initialSchema = {
+      name: [],
+      properties: [],
+      children: [],
+    } as Node
     const titles = [
       "jeans cropped marine azul",
       "jeans cropped marine negro",
@@ -46,53 +51,78 @@ describe("addToSchema", () => {
 
     const result = titles.reduce(
       (schema, title) => addToSchema(title, schema),
-      [] as Node[],
+      initialSchema,
     )
 
-    expect(result).toStrictEqual([])
+    expect(result).toStrictEqual(initialSchema)
   })
 
   it("recognizes new titles as categories", () => {
-    const result = addToSchema("jeans cropped", [])
+    const schema = {
+      name: [],
+      properties: [],
+      children: [],
+    }
+    const result = addToSchema("jeans cropped", schema)
 
-    expect(result).toStrictEqual([
-      {
-        name: ["jeans", "cropped"],
-        properties: [],
-        children: [],
-      },
-    ])
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans", "cropped"],
+          properties: [],
+          children: [],
+        },
+      ],
+    })
   })
 
   it("preserves existing categories", () => {
-    const schema = [
-      {
-        name: ["jeans", "cropped"],
-        children: [],
-        properties: [],
-      },
-    ] as Node[]
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans", "cropped"],
+          children: [],
+          properties: [],
+        },
+      ],
+    } as Node
 
     const result = addToSchema("jegging", schema)
 
-    expect(result).toStrictEqual([
-      schema[0],
-      {
-        name: ["jegging"],
-        children: [],
-        properties: [],
-      },
-    ])
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans", "cropped"],
+          children: [],
+          properties: [],
+        },
+        {
+          name: ["jegging"],
+          children: [],
+          properties: [],
+        },
+      ],
+    })
   })
 
   it("matches existing categories", () => {
-    const schema = [
-      {
-        name: ["jeans", "cropped"],
-        children: [],
-        properties: [],
-      },
-    ] as Node[]
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans", "cropped"],
+          children: [],
+          properties: [],
+        },
+      ],
+    } as Node
 
     const result = addToSchema("jeans cropped", schema)
 
@@ -100,181 +130,225 @@ describe("addToSchema", () => {
   })
 
   it("adds new child nodes", () => {
-    const schema = [
-      {
-        name: ["jeans"],
-        children: [],
-        properties: [],
-      },
-    ] as Node[]
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          children: [],
+          properties: [],
+        },
+      ],
+    } as Node
 
     const result = addToSchema("jeans camel", schema)
 
-    expect(result).toStrictEqual([
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["camel"],
-            children: [],
-            properties: [],
-          },
-        ],
-      },
-    ])
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["camel"],
+              children: [],
+              properties: [],
+            },
+          ],
+        },
+      ],
+    })
   })
 
   it("splits partially matches nodes", () => {
-    const schema = [
-      {
-        name: ["jeans", "cropped"],
-        children: [],
-        properties: [],
-      },
-    ] as Node[]
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans", "cropped"],
+          children: [],
+          properties: [],
+        },
+      ],
+    } as Node
 
     const result = addToSchema("jeans", schema)
 
-    expect(result).toStrictEqual([
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["cropped"],
-            children: [],
-            properties: [],
-          },
-        ],
-      },
-    ])
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["cropped"],
+              children: [],
+              properties: [],
+            },
+          ],
+        },
+      ],
+    })
   })
 
   it("splits child nodes", () => {
-    const schema = [
-      {
-        name: ["jeans"],
-        children: [
-          {
-            name: ["cropped", "azul"],
-            children: [],
-            properties: [],
-          },
-        ],
-        properties: [],
-      },
-    ] as Node[]
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          children: [
+            {
+              name: ["cropped", "azul"],
+              children: [],
+              properties: [],
+            },
+          ],
+          properties: [],
+        },
+      ],
+    } as Node
 
     const result = addToSchema("jeans cropped", schema)
 
-    expect(result).toStrictEqual([
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["cropped"],
-            children: [
-              {
-                name: ["azul"],
-                children: [],
-                properties: [],
-              },
-            ],
-            properties: [],
-          },
-        ],
-      },
-    ])
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["cropped"],
+              children: [
+                {
+                  name: ["azul"],
+                  children: [],
+                  properties: [],
+                },
+              ],
+              properties: [],
+            },
+          ],
+        },
+      ],
+    })
   })
 
   it("splits and adds nodes", () => {
-    const schema = [
-      {
-        name: ["jeans", "cropped", "azul"],
-        children: [],
-        properties: [],
-      },
-    ] as Node[]
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans", "cropped", "azul"],
+          children: [],
+          properties: [],
+        },
+      ],
+    } as Node
 
     const result = addToSchema("jeans cropped camel", schema)
 
-    expect(result).toStrictEqual([
-      {
-        name: ["jeans", "cropped"],
-        properties: [],
-        children: [
-          {
-            name: ["azul"],
-            children: [],
-            properties: [],
-          },
-          {
-            name: ["camel"],
-            children: [],
-            properties: [],
-          },
-        ],
-      },
-    ])
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans", "cropped"],
+          properties: [],
+          children: [
+            {
+              name: ["azul"],
+              children: [],
+              properties: [],
+            },
+            {
+              name: ["camel"],
+              children: [],
+              properties: [],
+            },
+          ],
+        },
+      ],
+    })
   })
 
   it("preserves other root categories when matching", () => {
-    const schema = [
-      {
-        name: ["jegging"],
-        children: [],
-        properties: [],
-      },
-      {
-        name: ["jeans", "azul"],
-        children: [],
-        properties: [],
-      },
-    ] as Node[]
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jegging"],
+          children: [],
+          properties: [],
+        },
+        {
+          name: ["jeans", "azul"],
+          children: [],
+          properties: [],
+        },
+      ],
+    } as Node
 
     const result = addToSchema("jeans camel", schema)
 
-    expect(result).toStrictEqual([
-      {
-        name: ["jegging"],
-        properties: [],
-        children: [],
-      },
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["azul"],
-            properties: [],
-            children: [],
-          },
-          {
-            name: ["camel"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ])
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jegging"],
+          properties: [],
+          children: [],
+        },
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["azul"],
+              properties: [],
+              children: [],
+            },
+            {
+              name: ["camel"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    })
   })
 
   it("matches subcategories", () => {
-    const schema = [
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["azul"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ] as Node[]
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["azul"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    } as Node
 
     const result = addToSchema("jeans azul", schema)
 
@@ -282,126 +356,150 @@ describe("addToSchema", () => {
   })
 
   it("recognizes new subcategories", () => {
-    const schema = [
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["azul"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ] as Node[]
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["azul"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    } as Node
 
     const result = addToSchema("jeans camel", schema)
 
-    expect(result).toStrictEqual([
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["azul"],
-            properties: [],
-            children: [],
-          },
-          {
-            name: ["camel"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ])
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["azul"],
+              properties: [],
+              children: [],
+            },
+            {
+              name: ["camel"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    })
   })
 
   it("preserves subcategories when splitting a category", () => {
-    const schema = [
-      {
-        name: ["jeans", "cropped"],
-        properties: [],
-        children: [
-          {
-            name: ["azul"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ] as Node[]
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans", "cropped"],
+          properties: [],
+          children: [
+            {
+              name: ["azul"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    } as Node
 
     const result = addToSchema("jeans culotte", schema)
 
-    expect(result).toStrictEqual([
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["cropped"],
-            properties: [],
-            children: [
-              {
-                name: ["azul"],
-                properties: [],
-                children: [],
-              },
-            ],
-          },
-          {
-            name: ["culotte"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ])
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["cropped"],
+              properties: [],
+              children: [
+                {
+                  name: ["azul"],
+                  properties: [],
+                  children: [],
+                },
+              ],
+            },
+            {
+              name: ["culotte"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    })
   })
 
   it("splits subcategories with common words", () => {
-    const schema = [
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["cropped", "azul"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ] as Node[]
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["cropped", "azul"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    } as Node
 
     const result = addToSchema("jeans cropped camel", schema)
 
-    expect(result).toStrictEqual([
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["cropped"],
-            properties: [],
-            children: [
-              {
-                name: ["azul"],
-                properties: [],
-                children: [],
-              },
-              {
-                name: ["camel"],
-                properties: [],
-                children: [],
-              },
-            ],
-          },
-        ],
-      },
-    ])
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["cropped"],
+              properties: [],
+              children: [
+                {
+                  name: ["azul"],
+                  properties: [],
+                  children: [],
+                },
+                {
+                  name: ["camel"],
+                  properties: [],
+                  children: [],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    })
   })
 
   // it("converts common subcategories into properties", () => {
@@ -459,25 +557,29 @@ describe("addToSchema", () => {
   // })
 
   it("matches existing properties", () => {
-    const schema = [
-      {
-        name: ["jeans"],
-        properties: [
-          {
-            name: ["azul"],
-            properties: [],
-            children: [],
-          },
-        ],
-        children: [
-          {
-            name: ["cropped"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ] as Node[]
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [
+            {
+              name: ["azul"],
+              properties: [],
+              children: [],
+            },
+          ],
+          children: [
+            {
+              name: ["cropped"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    } as Node
 
     const result = addToSchema("jeans cropped azul", schema)
 
