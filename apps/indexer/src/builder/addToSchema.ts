@@ -318,7 +318,7 @@ function extractProperties(path: Interpretation, schema: Node): Node {
     ...child,
     children: child.children.filter((_, childIndex) =>
       subcategoryMatching[childIndex].every((match) => match === -1),
-    )
+    ),
   }
 
   return {

@@ -557,29 +557,29 @@ describe("addToSchema", () => {
       name: [],
       properties: [],
       children: [
-      {
-        name: ["jeans"],
-        properties: [],
-        children: [
-          {
-            name: ["cropped"],
-            properties: [],
-            children: [
-              {
-                name: ["azul"],
-                properties: [],
-                children: [],
-              },
-            ],
-          },
-          {
-            name: ["pockets"],
-            properties: [],
-            children: [],
-          },
-        ],
-      },
-    ],
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["cropped"],
+              properties: [],
+              children: [
+                {
+                  name: ["azul"],
+                  properties: [],
+                  children: [],
+                },
+              ],
+            },
+            {
+              name: ["pockets"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
     } as Node
 
     const result = addToSchema("jeans pockets azul", schema)
@@ -588,32 +588,31 @@ describe("addToSchema", () => {
       name: [],
       properties: [],
       children: [
-      {
-        name: ["jeans"],
-        properties: [
-          {
-            name: ["azul"],
-            properties: [],
-            children: [],
-          },
-        ],
-        children: [
-          {
-            name: ["cropped"],
-            properties: [],
-            children: [],
-          },
-          {
-            name: ["pockets"],
-            children: [],
-            properties: [],
-          },
-        ],
-      },
-    ],
+        {
+          name: ["jeans"],
+          properties: [
+            {
+              name: ["azul"],
+              properties: [],
+              children: [],
+            },
+          ],
+          children: [
+            {
+              name: ["cropped"],
+              properties: [],
+              children: [],
+            },
+            {
+              name: ["pockets"],
+              children: [],
+              properties: [],
+            },
+          ],
+        },
+      ],
     })
   })
-
 
   it("matches existing properties", () => {
     const schema = {
@@ -669,116 +668,132 @@ describe("addToSchema", () => {
     expect(result).toStrictEqual(schema)
   })
 
-  // it("identifies newly-split properties", () => {
-  //   const schema = [
-  //     {
-  //       name: ["jeans"],
-  //       properties: [],
-  //       children: [
-  //         {
-  //           name: ["cropped"],
-  //           properties: [],
-  //           children: [
-  //             {
-  //               name: ["azul"],
-  //               properties: [],
-  //               children: [],
-  //             },
-  //           ],
-  //         },
-  //         {
-  //           name: ["pockets", "azul"],
-  //           properties: [],
-  //           children: [],
-  //         },
-  //       ],
-  //     },
-  //   ] as Node[]
+  it("identifies newly-split properties", () => {
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["cropped"],
+              properties: [],
+              children: [
+                {
+                  name: ["azul"],
+                  properties: [],
+                  children: [],
+                },
+              ],
+            },
+            {
+              name: ["pockets", "azul"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    } as Node
 
-  //   const result = addToSchema("jeans pockets camel", schema)
+    const result = addToSchema("jeans pockets camel", schema)
 
-  //   expect(result).toStrictEqual([
-  //     {
-  //       name: ["jeans"],
-  //       properties: [
-  //         {
-  //           name: ["azul"],
-  //           properties: [],
-  //           children: [],
-  //         },
-  //       ],
-  //       children: [
-  //         {
-  //           name: ["cropped"],
-  //           properties: [],
-  //           children: [],
-  //         },
-  //         {
-  //           name: ["pockets"],
-  //           properties: [],
-  //           children: [
-  //             {
-  //               name: ["camel"],
-  //               properties: [],
-  //               children: [],
-  //             },
-  //           ],
-  //         },
-  //       ],
-  //     },
-  //   ])
-  // })
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [
+            {
+              name: ["azul"],
+              properties: [],
+              children: [],
+            },
+          ],
+          children: [
+            {
+              name: ["cropped"],
+              properties: [],
+              children: [],
+            },
+            {
+              name: ["pockets"],
+              properties: [],
+              children: [
+                {
+                  name: ["camel"],
+                  properties: [],
+                  children: [],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    })
+  })
 
-  // it("preserves follow-up children when splitting", () => {
-  //   const schema = [
-  //     {
-  //       name: ["jeans"],
-  //       properties: [],
-  //       children: [
-  //         {
-  //           name: ["slim", "straight"],
-  //           properties: [],
-  //           children: [],
-  //         },
-  //         {
-  //           name: ["culotte"],
-  //           properties: [],
-  //           children: [],
-  //         },
-  //       ],
-  //     },
-  //   ] as Node[]
+  it("preserves follow-up children when splitting", () => {
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["slim", "straight"],
+              properties: [],
+              children: [],
+            },
+            {
+              name: ["culotte"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    } as Node
 
-  //   const result = addToSchema("jeans slim lavado", schema)
+    const result = addToSchema("jeans slim lavado", schema)
 
-  //   expect(result).toStrictEqual([
-  //     {
-  //       name: ["jeans"],
-  //       properties: [],
-  //       children: [
-  //         {
-  //           name: ["slim"],
-  //           properties: [],
-  //           children: [
-  //             {
-  //               name: ["straight"],
-  //               properties: [],
-  //               children: [],
-  //             },
-  //             {
-  //               name: ["lavado"],
-  //               properties: [],
-  //               children: [],
-  //             },
-  //           ],
-  //         },
-  //         {
-  //           name: ["culotte"],
-  //           properties: [],
-  //           children: [],
-  //         },
-  //       ],
-  //     },
-  //   ])
-  // })
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["slim"],
+              properties: [],
+              children: [
+                {
+                  name: ["straight"],
+                  properties: [],
+                  children: [],
+                },
+                {
+                  name: ["lavado"],
+                  properties: [],
+                  children: [],
+                },
+              ],
+            },
+            {
+              name: ["culotte"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    })
+  })
 })
