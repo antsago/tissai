@@ -256,12 +256,11 @@ function addNewNode(words: string[], path: Interpretation, schema: Node): Node {
   }
 
   const { index } = path[0]
-  const child = schema.children[index]
-  const updatedChild = addNewNode(words, path.slice(1), child)
+  const child = addNewNode(words, path.slice(1), schema.children[index])
 
   return {
     ...schema,
-    children: schema.children.with(index, updatedChild),
+    children: schema.children.with(index, child),
   }
 }
 
@@ -271,19 +270,17 @@ function splitNodes(path: Interpretation, schema: Node): Node {
   }
 
   const { index, matched } = path[0]
-  const child = schema.children[index]
-
-  const updatedChild = splitNodes(path.slice(1), child)
+  const child = splitNodes(path.slice(1), schema.children[index])
 
   const newChild: Node =
     matched.length === child.name.length
-      ? updatedChild
+      ? child
       : {
           name: matched,
           children: [
             {
-              ...updatedChild,
-              name: updatedChild.name.slice(matched.length),
+              ...child,
+              name: child.name.slice(matched.length),
             },
           ],
           properties: [],
@@ -300,16 +297,16 @@ function extractProperties(path: Interpretation, schema: Node): Node {
     return schema
   }
 
-  const { index: childIndex } = path[0]
-  const child = schema.children[childIndex]
-  const siblings = schema.children.toSpliced(childIndex, 1)
+  const { index } = path[0]
+  const child = extractProperties(path.slice(1), schema.children[index])
 
+  const siblings = schema.children.toSpliced(index, 1)
   const subcategoryMatching = child.children.map((child) =>
     siblings.map((sibling) => {
       const match = sibling.children.findIndex(
         (cousin) => !!commonStartBetween(child.name, cousin.name).length,
       )
-      return match >= childIndex ? match + 1 : match
+      return match >= index ? match + 1 : match
     }),
   )
 
@@ -328,7 +325,7 @@ function extractProperties(path: Interpretation, schema: Node): Node {
     ...schema,
     properties: [...schema.properties, ...newProperties],
     children: schema.children.map((node, nodeIndex) => {
-      if (nodeIndex === childIndex) {
+      if (nodeIndex === index) {
         return updatedChild
       }
 
