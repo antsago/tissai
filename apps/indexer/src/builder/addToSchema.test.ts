@@ -559,6 +559,30 @@ describe("addToSchema", () => {
   it("matches existing properties", () => {
     const schema = {
       name: [],
+      properties: [
+        {
+          name: ["azul"],
+          properties: [],
+          children: [],
+        },
+      ],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [],
+        },
+      ],
+    } as Node
+
+    const result = addToSchema("jeans azul", schema)
+
+    expect(result).toStrictEqual(schema)
+  })
+
+  it("matches child properties", () => {
+    const schema = {
+      name: [],
       properties: [],
       children: [
         {

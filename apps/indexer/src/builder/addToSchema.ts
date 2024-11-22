@@ -210,20 +210,20 @@ function removeProperties(words: string[], properties: Node[]) {
 
 function interpret(
   words: string[],
-  nodes: Node[],
+  schema: Node,
 ): { remainingWords: string[]; path: Interpretation } {
-  for (let [index, node] of nodes.entries()) {
-    const matched = commonStartBetween(words, node.name)
+  const unmatchedWords = removeProperties(
+    words,
+    schema.properties,
+  )
+
+  for (let [index, child] of schema.children.entries()) {
+    const matched = commonStartBetween(unmatchedWords, child.name)
     if (!matched.length) {
       continue
     }
 
-    const unmatchedWords = removeProperties(
-      words.slice(matched.length),
-      node.properties,
-    )
-
-    const { remainingWords, path } = interpret(unmatchedWords, node.children)
+    const { remainingWords, path } = interpret(unmatchedWords.slice(matched.length), child)
 
     return {
       remainingWords,
@@ -237,7 +237,7 @@ function interpret(
     }
   }
 
-  return { remainingWords: words, path: [] }
+  return { remainingWords: unmatchedWords, path: [] }
 }
 
 function addNewNode(
@@ -296,7 +296,7 @@ function splitNodes(path: Interpretation, schema: Node[]): Node[] {
 
 export function addToSchema(title: string, schema: Node) {
   const words = title.split(" ")
-  const { remainingWords, path } = interpret(words, schema.children)
+  const { remainingWords, path } = interpret(words, schema)
   let children = schema.children
   children = splitNodes(path, children)
   children = addNewNode(remainingWords, path, children)
