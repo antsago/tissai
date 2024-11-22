@@ -736,6 +736,78 @@ describe("addToSchema", () => {
     })
   })
 
+  it("extracts multiple properties", () => {
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["cropped"],
+              properties: [],
+              children: [
+                {
+                  name: ["azul"],
+                  properties: [],
+                  children: [],
+                },
+                {
+                  name: ["camel"],
+                  properties: [],
+                  children: [],
+                },
+              ],
+            },
+            {
+              name: ["pockets", "azul"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    } as Node
+
+    const result = addToSchema("jeans pockets camel", schema)
+
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [
+            {
+              name: ["azul"],
+              properties: [],
+              children: [],
+            },
+            {
+              name: ["camel"],
+              properties: [],
+              children: [],
+            }
+          ],
+          children: [
+            {
+              name: ["cropped"],
+              properties: [],
+              children: [],
+            },
+            {
+              name: ["pockets"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    })
+  })
+
   it("preserves follow-up children when splitting", () => {
     const schema = {
       name: [],

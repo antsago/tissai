@@ -117,24 +117,21 @@ function extractProperties(path: Interpretation, schema: Node): Node {
   const { index } = path[0]
   const child = extractProperties(path.slice(1), schema.children[index])
 
-  const siblings = schema.children.toSpliced(index, 1)
-  const subcategoryMatching = child.children.map((child) =>
-    siblings.map((sibling) => {
-      const match = sibling.children.findIndex(
-        (cousin) => !!commonStartBetween(child.name, cousin.name).length,
-      )
-      return match >= index ? match + 1 : match
-    }),
+  const otherChildren = schema.children.toSpliced(index, 1)
+  const grandChildMatches = child.children.map((grandChild) =>
+    otherChildren.map((otherChild) => otherChild.children.findIndex(
+      (otherGrandChild) => !!commonStartBetween(grandChild.name, otherGrandChild.name).length,
+    )),
   )
 
-  const newProperties = child.children.filter((_, childIndex) =>
-    subcategoryMatching[childIndex].some((match) => match !== -1),
+  const newProperties = child.children.filter((_, grandChildIndex) =>
+    grandChildMatches[grandChildIndex].some((match) => match !== -1),
   )
 
   const updatedChild = {
     ...child,
-    children: child.children.filter((_, childIndex) =>
-      subcategoryMatching[childIndex].every((match) => match === -1),
+    children: child.children.filter((_, grandChildIndex) =>
+      grandChildMatches[grandChildIndex].every((match) => match === -1),
     ),
   }
 
@@ -146,8 +143,8 @@ function extractProperties(path: Interpretation, schema: Node): Node {
         return updatedChild
       }
 
-      const children = node.children.filter((_, childIndex) =>
-        subcategoryMatching.every((match) => match[childIndex] !== nodeIndex),
+      const children = node.children.filter((_, grandChildIndex) =>
+        grandChildMatches.every((match) => !match.includes(grandChildIndex)),
       )
       return {
         ...node,
