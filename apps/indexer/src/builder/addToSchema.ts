@@ -295,12 +295,61 @@ function splitNodes(path: Interpretation, schema: Node): Node {
   }
 }
 
+function extractProperties(path: Interpretation, schema: Node): Node {
+  if (!path.length) {
+    return schema
+  }
+
+  const { index: childIndex } = path[0]
+  const child = schema.children[childIndex]
+  const siblings = schema.children.toSpliced(childIndex, 1)
+
+  const subcategoryMatching = child.children.map((child) =>
+    siblings.map((sibling) => {
+      const match = sibling.children.findIndex(
+        (cousin) => !!commonStartBetween(child.name, cousin.name).length,
+      )
+      return match >= childIndex ? match + 1 : match
+    }),
+  )
+
+  const newProperties = child.children.filter((_, childIndex) =>
+    subcategoryMatching[childIndex].some((match) => match !== -1),
+  )
+
+  const updatedChild = {
+    ...child,
+    children: child.children.filter((_, childIndex) =>
+      subcategoryMatching[childIndex].every((match) => match === -1),
+    )
+  }
+
+  return {
+    ...schema,
+    properties: [...schema.properties, ...newProperties],
+    children: schema.children.map((node, nodeIndex) => {
+      if (nodeIndex === childIndex) {
+        return updatedChild
+      }
+
+      const children = node.children.filter((_, childIndex) =>
+        subcategoryMatching.every((match) => match[childIndex] !== nodeIndex),
+      )
+      return {
+        ...node,
+        children,
+      }
+    }),
+  }
+}
+
 export function addToSchema(title: string, schema: Node) {
   const words = title.split(" ")
   const { remainingWords, path } = interpret(words, schema)
   let updatedSchema = schema
   updatedSchema = splitNodes(path, schema)
   updatedSchema = addNewNode(remainingWords, path, updatedSchema)
+  updatedSchema = extractProperties(path, updatedSchema)
   return updatedSchema
 }
 

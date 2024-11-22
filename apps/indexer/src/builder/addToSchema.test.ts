@@ -556,6 +556,56 @@ describe("addToSchema", () => {
   //   ])
   // })
 
+  it("converts subcategories into properties", () => {
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [],
+        },
+        {
+          name: ["vaqueros"],
+          properties: [],
+          children: [
+            {
+              name: ["azul"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    } as Node
+
+    const result = addToSchema("jeans azul", schema)
+
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [
+        {
+          name: ["azul"],
+          properties: [],
+          children: [],
+        },
+      ],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [],
+        },
+        {
+          name: ["vaqueros"],
+          properties: [],
+          children: [],
+        },
+      ],
+    })
+  })
+
   it("matches existing properties", () => {
     const schema = {
       name: [],
