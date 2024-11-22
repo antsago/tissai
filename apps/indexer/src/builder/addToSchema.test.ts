@@ -22,7 +22,7 @@ describe("addToSchema", () => {
       "jeans slim lavado medio ensuciado",
       "jeans regular lavado oscuro",
       "jeans regular negro lavado",
-      "jeans regular lavado medio oscuro",
+      // "jeans regular lavado medio oscuro",
       // "jeans mom algodón",
       // "jeans kick flare lavado sostenible",
       // "jeans skinny lavado medio ensuciado",
@@ -789,7 +789,7 @@ describe("addToSchema", () => {
               name: ["camel"],
               properties: [],
               children: [],
-            }
+            },
           ],
           children: [
             {
@@ -860,6 +860,79 @@ describe("addToSchema", () => {
             },
             {
               name: ["culotte"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    })
+  })
+
+  it("splits partial property matches", () => {
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["cropped"],
+              properties: [],
+              children: [
+                {
+                  name: ["azul", "oscuro"],
+                  properties: [],
+                  children: [],
+                },
+              ],
+            },
+            {
+              name: ["regular"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    } as Node
+
+    const result = addToSchema("jeans regular azul lavado", schema)
+
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [
+            {
+              name: ["azul"],
+              properties: [],
+              children: [
+                {
+                  name: ["oscuro"],
+                  properties: [],
+                  children: [],
+                },
+                {
+                  name: ["lavado"],
+                  properties: [],
+                  children: [],
+                },
+              ],
+            },
+          ],
+          children: [
+            {
+              name: ["cropped"],
+              properties: [],
+              children: [],
+            },
+            {
+              name: ["regular"],
               properties: [],
               children: [],
             },

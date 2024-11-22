@@ -117,37 +117,89 @@ function extractProperties(path: Interpretation, schema: Node): Node {
   const { index } = path[0]
   const child = extractProperties(path.slice(1), schema.children[index])
 
-  const otherChildren = schema.children.toSpliced(index, 1)
   const grandChildMatches = child.children.map((grandChild) =>
-    otherChildren.map((otherChild) => otherChild.children.findIndex(
-      (otherGrandChild) => !!commonStartBetween(grandChild.name, otherGrandChild.name).length,
-    )),
+    schema.children.map((otherChild, childIndex) =>
+      childIndex === index
+        ? [[]]
+        : otherChild.children.map((otherGrandChild) =>
+            commonStartBetween(grandChild.name, otherGrandChild.name),
+          ),
+    ),
   )
 
-  const newProperties = child.children.filter((_, grandChildIndex) =>
-    grandChildMatches[grandChildIndex].some((match) => match !== -1),
-  )
+  const newProperties = child.children
+    .map((grandChild, grandChildIndex) => {
+      const matches = grandChildMatches[grandChildIndex].flatMap(
+        (otherChildMatches, childIndex) =>
+          otherChildMatches
+            .map(
+              (match, otherGrandChildIndex) =>
+                [
+                  match,
+                  schema.children[childIndex].children[otherGrandChildIndex],
+                ] as const,
+            )
+            .filter(([match]) => !!match.length),
+      )
+      const newProperty = matches.reduce((property, [match, node]) => {
+        const remainingNode =
+          match.length < node.name.length && node.name.slice(match.length)
+        const remainingProperty =
+          match.length < property.name.length &&
+          property.name.slice(match.length)
+
+        if (remainingProperty) {
+          return {
+            ...property,
+            name: match,
+            children: [
+              ...property.children,
+              ...(remainingNode
+                ? [
+                    {
+                      name: remainingNode,
+                      children: [],
+                      properties: [],
+                    },
+                  ]
+                : []),
+              { name: remainingProperty, children: [], properties: [] },
+            ],
+          }
+        }
+
+        return property
+      }, grandChild)
+
+      return [!!matches.length, newProperty] as const
+    })
+    .filter(([isProperty]) => isProperty)
+    .map(([_, property]) => property)
 
   const updatedChild = {
     ...child,
     children: child.children.filter((_, grandChildIndex) =>
-      grandChildMatches[grandChildIndex].every((match) => match === -1),
+      grandChildMatches[grandChildIndex].every((otherChild) =>
+        otherChild.every((match) => !match.length),
+      ),
     ),
   }
 
   return {
     ...schema,
     properties: [...schema.properties, ...newProperties],
-    children: schema.children.map((node, nodeIndex) => {
-      if (nodeIndex === index) {
+    children: schema.children.map((childNode, childIndex) => {
+      if (childIndex === index) {
         return updatedChild
       }
 
-      const children = node.children.filter((_, grandChildIndex) =>
-        grandChildMatches.every((match) => !match.includes(grandChildIndex)),
+      const children = childNode.children.filter((_, otherGrandChild) =>
+        grandChildMatches.every(
+          (grandChild) => !grandChild[childIndex][otherGrandChild].length,
+        ),
       )
       return {
-        ...node,
+        ...childNode,
         children,
       }
     }),
