@@ -5,7 +5,7 @@ export type TreeNode = {
   children: TreeNode[]
   properties: TreeNode[]
 }
-export type Node = {
+type Node = {
   id: UUID
   name: string[]
   children: UUID[]

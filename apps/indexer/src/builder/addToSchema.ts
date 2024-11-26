@@ -1,5 +1,5 @@
 import { type UUID } from "node:crypto"
-import type { Node, Schema } from "./nodesToSchema.js"
+import type { Schema } from "./nodesToSchema.js"
 
 function commonStartBetween(a: string[], b: string[]) {
   let common = [] as string[]
@@ -14,61 +14,74 @@ function commonStartBetween(a: string[], b: string[]) {
   return common
 }
 
-type Interpretation = {
-  node: UUID
-  matched: string[]
-}[]
-
 type Span = {
   nodeId?: UUID
   words: string[]
-}
-
-function removeProperties(words: string[], properties: Node[]) {
-  return words.filter((word) =>
-    properties.every((property) => property.name[0] !== word),
-  )
 }
 
 function matchNode(
   words: string[],
   parentId: UUID,
   schema: Schema,
-): { remainingWords: string[]; spans: Required<Span>[] } {
-  const unmatchedWords = removeProperties(words, schema.propertiesOf(parentId))
+): [Required<Span>[], string[]] {
+  if (!words.length) {
+    return [[], []]
+  }
 
   for (let child of schema.childrenOf(parentId)) {
-    const matched = commonStartBetween(unmatchedWords, child.name)
+    const matched = commonStartBetween(words, child.name)
     if (!matched.length) {
       continue
     }
 
-    const { remainingWords, spans } = matchNode(
-      unmatchedWords.slice(matched.length),
+    const [spans, unmatchedWords] = matchNode(
+      words.slice(matched.length),
       child.id,
       schema,
     )
 
-    return {
-      remainingWords,
-      spans: [
+    return [
+      [
         {
           nodeId: child.id,
           words: matched,
         },
         ...spans,
       ],
-    }
+      unmatchedWords,
+    ]
   }
 
-  return { remainingWords: unmatchedWords, spans: [] }
+  return [[], words]
 }
 
-function interpret(
-  words: string[],
-  schema: Schema,
-): Span[] {
-  const { spans, remainingWords } = matchNode(words, schema.rootId, schema)
+function interpret(words: string[], schema: Schema): Span[] {
+  const [nodeSpans, unmatchedWords] = matchNode(words, schema.rootId, schema)
+
+  if (!unmatchedWords.length) {
+    return nodeSpans
+  }
+
+  const { spans, remainingWords } = [
+    schema.rootId,
+    ...nodeSpans.map((s) => s.nodeId),
+  ]
+    .flatMap((id) => schema.propertiesOf(id))
+    .reduce(
+      ({ spans, remainingWords }, property) => {
+        const matched = commonStartBetween(remainingWords, property.name)
+
+        if (!matched.length) {
+          return { spans, remainingWords }
+        }
+
+        return {
+          spans: [...spans, { nodeId: property.id, words: matched }],
+          remainingWords: remainingWords.slice(matched.length),
+        }
+      },
+      { spans: nodeSpans, remainingWords: unmatchedWords },
+    )
 
   if (!remainingWords.length) {
     return spans
@@ -79,14 +92,14 @@ function interpret(
 
 function addNewNode(spans: Span[], schema: Schema) {
   return spans
-    .map(({ nodeId, words}, index) => {
+    .map(({ nodeId, words }, index) => {
       if (nodeId) {
         return
       }
-      
+
       return schema.addNode(words, spans.at(index - 1)?.nodeId)
     })
-    .filter(id => !!id)
+    .filter((id) => !!id)
 }
 
 function splitNodes(spans: Span[], schema: Schema) {

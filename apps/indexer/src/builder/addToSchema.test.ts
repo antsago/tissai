@@ -947,4 +947,50 @@ describe("addToSchema", () => {
       ],
     })
   })
+
+  it("creates property subcategories", () => {
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [
+            {
+              name: ["azul"],
+              properties: [],
+              children: [],
+            },
+          ],
+          children: [],
+        },
+      ],
+    } as TreeNode
+
+    const result = addToSchema("jeans azul oscuro", schema)
+
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [
+            {
+              name: ["azul"],
+              properties: [],
+              children: [
+                {
+                  name: ["oscuro"],
+                  properties: [],
+                  children: [],
+                },
+              ],
+            },
+          ],
+          children: [],
+        },
+      ],
+    })
+  })
 })
