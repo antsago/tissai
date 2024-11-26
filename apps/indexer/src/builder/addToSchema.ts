@@ -71,12 +71,26 @@ function matchNodes(words: string[], nodes: Node[], schema: Schema): Match {
   }
 }
 
+function matchProperties(words: string[], properties: Node[], schema: Schema): Match {
+  if (!words.length) {
+    return {
+      spans: [],
+      remainingWords: words,
+    }
+  }
+
+  return properties.reduce(({ spans, remainingWords }, property) => {
+    const match = matchNode(remainingWords, property, schema)
+
+    return {
+      spans: [...spans, ...match.spans],
+      remainingWords: match.remainingWords,
+    }
+  }, { spans: [], remainingWords: words } as Match)
+}
+
 function interpret(words: string[], schema: Schema): Span[] {
   const categoryMatch = matchNodes(words, schema.categories(), schema)
-
-  if (!categoryMatch.remainingWords.length) {
-    return categoryMatch.spans
-  }
 
   const properties = [
     ...schema.commonProperties(),
@@ -84,20 +98,14 @@ function interpret(words: string[], schema: Schema): Span[] {
       .map((s) => s.nodeId)
       .flatMap((id) => schema.propertiesOf(id)),
   ]
-  const finalMatch = properties.reduce(({ spans, remainingWords }, property) => {
-    const match = matchNode(remainingWords, property, schema)
+  const propertiesMatch = matchProperties(categoryMatch.remainingWords, properties, schema)
 
-    return {
-      spans: [...spans, ...match.spans],
-      remainingWords: match.remainingWords,
-    }
-  }, categoryMatch)
-
-  if (!finalMatch.remainingWords.length) {
-    return finalMatch.spans
-  }
-
-  return [...finalMatch.spans, { words: finalMatch.remainingWords }]
+  return [
+    ...categoryMatch.spans,
+    ...propertiesMatch.spans,
+    ...(propertiesMatch.remainingWords.length === 0
+      ? [] : [{ words: propertiesMatch.remainingWords }])
+  ]
 }
 
 function addNewNode(spans: Span[], schema: Schema) {
