@@ -13,23 +13,17 @@ function commonStartBetween(a: string[], b: string[]) {
   return common
 }
 
-export type Node = {
-  name: string[]
-  children: Node[]
-  properties: Node[]
-}
-
-type SchemaNode = {
+type Node = {
   id: string
   name: string[]
   children: string[]
   properties: string[]
 }
-export type Schema = Record<string, SchemaNode>
+export type Schema = Record<string, Node>
 
 type Interpretation = { node: string; matched: string[] }[]
 
-function removeProperties(words: string[], properties: SchemaNode[]) {
+function removeProperties(words: string[], properties: Node[]) {
   return words.filter((word) =>
     properties.every((property) => property.name[0] !== word),
   )

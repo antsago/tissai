@@ -1,13 +1,13 @@
 import { randomUUID } from "node:crypto"
 import type { Schema } from "./addToSchema.js"
 
-export type Node = {
+export type TreeNode = {
   name: string[]
-  children: Node[]
-  properties: Node[]
+  children: TreeNode[]
+  properties: TreeNode[]
 }
 
-function nodesToSchema(nodes: Node[], initial: Schema) {
+function nodesToSchema(nodes: TreeNode[], initial: Schema) {
   return nodes.reduce(
     ({ schema, ids }, node) => {
       const { schema: withNode, id: nodeId } = nodeToSchema(node, schema)
@@ -21,7 +21,7 @@ function nodesToSchema(nodes: Node[], initial: Schema) {
 }
 
 export function nodeToSchema(
-  node: Node,
+  node: TreeNode,
   initial: Schema = {},
 ): { schema: Schema; id: string } {
   const { schema: withChildren, ids: childIds } = nodesToSchema(
@@ -48,7 +48,7 @@ export function nodeToSchema(
   }
 }
 
-export function schemaToNode(schema: Schema, nodeId: string): Node {
+export function schemaToNode(schema: Schema, nodeId: string): TreeNode {
   const node = schema[nodeId]
 
   return {

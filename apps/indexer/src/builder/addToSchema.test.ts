@@ -1,9 +1,9 @@
 import { expect, describe, it } from "vitest"
-import { addToSchema as addRaw, type Node } from "./addToSchema.js"
-import { nodeToSchema, schemaToNode } from "./nodesToSchema.js"
+import { addToSchema as addRaw } from "./addToSchema.js"
+import { nodeToSchema, schemaToNode, type TreeNode } from "./nodesToSchema.js"
 
 describe("addToSchema", () => {
-  const addToSchema = (title: string, rootNode: Node) => {
+  const addToSchema = (title: string, rootNode: TreeNode) => {
     const { schema, id: rootId } = nodeToSchema(rootNode)
     const result = addRaw(title, schema, rootId)
     return schemaToNode(result, rootId)
@@ -14,7 +14,7 @@ describe("addToSchema", () => {
       name: [],
       properties: [],
       children: [],
-    } as Node
+    } as TreeNode
     const titles = [
       "jeans cropped marine azul",
       "jeans cropped marine negro",
@@ -96,7 +96,7 @@ describe("addToSchema", () => {
           properties: [],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jegging", schema)
 
@@ -129,7 +129,7 @@ describe("addToSchema", () => {
           properties: [],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans cropped", schema)
 
@@ -147,7 +147,7 @@ describe("addToSchema", () => {
           properties: [],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans camel", schema)
 
@@ -181,7 +181,7 @@ describe("addToSchema", () => {
           properties: [],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans", schema)
 
@@ -221,7 +221,7 @@ describe("addToSchema", () => {
           properties: [],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans cropped", schema)
 
@@ -261,7 +261,7 @@ describe("addToSchema", () => {
           properties: [],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans cropped camel", schema)
 
@@ -305,7 +305,7 @@ describe("addToSchema", () => {
           properties: [],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans camel", schema)
 
@@ -355,7 +355,7 @@ describe("addToSchema", () => {
           ],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans azul", schema)
 
@@ -379,7 +379,7 @@ describe("addToSchema", () => {
           ],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans camel", schema)
 
@@ -424,7 +424,7 @@ describe("addToSchema", () => {
           ],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans culotte", schema)
 
@@ -475,7 +475,7 @@ describe("addToSchema", () => {
           ],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans cropped camel", schema)
 
@@ -531,7 +531,7 @@ describe("addToSchema", () => {
           ],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans azul", schema)
 
@@ -587,7 +587,7 @@ describe("addToSchema", () => {
           ],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans pockets azul", schema)
 
@@ -638,7 +638,7 @@ describe("addToSchema", () => {
           children: [],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans azul", schema)
 
@@ -668,7 +668,7 @@ describe("addToSchema", () => {
           ],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans cropped azul", schema)
 
@@ -703,7 +703,7 @@ describe("addToSchema", () => {
           ],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans pockets camel", schema)
 
@@ -776,7 +776,7 @@ describe("addToSchema", () => {
           ],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans pockets camel", schema)
 
@@ -837,7 +837,7 @@ describe("addToSchema", () => {
           ],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans slim lavado", schema)
 
@@ -905,7 +905,7 @@ describe("addToSchema", () => {
           ],
         },
       ],
-    } as Node
+    } as TreeNode
 
     const result = addToSchema("jeans regular azul lavado", schema)
 
