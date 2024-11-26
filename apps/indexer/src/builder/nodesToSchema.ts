@@ -65,44 +65,44 @@ function dbToTree(nodes: NodeDb, nodeId: UUID): TreeNode {
   }
 }
 
+function addNode(name: string[], parent: UUID, nodes: NodeDb) {
+  const node = {
+    id: randomUUID(),
+    name,
+    children: [],
+    properties: [],
+  }
+
+  nodes[node.id] = node
+  nodes[parent].children = [...nodes[parent].children, node.id]
+
+  return node.id
+}
+
+function splitNode(id: UUID, atIndex: number, nodes: NodeDb) {
+  const node = nodes[id]
+
+  const newChild = {
+    id: randomUUID(),
+    name: node.name.slice(atIndex),
+    properties: node.properties,
+    children: node.children,
+  }
+  const updatedNode = {
+    id: node.id,
+    name: node.name.slice(0, atIndex),
+    children: [newChild.id],
+    properties: [],
+  }
+
+  nodes[newChild.id] = newChild
+  nodes[node.id] = updatedNode
+
+  return newChild.id
+}
+
 export function Schema(tree: TreeNode) {
   const { nodes: nodes, id: rootId} = treeNodeToDb(tree)
-
-  const addNode = (name: string[], parent: UUID = rootId) => {
-    const node = {
-      id: randomUUID(),
-      name,
-      children: [],
-      properties: [],
-    }
-
-    nodes[node.id] = node
-    nodes[parent].children = [...nodes[parent].children, node.id]
-
-    return node.id
-  }
-
-  const splitNode = (id: UUID, atIndex: number) => {
-    const node = nodes[id]
-
-    const newChild = {
-      id: randomUUID(),
-      name: node.name.slice(atIndex),
-      properties: node.properties,
-      children: node.children,
-    }
-    const updatedNode = {
-      id: node.id,
-      name: node.name.slice(0, atIndex),
-      children: [newChild.id],
-      properties: [],
-    }
-
-    nodes[newChild.id] = newChild
-    nodes[node.id] = updatedNode
-
-    return newChild.id
-  }
 
   return {
     rootId,
@@ -110,8 +110,8 @@ export function Schema(tree: TreeNode) {
     propertiesOf: (id: UUID) => nodes[id].properties.map(pId => nodes[pId]),
     childrenOf: (id: UUID) => nodes[id].children.map(cId => nodes[cId]),
     nameOf: (id: UUID) => nodes[id].name,
-    addNode,
-    splitNode,
+    addNode: (name: string[], parent: UUID = rootId) => addNode(name, parent, nodes),
+    splitNode: (id: UUID, atIndex: number) => splitNode(id, atIndex, nodes),
   }
 }
 export type Schema = ReturnType<typeof Schema>
