@@ -23,11 +23,7 @@ type Match = {
   remainingWords: string[]
 }
 
-function matchNode(
-  words: string[],
-  node: Node,
-  schema: Schema
-): Match {
+function matchNode(words: string[], node: Node, schema: Schema): Match {
   const matched = commonStartBetween(words, node.name)
   if (!matched.length) {
     return {
@@ -54,11 +50,7 @@ function matchNode(
   }
 }
 
-function matchNodes(
-  words: string[],
-  nodes: Node[],
-  schema: Schema,
-): Match {
+function matchNodes(words: string[], nodes: Node[], schema: Schema): Match {
   if (!words.length) {
     return {
       spans: [],
@@ -88,23 +80,21 @@ function interpret(words: string[], schema: Schema): Span[] {
 
   const { spans, remainingWords } = [
     ...schema.commonProperties(),
-    ...categoryMatch.spans.map((s) => s.nodeId).flatMap((id) => schema.propertiesOf(id)),
-  ]
-    .reduce(
-      ({ spans, remainingWords }, property) => {
-        const matched = commonStartBetween(remainingWords, property.name)
+    ...categoryMatch.spans
+      .map((s) => s.nodeId)
+      .flatMap((id) => schema.propertiesOf(id)),
+  ].reduce(({ spans, remainingWords }, property) => {
+    const matched = commonStartBetween(remainingWords, property.name)
 
-        if (!matched.length) {
-          return { spans, remainingWords }
-        }
+    if (!matched.length) {
+      return { spans, remainingWords }
+    }
 
-        return {
-          spans: [...spans, { nodeId: property.id, words: matched }],
-          remainingWords: remainingWords.slice(matched.length),
-        }
-      },
-      categoryMatch,
-    )
+    return {
+      spans: [...spans, { nodeId: property.id, words: matched }],
+      remainingWords: remainingWords.slice(matched.length),
+    }
+  }, categoryMatch)
 
   if (!remainingWords.length) {
     return spans

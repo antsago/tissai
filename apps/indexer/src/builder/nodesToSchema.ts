@@ -1,3 +1,4 @@
+import { property } from "lodash"
 import { randomUUID, type UUID } from "node:crypto"
 
 export type TreeNode = {
@@ -101,43 +102,55 @@ function splitNode(id: UUID, atIndex: number, nodes: NodeDb) {
   return newChild.id
 }
 
+function removeNode(id: UUID, nodes: NodeDb) {
+  const node = nodes[id]
+  const parent = Object.values(nodes).find((node) =>
+    node.children.includes(id),
+  )!
+
+  nodes[parent.id].children = parent.children.filter(
+    (childId) => childId !== id,
+  )
+  delete nodes[id]
+
+  return node
+}
+
+function addProperty(property: Node, parentId: UUID, nodes: NodeDb) {
+  nodes[property.id] = property
+  const parent = nodes[parentId]
+  nodes[parentId].properties = [...parent.properties, property.id]
+}
+
+function propertiesOf(id: UUID, nodes: NodeDb) {
+  return nodes[id].properties.map((pId) => nodes[pId])
+}
+
+function childrenOf(id: UUID, nodes: NodeDb) {
+  return nodes[id].children.map((cId) => nodes[cId])
+}
+
+function parentOf(id: UUID, nodes: NodeDb) {
+  return Object.values(nodes).find((node) => node.children.includes(id))
+}
+
 export function Schema(tree: TreeNode) {
   const { nodes: nodes, id: rootId } = treeNodeToDb(tree)
-
-  const removeNode = (id: UUID) => {
-    const node = nodes[id]
-    const parent = Object.values(nodes).find((node) =>
-      node.children.includes(id),
-    )!
-
-    nodes[parent.id].children = parent.children.filter(
-      (childId) => childId !== id,
-    )
-    delete nodes[id]
-
-    return node
-  }
-
-  const addProperty = (property: Node, parentId: UUID) => {
-    nodes[property.id] = property
-    const parent = nodes[parentId]
-    nodes[parentId].properties = [...parent.properties, property.id]
-  }
 
   return {
     asTree: () => dbToTree(nodes, rootId),
     nameOf: (id: UUID) => nodes[id].name,
-    propertiesOf: (id: UUID) => nodes[id].properties.map((pId) => nodes[pId]),
-    childrenOf: (id: UUID) => nodes[id].children.map((cId) => nodes[cId]),
-    parentOf: (id: UUID) =>
-      Object.values(nodes).find((node) => node.children.includes(id)),
-    categories: () => nodes[rootId].children.map((cId) => nodes[cId]),
-    commonProperties: () => nodes[rootId].properties.map((cId) => nodes[cId]),
+    propertiesOf: (id: UUID) => propertiesOf(id, nodes),
+    childrenOf: (id: UUID) => childrenOf(id, nodes),
+    parentOf: (id: UUID) => parentOf(id, nodes),
+    categories: () => childrenOf(rootId, nodes),
+    commonProperties: () => propertiesOf(rootId, nodes),
+    splitNode: (id: UUID, atIndex: number) => splitNode(id, atIndex, nodes),
+    removeNode: (id: UUID) => removeNode(id, nodes),
     addNode: (name: string[], parent: UUID = rootId) =>
       addNode(name, parent, nodes),
-    splitNode: (id: UUID, atIndex: number) => splitNode(id, atIndex, nodes),
-    removeNode,
-    addProperty,
+    addProperty: (property: Node, parentId: UUID = rootId) =>
+      addProperty(property, parentId, nodes),
   }
 }
 export type Schema = ReturnType<typeof Schema>
