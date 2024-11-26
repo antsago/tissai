@@ -1,4 +1,5 @@
-import { randomUUID } from "node:crypto"
+import { randomUUID, type UUID } from "node:crypto"
+import type { Schema, Node, Interpreter } from "./nodesToSchema.js"
 
 function commonStartBetween(a: string[], b: string[]) {
   let common = [] as string[]
@@ -13,15 +14,7 @@ function commonStartBetween(a: string[], b: string[]) {
   return common
 }
 
-type Node = {
-  id: string
-  name: string[]
-  children: string[]
-  properties: string[]
-}
-export type Schema = Record<string, Node>
-
-type Interpretation = { node: string; matched: string[] }[]
+type Interpretation = { node: UUID; matched: string[] }[]
 
 function removeProperties(words: string[], properties: Node[]) {
   return words.filter((word) =>
@@ -31,31 +24,31 @@ function removeProperties(words: string[], properties: Node[]) {
 
 function interpret(
   words: string[],
-  parentId: string,
-  schema: Schema,
+  parentId: UUID,
+  interpreter: Interpreter,
 ): { remainingWords: string[]; path: Interpretation } {
   const unmatchedWords = removeProperties(
     words,
-    schema[parentId].properties.map((id) => schema[id]),
+    interpreter.propertiesOf(parentId),
   )
 
-  for (let childId of schema[parentId].children) {
-    const matched = commonStartBetween(unmatchedWords, schema[childId].name)
+  for (let child of interpreter.childrenOf(parentId)) {
+    const matched = commonStartBetween(unmatchedWords, child.name)
     if (!matched.length) {
       continue
     }
 
     const { remainingWords, path } = interpret(
       unmatchedWords.slice(matched.length),
-      childId,
-      schema,
+      child.id,
+      interpreter,
     )
 
     return {
       remainingWords,
       path: [
         {
-          node: childId,
+          node: child.id,
           matched,
         },
         ...path,
@@ -66,116 +59,90 @@ function interpret(
   return { remainingWords: unmatchedWords, path: [] }
 }
 
-function addNewNode(words: string[], path: Interpretation, schema: Schema, rootId: string) {
+function addNewNode(words: string[], path: Interpretation, interpreter: Interpreter) {
   if (!words.length) {
-    return schema
+    return path
   }
-
-  const newNode = {
-    id: randomUUID(),
-    name: words,
-    children: [],
-    properties: [],
-  }
-  const parent = path.at(-1)?.node ?? rootId
-  schema[parent].children = [...schema[parent].children, newNode.id]
-
-  return {
-    ...schema,
-    [newNode.id]: newNode,
-  }
+  
+  return [
+    ...path,
+    {
+      node: interpreter.addNode(words, path.at(-1)?.node),
+      matched: words
+    },
+  ]
 }
 
-function splitNodes(path: Interpretation, schema: Schema) {
-  if (!path.length) {
-    return schema
-  }
-
-  return path.reduce((updatedSchema, { node, matched }) => {
-    if (matched.length === updatedSchema[node].name.length) {
-      return updatedSchema
+function splitNodes(path: Interpretation, interpreter: Interpreter) {
+  path.forEach(({ node, matched }) => {
+    if (matched.length === interpreter.nameOf(node).length) {
+      return
     }
 
-    const newChild = {
-      id: randomUUID(),
-      name: updatedSchema[node].name.slice(matched.length),
-      properties: updatedSchema[node].properties,
-      children: updatedSchema[node].children,
-    }
-    const newNode = {
-      id: updatedSchema[node].id,
-      name: matched,
-      children: [newChild.id],
-      properties: [],
-    }
+    interpreter.splitNode(node, matched.length)
+  })
 
-    return {
-      ...updatedSchema,
-      [newNode.id]: newNode,
-      [newChild.id]: newChild,
-    }
-  }, schema)
+  return path
 }
 
-function extractProperties(path: Interpretation, parentId: string, initial: Schema): Schema {
-  if (!path.length) {
-    return initial
-  }
+// function extractProperties(path: Interpretation, parentId: string, interpreter: Interpreter) {
+//   if (!path.length) {
+//     return
+//   }
 
-  const { node: nodeId } = path[0]
+//   const { node: nodeId } = path[0]
 
-  let schema = extractProperties(path.slice(1), nodeId, initial)
+//   extractProperties(path.slice(1), nodeId, interpreter)
 
-  const node = schema[nodeId]
-  const parent = schema[parentId] 
+//   const node = schema[nodeId]
+//   const parent = schema[parentId] 
 
-  const childMatches = node.children.reduce(
-    (cM, childId) => ({
-      ...cM,
-      [childId]: parent.children.some((siblingId) => {
-        if (siblingId === nodeId) {
-          return false
-        }
+//   const childMatches = node.children.reduce(
+//     (cM, childId) => ({
+//       ...cM,
+//       [childId]: parent.children.some((siblingId) => {
+//         if (siblingId === nodeId) {
+//           return false
+//         }
 
-        const sibling = schema[siblingId]
-        const nieceMatches = sibling.children.reduce((nM, nieceId) => ({
-          ...nM,
-          [nieceId]: !!commonStartBetween(schema[childId].name, schema[nieceId].name).length
-        }), {} as Record<string, boolean>)
+//         const sibling = schema[siblingId]
+//         const nieceMatches = sibling.children.reduce((nM, nieceId) => ({
+//           ...nM,
+//           [nieceId]: !!commonStartBetween(schema[childId].name, schema[nieceId].name).length
+//         }), {} as Record<string, boolean>)
 
-        schema[siblingId] = {
-          ...sibling,
-          children: sibling.children.filter(nieceId => !nieceMatches[nieceId])
-        }
+//         schema[siblingId] = {
+//           ...sibling,
+//           children: sibling.children.filter(nieceId => !nieceMatches[nieceId])
+//         }
 
-        return Object.values(nieceMatches).some(match => match)
-      })
-    }),
-    {} as Record<string, boolean>,
-  )
+//         return Object.values(nieceMatches).some(match => match)
+//       })
+//     }),
+//     {} as Record<string, boolean>,
+//   )
 
-  schema[nodeId] = {
-    ...node,
-    children: node.children.filter(childId => !childMatches[childId]),
-  }
+//   schema[nodeId] = {
+//     ...node,
+//     children: node.children.filter(childId => !childMatches[childId]),
+//   }
 
-  schema[parentId] = {
-    ...parent,
-    properties: [
-      ...parent.properties,
-      ...node.children.filter(childId => childMatches[childId]),
-    ]
-  }
+//   schema[parentId] = {
+//     ...parent,
+//     properties: [
+//       ...parent.properties,
+//       ...node.children.filter(childId => childMatches[childId]),
+//     ]
+//   }
 
-  return schema
-}
+//   return
+// }
 
-export function addToSchema(title: string, schema: Schema, rootId: string) {
+export function addToSchema(title: string, interpreter: Interpreter) {
   const words = title.split(" ")
-  const { remainingWords, path } = interpret(words, rootId, schema)
-  let updatedSchema = schema
-  updatedSchema = splitNodes(path, schema)
-  updatedSchema = addNewNode(remainingWords, path, updatedSchema, rootId)
-  updatedSchema = extractProperties(path, rootId, updatedSchema)
-  return updatedSchema
+  let { remainingWords, path } = interpret(words, interpreter.rootId, interpreter)
+  path = splitNodes(path, interpreter)
+  path = addNewNode(remainingWords, path, interpreter)
+  // extractProperties(path, interpreter.rootId, interpreter)
+  return interpreter
 }
