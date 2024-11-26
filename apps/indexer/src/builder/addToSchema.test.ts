@@ -993,4 +993,34 @@ describe("addToSchema", () => {
       ],
     })
   })
+
+  it("matches property children", () => {
+    const schema = {
+      name: [],
+      properties: [
+        {
+          name: ["azul"],
+          properties: [],
+          children: [
+            {
+              name: ["oscuro"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [],
+        },
+      ],
+    } as TreeNode
+
+    const result = addToSchema("jeans azul oscuro", schema)
+
+    expect(result).toStrictEqual(schema)
+  })
 })

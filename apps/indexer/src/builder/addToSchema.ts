@@ -78,29 +78,26 @@ function interpret(words: string[], schema: Schema): Span[] {
     return categoryMatch.spans
   }
 
-  const { spans, remainingWords } = [
+  const properties = [
     ...schema.commonProperties(),
     ...categoryMatch.spans
       .map((s) => s.nodeId)
       .flatMap((id) => schema.propertiesOf(id)),
-  ].reduce(({ spans, remainingWords }, property) => {
-    const matched = commonStartBetween(remainingWords, property.name)
-
-    if (!matched.length) {
-      return { spans, remainingWords }
-    }
+  ]
+  const finalMatch = properties.reduce(({ spans, remainingWords }, property) => {
+    const match = matchNode(remainingWords, property, schema)
 
     return {
-      spans: [...spans, { nodeId: property.id, words: matched }],
-      remainingWords: remainingWords.slice(matched.length),
+      spans: [...spans, ...match.spans],
+      remainingWords: match.remainingWords,
     }
   }, categoryMatch)
 
-  if (!remainingWords.length) {
-    return spans
+  if (!finalMatch.remainingWords.length) {
+    return finalMatch.spans
   }
 
-  return [...spans, { words: remainingWords }]
+  return [...finalMatch.spans, { words: finalMatch.remainingWords }]
 }
 
 function addNewNode(spans: Span[], schema: Schema) {
