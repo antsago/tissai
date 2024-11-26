@@ -508,8 +508,7 @@ describe("addToSchema", () => {
     })
   })
 
-  // skipping property extraction for now since I'm hopping to implement it in a much cleaner way
-  it.skip("converts subcategories into properties", () => {
+  it("converts subcategories into properties", () => {
     const schema = {
       name: [],
       properties: [],
@@ -559,7 +558,7 @@ describe("addToSchema", () => {
     })
   })
 
-  it.skip("extracts child properties", () => {
+  it("extracts child properties", () => {
     const schema = {
       name: [],
       properties: [],
@@ -675,7 +674,7 @@ describe("addToSchema", () => {
     expect(result).toStrictEqual(schema)
   })
 
-  it.skip("identifies newly-split properties", () => {
+  it("identifies newly-split properties", () => {
     const schema = {
       name: [],
       properties: [],
@@ -743,7 +742,7 @@ describe("addToSchema", () => {
     })
   })
 
-  it.skip("extracts multiple properties", () => {
+  it("extracts multiple properties", () => {
     const schema = {
       name: [],
       properties: [],
@@ -788,12 +787,12 @@ describe("addToSchema", () => {
           name: ["jeans"],
           properties: [
             {
-              name: ["azul"],
+              name: ["camel"],
               properties: [],
               children: [],
             },
             {
-              name: ["camel"],
+              name: ["azul"],
               properties: [],
               children: [],
             },
@@ -876,7 +875,7 @@ describe("addToSchema", () => {
     })
   })
 
-  it.skip("splits partial property matches", () => {
+  it("splits partial property matches", () => {
     const schema = {
       name: [],
       properties: [],
@@ -920,12 +919,12 @@ describe("addToSchema", () => {
               properties: [],
               children: [
                 {
-                  name: ["oscuro"],
+                  name: ["lavado"],
                   properties: [],
                   children: [],
                 },
                 {
-                  name: ["lavado"],
+                  name: ["oscuro"],
                   properties: [],
                   children: [],
                 },

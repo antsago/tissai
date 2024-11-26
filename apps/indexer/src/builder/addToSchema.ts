@@ -14,7 +14,10 @@ function commonStartBetween(a: string[], b: string[]) {
   return common
 }
 
-type Interpretation = { node: UUID; matched: string[] }[]
+type Interpretation = {
+  node: UUID
+  matched: string[]
+}[]
 
 function removeProperties(words: string[], properties: Node[]) {
   return words.filter((word) =>
@@ -27,10 +30,7 @@ function interpret(
   parentId: UUID,
   schema: Schema,
 ): { remainingWords: string[]; path: Interpretation } {
-  const unmatchedWords = removeProperties(
-    words,
-    schema.propertiesOf(parentId),
-  )
+  const unmatchedWords = removeProperties(words, schema.propertiesOf(parentId))
 
   for (let child of schema.childrenOf(parentId)) {
     const matched = commonStartBetween(unmatchedWords, child.name)
@@ -61,88 +61,75 @@ function interpret(
 
 function addNewNode(words: string[], path: Interpretation, schema: Schema) {
   if (!words.length) {
-    return path
+    return []
   }
-  
-  return [
-    ...path,
-    {
-      node: schema.addNode(words, path.at(-1)?.node),
-      matched: words
-    },
-  ]
+
+  return [schema.addNode(words, path.at(-1)?.node)]
 }
 
 function splitNodes(path: Interpretation, schema: Schema) {
-  path.forEach(({ node, matched }) => {
+  return path.flatMap(({ node, matched }) => {
     if (matched.length === schema.nameOf(node).length) {
+      return []
+    }
+
+    return [schema.splitNode(node, matched.length), node]
+  })
+}
+
+function extractProperties(changedIds: UUID[], schema: Schema) {
+  changedIds.forEach((nodeId) => {
+    const parent = schema.parentOf(nodeId)
+    if (!parent) {
+      return
+    }
+    const grandparent = schema.parentOf(parent.id)
+    if (!grandparent) {
       return
     }
 
-    schema.splitNode(node, matched.length)
+    const nodeName = schema.nameOf(nodeId)
+    const matchingCousins = grandparent.children
+      .flatMap((auntId) =>
+        auntId === parent.id ? [] : schema.childrenOf(auntId),
+      )
+      .filter(
+        (cousin) => commonStartBetween(cousin.name, nodeName).length !== 0,
+      )
+
+    if (!matchingCousins.length) {
+      return
+    }
+
+    matchingCousins.forEach((cousin) => {
+      const currentName = schema.nameOf(nodeId)
+      const match = commonStartBetween(cousin.name, currentName)
+      const remainingCousin =
+        match.length < cousin.name.length && cousin.name.slice(match.length)
+      const remainingName = match.length < currentName.length
+
+      if (remainingName) {
+        const newNodeId = schema.splitNode(nodeId, match.length)
+      }
+
+      if (remainingCousin) {
+        const newNodeId = schema.addNode(remainingCousin, nodeId)
+      }
+
+      schema.removeNode(cousin.id)
+    })
+    const node = schema.removeNode(nodeId)
+
+    schema.addProperty(node, grandparent.id)
   })
-
-  return path
 }
-
-// function extractProperties(path: Interpretation, parentId: string, interpreter: Schema) {
-//   if (!path.length) {
-//     return
-//   }
-
-//   const { node: nodeId } = path[0]
-
-//   extractProperties(path.slice(1), nodeId, interpreter)
-
-//   const node = schema[nodeId]
-//   const parent = schema[parentId] 
-
-//   const childMatches = node.children.reduce(
-//     (cM, childId) => ({
-//       ...cM,
-//       [childId]: parent.children.some((siblingId) => {
-//         if (siblingId === nodeId) {
-//           return false
-//         }
-
-//         const sibling = schema[siblingId]
-//         const nieceMatches = sibling.children.reduce((nM, nieceId) => ({
-//           ...nM,
-//           [nieceId]: !!commonStartBetween(schema[childId].name, schema[nieceId].name).length
-//         }), {} as Record<string, boolean>)
-
-//         schema[siblingId] = {
-//           ...sibling,
-//           children: sibling.children.filter(nieceId => !nieceMatches[nieceId])
-//         }
-
-//         return Object.values(nieceMatches).some(match => match)
-//       })
-//     }),
-//     {} as Record<string, boolean>,
-//   )
-
-//   schema[nodeId] = {
-//     ...node,
-//     children: node.children.filter(childId => !childMatches[childId]),
-//   }
-
-//   schema[parentId] = {
-//     ...parent,
-//     properties: [
-//       ...parent.properties,
-//       ...node.children.filter(childId => childMatches[childId]),
-//     ]
-//   }
-
-//   return
-// }
 
 export function addToSchema(title: string, schema: Schema) {
   const words = title.split(" ")
-  let { remainingWords, path } = interpret(words, schema.rootId, schema)
-  path = splitNodes(path, schema)
-  path = addNewNode(remainingWords, path, schema)
-  // extractProperties(path, interpreter.rootId, interpreter)
+  const { remainingWords, path } = interpret(words, schema.rootId, schema)
+  const splitIds = splitNodes(path, schema)
+  const addedIds = addNewNode(remainingWords, path, schema)
+  const changedIds = [...addedIds, ...splitIds]
+  extractProperties(changedIds, schema)
   return schema
 }
