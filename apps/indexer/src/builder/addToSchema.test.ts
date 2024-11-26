@@ -1,10 +1,10 @@
 import { expect, describe, it } from "vitest"
 import { addToSchema as addRaw } from "./addToSchema.js"
-import { type TreeNode, Interpreter } from "./nodesToSchema.js"
+import { type TreeNode, Schema } from "./nodesToSchema.js"
 
 describe("addToSchema", () => {
   const addToSchema = (title: string, rootNode: TreeNode) => {
-    const result = addRaw(title, Interpreter(rootNode))
+    const result = addRaw(title, Schema(rootNode))
     return result.asTree()
   }
 

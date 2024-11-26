@@ -11,9 +11,10 @@ export type Node = {
   children: UUID[]
   properties: UUID[]
 }
-export type Schema = Record<UUID, Node>
 
-function nodesToSchema(nodes: TreeNode[], initial: Schema) {
+type NodeDb = Record<UUID, Node>
+
+function nodesToSchema(nodes: TreeNode[], initial: NodeDb) {
   return nodes.reduce(
     ({ schema, ids }, node) => {
       const { schema: withNode, id: nodeId } = nodeToSchema(node, schema)
@@ -28,8 +29,8 @@ function nodesToSchema(nodes: TreeNode[], initial: Schema) {
 
 function nodeToSchema(
   node: TreeNode,
-  initial: Schema = {},
-): { schema: Schema; id: UUID } {
+  initial: NodeDb = {},
+): { schema: NodeDb; id: UUID } {
   const { schema: withChildren, ids: childIds } = nodesToSchema(
     node.children,
     initial,
@@ -54,7 +55,7 @@ function nodeToSchema(
   }
 }
 
-function schemaToNode(schema: Schema, nodeId: UUID): TreeNode {
+function schemaToNode(schema: NodeDb, nodeId: UUID): TreeNode {
   const node = schema[nodeId]
 
   return {
@@ -64,7 +65,7 @@ function schemaToNode(schema: Schema, nodeId: UUID): TreeNode {
   }
 }
 
-export function Interpreter(tree: TreeNode) {
+export function Schema(tree: TreeNode) {
   const { schema, id: rootId} = nodeToSchema(tree)
 
   const addNode = (name: string[], parent: UUID = rootId) => {
@@ -113,4 +114,4 @@ export function Interpreter(tree: TreeNode) {
     splitNode,
   }
 }
-export type Interpreter = ReturnType<typeof Interpreter>
+export type Schema = ReturnType<typeof Schema>

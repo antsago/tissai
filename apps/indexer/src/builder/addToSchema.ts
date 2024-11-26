@@ -1,5 +1,5 @@
-import { randomUUID, type UUID } from "node:crypto"
-import type { Schema, Node, Interpreter } from "./nodesToSchema.js"
+import { type UUID } from "node:crypto"
+import type { Node, Schema } from "./nodesToSchema.js"
 
 function commonStartBetween(a: string[], b: string[]) {
   let common = [] as string[]
@@ -25,14 +25,14 @@ function removeProperties(words: string[], properties: Node[]) {
 function interpret(
   words: string[],
   parentId: UUID,
-  interpreter: Interpreter,
+  schema: Schema,
 ): { remainingWords: string[]; path: Interpretation } {
   const unmatchedWords = removeProperties(
     words,
-    interpreter.propertiesOf(parentId),
+    schema.propertiesOf(parentId),
   )
 
-  for (let child of interpreter.childrenOf(parentId)) {
+  for (let child of schema.childrenOf(parentId)) {
     const matched = commonStartBetween(unmatchedWords, child.name)
     if (!matched.length) {
       continue
@@ -41,7 +41,7 @@ function interpret(
     const { remainingWords, path } = interpret(
       unmatchedWords.slice(matched.length),
       child.id,
-      interpreter,
+      schema,
     )
 
     return {
@@ -59,7 +59,7 @@ function interpret(
   return { remainingWords: unmatchedWords, path: [] }
 }
 
-function addNewNode(words: string[], path: Interpretation, interpreter: Interpreter) {
+function addNewNode(words: string[], path: Interpretation, schema: Schema) {
   if (!words.length) {
     return path
   }
@@ -67,25 +67,25 @@ function addNewNode(words: string[], path: Interpretation, interpreter: Interpre
   return [
     ...path,
     {
-      node: interpreter.addNode(words, path.at(-1)?.node),
+      node: schema.addNode(words, path.at(-1)?.node),
       matched: words
     },
   ]
 }
 
-function splitNodes(path: Interpretation, interpreter: Interpreter) {
+function splitNodes(path: Interpretation, schema: Schema) {
   path.forEach(({ node, matched }) => {
-    if (matched.length === interpreter.nameOf(node).length) {
+    if (matched.length === schema.nameOf(node).length) {
       return
     }
 
-    interpreter.splitNode(node, matched.length)
+    schema.splitNode(node, matched.length)
   })
 
   return path
 }
 
-// function extractProperties(path: Interpretation, parentId: string, interpreter: Interpreter) {
+// function extractProperties(path: Interpretation, parentId: string, interpreter: Schema) {
 //   if (!path.length) {
 //     return
 //   }
@@ -138,11 +138,11 @@ function splitNodes(path: Interpretation, interpreter: Interpreter) {
 //   return
 // }
 
-export function addToSchema(title: string, interpreter: Interpreter) {
+export function addToSchema(title: string, schema: Schema) {
   const words = title.split(" ")
-  let { remainingWords, path } = interpret(words, interpreter.rootId, interpreter)
-  path = splitNodes(path, interpreter)
-  path = addNewNode(remainingWords, path, interpreter)
+  let { remainingWords, path } = interpret(words, schema.rootId, schema)
+  path = splitNodes(path, schema)
+  path = addNewNode(remainingWords, path, schema)
   // extractProperties(path, interpreter.rootId, interpreter)
-  return interpreter
+  return schema
 }
