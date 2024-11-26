@@ -101,7 +101,19 @@ function matchProperties(
     spans = [...spans, { words: remainingWords }]
   }
 
-  return spans
+  return spans.reduce((merged, span) => {
+    const lastSpan = merged.at(-1)
+    if (!span.nodeId && lastSpan && !lastSpan.nodeId) {
+      return [
+        ...merged.slice(0, -1),
+        {
+          words: [...lastSpan.words, ...span.words]
+        }
+      ]
+    }
+
+    return [...merged, span]
+  }, [] as Span[])
 }
 
 function interpret(words: string[], schema: Schema): Span[] {

@@ -22,7 +22,7 @@ describe("addToSchema", () => {
       "jeans high waist pockets azul oscuro",
       "jeans high waist pockets camel",
       "jeans flare azul",
-      // "jeans flare verde kaki",
+      "jeans flare verde kaki",
       // "jeans slim straight lavado claro",
       // "jeans culotte lavado sostenible",
       // "jeans slim lavado medio ensuciado",
@@ -159,6 +159,40 @@ describe("addToSchema", () => {
           children: [
             {
               name: ["camel"],
+              children: [],
+              properties: [],
+            },
+          ],
+        },
+      ],
+    })
+  })
+
+  it("adds multi-word children", () => {
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          children: [],
+          properties: [],
+        },
+      ],
+    } as TreeNode
+
+    const result = addToSchema("jeans cropped marine camel", schema)
+
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["cropped", "marine", "camel"],
               children: [],
               properties: [],
             },
@@ -1021,6 +1055,52 @@ describe("addToSchema", () => {
     const result = addToSchema("jeans azul oscuro", schema)
 
     expect(result).toStrictEqual(schema)
+  })
+
+  it("adds multi-words children with properties present", () => {
+    const schema = {
+      name: [],
+      properties: [
+        {
+          name: ["azul"],
+          properties: [],
+          children: [],
+        },
+      ],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [],
+        },
+      ],
+    } as TreeNode
+
+    const result = addToSchema("jeans verde kaki", schema)
+
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [
+        {
+          name: ["azul"],
+          properties: [],
+          children: [],
+        },
+      ],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["verde", "kaki"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    })
   })
 
   it("matches properties out of order", () => {
