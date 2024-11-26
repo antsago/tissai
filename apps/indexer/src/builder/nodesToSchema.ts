@@ -5,7 +5,7 @@ export type TreeNode = {
   children: TreeNode[]
   properties: TreeNode[]
 }
-type Node = {
+export type Node = {
   id: UUID
   name: string[]
   children: UUID[]
@@ -125,13 +125,14 @@ export function Schema(tree: TreeNode) {
   }
 
   return {
-    rootId,
     asTree: () => dbToTree(nodes, rootId),
     nameOf: (id: UUID) => nodes[id].name,
     propertiesOf: (id: UUID) => nodes[id].properties.map((pId) => nodes[pId]),
     childrenOf: (id: UUID) => nodes[id].children.map((cId) => nodes[cId]),
     parentOf: (id: UUID) =>
       Object.values(nodes).find((node) => node.children.includes(id)),
+    categories: () => nodes[rootId].children.map((cId) => nodes[cId]),
+    commonProperties: () => nodes[rootId].properties.map((cId) => nodes[cId]),
     addNode: (name: string[], parent: UUID = rootId) =>
       addNode(name, parent, nodes),
     splitNode: (id: UUID, atIndex: number) => splitNode(id, atIndex, nodes),
