@@ -19,14 +19,14 @@ export type Node = {
   properties: Node[]
 }
 
-export type SchemaNode = {
+type SchemaNode = {
   id: string
   name: string[]
   children: string[]
   properties: string[]
 }
+export type Schema = Record<string, SchemaNode>
 
-type Schema = Record<string, SchemaNode>
 type Interpretation = { node: string; matched: string[] }[]
 
 function removeProperties(words: string[], properties: SchemaNode[]) {
@@ -176,64 +176,12 @@ function extractProperties(path: Interpretation, parentId: string, initial: Sche
   return schema
 }
 
-function nodesToSchema(nodes: Node[], initial: Schema) {
-  return nodes.reduce(
-    ({ schema, ids }, node) => {
-      const { schema: withNode, id: nodeId } = nodeToSchema(node, schema)
-      return {
-        schema: withNode,
-        ids: [...ids, nodeId],
-      }
-    },
-    { schema: initial, ids: [] as string[] },
-  )
-}
-
-function nodeToSchema(
-  node: Node,
-  initial: Schema = {},
-): { schema: Schema; id: string } {
-  const { schema: withChildren, ids: childIds } = nodesToSchema(
-    node.children,
-    initial,
-  )
-  const { schema: withProperties, ids: propertyIds } = nodesToSchema(
-    node.properties,
-    withChildren,
-  )
-
-  const id = randomUUID()
-  return {
-    schema: {
-      ...withProperties,
-      [id]: {
-        id,
-        name: node.name,
-        children: childIds,
-        properties: propertyIds,
-      },
-    },
-    id,
-  }
-}
-
-function schemaToNode(schema: Schema, nodeId: string): Node {
-  const node = schema[nodeId]
-
-  return {
-    name: node.name,
-    children: node.children.map(id => schemaToNode(schema, id)),
-    properties: node.properties.map(id => schemaToNode(schema, id)),
-  }
-}
-
-export function addToSchema(title: string, rootNode: Node) {
+export function addToSchema(title: string, schema: Schema, rootId: string) {
   const words = title.split(" ")
-  const { schema, id: rootId } = nodeToSchema(rootNode)
   const { remainingWords, path } = interpret(words, rootId, schema)
   let updatedSchema = schema
   updatedSchema = splitNodes(path, schema)
   updatedSchema = addNewNode(remainingWords, path, updatedSchema, rootId)
   updatedSchema = extractProperties(path, rootId, updatedSchema)
-  return schemaToNode(updatedSchema, rootId)
+  return updatedSchema
 }

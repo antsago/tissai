@@ -1,7 +1,14 @@
 import { expect, describe, it } from "vitest"
-import { addToSchema, type Node } from "./addToSchema.js"
+import { addToSchema as addRaw, type Node } from "./addToSchema.js"
+import { nodeToSchema, schemaToNode } from "./nodesToSchema.js"
 
 describe("addToSchema", () => {
+  const addToSchema = (title: string, rootNode: Node) => {
+    const { schema, id: rootId } = nodeToSchema(rootNode)
+    const result = addRaw(title, schema, rootId)
+    return schemaToNode(result, rootId)
+  }
+
   it.skip("works", () => {
     const initialSchema = {
       name: [],
