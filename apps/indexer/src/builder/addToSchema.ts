@@ -71,22 +71,37 @@ function matchNodes(words: string[], nodes: Node[], schema: Schema): Match {
   }
 }
 
-function matchProperties(words: string[], properties: Node[], schema: Schema): Match {
-  if (!words.length) {
-    return {
-      spans: [],
-      remainingWords: words,
+function matchProperties(
+  words: string[],
+  properties: Node[],
+  schema: Schema,
+): Span[] {
+  let remainingWords = words
+  let unmatchedProperties = properties
+  let spans: Span[] = []
+
+  outerLoop: while (remainingWords.length && unmatchedProperties.length) {
+    for (let [propertyIndex, property] of unmatchedProperties.entries()) {
+      const match = matchNode(remainingWords, property, schema)
+
+      if (match.spans.length) {
+        unmatchedProperties = unmatchedProperties.toSpliced(propertyIndex)
+        spans = spans.concat(match.spans)
+        remainingWords = match.remainingWords
+
+        continue outerLoop
+      }
+
+      spans = [...spans, { words: remainingWords.slice(0, 1) }]
+      remainingWords = remainingWords.slice(1)
     }
   }
 
-  return properties.reduce(({ spans, remainingWords }, property) => {
-    const match = matchNode(remainingWords, property, schema)
+  if (remainingWords.length) {
+    spans = [...spans, { words: remainingWords }]
+  }
 
-    return {
-      spans: [...spans, ...match.spans],
-      remainingWords: match.remainingWords,
-    }
-  }, { spans: [], remainingWords: words } as Match)
+  return spans
 }
 
 function interpret(words: string[], schema: Schema): Span[] {
@@ -98,14 +113,13 @@ function interpret(words: string[], schema: Schema): Span[] {
       .map((s) => s.nodeId)
       .flatMap((id) => schema.propertiesOf(id)),
   ]
-  const propertiesMatch = matchProperties(categoryMatch.remainingWords, properties, schema)
+  const propertySpans = matchProperties(
+    categoryMatch.remainingWords,
+    properties,
+    schema,
+  )
 
-  return [
-    ...categoryMatch.spans,
-    ...propertiesMatch.spans,
-    ...(propertiesMatch.remainingWords.length === 0
-      ? [] : [{ words: propertiesMatch.remainingWords }])
-  ]
+  return [...categoryMatch.spans, ...propertySpans]
 }
 
 function addNewNode(spans: Span[], schema: Schema) {

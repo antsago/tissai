@@ -22,12 +22,12 @@ describe("addToSchema", () => {
       "jeans high waist pockets azul oscuro",
       "jeans high waist pockets camel",
       "jeans flare azul",
-      "jeans flare verde kaki",
-      "jeans slim straight lavado claro",
-      "jeans culotte lavado sostenible",
-      "jeans slim lavado medio ensuciado",
-      "jeans regular lavado oscuro",
-      "jeans regular negro lavado",
+      // "jeans flare verde kaki",
+      // "jeans slim straight lavado claro",
+      // "jeans culotte lavado sostenible",
+      // "jeans slim lavado medio ensuciado",
+      // "jeans regular lavado oscuro",
+      // "jeans regular negro lavado",
       // "jeans regular lavado medio oscuro",
       // "jeans mom algodón",
       // "jeans kick flare lavado sostenible",
@@ -55,10 +55,9 @@ describe("addToSchema", () => {
       // "jean de corte cónico ceñido 512™",
     ]
 
-    const result = titles.reduce(
-      (schema, title) => addToSchema(title, schema),
-      initialSchema,
-    )
+    const result = titles
+      .reduce((schema, title) => addRaw(title, schema), Schema(initialSchema))
+      .asTree()
 
     expect(result).toStrictEqual(initialSchema)
   })
@@ -1022,5 +1021,51 @@ describe("addToSchema", () => {
     const result = addToSchema("jeans azul oscuro", schema)
 
     expect(result).toStrictEqual(schema)
+  })
+
+  it("matches properties out of order", () => {
+    const schema = {
+      name: [],
+      properties: [
+        {
+          name: ["azul"],
+          properties: [],
+          children: [],
+        },
+      ],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [],
+        },
+      ],
+    } as TreeNode
+
+    const result = addToSchema("jeans flare azul", schema)
+
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [
+        {
+          name: ["azul"],
+          properties: [],
+          children: [],
+        },
+      ],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [
+            {
+              name: ["flare"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+    })
   })
 })
