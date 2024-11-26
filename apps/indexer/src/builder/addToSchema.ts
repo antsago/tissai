@@ -19,17 +19,22 @@ type Interpretation = {
   matched: string[]
 }[]
 
+type Span = {
+  nodeId?: UUID
+  words: string[]
+}
+
 function removeProperties(words: string[], properties: Node[]) {
   return words.filter((word) =>
     properties.every((property) => property.name[0] !== word),
   )
 }
 
-function interpret(
+function matchNode(
   words: string[],
   parentId: UUID,
   schema: Schema,
-): { remainingWords: string[]; path: Interpretation } {
+): { remainingWords: string[]; spans: Required<Span>[] } {
   const unmatchedWords = removeProperties(words, schema.propertiesOf(parentId))
 
   for (let child of schema.childrenOf(parentId)) {
@@ -38,7 +43,7 @@ function interpret(
       continue
     }
 
-    const { remainingWords, path } = interpret(
+    const { remainingWords, spans } = matchNode(
       unmatchedWords.slice(matched.length),
       child.id,
       schema,
@@ -46,34 +51,51 @@ function interpret(
 
     return {
       remainingWords,
-      path: [
+      spans: [
         {
-          node: child.id,
-          matched,
+          nodeId: child.id,
+          words: matched,
         },
-        ...path,
+        ...spans,
       ],
     }
   }
 
-  return { remainingWords: unmatchedWords, path: [] }
+  return { remainingWords: unmatchedWords, spans: [] }
 }
 
-function addNewNode(words: string[], path: Interpretation, schema: Schema) {
-  if (!words.length) {
-    return []
+function interpret(
+  words: string[],
+  schema: Schema,
+): Span[] {
+  const { spans, remainingWords } = matchNode(words, schema.rootId, schema)
+
+  if (!remainingWords.length) {
+    return spans
   }
 
-  return [schema.addNode(words, path.at(-1)?.node)]
+  return [...spans, { words: remainingWords }]
 }
 
-function splitNodes(path: Interpretation, schema: Schema) {
-  return path.flatMap(({ node, matched }) => {
-    if (matched.length === schema.nameOf(node).length) {
+function addNewNode(spans: Span[], schema: Schema) {
+  return spans
+    .map(({ nodeId, words}, index) => {
+      if (nodeId) {
+        return
+      }
+      
+      return schema.addNode(words, spans.at(index - 1)?.nodeId)
+    })
+    .filter(id => !!id)
+}
+
+function splitNodes(spans: Span[], schema: Schema) {
+  return spans.flatMap(({ nodeId, words }) => {
+    if (!nodeId || words.length === schema.nameOf(nodeId).length) {
       return []
     }
 
-    return [schema.splitNode(node, matched.length), node]
+    return [schema.splitNode(nodeId, words.length), nodeId]
   })
 }
 
@@ -126,9 +148,9 @@ function extractProperties(changedIds: UUID[], schema: Schema) {
 
 export function addToSchema(title: string, schema: Schema) {
   const words = title.split(" ")
-  const { remainingWords, path } = interpret(words, schema.rootId, schema)
-  const splitIds = splitNodes(path, schema)
-  const addedIds = addNewNode(remainingWords, path, schema)
+  const spans = interpret(words, schema)
+  const splitIds = splitNodes(spans, schema)
+  const addedIds = addNewNode(spans, schema)
   const changedIds = [...addedIds, ...splitIds]
   extractProperties(changedIds, schema)
   return schema
