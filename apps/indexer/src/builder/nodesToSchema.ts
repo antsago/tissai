@@ -14,35 +14,35 @@ export type Node = {
 
 type NodeDb = Record<UUID, Node>
 
-function nodesToSchema(nodes: TreeNode[], initial: NodeDb) {
+function treeNodesToDb(nodes: TreeNode[], initial: NodeDb) {
   return nodes.reduce(
-    ({ schema, ids }, node) => {
-      const { schema: withNode, id: nodeId } = nodeToSchema(node, schema)
+    ({ nodes, ids }, node) => {
+      const { nodes: withNode, id: nodeId } = treeNodeToDb(node, nodes)
       return {
-        schema: withNode,
+        nodes: withNode,
         ids: [...ids, nodeId],
       }
     },
-    { schema: initial, ids: [] as UUID[] },
+    { nodes: initial, ids: [] as UUID[] },
   )
 }
 
-function nodeToSchema(
+function treeNodeToDb(
   node: TreeNode,
   initial: NodeDb = {},
-): { schema: NodeDb; id: UUID } {
-  const { schema: withChildren, ids: childIds } = nodesToSchema(
+): { nodes: NodeDb; id: UUID } {
+  const { nodes: withChildren, ids: childIds } = treeNodesToDb(
     node.children,
     initial,
   )
-  const { schema: withProperties, ids: propertyIds } = nodesToSchema(
+  const { nodes: withProperties, ids: propertyIds } = treeNodesToDb(
     node.properties,
     withChildren,
   )
 
   const id = randomUUID()
   return {
-    schema: {
+    nodes: {
       ...withProperties,
       [id]: {
         id,
@@ -55,18 +55,18 @@ function nodeToSchema(
   }
 }
 
-function schemaToNode(schema: NodeDb, nodeId: UUID): TreeNode {
-  const node = schema[nodeId]
+function dbToTree(nodes: NodeDb, nodeId: UUID): TreeNode {
+  const node = nodes[nodeId]
 
   return {
     name: node.name,
-    children: node.children.map(id => schemaToNode(schema, id)),
-    properties: node.properties.map(id => schemaToNode(schema, id)),
+    children: node.children.map(id => dbToTree(nodes, id)),
+    properties: node.properties.map(id => dbToTree(nodes, id)),
   }
 }
 
 export function Schema(tree: TreeNode) {
-  const { schema, id: rootId} = nodeToSchema(tree)
+  const { nodes: nodes, id: rootId} = treeNodeToDb(tree)
 
   const addNode = (name: string[], parent: UUID = rootId) => {
     const node = {
@@ -76,14 +76,14 @@ export function Schema(tree: TreeNode) {
       properties: [],
     }
 
-    schema[node.id] = node
-    schema[parent].children = [...schema[parent].children, node.id]
+    nodes[node.id] = node
+    nodes[parent].children = [...nodes[parent].children, node.id]
 
     return node.id
   }
 
   const splitNode = (id: UUID, atIndex: number) => {
-    const node = schema[id]
+    const node = nodes[id]
 
     const newChild = {
       id: randomUUID(),
@@ -98,18 +98,18 @@ export function Schema(tree: TreeNode) {
       properties: [],
     }
 
-    schema[newChild.id] = newChild
-    schema[node.id] = updatedNode
+    nodes[newChild.id] = newChild
+    nodes[node.id] = updatedNode
 
     return newChild.id
   }
 
   return {
     rootId,
-    asTree: () => schemaToNode(schema, rootId),
-    propertiesOf: (id: UUID) => schema[id].properties.map(pId => schema[pId]),
-    childrenOf: (id: UUID) => schema[id].children.map(cId => schema[cId]),
-    nameOf: (id: UUID) => schema[id].name,
+    asTree: () => dbToTree(nodes, rootId),
+    propertiesOf: (id: UUID) => nodes[id].properties.map(pId => nodes[pId]),
+    childrenOf: (id: UUID) => nodes[id].children.map(cId => nodes[cId]),
+    nameOf: (id: UUID) => nodes[id].name,
     addNode,
     splitNode,
   }
