@@ -1,3 +1,4 @@
+import _ from "lodash"
 import { addToSchema } from "./addToSchema.js"
 import { type TreeNode, Schema } from "./nodesToSchema.js"
 import titles from "./titles.js"
@@ -14,7 +15,7 @@ const initialSchema = {
   children: [],
 } as TreeNode
 
-const finalSchema = titles
+const finalSchema = _.shuffle(titles)
   .map((title) => normalizeString(title))
   .reduce((schema, title) => addToSchema(title, schema), Schema(initialSchema))
 
