@@ -80,7 +80,7 @@ function matchProperties(
   let unmatchedProperties = properties
   let spans: Span[] = []
 
-  outerLoop: while (remainingWords.length && unmatchedProperties.length) {
+  whileLoop: while (remainingWords.length && unmatchedProperties.length) {
     for (let [propertyIndex, property] of unmatchedProperties.entries()) {
       const match = matchNode(remainingWords, property, schema)
 
@@ -89,7 +89,7 @@ function matchProperties(
         spans = spans.concat(match.spans)
         remainingWords = match.remainingWords
 
-        continue outerLoop
+        continue whileLoop
       }
     }
 
