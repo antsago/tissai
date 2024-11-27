@@ -29,16 +29,16 @@ describe("addToSchema", () => {
       "jeans regular lavado oscuro",
       "jeans regular negro lavado",
       "jeans regular lavado medio oscuro",
-      // "jeans mom algodón",
-      // "jeans kick flare lavado sostenible",
-      // "jeans skinny lavado medio ensuciado",
-      // "jeans straight lavado sostenible",
-      // "jeans skinny negro lavado",
-      // "jeans regular lavado claro",
-      // "jeans slim cropped lavado sostenible",
-      // "jeans skinny lavado claro",
-      // "jeans push up lavado sostenible",
-      // "jeans slim ligero azul verdoso lavado medio oscuro",
+      "jeans mom algodón",
+      "jeans kick flare lavado sostenible",
+      "jeans skinny lavado medio ensuciado",
+      "jeans straight lavado sostenible",
+      "jeans skinny negro lavado",
+      "jeans regular lavado claro",
+      "jeans slim cropped lavado sostenible",
+      "jeans skinny lavado claro",
+      "jeans push up lavado sostenible",
+      "jeans slim ligero azul verdoso lavado medio oscuro",
       // "jeans slim lavado medio oscuro",
       // "jeans culotte lavado sostenible",
       // "jeans boot cut lavado sostenible",
@@ -1174,6 +1174,35 @@ describe("addToSchema", () => {
     } as TreeNode
 
     const result = addToSchema("jeans azul", schema)
+
+    expect(result).toStrictEqual(schema)
+  })
+
+  it("matches multiple properties", () => {
+    const schema = {
+      name: [],
+      properties: [
+        {
+          name: ["negro"],
+          properties: [],
+          children: [],
+        },
+        {
+          name: ["azul"],
+          properties: [],
+          children: [],
+        },
+      ],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [],
+        },
+      ],
+    } as TreeNode
+
+    const result = addToSchema("jeans negro azul", schema)
 
     expect(result).toStrictEqual(schema)
   })

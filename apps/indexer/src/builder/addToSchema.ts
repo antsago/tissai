@@ -85,7 +85,7 @@ function matchProperties(
       const match = matchNode(remainingWords, property, schema)
 
       if (match.spans.length) {
-        unmatchedProperties = unmatchedProperties.toSpliced(propertyIndex)
+        unmatchedProperties = unmatchedProperties.toSpliced(propertyIndex, 1)
         spans = spans.concat(match.spans)
         remainingWords = match.remainingWords
 
