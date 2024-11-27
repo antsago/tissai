@@ -71,27 +71,24 @@ function matchNodes(words: string[], nodes: Node[], schema: Schema): Match {
   }
 }
 
-function interpret(
-  words: string[],
-  schema: Schema,
-): Span[] {
+function interpret(words: string[], schema: Schema): Span[] {
   let remainingWords = words
   let stack = [
     schema.categories(),
-    ...schema.commonProperties().map(p => [p]),
+    ...schema.commonProperties().map((p) => [p]),
   ]
   let spans: Span[] = []
 
   whileLoop: while (remainingWords.length) {
-    for (let nodes of stack) {
-      for (let [propertyIndex, property] of nodes.entries()) {
+    for (let [stackEntry, nodes] of stack.entries()) {
+      for (let property of nodes) {
         const match = matchNode(remainingWords, property, schema)
 
         if (match.spans.length) {
           stack = stack.toSpliced(
-            propertyIndex,
+            stackEntry,
             1,
-            ...schema.propertiesOf(property.id).map(p => [p]),
+            ...schema.propertiesOf(property.id).map((p) => [p]),
           )
           spans = spans.concat(match.spans)
           remainingWords = match.remainingWords
@@ -132,7 +129,7 @@ function addNewNode(spans: Span[], schema: Schema) {
         properties: [],
       }
       const addAsProperty = index === 0 && spans.length > 1
-      const parent = spans.at(addAsProperty ? index+1 : index-1)?.nodeId
+      const parent = spans.at(addAsProperty ? index + 1 : index - 1)?.nodeId
       schema.addNode(newNode, parent, addAsProperty)
 
       return newNode.id

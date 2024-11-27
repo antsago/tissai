@@ -1344,4 +1344,28 @@ describe("addToSchema", () => {
       ],
     })
   })
+
+  it("matches initial common properties", () => {
+    const schema = {
+      name: [],
+      properties: [
+        {
+          name: ["adidas"],
+          properties: [],
+          children: [],
+        },
+      ],
+      children: [
+        {
+          name: ["pantalón"],
+          properties: [],
+          children: [],
+        },
+      ],
+    } as TreeNode
+
+    const result = addToSchema("adidas pantalón", schema)
+
+    expect(result).toStrictEqual(schema)
+  })
 })
