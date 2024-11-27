@@ -1,4 +1,4 @@
-import { type UUID } from "node:crypto"
+import { randomUUID, type UUID } from "node:crypto"
 import type { Node, Schema } from "./nodesToSchema.js"
 
 function commonStartBetween(a: string[], b: string[]) {
@@ -73,27 +73,29 @@ function matchNodes(words: string[], nodes: Node[], schema: Schema): Match {
 
 function matchProperties(
   words: string[],
-  properties: Node[],
+  initialNodes: Node[][],
   schema: Schema,
 ): Span[] {
   let remainingWords = words
-  let unmatchedProperties = properties
+  let stack = initialNodes
   let spans: Span[] = []
 
   whileLoop: while (remainingWords.length) {
-    for (let [propertyIndex, property] of unmatchedProperties.entries()) {
-      const match = matchNode(remainingWords, property, schema)
+    for (let nodes of stack) {
+      for (let [propertyIndex, property] of nodes.entries()) {
+        const match = matchNode(remainingWords, property, schema)
 
-      if (match.spans.length) {
-        unmatchedProperties = unmatchedProperties.toSpliced(
-          propertyIndex,
-          1,
-          ...schema.propertiesOf(property.id),
-        )
-        spans = spans.concat(match.spans)
-        remainingWords = match.remainingWords
+        if (match.spans.length) {
+          stack = stack.toSpliced(
+            propertyIndex,
+            1,
+            ...schema.propertiesOf(property.id).map(p => [p]),
+          )
+          spans = spans.concat(match.spans)
+          remainingWords = match.remainingWords
 
-        continue whileLoop
+          continue whileLoop
+        }
       }
     }
 
@@ -115,21 +117,18 @@ function matchProperties(
 }
 
 function interpret(words: string[], schema: Schema): Span[] {
-  const categoryMatch = matchNodes(words, schema.categories(), schema)
-
-  const properties = [
-    ...schema.commonProperties(),
-    ...categoryMatch.spans
-      .map((s) => s.nodeId)
-      .flatMap((id) => schema.propertiesOf(id)),
+  const initialNodes = [
+    schema.categories(),
+    ...schema.commonProperties().map(p => [p]),
   ]
-  const propertySpans = matchProperties(
-    categoryMatch.remainingWords,
-    properties,
+
+  const spans = matchProperties(
+    words,
+    initialNodes,
     schema,
   )
 
-  return [...categoryMatch.spans, ...propertySpans]
+  return spans
 }
 
 function addNewNode(spans: Span[], schema: Schema) {
@@ -139,7 +138,14 @@ function addNewNode(spans: Span[], schema: Schema) {
         return
       }
 
-      return schema.addNode(words, spans.at(index - 1)?.nodeId)
+      const addAsProperty = index === 0 && spans.length > 1
+      return addAsProperty ? schema.addProperty({
+          id: randomUUID(),
+          name: words,
+          properties: [],
+          children: [],
+        }, spans.at(index+1)?.nodeId)
+        : schema.addNode(words, spans.at(index-1)?.nodeId)
     })
     .filter((id) => !!id)
 }

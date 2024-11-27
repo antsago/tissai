@@ -1310,4 +1310,38 @@ describe("addToSchema", () => {
 
     expect(result).toStrictEqual(schema)
   })
+
+  it("allows initial unknown words", () => {
+    const schema = {
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["pantalón"],
+          properties: [],
+          children: [],
+        },
+      ],
+    } as TreeNode
+
+    const result = addToSchema("adidas pantalón", schema)
+
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [],
+      children: [
+        {
+          name: ["pantalón"],
+          properties: [
+            {
+              name: ["adidas"],
+              properties: [],
+              children: [],
+            },
+          ],
+          children: [],
+        },
+      ],
+    })
+  })
 })
