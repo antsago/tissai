@@ -80,7 +80,7 @@ function matchProperties(
   let unmatchedProperties = properties
   let spans: Span[] = []
 
-  whileLoop: while (remainingWords.length && unmatchedProperties.length) {
+  whileLoop: while (remainingWords.length) {
     for (let [propertyIndex, property] of unmatchedProperties.entries()) {
       const match = matchNode(remainingWords, property, schema)
 
@@ -97,27 +97,21 @@ function matchProperties(
       }
     }
 
-    spans = [...spans, { words: remainingWords.slice(0, 1) }]
+    const unmatchedWord = remainingWords.slice(0, 1)
+    const lastSpan = spans.at(-1)
     remainingWords = remainingWords.slice(1)
+    spans =
+      !lastSpan || lastSpan.nodeId
+        ? [...spans, { words: unmatchedWord }]
+        : [
+            ...spans.slice(0, -1),
+            {
+              words: [...lastSpan.words, ...unmatchedWord],
+            },
+          ]
   }
 
-  if (remainingWords.length) {
-    spans = [...spans, { words: remainingWords }]
-  }
-
-  return spans.reduce((merged, span) => {
-    const lastSpan = merged.at(-1)
-    if (!span.nodeId && lastSpan && !lastSpan.nodeId) {
-      return [
-        ...merged.slice(0, -1),
-        {
-          words: [...lastSpan.words, ...span.words],
-        },
-      ]
-    }
-
-    return [...merged, span]
-  }, [] as Span[])
+  return spans
 }
 
 function interpret(words: string[], schema: Schema): Span[] {
