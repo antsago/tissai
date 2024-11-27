@@ -71,13 +71,15 @@ function matchNodes(words: string[], nodes: Node[], schema: Schema): Match {
   }
 }
 
-function matchProperties(
+function interpret(
   words: string[],
-  initialNodes: Node[][],
   schema: Schema,
 ): Span[] {
   let remainingWords = words
-  let stack = initialNodes
+  let stack = [
+    schema.categories(),
+    ...schema.commonProperties().map(p => [p]),
+  ]
   let spans: Span[] = []
 
   whileLoop: while (remainingWords.length) {
@@ -112,21 +114,6 @@ function matchProperties(
             },
           ]
   }
-
-  return spans
-}
-
-function interpret(words: string[], schema: Schema): Span[] {
-  const initialNodes = [
-    schema.categories(),
-    ...schema.commonProperties().map(p => [p]),
-  ]
-
-  const spans = matchProperties(
-    words,
-    initialNodes,
-    schema,
-  )
 
   return spans
 }
