@@ -1206,4 +1206,108 @@ describe("addToSchema", () => {
 
     expect(result).toStrictEqual(schema)
   })
+
+  it("extracts properties of properties", () => {
+    const schema = {
+      name: [],
+      properties: [
+        {
+          name: ["lavado"],
+          properties: [],
+          children: [
+            {
+              name: ["medio"],
+              properties: [],
+              children: [
+                {
+                  name: ["ensuciado"],
+                  properties: [],
+                  children: [],
+                },
+              ],
+            },
+            {
+              name: ["oscuro"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [],
+        },
+      ],
+    } as TreeNode
+
+    const result = addToSchema("jeans lavado oscuro ensuciado", schema)
+
+    expect(result).toStrictEqual({
+      name: [],
+      properties: [
+        {
+          name: ["lavado"],
+          properties: [
+            {
+              name: ["ensuciado"],
+              properties: [],
+              children: [],
+            },
+          ],
+          children: [
+            {
+              name: ["medio"],
+              properties: [],
+              children: [],
+            },
+            {
+              name: ["oscuro"],
+              properties: [],
+              children: [],
+            },
+          ],
+        },
+      ],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [],
+        },
+      ],
+    })
+  })
+
+  it("matches properties of properties", () => {
+    const schema = {
+      name: [],
+      properties: [
+        {
+          name: ["lavado"],
+          properties: [
+            {
+              name: ["ensuciado"],
+              properties: [],
+              children: [],
+            },
+          ],
+          children: [],
+        },
+      ],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [],
+        },
+      ],
+    } as TreeNode
+
+    const result = addToSchema("jeans lavado ensuciado", schema)
+
+    expect(result).toStrictEqual(schema)
+  })
 })
