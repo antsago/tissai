@@ -66,18 +66,16 @@ function dbToTree(nodes: NodeDb, nodeId: UUID): TreeNode {
   }
 }
 
-function addNode(name: string[], parent: UUID, nodes: NodeDb) {
-  const node = {
-    id: randomUUID(),
-    name,
-    children: [],
-    properties: [],
-  }
-
+function addNode(node: Node, parent: UUID, nodes: NodeDb) {
   nodes[node.id] = node
   nodes[parent].children = [...nodes[parent].children, node.id]
 
   return node.id
+}
+function addProperty(property: Node, parentId: UUID, nodes: NodeDb) {
+  nodes[property.id] = property
+  const parent = nodes[parentId]
+  nodes[parentId].properties = [...parent.properties, property.id]
 }
 
 function splitNode(id: UUID, atIndex: number, nodes: NodeDb) {
@@ -116,12 +114,6 @@ function removeNode(id: UUID, nodes: NodeDb) {
   return node
 }
 
-function addProperty(property: Node, parentId: UUID, nodes: NodeDb) {
-  nodes[property.id] = property
-  const parent = nodes[parentId]
-  nodes[parentId].properties = [...parent.properties, property.id]
-}
-
 function propertiesOf(id: UUID, nodes: NodeDb) {
   return nodes[id].properties.map((pId) => nodes[pId])
 }
@@ -147,8 +139,8 @@ export function Schema(tree: TreeNode) {
     commonProperties: () => propertiesOf(rootId, nodes),
     splitNode: (id: UUID, atIndex: number) => splitNode(id, atIndex, nodes),
     removeNode: (id: UUID) => removeNode(id, nodes),
-    addNode: (name: string[], parent: UUID = rootId) =>
-      addNode(name, parent, nodes),
+    addNode: (node: Node, parent: UUID = rootId) =>
+      addNode(node, parent, nodes),
     addProperty: (property: Node, parentId: UUID = rootId) =>
       addProperty(property, parentId, nodes),
   }

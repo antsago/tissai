@@ -138,14 +138,15 @@ function addNewNode(spans: Span[], schema: Schema) {
         return
       }
 
+      const newNode = {
+        id: randomUUID(),
+        name: words,
+        children: [],
+        properties: [],
+      }
       const addAsProperty = index === 0 && spans.length > 1
-      return addAsProperty ? schema.addProperty({
-          id: randomUUID(),
-          name: words,
-          properties: [],
-          children: [],
-        }, spans.at(index+1)?.nodeId)
-        : schema.addNode(words, spans.at(index-1)?.nodeId)
+      return addAsProperty ? schema.addProperty(newNode, spans.at(index+1)?.nodeId)
+        : schema.addNode(newNode, spans.at(index-1)?.nodeId)
     })
     .filter((id) => !!id)
 }
@@ -196,7 +197,13 @@ function extractProperties(changedIds: UUID[], schema: Schema) {
       }
 
       if (remainingCousin) {
-        const newNodeId = schema.addNode(remainingCousin, nodeId)
+        const node = {
+          id: randomUUID(),
+          name: remainingCousin,
+          children: [],
+          properties: [],
+        }
+        const newNodeId = schema.addNode(node, nodeId)
       }
 
       schema.removeNode(cousin.id)
