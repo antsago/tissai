@@ -145,8 +145,10 @@ function addNewNode(spans: Span[], schema: Schema) {
         properties: [],
       }
       const addAsProperty = index === 0 && spans.length > 1
-      return addAsProperty ? schema.addProperty(newNode, spans.at(index+1)?.nodeId)
-        : schema.addNode(newNode, spans.at(index-1)?.nodeId)
+      const parent = spans.at(addAsProperty ? index+1 : index-1)?.nodeId
+      schema.addNode(newNode, parent, addAsProperty)
+
+      return newNode.id
     })
     .filter((id) => !!id)
 }
@@ -193,7 +195,7 @@ function extractProperties(changedIds: UUID[], schema: Schema) {
       const remainingName = match.length < currentName.length
 
       if (remainingName) {
-        const newNodeId = schema.splitNode(nodeId, match.length)
+        schema.splitNode(nodeId, match.length)
       }
 
       if (remainingCousin) {
@@ -203,14 +205,14 @@ function extractProperties(changedIds: UUID[], schema: Schema) {
           children: [],
           properties: [],
         }
-        const newNodeId = schema.addNode(node, nodeId)
+        schema.addNode(node, nodeId)
       }
 
       schema.removeNode(cousin.id)
     })
-    const node = schema.removeNode(nodeId)
 
-    schema.addProperty(node, grandparent.id)
+    const node = schema.removeNode(nodeId)
+    schema.addNode(node, grandparent.id, true)
   })
 }
 

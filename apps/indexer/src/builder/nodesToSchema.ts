@@ -66,16 +66,15 @@ function dbToTree(nodes: NodeDb, nodeId: UUID): TreeNode {
   }
 }
 
-function addNode(node: Node, parent: UUID, nodes: NodeDb) {
+function addNode(node: Node, parent: UUID, asProperty: boolean, nodes: NodeDb) {
   nodes[node.id] = node
-  nodes[parent].children = [...nodes[parent].children, node.id]
+  if (asProperty) {
+    nodes[parent].properties = [...nodes[parent].properties, node.id]
+  } else {
+    nodes[parent].children = [...nodes[parent].children, node.id]
+  }
 
   return node.id
-}
-function addProperty(property: Node, parentId: UUID, nodes: NodeDb) {
-  nodes[property.id] = property
-  const parent = nodes[parentId]
-  nodes[parentId].properties = [...parent.properties, property.id]
 }
 
 function splitNode(id: UUID, atIndex: number, nodes: NodeDb) {
@@ -139,10 +138,8 @@ export function Schema(tree: TreeNode) {
     commonProperties: () => propertiesOf(rootId, nodes),
     splitNode: (id: UUID, atIndex: number) => splitNode(id, atIndex, nodes),
     removeNode: (id: UUID) => removeNode(id, nodes),
-    addNode: (node: Node, parent: UUID = rootId) =>
-      addNode(node, parent, nodes),
-    addProperty: (property: Node, parentId: UUID = rootId) =>
-      addProperty(property, parentId, nodes),
+    addNode: (node: Node, parent: UUID = rootId, asProperty: boolean = false) =>
+      addNode(node, parent, asProperty, nodes),
   }
 }
 export type Schema = ReturnType<typeof Schema>
