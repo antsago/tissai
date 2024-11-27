@@ -91,10 +91,10 @@ function matchProperties(
 
         continue outerLoop
       }
-
-      spans = [...spans, { words: remainingWords.slice(0, 1) }]
-      remainingWords = remainingWords.slice(1)
     }
+
+    spans = [...spans, { words: remainingWords.slice(0, 1) }]
+    remainingWords = remainingWords.slice(1)
   }
 
   if (remainingWords.length) {

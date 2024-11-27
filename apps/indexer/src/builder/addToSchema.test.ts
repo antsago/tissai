@@ -23,12 +23,12 @@ describe("addToSchema", () => {
       "jeans high waist pockets camel",
       "jeans flare azul",
       "jeans flare verde kaki",
-      // "jeans slim straight lavado claro",
-      // "jeans culotte lavado sostenible",
-      // "jeans slim lavado medio ensuciado",
-      // "jeans regular lavado oscuro",
-      // "jeans regular negro lavado",
-      // "jeans regular lavado medio oscuro",
+      "jeans slim straight lavado claro",
+      "jeans culotte lavado sostenible",
+      "jeans slim lavado medio ensuciado",
+      "jeans regular lavado oscuro",
+      "jeans regular negro lavado",
+      "jeans regular lavado medio oscuro",
       // "jeans mom algodón",
       // "jeans kick flare lavado sostenible",
       // "jeans skinny lavado medio ensuciado",
@@ -1103,7 +1103,7 @@ describe("addToSchema", () => {
     })
   })
 
-  it("matches properties out of order", () => {
+  it("matches properties after unmatched words", () => {
     const schema = {
       name: [],
       properties: [
@@ -1147,5 +1147,34 @@ describe("addToSchema", () => {
         },
       ],
     })
+  })
+
+  it("matches properties out of order", () => {
+    const schema = {
+      name: [],
+      properties: [
+        {
+          name: ["negro"],
+          properties: [],
+          children: [],
+        },
+        {
+          name: ["azul"],
+          properties: [],
+          children: [],
+        },
+      ],
+      children: [
+        {
+          name: ["jeans"],
+          properties: [],
+          children: [],
+        },
+      ],
+    } as TreeNode
+
+    const result = addToSchema("jeans azul", schema)
+
+    expect(result).toStrictEqual(schema)
   })
 })
