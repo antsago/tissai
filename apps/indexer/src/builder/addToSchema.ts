@@ -72,44 +72,69 @@ function matchNodes(words: string[], nodes: Node[], schema: Schema): Match {
 }
 
 function interpret(words: string[], schema: Schema): Span[] {
-  let remainingWords = words
   let stack = [
     schema.categories(),
     ...schema.commonProperties().map((p) => [p]),
   ]
-  let spans: Span[] = []
+  let spans: Span[] = [{ words }]
 
-  whileLoop: while (remainingWords.length) {
+  let currentSpan = 0
+  whileLoop: while (spans[currentSpan]) {
+    const span = spans[currentSpan]
+
+    if (span.nodeId) {
+      currentSpan += 1
+      continue whileLoop
+    }
+
     for (let [stackEntry, nodes] of stack.entries()) {
       for (let property of nodes) {
-        const match = matchNode(remainingWords, property, schema)
+        const match = matchNode(span.words, property, schema)
 
         if (match.spans.length) {
+          spans = !match.remainingWords.length
+            ? spans.toSpliced(currentSpan, 1, ...match.spans)
+            : spans.toSpliced(currentSpan, 1, ...match.spans, {
+                words: match.remainingWords,
+              })
           stack = stack.toSpliced(
             stackEntry,
             1,
             ...schema.propertiesOf(property.id).map((p) => [p]),
           )
-          spans = spans.concat(match.spans)
-          remainingWords = match.remainingWords
 
+          currentSpan = 0
           continue whileLoop
         }
       }
     }
 
-    const unmatchedWord = remainingWords.slice(0, 1)
-    const lastSpan = spans.at(-1)
-    remainingWords = remainingWords.slice(1)
-    spans =
-      !lastSpan || lastSpan.nodeId
-        ? [...spans, { words: unmatchedWord }]
-        : [
-            ...spans.slice(0, -1),
-            {
-              words: [...lastSpan.words, ...unmatchedWord],
-            },
-          ]
+    const unmatchedWord = span.words[0]
+    const remainingWords = span.words.slice(1)
+    const previousSpan = spans[currentSpan - 1]
+    if (previousSpan && !previousSpan.nodeId) {
+      spans = remainingWords.length
+        ? spans.toSpliced(
+            currentSpan - 1,
+            2,
+            { words: [...previousSpan.words, unmatchedWord] },
+            { words: remainingWords },
+          )
+        : spans.toSpliced(currentSpan - 1, 2, {
+            words: [...previousSpan.words, unmatchedWord],
+          })
+      continue whileLoop
+    }
+
+    if (remainingWords.length) {
+      spans = spans.toSpliced(
+        currentSpan,
+        1,
+        { words: [unmatchedWord] },
+        { words: remainingWords },
+      )
+    }
+    currentSpan += 1
   }
 
   return spans
