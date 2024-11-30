@@ -1,7 +1,7 @@
 import _ from "lodash"
 import { addToSchema } from "./addToSchema.js"
 import { type TreeNode, Schema } from "./nodesToSchema.js"
-import titles from "./titles.js"
+import titles from "../titles.js"
 
 const normalizeString = (str: string) =>
   str
