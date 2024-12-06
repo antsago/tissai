@@ -1,18 +1,8 @@
-import { randomUUID, type UUID } from "crypto"
+import { randomUUID } from "crypto"
 
-export type Value = {
-  name: string[],
-  sentences: UUID[]
-}
-
-export function extractValues(title: string, values: Value[]) {
-  const words = title.split(" ")
-
-  return [
-    ...values,
-    {
-      name: words,
+export function extractValues(titles: string[]) {
+  return titles.map(title => ({
+      name: title.split(" "),
       sentences: [randomUUID()],
-    },
-  ]
+    }))
 }
