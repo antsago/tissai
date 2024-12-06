@@ -21,28 +21,40 @@ function commonStartBetween(a: string[], b: string[]) {
 function addTitle(values: Value[], title: string) {
   let remainingWords = title.split(" ")
   const sentenceId = randomUUID()
+  let splitValues = [] as Value[]
 
   const updatedValues = values.map((value) => {
     const match = commonStartBetween(value.name, remainingWords)
     if (!match.length) {
       return value
     }
+
+    if(match.length < value.name.length) {
+      splitValues = [
+        ...splitValues,
+        {
+          name: value.name.slice(match.length),
+          sentences: value.sentences,
+        }
+      ]
+
+    }
     
     remainingWords = remainingWords.slice(match.length)
     return {
-      ...value,
+      name: match,
       sentences: [...value.sentences, sentenceId],
     }
   })
 
-  if (!remainingWords.length) {
-    return updatedValues
-  }
-
-  return [...updatedValues, {
-    name: remainingWords,
-    sentences: [sentenceId],
-  }]
+  return [
+    ...updatedValues,
+    ...splitValues,
+    ...(!remainingWords.length ? [] : [{
+      name: remainingWords,
+      sentences: [sentenceId],
+    }])
+  ]
 }
 
 export function extractValues(titles: string[]) {

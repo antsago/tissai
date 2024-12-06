@@ -74,4 +74,21 @@ describe("extractValues", () => {
       },
     ])
   })
+
+  it("splits at common initial words", () => {
+    const titles = ["jeans camel", "jeans"]
+
+    const result = extractValues(titles)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["jeans"],
+        sentences: [expect.any(String), expect.any(String)],
+      },
+      {
+        name: ["camel"],
+        sentences: [result[0].sentences[0]],
+      },
+    ])
+  })
 })
