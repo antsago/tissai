@@ -44,47 +44,40 @@ function matchTitle(title: string, values: Value[]): Span[] {
         continue valueLoop
       }
 
-      if (match.length === span.words.length) {
-        spans = spans.toSpliced(currentSpan, 1, { ...span, nodeId: valueEntry })
-      } else if (match.length < span.words.length) {
-        spans = spans.toSpliced(
-          currentSpan,
-          1,
-          { words: match, nodeId: valueEntry },
-          { words: span.words.slice(match.length) },
-        )
-      }
-
+      const newSpans =
+        span.words.length > match.length
+          ? [{ words: span.words.slice(match.length) }]
+          : []
+      spans = spans.toSpliced(
+        currentSpan,
+        1,
+        { words: match, nodeId: valueEntry },
+        ...newSpans,
+      )
       currentSpan += 1
       continue spanLoop
     }
 
     const unmatchedWord = span.words[0]
-    const remainingWords = span.words.slice(1)
+    const newSpans =
+      span.words.length > 1 ? [{ words: span.words.slice(1) }] : []
     const previousSpan = spans[currentSpan - 1]
     if (previousSpan && previousSpan.nodeId === undefined) {
-      spans = remainingWords.length
-        ? spans.toSpliced(
-            currentSpan - 1,
-            2,
-            { words: [...previousSpan.words, unmatchedWord] },
-            { words: remainingWords },
-          )
-        : spans.toSpliced(currentSpan - 1, 2, {
-            words: [...previousSpan.words, unmatchedWord],
-          })
-      continue spanLoop
-    }
-
-    if (remainingWords.length) {
+      spans = spans.toSpliced(
+        currentSpan - 1,
+        2,
+        { words: [...previousSpan.words, unmatchedWord] },
+        ...newSpans,
+      )
+    } else {
       spans = spans.toSpliced(
         currentSpan,
         1,
         { words: [unmatchedWord] },
-        { words: remainingWords },
+        ...newSpans,
       )
+      currentSpan += 1
     }
-    currentSpan += 1
   }
 
   return spans
