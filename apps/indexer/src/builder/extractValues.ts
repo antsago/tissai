@@ -1,6 +1,6 @@
 import { randomUUID, type UUID } from "crypto"
 
-type Value = {
+export type Value = {
   name: string[],
   sentences: UUID[]
 }
@@ -8,8 +8,11 @@ type Value = {
 export function extractValues(title: string, values: Value[]) {
   const words = title.split(" ")
 
-  return [{
-    name: words,
-    sentences: [randomUUID()],
-  }]
+  return [
+    ...values,
+    {
+      name: words,
+      sentences: [randomUUID()],
+    },
+  ]
 }
