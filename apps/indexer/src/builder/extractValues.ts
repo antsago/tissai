@@ -6,28 +6,27 @@ export type Value = {
 }
 
 function addTitle(values: Value[], title: string) {
-  const words = title.split(" ")
+  let remainingWords = title.split(" ")
   const sentenceId = randomUUID()
 
-  let isUpdated = false
   const updatedValues = values.map((value) => {
-    if (value.name[0] !== words[0]) {
+    if (value.name[0] !== remainingWords[0]) {
       return value
     }
     
-    isUpdated = true
+    remainingWords = remainingWords.slice(1)
     return {
       ...value,
       sentences: [...value.sentences, sentenceId],
     }
   })
 
-  if (isUpdated) {
+  if (!remainingWords.length) {
     return updatedValues
   }
 
-  return [...values, {
-    name: words,
+  return [...updatedValues, {
+    name: remainingWords,
     sentences: [sentenceId],
   }]
 }
