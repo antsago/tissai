@@ -61,4 +61,17 @@ describe("extractValues", () => {
       },
     ])
   })
+
+  it("matches multiple words", () => {
+    const titles = ["jeans camel", "jeans camel"]
+
+    const result = extractValues(titles)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["jeans", "camel"],
+        sentences: [expect.any(String), expect.any(String)],
+      },
+    ])
+  })
 })
