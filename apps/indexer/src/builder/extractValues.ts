@@ -45,18 +45,26 @@ function splitValues(values: Value[], match: Match|undefined, sentenceId: UUID) 
   )
 }
 
-function addTitle(values: Value[], title: string) {
+function matchTitle(title: string, values: Value[]) {
   const words = title.split(" ")
-  const sentenceId = randomUUID()
 
-  const match = values.map((value, valueIndex) => {
+  const span = values.map((value, valueIndex) => {
     const common = commonStartBetween(value.name, words)
     return {common, valueIndex}
   }).filter(({ common }) => !!common.length).at(0)
 
-  const remainingWords = words.slice(match?.common.length ?? 0)
-  
-  const updatedValues = splitValues(values, match, sentenceId)
+  const remainingWords = words.slice(span?.common.length ?? 0)
+
+  return {
+    span,
+    remainingWords,
+  }
+}
+
+function addTitle(values: Value[], title: string) {
+  const sentenceId = randomUUID()
+  const { span, remainingWords } = matchTitle(title, values)
+  const updatedValues = splitValues(values, span, sentenceId)
 
   return [
     ...updatedValues,
