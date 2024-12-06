@@ -28,7 +28,7 @@ function matchTitle(title: string, values: Value[]): Span[] {
 
   let spans: Span[] = [{ words }]
   let currentSpan = 0
-  
+
   spanLoop: while (spans[currentSpan]) {
     const span = spans[currentSpan]
 
@@ -45,11 +45,13 @@ function matchTitle(title: string, values: Value[]): Span[] {
       }
 
       if (match.length === span.words.length) {
-        spans = spans.toSpliced(currentSpan, 1, {...span, nodeId: valueEntry })
+        spans = spans.toSpliced(currentSpan, 1, { ...span, nodeId: valueEntry })
       } else if (match.length < span.words.length) {
-        spans = spans.toSpliced(currentSpan, 1, 
-          { words: match, nodeId: valueEntry},
-          { words: span.words.slice(match.length)}
+        spans = spans.toSpliced(
+          currentSpan,
+          1,
+          { words: match, nodeId: valueEntry },
+          { words: span.words.slice(match.length) },
         )
       }
 
@@ -92,29 +94,30 @@ function addTitle(initialValues: Value[], title: string) {
   const sentenceId = randomUUID()
   const spans = matchTitle(title, initialValues)
 
-  const splitValues = spans.filter(s => s.nodeId !== undefined).reduce((values, span) => {
-    const value = values[span.nodeId!]
-    return values.toSpliced(
-      span.nodeId!,
-      1,
-      ...[
-        {
-          name: span.words,
-          sentences: [...value.sentences, sentenceId],
-        },
-        {
-          name: value.name.slice(span.words.length),
-          sentences: value.sentences,
-        },
-      ].filter(({ name }) => !!name.length),
-    )
-  }, initialValues)
-  const newValues = spans.filter(s => s.nodeId === undefined).map(s => ({ name: s.words, sentences: [sentenceId]}))
+  const splitValues = spans
+    .filter((s) => s.nodeId !== undefined)
+    .reduce((values, span) => {
+      const value = values[span.nodeId!]
+      return values.toSpliced(
+        span.nodeId!,
+        1,
+        ...[
+          {
+            name: span.words,
+            sentences: [...value.sentences, sentenceId],
+          },
+          {
+            name: value.name.slice(span.words.length),
+            sentences: value.sentences,
+          },
+        ].filter(({ name }) => !!name.length),
+      )
+    }, initialValues)
+  const newValues = spans
+    .filter((s) => s.nodeId === undefined)
+    .map((s) => ({ name: s.words, sentences: [sentenceId] }))
 
-  return [
-    ...splitValues,
-    ...newValues,
-  ]
+  return [...splitValues, ...newValues]
 }
 
 export function extractValues(titles: string[]) {
