@@ -108,4 +108,21 @@ describe("extractValues", () => {
       },
     ])
   })
+
+  it("adds initial remaining words", () => {
+    const titles = ["vaqueros", "pantalones vaqueros"]
+
+    const result = extractValues(titles)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["vaqueros"],
+        sentences: [expect.any(String), expect.any(String)],
+      },
+      {
+        name: ["pantalones"],
+        sentences: [result[0].sentences[1]],
+      },
+    ])
+  })
 })
