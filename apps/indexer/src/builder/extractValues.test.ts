@@ -91,4 +91,21 @@ describe("extractValues", () => {
       },
     ])
   })
+
+  it("matches multiple initial words", () => {
+    const titles = ["jeans regular camel", "jeans regular"]
+
+    const result = extractValues(titles)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["jeans", "regular"],
+        sentences: [expect.any(String), expect.any(String)],
+      },
+      {
+        name: ["camel"],
+        sentences: [result[0].sentences[0]],
+      },
+    ])
+  })
 })
