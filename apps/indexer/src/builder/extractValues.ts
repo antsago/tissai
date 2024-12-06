@@ -90,9 +90,8 @@ function matchTitle(title: string, values: Value[]): Span[] {
   return spans
 }
 
-function addTitle(initialValues: Value[], title: string) {
+function addAndSplit(initialValues: Value[], spans: Span[]) {
   const sentenceId = randomUUID()
-  const spans = matchTitle(title, initialValues)
 
   const splitValues = spans
     .filter((s) => s.nodeId !== undefined)
@@ -113,11 +112,17 @@ function addTitle(initialValues: Value[], title: string) {
         ].filter(({ name }) => !!name.length),
       )
     }, initialValues)
+
   const newValues = spans
     .filter((s) => s.nodeId === undefined)
     .map((s) => ({ name: s.words, sentences: [sentenceId] }))
 
   return [...splitValues, ...newValues]
+}
+
+function addTitle(values: Value[], title: string) {
+  const spans = matchTitle(title, values)
+  return addAndSplit(values, spans)
 }
 
 export function extractValues(titles: string[]) {
