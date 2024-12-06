@@ -31,4 +31,17 @@ describe("extractValues", () => {
       },
     ])
   })
+
+  it("does not add existing values", () => {
+    const titles = ["jeans camel", "jeans camel"]
+
+    const result = extractValues(titles)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["jeans", "camel"],
+        sentences: [expect.any(String), expect.any(String)],
+      },
+    ])
+  })
 })
