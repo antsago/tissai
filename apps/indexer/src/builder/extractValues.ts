@@ -18,42 +18,52 @@ function commonStartBetween(a: string[], b: string[]) {
   return common
 }
 
+type Match = {
+  common: string[]
+  valueIndex: number
+}
+
+function splitValues(values: Value[], match: Match|undefined, sentenceId: UUID) {
+  if (!match) {
+    return values
+  }
+  const value = values[match.valueIndex]
+
+  return values.toSpliced(
+    match.valueIndex,
+    1,
+    ...[
+      {
+        name: match.common,
+        sentences: [...value.sentences, sentenceId],
+      },
+      {
+        name: value.name.slice(match.common.length),
+        sentences: value.sentences,
+      },
+    ].filter(({name}) => !!name.length)
+  )
+}
+
 function addTitle(values: Value[], title: string) {
-  let remainingWords = title.split(" ")
+  const words = title.split(" ")
   const sentenceId = randomUUID()
-  let splitValues = [] as Value[]
 
-  const updatedValues = values.map((value) => {
-    const match = commonStartBetween(value.name, remainingWords)
-    if (!match.length) {
-      return value
-    }
+  const match = values.map((value, valueIndex) => {
+    const common = commonStartBetween(value.name, words)
+    return {common, valueIndex}
+  }).filter(({ common }) => !!common.length).at(0)
 
-    if(match.length < value.name.length) {
-      splitValues = [
-        ...splitValues,
-        {
-          name: value.name.slice(match.length),
-          sentences: value.sentences,
-        }
-      ]
-
-    }
-    
-    remainingWords = remainingWords.slice(match.length)
-    return {
-      name: match,
-      sentences: [...value.sentences, sentenceId],
-    }
-  })
+  const remainingWords = words.slice(match?.common.length ?? 0)
+  
+  const updatedValues = splitValues(values, match, sentenceId)
 
   return [
     ...updatedValues,
-    ...splitValues,
-    ...(!remainingWords.length ? [] : [{
+    ...(remainingWords.length ? [{
       name: remainingWords,
       sentences: [sentenceId],
-    }])
+    }] : [])
   ]
 }
 
