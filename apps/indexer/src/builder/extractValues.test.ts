@@ -125,4 +125,25 @@ describe("extractValues", () => {
       },
     ])
   })
+
+  it("adds middle remaining words", () => {
+    const titles = ["pantalones azul", "pantalones", "pantalones vaqueros azul"]
+
+    const result = extractValues(titles)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["pantalones"],
+        sentences: [expect.any(String), expect.any(String), expect.any(String)],
+      },
+      {
+        name: ["azul"],
+        sentences: [result[0].sentences[0], result[0].sentences[2]],
+      },
+      {
+        name: ["vaqueros"],
+        sentences: [result[0].sentences[2]],
+      },
+    ])
+  })
 })
