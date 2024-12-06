@@ -1,7 +1,7 @@
 import { randomUUID, type UUID } from "crypto"
 
 export type Value = {
-  name: string[],
+  name: string[]
   sentences: UUID[]
 }
 
@@ -23,7 +23,11 @@ type Match = {
   valueIndex: number
 }
 
-function splitValues(values: Value[], match: Match|undefined, sentenceId: UUID) {
+function splitValues(
+  values: Value[],
+  match: Match | undefined,
+  sentenceId: UUID,
+) {
   if (!match) {
     return values
   }
@@ -41,17 +45,20 @@ function splitValues(values: Value[], match: Match|undefined, sentenceId: UUID) 
         name: value.name.slice(match.common.length),
         sentences: value.sentences,
       },
-    ].filter(({name}) => !!name.length)
+    ].filter(({ name }) => !!name.length),
   )
 }
 
 function matchTitle(title: string, values: Value[]) {
   const words = title.split(" ")
 
-  const span = values.map((value, valueIndex) => {
-    const common = commonStartBetween(value.name, words)
-    return {common, valueIndex}
-  }).filter(({ common }) => !!common.length).at(0)
+  const span = values
+    .map((value, valueIndex) => {
+      const common = commonStartBetween(value.name, words)
+      return { common, valueIndex }
+    })
+    .filter(({ common }) => !!common.length)
+    .at(0)
 
   const remainingWords = words.slice(span?.common.length ?? 0)
 
@@ -68,10 +75,14 @@ function addTitle(values: Value[], title: string) {
 
   return [
     ...updatedValues,
-    ...(remainingWords.length ? [{
-      name: remainingWords,
-      sentences: [sentenceId],
-    }] : [])
+    ...(!remainingWords.length
+      ? []
+      : [
+          {
+            name: remainingWords,
+            sentences: [sentenceId],
+          },
+        ]),
   ]
 }
 
