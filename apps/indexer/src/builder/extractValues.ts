@@ -33,35 +33,22 @@ function matchSpan(span: Span, values: Value[]) {
   }
 }
 
-const splitFirstWord = (currentSpan: number, spans: Span[]) => {
-  const span = spans[currentSpan]
+const splitFirstWord = (span: Span) => {
+  const splitSpan = { words: [span.words[0]] }
 
-  const firstWord = span.words[0]
   const remainingSpan =
     span.words.length > 1 ? [{ words: span.words.slice(1) }] : []
-  const previousSpan = spans[currentSpan - 1]
 
-  if (previousSpan && previousSpan.nodeId === undefined) {
-    return {
-      spans: spans.toSpliced(
-        currentSpan - 1,
-        2,
-        { words: [...previousSpan.words, firstWord] },
-        ...remainingSpan,
-      ),
-      currentSpan,
-    }
-  }
+  return [splitSpan, ...remainingSpan]
+}
 
-  return {
-    spans: spans.toSpliced(
-      currentSpan,
-      1,
-      { words: [firstWord] },
-      ...remainingSpan,
-    ),
-    currentSpan: currentSpan + 1,
-  }
+const moveFirstWord = (span: Span, previousSpan: Span) => {
+  const newSpan = { words: [...previousSpan.words, span.words[0]] }
+
+  const remainingSpan =
+    span.words.length > 1 ? [{ words: span.words.slice(1) }] : []
+
+  return [newSpan, ...remainingSpan]
 }
 
 const splitByMatch = (
@@ -69,6 +56,7 @@ const splitByMatch = (
   match: NonNullable<ReturnType<typeof matchSpan>>,
 ) => {
   const matchedSpan = { words: match.common, nodeId: match.value }
+
   const remainingSpan =
     span.words.length > match.common.length
       ? [{ words: span.words.slice(match.common.length) }]
@@ -100,7 +88,17 @@ function matchTitle(title: string, values: Value[]): Span[] {
       continue
     }
 
-    ;({ spans, currentSpan } = splitFirstWord(currentSpan, spans))
+    const previousSpan = spans[currentSpan - 1]
+    if (previousSpan && previousSpan.nodeId === undefined) {
+      const updatedSpans = moveFirstWord(span, previousSpan)
+      spans = spans.toSpliced(currentSpan - 1, 2, ...updatedSpans)
+      continue
+    }
+
+    const splitSpans = splitFirstWord(span)
+    spans = spans.toSpliced(currentSpan, 1, ...splitSpans)
+    currentSpan += 1
+    continue
   }
 
   return spans
