@@ -23,6 +23,16 @@ type Span = {
   words: string[]
 }
 
+function matchSpan(span: Span, values: Value[]) {
+  for (let [valueEntry, value] of values.entries()) {
+    const match = commonStartBetween(span.words, value.name)
+
+    if (match.length) {
+      return { common: match, value: valueEntry }
+    }
+  }
+}
+
 function matchTitle(title: string, values: Value[]): Span[] {
   const words = title.split(" ")
 
@@ -37,21 +47,17 @@ function matchTitle(title: string, values: Value[]): Span[] {
       continue spanLoop
     }
 
-    valueLoop: for (let [valueEntry, value] of values.entries()) {
-      const match = commonStartBetween(span.words, value.name)
+    const match = matchSpan(span, values)
 
-      if (!match.length) {
-        continue valueLoop
-      }
-
+    if (match) {
       const newSpans =
-        span.words.length > match.length
-          ? [{ words: span.words.slice(match.length) }]
+        span.words.length > match.common.length
+          ? [{ words: span.words.slice(match.common.length) }]
           : []
       spans = spans.toSpliced(
         currentSpan,
         1,
-        { words: match, nodeId: valueEntry },
+        { words: match.common, nodeId: match.value },
         ...newSpans,
       )
       currentSpan += 1
