@@ -65,25 +65,16 @@ const splitFirstWord = (currentSpan: number, spans: Span[]) => {
 }
 
 const splitByMatch = (
+  span: Span,
   match: NonNullable<ReturnType<typeof matchSpan>>,
-  currentSpan: number,
-  spans: Span[],
 ) => {
-  const span = spans[currentSpan]
-
-  const newSpans =
+  const matchedSpan = { words: match.common, nodeId: match.value }
+  const remainingSpan =
     span.words.length > match.common.length
       ? [{ words: span.words.slice(match.common.length) }]
       : []
-  return {
-    spans: spans.toSpliced(
-      currentSpan,
-      1,
-      { words: match.common, nodeId: match.value },
-      ...newSpans,
-    ),
-    currentSpan: currentSpan + 1,
-  }
+
+  return [matchedSpan, ...remainingSpan]
 }
 
 function matchTitle(title: string, values: Value[]): Span[] {
@@ -103,7 +94,9 @@ function matchTitle(title: string, values: Value[]): Span[] {
     const match = matchSpan(span, values)
 
     if (match) {
-      ;({ spans, currentSpan } = splitByMatch(match, currentSpan, spans))
+      const splitSpans = splitByMatch(span, match)
+      spans = spans.toSpliced(currentSpan, 1, ...splitSpans)
+      currentSpan += 1
       continue
     }
 
