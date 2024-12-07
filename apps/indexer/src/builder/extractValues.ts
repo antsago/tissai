@@ -1,6 +1,6 @@
 import { randomUUID, type UUID } from "crypto"
 
-export type Value = {
+type Value = {
   name: string[]
   sentences: UUID[]
 }
@@ -83,28 +83,32 @@ function matchTitle(title: string, values: Value[]): Span[] {
   return spans
 }
 
+const splitSpan =
+  (sentenceId: UUID) =>
+  (values: Value[], span: Span): Value[] => {
+    const value = values[span.nodeId!]
+
+    const matchedSpan = {
+      name: span.words,
+      sentences: [...value.sentences, sentenceId],
+    }
+    const unmatchedSpan = {
+      name: value.name.slice(span.words.length),
+      sentences: value.sentences,
+    }
+    const newValues = [matchedSpan, unmatchedSpan].filter(
+      ({ name }) => !!name.length,
+    )
+
+    return values.toSpliced(span.nodeId!, 1, ...newValues)
+  }
+
 function addAndSplit(initialValues: Value[], spans: Span[]) {
   const sentenceId = randomUUID()
 
   const splitValues = spans
     .filter((s) => s.nodeId !== undefined)
-    .reduce((values, span) => {
-      const value = values[span.nodeId!]
-      return values.toSpliced(
-        span.nodeId!,
-        1,
-        ...[
-          {
-            name: span.words,
-            sentences: [...value.sentences, sentenceId],
-          },
-          {
-            name: value.name.slice(span.words.length),
-            sentences: value.sentences,
-          },
-        ].filter(({ name }) => !!name.length),
-      )
-    }, initialValues)
+    .reduce(splitSpan(sentenceId), initialValues)
 
   const newValues = spans
     .filter((s) => s.nodeId === undefined)
