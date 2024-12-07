@@ -33,63 +33,87 @@ function matchSpan(span: Span, values: Value[]) {
   }
 }
 
+const splitFirstWord = (currentSpan: number, spans: Span[]) => {
+  const span = spans[currentSpan]
+
+  const firstWord = span.words[0]
+  const remainingSpan =
+    span.words.length > 1 ? [{ words: span.words.slice(1) }] : []
+  const previousSpan = spans[currentSpan - 1]
+
+  if (previousSpan && previousSpan.nodeId === undefined) {
+    return {
+      spans: spans.toSpliced(
+        currentSpan - 1,
+        2,
+        { words: [...previousSpan.words, firstWord] },
+        ...remainingSpan,
+      ),
+      currentSpan,
+    }
+  }
+
+  return {
+    spans: spans.toSpliced(
+      currentSpan,
+      1,
+      { words: [firstWord] },
+      ...remainingSpan,
+    ),
+    currentSpan: currentSpan + 1,
+  }
+}
+
+const splitByMatch = (
+  match: NonNullable<ReturnType<typeof matchSpan>>,
+  currentSpan: number,
+  spans: Span[],
+) => {
+  const span = spans[currentSpan]
+
+  const newSpans =
+    span.words.length > match.common.length
+      ? [{ words: span.words.slice(match.common.length) }]
+      : []
+  return {
+    spans: spans.toSpliced(
+      currentSpan,
+      1,
+      { words: match.common, nodeId: match.value },
+      ...newSpans,
+    ),
+    currentSpan: currentSpan + 1,
+  }
+}
+
 function matchTitle(title: string, values: Value[]): Span[] {
   const words = title.split(" ")
 
   let spans: Span[] = [{ words }]
   let currentSpan = 0
 
-  spanLoop: while (spans[currentSpan]) {
+  while (spans[currentSpan]) {
     const span = spans[currentSpan]
 
     if (span.nodeId !== undefined) {
       currentSpan += 1
-      continue spanLoop
+      continue
     }
 
     const match = matchSpan(span, values)
 
     if (match) {
-      const newSpans =
-        span.words.length > match.common.length
-          ? [{ words: span.words.slice(match.common.length) }]
-          : []
-      spans = spans.toSpliced(
-        currentSpan,
-        1,
-        { words: match.common, nodeId: match.value },
-        ...newSpans,
-      )
-      currentSpan += 1
-      continue spanLoop
+      ;({ spans, currentSpan } = splitByMatch(match, currentSpan, spans))
+      continue
     }
 
-    const unmatchedWord = span.words[0]
-    const newSpans =
-      span.words.length > 1 ? [{ words: span.words.slice(1) }] : []
-    const previousSpan = spans[currentSpan - 1]
-    if (previousSpan && previousSpan.nodeId === undefined) {
-      spans = spans.toSpliced(
-        currentSpan - 1,
-        2,
-        { words: [...previousSpan.words, unmatchedWord] },
-        ...newSpans,
-      )
-    } else {
-      spans = spans.toSpliced(
-        currentSpan,
-        1,
-        { words: [unmatchedWord] },
-        ...newSpans,
-      )
-      currentSpan += 1
-    }
+    ;({ spans, currentSpan } = splitFirstWord(currentSpan, spans))
   }
 
   return spans
 }
 
-const splitBySpan =
+const splitValue =
   (sentenceId: UUID) =>
   (values: Value[], span: Span): Value[] => {
     const value = values[span.nodeId!]
@@ -114,7 +138,7 @@ function addAndSplit(initialValues: Value[], spans: Span[]) {
 
   const splitValues = spans
     .filter((s) => s.nodeId !== undefined)
-    .reduce(splitBySpan(sentenceId), initialValues)
+    .reduce(splitValue(sentenceId), initialValues)
 
   const newValues = spans
     .filter((s) => s.nodeId === undefined)
