@@ -83,7 +83,7 @@ function matchTitle(title: string, values: Value[]): Span[] {
   return spans
 }
 
-const splitSpan =
+const splitBySpan =
   (sentenceId: UUID) =>
   (values: Value[], span: Span): Value[] => {
     const value = values[span.nodeId!]
@@ -108,7 +108,7 @@ function addAndSplit(initialValues: Value[], spans: Span[]) {
 
   const splitValues = spans
     .filter((s) => s.nodeId !== undefined)
-    .reduce(splitSpan(sentenceId), initialValues)
+    .reduce(splitBySpan(sentenceId), initialValues)
 
   const newValues = spans
     .filter((s) => s.nodeId === undefined)
