@@ -169,4 +169,33 @@ describe("extractValues", () => {
       },
     ])
   })
+
+  it("splits at common middle words", () => {
+    const titles = ["jeans regular camel", "vaqueros regular azul"]
+
+    const result = extractValues(titles)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["regular"],
+        sentences: [expect.any(String), expect.any(String)],
+      },
+      {
+        name: ["vaqueros"],
+        sentences: [result[0].sentences[1]],
+      },
+      {
+        name: ["jeans"],
+        sentences: [result[0].sentences[0]],
+      },
+      {
+        name: ["camel"],
+        sentences: [result[0].sentences[0]],
+      },
+      {
+        name: ["azul"],
+        sentences: [result[0].sentences[1]],
+      },
+    ])
+  })
 })
