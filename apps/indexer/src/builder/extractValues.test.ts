@@ -122,12 +122,12 @@ describe("extractValues", () => {
 
     expect(result).toStrictEqual([
       {
-        name: ["vaqueros"],
-        sentences: [expect.any(String), expect.any(String)],
+        name: ["pantalones"],
+        sentences: [result[1].sentences[1]],
       },
       {
-        name: ["pantalones"],
-        sentences: [result[0].sentences[1]],
+        name: ["vaqueros"],
+        sentences: [expect.any(String), expect.any(String)],
       },
     ])
   })
@@ -143,12 +143,12 @@ describe("extractValues", () => {
         sentences: [expect.any(String), expect.any(String), expect.any(String)],
       },
       {
-        name: ["azul"],
-        sentences: [result[0].sentences[0], result[0].sentences[2]],
-      },
-      {
         name: ["vaqueros"],
         sentences: [result[0].sentences[2]],
+      },
+      {
+        name: ["azul"],
+        sentences: [result[0].sentences[0], result[0].sentences[2]],
       },
     ])
   })
@@ -177,24 +177,24 @@ describe("extractValues", () => {
 
     expect(result).toStrictEqual([
       {
-        name: ["regular"],
-        sentences: [expect.any(String), expect.any(String)],
-      },
-      {
         name: ["vaqueros"],
-        sentences: [result[0].sentences[1]],
+        sentences: [expect.any(String)],
       },
       {
-        name: ["jeans"],
-        sentences: [result[0].sentences[0]],
-      },
-      {
-        name: ["camel"],
-        sentences: [result[0].sentences[0]],
+        name: ["regular"],
+        sentences: [expect.any(String), result[0].sentences[0]],
       },
       {
         name: ["azul"],
-        sentences: [result[0].sentences[1]],
+        sentences: [result[0].sentences[0]],
+      },
+      {
+        name: ["jeans"],
+        sentences: [result[1].sentences[0]],
+      },
+      {
+        name: ["camel"],
+        sentences: [result[1].sentences[0]],
       },
     ])
   })
@@ -214,6 +214,10 @@ describe("extractValues", () => {
         sentences: [expect.any(String), result[0].sentences[1]],
       },
       {
+        name: ["azul"],
+        sentences: [result[0].sentences[1]],
+      },
+      {
         name: ["camel"],
         sentences: [result[0].sentences[0]],
       },
@@ -221,9 +225,26 @@ describe("extractValues", () => {
         name: ["jeans"],
         sentences: [result[1].sentences[0]],
       },
+    ])
+  })
+
+  it("matches words in different order", () => {
+    const titles = ["vaqueros regular camel", "vaqueros camel regular"]
+
+    const result = extractValues(titles)
+
+    expect(result).toStrictEqual([
       {
-        name: ["azul"],
-        sentences: [result[0].sentences[1]],
+        name: ["vaqueros"],
+        sentences: [expect.any(String), expect.any(String)],
+      },
+      {
+        name: ["camel"],
+        sentences: [result[0].sentences[0], result[0].sentences[1]],
+      },
+      {
+        name: ["regular"],
+        sentences: [result[0].sentences[0], result[0].sentences[1]],
       },
     ])
   })

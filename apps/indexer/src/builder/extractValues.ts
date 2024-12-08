@@ -1,13 +1,12 @@
 import { randomUUID, type UUID } from "crypto"
+import _ from "lodash"
 
-type Values = Record<
-  UUID,
-  {
-    id: UUID
-    name: string[]
-    sentences: UUID[]
-  }
->
+type Value = {
+  id: UUID
+  name: string[]
+  sentences: UUID[]
+}
+type Values = Record<UUID, Value>
 
 type Span = {
   nodeId?: UUID
@@ -60,54 +59,84 @@ function matchTitle(title: string, values: Values): Span[] {
 }
 
 const splitValue =
-  (sentenceId: UUID) => (value: Values[UUID], span: Required<Span>) => {
-    return [
+  (sentenceId: UUID) => (value: Value, span: Required<Span>) => ({
+    fromSpan: [
+      {
+        id: value.id,
+        name: value.name.slice(span.start, span.end),
+        sentences: [...value.sentences, sentenceId],
+      },
+    ],
+    remainingValue: [
       {
         id: randomUUID(),
         name: value.name.slice(0, span.start),
         sentences: value.sentences,
       },
       {
-        id: value.id,
-        name: value.name.slice(span.start, span.end),
-        sentences: [...value.sentences, sentenceId],
-      },
-      {
         id: randomUUID(),
         name: value.name.slice(span.end),
         sentences: value.sentences,
       },
-    ].filter(({ name }) => !!name.length)
-  }
+    ].filter(({ name }) => !!name.length),
+  })
 
 function addAndSplit(initialValues: Values, spans: Span[]): Values {
   const sentenceId = randomUUID()
 
-  const newValues = spans
-    .map((span) =>
-      span.nodeId !== undefined
-        ? splitValue(sentenceId)(
-            initialValues[span.nodeId],
-            span as Required<Span>,
-          )
-        : {
-            id: randomUUID(),
-            name: span.words,
-            sentences: [sentenceId],
-          },
-    )
-    .flat()
-    .reduce((values, value) => {
-      return {
-        ...values,
-        [value.id]: value,
-      }
-    }, initialValues)
+  const newValues = spans.map((span) => {
+    return {
+      id: randomUUID(),
+      name: span.words,
+      sentences:
+        span.nodeId !== undefined
+          ? [...initialValues[span.nodeId].sentences, sentenceId]
+          : [sentenceId],
+    }
+  })
+  const otherValues = Object.values(initialValues).filter((v) =>
+    spans.every((s) => s.nodeId !== v.id),
+  )
+  const remainingValues = Object.values(initialValues)
+    .filter((v) => spans.some((s) => s.nodeId === v.id))
+    .flatMap((value) =>
+      value.name
+        .map((word, index) => ({ word, index }))
+        .filter(({ word }) => spans.every((span) => !span.words.includes(word)))
+        .reduce(
+          (values, { word, index }) => {
+            const previous = values.at(-1)
 
-  return {
-    ...initialValues,
-    ...newValues,
-  }
+            const mergeWithPrevious = previous && previous.endsAt + 1 === index
+
+            return mergeWithPrevious
+              ? [
+                  ...values.slice(0, -1),
+                  {
+                    words: [...previous.words, word],
+                    endsAt: index,
+                  },
+                ]
+              : [
+                  ...values,
+                  {
+                    words: [word],
+                    endsAt: index,
+                  },
+                ]
+          },
+          [] as { words: string[]; endsAt: number }[],
+        )
+        .map((segment) => ({
+          id: randomUUID(),
+          name: segment.words,
+          sentences: value.sentences,
+        })),
+    )
+
+  return Object.fromEntries(
+    [...otherValues, ...newValues, ...remainingValues].map((v) => [v.id, v]),
+  )
 }
 
 export function extractValues(titles: string[]) {
