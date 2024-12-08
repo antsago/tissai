@@ -29,37 +29,33 @@ function matchTitle(title: string, values: Values): Span[] {
       }
     })
     .reduce((mergedSpans, wordSpan) => {
-      const end = wordSpan.index === undefined ? undefined : wordSpan.index + 1
-
       const previousSpan = mergedSpans.at(-1)
-      if (
+
+      const mergeWithPrevious =
         previousSpan &&
         previousSpan.nodeId === wordSpan.nodeId &&
-        ((previousSpan.end === undefined && wordSpan.index === undefined) ||
-          (previousSpan.end !== undefined &&
-            wordSpan.index !== undefined &&
-            previousSpan.end === wordSpan.index))
-      ) {
-        return [
-          ...mergedSpans.slice(0, -1),
-          {
-            nodeId: previousSpan.nodeId,
-            start: previousSpan.start,
-            end,
-            words: [...previousSpan.words, wordSpan.word],
-          },
-        ]
-      }
+        previousSpan.end === wordSpan.index
 
-      return [
-        ...mergedSpans,
-        {
-          nodeId: wordSpan.nodeId,
-          start: wordSpan.index,
-          end,
-          words: [wordSpan.word],
-        },
-      ]
+      const end = wordSpan.index === undefined ? undefined : wordSpan.index + 1
+      return mergeWithPrevious
+        ? [
+            ...mergedSpans.slice(0, -1),
+            {
+              nodeId: previousSpan.nodeId,
+              start: previousSpan.start,
+              end,
+              words: [...previousSpan.words, wordSpan.word],
+            },
+          ]
+        : [
+            ...mergedSpans,
+            {
+              nodeId: wordSpan.nodeId,
+              start: wordSpan.index,
+              end,
+              words: [wordSpan.word],
+            },
+          ]
     }, [] as Span[])
 }
 
