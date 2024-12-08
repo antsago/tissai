@@ -198,4 +198,33 @@ describe("extractValues", () => {
       },
     ])
   })
+
+  it("matches multiple existing values", () => {
+    const titles = ["vaqueros camel", "jeans regular", "vaqueros regular azul"]
+
+    const result = extractValues(titles)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["vaqueros"],
+        sentences: [expect.any(String), expect.any(String)],
+      },
+      {
+        name: ["regular"],
+        sentences: [expect.any(String), result[0].sentences[1]],
+      },
+      {
+        name: ["camel"],
+        sentences: [result[0].sentences[0]],
+      },
+      {
+        name: ["jeans"],
+        sentences: [result[1].sentences[0]],
+      },
+      {
+        name: ["azul"],
+        sentences: [result[0].sentences[1]],
+      },
+    ])
+  })
 })
