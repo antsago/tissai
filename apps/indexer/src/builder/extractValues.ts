@@ -33,8 +33,10 @@ function matchTitle(title: string, values: Values): Span[] {
       if (
         previousSpan &&
         previousSpan.nodeId === wordSpan.nodeId &&
-        ((previousSpan.end === undefined && wordSpan.index === undefined) || (
-          previousSpan.end !== undefined && wordSpan.index !== undefined && previousSpan.end + 1 === wordSpan.index))
+        ((previousSpan.end === undefined && wordSpan.index === undefined) ||
+          (previousSpan.end !== undefined &&
+            wordSpan.index !== undefined &&
+            previousSpan.end + 1 === wordSpan.index))
       ) {
         return [
           ...mergedSpans.slice(0, -1),
@@ -61,23 +63,28 @@ function matchTitle(title: string, values: Values): Span[] {
 
 const splitValue =
   (sentenceId: UUID) =>
-  (values: Values, span: Span): Values => {
-    const value = values[span.nodeId!]
+  (values: Values, span: Required<Span>): Values => {
+    const value = values[span.nodeId]
 
-    const matchedSpan = {
-      id: value.id,
-      name: span.words,
-      sentences: [...value.sentences, sentenceId],
-    }
-    const unmatchedSpan = {
-      id: randomUUID(),
-      name: value.name.slice(span.words.length),
-      sentences: value.sentences,
-    }
     const newValues = [
-      [matchedSpan.id, matchedSpan] as const,
-      [unmatchedSpan.id, unmatchedSpan] as const,
-    ].filter(([, { name }]) => !!name.length)
+      {
+        id: randomUUID(),
+        name: value.name.slice(0, span.start),
+        sentences: value.sentences,
+      },
+      {
+        id: value.id,
+        name: value.name.slice(span.start, span.end + 1),
+        sentences: [...value.sentences, sentenceId],
+      },
+      {
+        id: randomUUID(),
+        name: value.name.slice(span.end + 1),
+        sentences: value.sentences,
+      },
+    ]
+      .filter(({ name }) => !!name.length)
+      .map((v) => [v.id, v])
 
     return {
       ...values,
@@ -90,7 +97,10 @@ function addAndSplit(initialValues: Values, spans: Span[]): Values {
 
   const splitValues = spans
     .filter((s) => s.nodeId !== undefined)
-    .reduce(splitValue(sentenceId), initialValues)
+    .reduce(
+      (v, s) => splitValue(sentenceId)(v, s as Required<Span>),
+      initialValues,
+    )
 
   const newValues = Object.fromEntries(
     spans

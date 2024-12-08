@@ -152,4 +152,21 @@ describe("extractValues", () => {
       },
     ])
   })
+
+  it("splits at common ending words", () => {
+    const titles = ["pantalones vaqueros", "vaqueros"]
+
+    const result = extractValues(titles)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["vaqueros"],
+        sentences: [expect.any(String), expect.any(String)],
+      },
+      {
+        name: ["pantalones"],
+        sentences: [result[0].sentences[0]],
+      },
+    ])
+  })
 })
