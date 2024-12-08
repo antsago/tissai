@@ -9,103 +9,43 @@ type Values = Record<
   }
 >
 
-function commonStartBetween(a: string[], b: string[]) {
-  let common = [] as string[]
-  for (let i = 0; i < a.length; i += 1) {
-    if (a[i] === undefined || a[i] !== b[i]) {
-      return common
-    }
-
-    common = [...common, a[i]]
-  }
-
-  return common
-}
-
 type Span = {
   nodeId?: UUID
   words: string[]
 }
 
-function matchSpan(span: Span, values: Values) {
-  for (let value of Object.values(values)) {
-    const match = commonStartBetween(span.words, value.name)
-
-    if (match.length) {
-      return { common: match, value: value.id }
-    }
-  }
-}
-
-const splitFirstWord = (span: Span) => {
-  const splitSpan = { words: [span.words[0]] }
-
-  const remainingSpan =
-    span.words.length > 1 ? [{ words: span.words.slice(1) }] : []
-
-  return [splitSpan, ...remainingSpan]
-}
-
-const moveFirstWord = (span: Span, previousSpan: Span) => {
-  const newSpan = { words: [...previousSpan.words, span.words[0]] }
-
-  const remainingSpan =
-    span.words.length > 1 ? [{ words: span.words.slice(1) }] : []
-
-  return [newSpan, ...remainingSpan]
-}
-
-const splitByMatch = (
-  span: Span,
-  match: NonNullable<ReturnType<typeof matchSpan>>,
-) => {
-  const matchedSpan = { words: match.common, nodeId: match.value }
-
-  const remainingSpan =
-    span.words.length > match.common.length
-      ? [{ words: span.words.slice(match.common.length) }]
-      : []
-
-  return [matchedSpan, ...remainingSpan]
-}
-
 function matchTitle(title: string, values: Values): Span[] {
   const words = title.split(" ")
 
-  let spans: Span[] = [{ words }]
-  let currentSpan = 0
+  const wordSpans = words.map((word) => {
+    const match = Object.values(values).find((v) => v.name.includes(word))
 
-  while (spans[currentSpan]) {
-    const span = spans[currentSpan]
+    return {
+      nodeId: match?.id,
+      word,
+    }
+  })
 
-    if (span.nodeId !== undefined) {
-      currentSpan += 1
-      continue
+  return wordSpans.reduce((mergedSpans, wordSpan) => {
+    const previousSpan = mergedSpans.at(-1)
+    if (previousSpan && previousSpan.nodeId === wordSpan.nodeId) {
+      return [
+        ...mergedSpans.slice(0, -1),
+        {
+          nodeId: previousSpan.nodeId,
+          words: [...previousSpan.words, wordSpan.word],
+        },
+      ]
     }
 
-    const match = matchSpan(span, values)
-
-    if (match) {
-      const splitSpans = splitByMatch(span, match)
-      spans = spans.toSpliced(currentSpan, 1, ...splitSpans)
-      currentSpan += 1
-      continue
-    }
-
-    const previousSpan = spans[currentSpan - 1]
-    if (previousSpan && previousSpan.nodeId === undefined) {
-      const updatedSpans = moveFirstWord(span, previousSpan)
-      spans = spans.toSpliced(currentSpan - 1, 2, ...updatedSpans)
-      continue
-    }
-
-    const splitSpans = splitFirstWord(span)
-    spans = spans.toSpliced(currentSpan, 1, ...splitSpans)
-    currentSpan += 1
-    continue
-  }
-
-  return spans
+    return [
+      ...mergedSpans,
+      {
+        nodeId: wordSpan.nodeId,
+        words: [wordSpan.word],
+      },
+    ]
+  }, [] as Span[])
 }
 
 const splitValue =
