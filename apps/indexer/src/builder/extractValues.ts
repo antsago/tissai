@@ -29,6 +29,8 @@ function matchTitle(title: string, values: Values): Span[] {
       }
     })
     .reduce((mergedSpans, wordSpan) => {
+      const end = wordSpan.index === undefined ? undefined : wordSpan.index + 1
+
       const previousSpan = mergedSpans.at(-1)
       if (
         previousSpan &&
@@ -36,14 +38,14 @@ function matchTitle(title: string, values: Values): Span[] {
         ((previousSpan.end === undefined && wordSpan.index === undefined) ||
           (previousSpan.end !== undefined &&
             wordSpan.index !== undefined &&
-            previousSpan.end + 1 === wordSpan.index))
+            previousSpan.end === wordSpan.index))
       ) {
         return [
           ...mergedSpans.slice(0, -1),
           {
             nodeId: previousSpan.nodeId,
             start: previousSpan.start,
-            end: wordSpan.index,
+            end,
             words: [...previousSpan.words, wordSpan.word],
           },
         ]
@@ -54,7 +56,7 @@ function matchTitle(title: string, values: Values): Span[] {
         {
           nodeId: wordSpan.nodeId,
           start: wordSpan.index,
-          end: wordSpan.index,
+          end,
           words: [wordSpan.word],
         },
       ]
@@ -74,12 +76,12 @@ const splitValue =
       },
       {
         id: value.id,
-        name: value.name.slice(span.start, span.end + 1),
+        name: value.name.slice(span.start, span.end),
         sentences: [...value.sentences, sentenceId],
       },
       {
         id: randomUUID(),
-        name: value.name.slice(span.end + 1),
+        name: value.name.slice(span.end),
         sentences: value.sentences,
       },
     ]
