@@ -6,6 +6,7 @@
     "label": "node ./build/src/labeler/index.js",
     "train": "node ./build/src/trainer/index.js",
     "addToSchema": "node ./build/src/builder/addToSchema/index.js",
+    "builder": "node ./build/src/builder/index.js",
     "build": "rm -rf ./build && tsc --build && cp --parents src/**/*.py build/",
     "test": "vitest run",
     "test:integration": "vitest run __tests__"
