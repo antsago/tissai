@@ -15,37 +15,36 @@ type Span = {
 }
 
 function matchTitle(title: string, values: Values): Span[] {
-  const words = title.split(" ")
+  return title
+    .split(" ")
+    .map((word) => {
+      const match = Object.values(values).find((v) => v.name.includes(word))
 
-  const wordSpans = words.map((word) => {
-    const match = Object.values(values).find((v) => v.name.includes(word))
+      return {
+        nodeId: match?.id,
+        word,
+      }
+    })
+    .reduce((mergedSpans, wordSpan) => {
+      const previousSpan = mergedSpans.at(-1)
+      if (previousSpan && previousSpan.nodeId === wordSpan.nodeId) {
+        return [
+          ...mergedSpans.slice(0, -1),
+          {
+            nodeId: previousSpan.nodeId,
+            words: [...previousSpan.words, wordSpan.word],
+          },
+        ]
+      }
 
-    return {
-      nodeId: match?.id,
-      word,
-    }
-  })
-
-  return wordSpans.reduce((mergedSpans, wordSpan) => {
-    const previousSpan = mergedSpans.at(-1)
-    if (previousSpan && previousSpan.nodeId === wordSpan.nodeId) {
       return [
-        ...mergedSpans.slice(0, -1),
+        ...mergedSpans,
         {
-          nodeId: previousSpan.nodeId,
-          words: [...previousSpan.words, wordSpan.word],
+          nodeId: wordSpan.nodeId,
+          words: [wordSpan.word],
         },
       ]
-    }
-
-    return [
-      ...mergedSpans,
-      {
-        nodeId: wordSpan.nodeId,
-        words: [wordSpan.word],
-      },
-    ]
-  }, [] as Span[])
+    }, [] as Span[])
 }
 
 const splitValue =
