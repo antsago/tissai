@@ -1,5 +1,11 @@
 import { expect, describe, it } from "vitest"
-import { extractValues } from "./extractValues"
+import { extractValues as extractRaw } from "./extractValues"
+
+const extractValues = (titles: string[]) =>
+  Object.values(extractRaw(titles)).map((v) => ({
+    name: v.name,
+    sentences: v.sentences,
+  }))
 
 describe("extractValues", () => {
   it("adds new titles as values", () => {

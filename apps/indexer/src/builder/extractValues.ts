@@ -1,9 +1,13 @@
 import { randomUUID, type UUID } from "crypto"
 
-type Value = {
-  name: string[]
-  sentences: UUID[]
-}
+type Values = Record<
+  UUID,
+  {
+    id: UUID
+    name: string[]
+    sentences: UUID[]
+  }
+>
 
 function commonStartBetween(a: string[], b: string[]) {
   let common = [] as string[]
@@ -19,16 +23,16 @@ function commonStartBetween(a: string[], b: string[]) {
 }
 
 type Span = {
-  nodeId?: number
+  nodeId?: UUID
   words: string[]
 }
 
-function matchSpan(span: Span, values: Value[]) {
-  for (let [valueEntry, value] of values.entries()) {
+function matchSpan(span: Span, values: Values) {
+  for (let value of Object.values(values)) {
     const match = commonStartBetween(span.words, value.name)
 
     if (match.length) {
-      return { common: match, value: valueEntry }
+      return { common: match, value: value.id }
     }
   }
 }
@@ -65,7 +69,7 @@ const splitByMatch = (
   return [matchedSpan, ...remainingSpan]
 }
 
-function matchTitle(title: string, values: Value[]): Span[] {
+function matchTitle(title: string, values: Values): Span[] {
   const words = title.split(" ")
 
   let spans: Span[] = [{ words }]
@@ -106,43 +110,62 @@ function matchTitle(title: string, values: Value[]): Span[] {
 
 const splitValue =
   (sentenceId: UUID) =>
-  (values: Value[], span: Span): Value[] => {
+  (values: Values, span: Span): Values => {
     const value = values[span.nodeId!]
 
     const matchedSpan = {
+      id: value.id,
       name: span.words,
       sentences: [...value.sentences, sentenceId],
     }
     const unmatchedSpan = {
+      id: randomUUID(),
       name: value.name.slice(span.words.length),
       sentences: value.sentences,
     }
-    const newValues = [matchedSpan, unmatchedSpan].filter(
-      ({ name }) => !!name.length,
-    )
+    const newValues = [
+      [matchedSpan.id, matchedSpan] as const,
+      [unmatchedSpan.id, unmatchedSpan] as const,
+    ].filter(([, { name }]) => !!name.length)
 
-    return values.toSpliced(span.nodeId!, 1, ...newValues)
+    return {
+      ...values,
+      ...Object.fromEntries(newValues),
+    }
   }
 
-function addAndSplit(initialValues: Value[], spans: Span[]) {
+function addAndSplit(initialValues: Values, spans: Span[]): Values {
   const sentenceId = randomUUID()
 
   const splitValues = spans
     .filter((s) => s.nodeId !== undefined)
     .reduce(splitValue(sentenceId), initialValues)
 
-  const newValues = spans
-    .filter((s) => s.nodeId === undefined)
-    .map((s) => ({ name: s.words, sentences: [sentenceId] }))
+  const newValues = Object.fromEntries(
+    spans
+      .filter((s) => s.nodeId === undefined)
+      .map((s) => {
+        const id = randomUUID()
+        return [
+          id,
+          {
+            id,
+            name: s.words,
+            sentences: [sentenceId],
+          },
+        ]
+      }),
+  )
 
-  return [...splitValues, ...newValues]
-}
-
-function addTitle(values: Value[], title: string) {
-  const spans = matchTitle(title, values)
-  return addAndSplit(values, spans)
+  return {
+    ...splitValues,
+    ...newValues,
+  }
 }
 
 export function extractValues(titles: string[]) {
-  return titles.reduce(addTitle, [] as Value[])
+  return titles.reduce((values: Values, title: string) => {
+    const spans = matchTitle(title, values)
+    return addAndSplit(values, spans)
+  }, {} as Values)
 }
