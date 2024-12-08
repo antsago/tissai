@@ -60,11 +60,8 @@ function matchTitle(title: string, values: Values): Span[] {
 }
 
 const splitValue =
-  (sentenceId: UUID) =>
-  (values: Values, span: Required<Span>): Values => {
-    const value = values[span.nodeId]
-
-    const newValues = [
+  (sentenceId: UUID) => (value: Values[UUID], span: Required<Span>) => {
+    return [
       {
         id: randomUUID(),
         name: value.name.slice(0, span.start),
@@ -80,44 +77,35 @@ const splitValue =
         name: value.name.slice(span.end),
         sentences: value.sentences,
       },
-    ]
-      .filter(({ name }) => !!name.length)
-      .map((v) => [v.id, v])
-
-    return {
-      ...values,
-      ...Object.fromEntries(newValues),
-    }
+    ].filter(({ name }) => !!name.length)
   }
 
 function addAndSplit(initialValues: Values, spans: Span[]): Values {
   const sentenceId = randomUUID()
 
-  const splitValues = spans
-    .filter((s) => s.nodeId !== undefined)
-    .reduce(
-      (v, s) => splitValue(sentenceId)(v, s as Required<Span>),
-      initialValues,
-    )
-
-  const newValues = Object.fromEntries(
-    spans
-      .filter((s) => s.nodeId === undefined)
-      .map((s) => {
-        const id = randomUUID()
-        return [
-          id,
-          {
-            id,
-            name: s.words,
+  const newValues = spans
+    .map((span) =>
+      span.nodeId !== undefined
+        ? splitValue(sentenceId)(
+            initialValues[span.nodeId],
+            span as Required<Span>,
+          )
+        : {
+            id: randomUUID(),
+            name: span.words,
             sentences: [sentenceId],
           },
-        ]
-      }),
-  )
+    )
+    .flat()
+    .reduce((values, value) => {
+      return {
+        ...values,
+        [value.id]: value,
+      }
+    }, initialValues)
 
   return {
-    ...splitValues,
+    ...initialValues,
     ...newValues,
   }
 }
