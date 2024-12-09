@@ -5,10 +5,9 @@ export type Value = {
   sentences: UUID[]
 }
 
-export function identifyProperties(values: Value[]) {
+export function extractProperties(values: Value[]) {
   return values.map(value => ({
     name: value.name.join(" "),
-    tally: value.sentences.length,
-    children: []
+    sentences: value.sentences,
   }))
 }

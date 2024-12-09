@@ -1,7 +1,7 @@
 import { expect, describe, it } from "vitest"
-import { type Value, identifyProperties } from "./identifyProperties"
+import { type Value, extractProperties } from "./extractProperties"
 
-describe("identifyProperties", () => {
+describe("extractProperties", () => {
   it("groups values into properties", () => {
     const values = [
       {
@@ -10,13 +10,12 @@ describe("identifyProperties", () => {
       },
     ] as Value[]
 
-    const result = identifyProperties(values)
+    const result = extractProperties(values)
 
     expect(result).toStrictEqual([
       {
         name: "jeans camel",
-        tally: 2,
-        children: [],
+        sentences: ["fa687f28-c728-4f52-a89f-69076c4143bf", "24145af3-bbee-425a-875c-ed010c53e64a"],
       },
     ])
   })
@@ -33,18 +32,16 @@ describe("identifyProperties", () => {
       },
     ] as Value[]
 
-    const result = identifyProperties(values)
+    const result = extractProperties(values)
 
     expect(result).toStrictEqual([
       {
         name: "jeans",
-        tally: 1,
-        children: [],
+        sentences: ["fa687f28-c728-4f52-a89f-69076c4143bf"],
       },
       {
         name: "vaqueros",
-        tally: 1,
-        children: [],
+        sentences: ["24145af3-bbee-425a-875c-ed010c53e64a"],
       },
     ])
   })
