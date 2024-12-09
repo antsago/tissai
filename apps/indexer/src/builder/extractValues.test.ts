@@ -249,7 +249,7 @@ describe("extractValues", () => {
     ])
   })
 
-  it("handles repeated words", () => {
+  it("splits repeated words", () => {
     const titles = ["pantalon de futbol de talle medio"]
 
     const result = extractValues(titles)
@@ -270,6 +270,47 @@ describe("extractValues", () => {
       {
         name: ["talle", "medio"],
         sentences: result[0].sentences,
+      },
+    ])
+  })
+
+  it("matches repeated words", () => {
+    const titles = ["jeans de adidas", "vaqueros de pana", "pantalon de futbol de talle medio"]
+
+    const result = extractValues(titles)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["vaqueros"],
+        sentences: [expect.any(String)],
+      },
+      {
+        name: ["pana"],
+        sentences: [result[0].sentences[0]],
+      },
+      {
+        name: ["jeans"],
+        sentences: [expect.any(String)],
+      },
+      {
+        name: ["adidas"],
+        sentences: [result[2].sentences[0]],
+      },
+      {
+        name: ["pantalon"],
+        sentences: [expect.any(String)],
+      },
+      {
+        name: ["de"],
+        sentences: [result[2].sentences[0], result[0].sentences[0], result[4].sentences[0]],
+      },
+      {
+        name: ["futbol"],
+        sentences: [result[4].sentences[0]],
+      },
+      {
+        name: ["talle", "medio"],
+        sentences: [result[4].sentences[0]],
       },
     ])
   })
