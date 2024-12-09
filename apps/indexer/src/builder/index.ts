@@ -1,5 +1,6 @@
 import _ from "lodash"
 import { extractValues } from "./extractValues.js"
+import { extractProperties } from "./extractProperties.js"
 import titles from "./titles.js"
 
 const normalizeString = (str: string) =>
@@ -9,5 +10,6 @@ const normalizeString = (str: string) =>
     .toLowerCase()
 
 const values = extractValues(titles.map((title) => normalizeString(title)))
+const properties = extractProperties(Object.values(values))
 
-console.log(JSON.stringify(values, null, 2))
+console.log(JSON.stringify(properties, null, 2))
