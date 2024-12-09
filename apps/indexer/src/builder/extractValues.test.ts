@@ -275,7 +275,11 @@ describe("extractValues", () => {
   })
 
   it("matches repeated words", () => {
-    const titles = ["jeans de adidas", "vaqueros de pana", "pantalon de futbol de talle medio"]
+    const titles = [
+      "jeans de adidas",
+      "vaqueros de pana",
+      "pantalon de futbol de talle medio",
+    ]
 
     const result = extractValues(titles)
 
@@ -302,7 +306,11 @@ describe("extractValues", () => {
       },
       {
         name: ["de"],
-        sentences: [result[2].sentences[0], result[0].sentences[0], result[4].sentences[0]],
+        sentences: [
+          result[2].sentences[0],
+          result[0].sentences[0],
+          result[4].sentences[0],
+        ],
       },
       {
         name: ["futbol"],

@@ -2,25 +2,31 @@ import { expect, describe, it } from "vitest"
 import { type Value, extractProperties } from "./extractProperties"
 
 describe("extractProperties", () => {
-  it("groups values into properties", () => {
+  it("converts values into properties", () => {
     const values = [
       {
         name: ["jeans", "camel"],
-        sentences: ["fa687f28-c728-4f52-a89f-69076c4143bf", "24145af3-bbee-425a-875c-ed010c53e64a"],
+        sentences: [
+          "fa687f28-c728-4f52-a89f-69076c4143bf",
+        ],
       },
     ] as Value[]
 
     const result = extractProperties(values)
 
     expect(result).toStrictEqual([
-      {
-        name: "jeans camel",
-        sentences: ["fa687f28-c728-4f52-a89f-69076c4143bf", "24145af3-bbee-425a-875c-ed010c53e64a"],
-      },
+      [
+        {
+          name: "jeans camel",
+          sentences: [
+            "fa687f28-c728-4f52-a89f-69076c4143bf",
+          ],
+        },
+      ],
     ])
   })
 
-  it("groups non-coocurring values into the same property", () => {
+  it("groups non-coocurring values", () => {
     const values = [
       {
         name: ["jeans"],
@@ -35,14 +41,16 @@ describe("extractProperties", () => {
     const result = extractProperties(values)
 
     expect(result).toStrictEqual([
-      {
-        name: "jeans",
-        sentences: ["fa687f28-c728-4f52-a89f-69076c4143bf"],
-      },
-      {
-        name: "vaqueros",
-        sentences: ["24145af3-bbee-425a-875c-ed010c53e64a"],
-      },
+      [
+        {
+          name: "jeans",
+          sentences: ["fa687f28-c728-4f52-a89f-69076c4143bf"],
+        },
+        {
+          name: "vaqueros",
+          sentences: ["24145af3-bbee-425a-875c-ed010c53e64a"],
+        },
+      ],
     ])
   })
 })
