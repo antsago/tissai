@@ -314,4 +314,21 @@ describe("extractValues", () => {
       },
     ])
   })
+
+  it("does not split multiple repeated words", () => {
+    const titles = ["pantalon foo bar foo bar"]
+
+    const result = extractValues(titles)
+
+    expect(result).toStrictEqual([
+      {
+        name: ["pantalon"],
+        sentences: [expect.any(String)],
+      },
+      {
+        name: ["foo", "bar"],
+        sentences: [result[0].sentences[0]],
+      },
+    ])
+  })
 })
