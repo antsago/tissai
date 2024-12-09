@@ -1,18 +1,5 @@
-import { type UUID } from "crypto"
 import { expect, describe, it } from "vitest"
-
-type Value = {
-  name: string[],
-  sentences: UUID[]
-}
-function identifyProperties(values: Value[]) {
-  const value = values[0]
-  return [{
-    name: value.name.join(" "),
-    tally: value.sentences.length,
-    children: []
-  }]
-}
+import { type Value, identifyProperties } from "./identifyProperties"
 
 describe("identifyProperties", () => {
   it("groups values into properties", () => {
