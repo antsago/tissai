@@ -10,52 +10,81 @@ type Values = Record<UUID, Value>
 
 type Span = {
   nodeId?: UUID
-  start?: number
-  end?: number
+  nodeStart?: number
+  nodeEnd?: number
   words: string[]
 }
 
 function matchTitle(title: string, values: Values): Span[] {
+  type WordSpan = {
+    nodeId: UUID | undefined
+    nodeIndex: number | undefined
+    index: number
+    word: string
+    duplicated?: true
+  }
+  type ProtoSpan = Span & { duplicated?: true; end: number }
+
   return title
     .split(" ")
-    .map((word) => {
+    .map((word, index) => {
       const match = Object.values(values).find((v) => v.name.includes(word))
 
       return {
         nodeId: match?.id,
-        index: match?.name.findIndex((w) => w === word),
+        nodeIndex: match?.name.findIndex((w) => w === word),
+        index,
         word,
-      }
+      } as WordSpan
     })
+    .reduce((deduplicated, wordSpan) => {
+      const duplicated = deduplicated.findIndex((d) => d.word === wordSpan.word)
+      if (duplicated !== -1) {
+        return deduplicated.toSpliced(duplicated, 1, {
+          ...wordSpan,
+          duplicated: true,
+        })
+      }
+      return [...deduplicated, wordSpan]
+    }, [] as WordSpan[])
     .reduce((mergedSpans, wordSpan) => {
       const previousSpan = mergedSpans.at(-1)
 
       const mergeWithPrevious =
         previousSpan &&
+        previousSpan.duplicated === wordSpan.duplicated &&
+        previousSpan.end === wordSpan.index &&
         previousSpan.nodeId === wordSpan.nodeId &&
-        previousSpan.end === wordSpan.index
+        previousSpan.nodeEnd === wordSpan.nodeIndex
 
-      const end = wordSpan.index === undefined ? undefined : wordSpan.index + 1
+      const end = wordSpan.index + 1
+      const nodeEnd =
+        wordSpan.nodeIndex === undefined ? undefined : wordSpan.nodeIndex + 1
+
       return mergeWithPrevious
         ? [
             ...mergedSpans.slice(0, -1),
             {
               nodeId: previousSpan.nodeId,
-              start: previousSpan.start,
-              end,
+              nodeStart: previousSpan.nodeStart,
+              nodeEnd,
               words: [...previousSpan.words, wordSpan.word],
+              end,
             },
           ]
         : [
             ...mergedSpans,
             {
               nodeId: wordSpan.nodeId,
-              start: wordSpan.index,
-              end,
+              nodeStart: wordSpan.nodeIndex,
+              nodeEnd,
               words: [wordSpan.word],
+              end,
+              duplicated: wordSpan.duplicated,
             },
           ]
-    }, [] as Span[])
+    }, [] as ProtoSpan[])
+    .map(({ duplicated, end, ...span }) => span)
 }
 
 function addAndSplit(initialValues: Values, spans: Span[]): Values {

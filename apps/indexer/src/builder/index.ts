@@ -8,7 +8,6 @@ const normalizeString = (str: string) =>
     .replace(/\p{Diacritic}/gu, "")
     .toLowerCase()
 
-const values = extractValues(titles
-  .map((title) => normalizeString(title)))
+const values = extractValues(titles.map((title) => normalizeString(title)))
 
 console.log(JSON.stringify(values, null, 2))
