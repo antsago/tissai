@@ -58,29 +58,6 @@ function matchTitle(title: string, values: Values): Span[] {
     }, [] as Span[])
 }
 
-const splitValue =
-  (sentenceId: UUID) => (value: Value, span: Required<Span>) => ({
-    fromSpan: [
-      {
-        id: value.id,
-        name: value.name.slice(span.start, span.end),
-        sentences: [...value.sentences, sentenceId],
-      },
-    ],
-    remainingValue: [
-      {
-        id: randomUUID(),
-        name: value.name.slice(0, span.start),
-        sentences: value.sentences,
-      },
-      {
-        id: randomUUID(),
-        name: value.name.slice(span.end),
-        sentences: value.sentences,
-      },
-    ].filter(({ name }) => !!name.length),
-  })
-
 function addAndSplit(initialValues: Values, spans: Span[]): Values {
   const sentenceId = randomUUID()
 
