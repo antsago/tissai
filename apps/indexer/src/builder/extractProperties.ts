@@ -1,3 +1,4 @@
+import { group } from "console"
 import { type UUID } from "crypto"
 
 export type Value = {
@@ -9,7 +10,7 @@ type Property = {
   sentences: UUID[]
 }[]
 
-export function extractProperties(values: Value[]): Property[] {
+function groupProperties(values: Value[]): Property[] {
   if (!values.length) {
     return []
   }
@@ -34,5 +35,11 @@ export function extractProperties(values: Value[]): Property[] {
       sentences: v.sentences,
     }))
 
-  return [property, ...extractProperties(skippedValues)]
+  return [property, ...groupProperties(skippedValues)]
+}
+
+export function extractProperties(values: Value[]): Property[] {
+  return groupProperties(
+    values.toSorted((a, b) => b.sentences.length - a.sentences.length),
+  )
 }
