@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { extractValues } from "./extractValues.js"
+import { extractValues, matchTitle } from "./extractValues.js"
 import { extractProperties } from "./extractProperties.js"
 import titles from "./titles.js"
 
@@ -9,15 +9,21 @@ const normalizeString = (str: string) =>
     .replace(/\p{Diacritic}/gu, "")
     .toLowerCase()
 
-const values = extractValues(titles.map((title) => normalizeString(title)))
-const properties = extractProperties(Object.values(values))
+const cleanedTitles = titles.map((title) => normalizeString(title))
+const values = extractValues(cleanedTitles)
+const mostFrequentValues = _.uniqBy(
+  cleanedTitles
+    .map((title) => matchTitle(title, values))
+    .map((match) => {
+      const sentenceValues = match
+        .filter((s) => s.nodeId !== undefined)
+        .map((span) => values[span.nodeId!])
+      const root = _.maxBy(sentenceValues, (v) => v.sentences.length)
 
-console.log(
-  JSON.stringify(
-    properties.map((p) =>
-      p.map((v) => ({ name: v.name, tally: v.sentences.length })),
-    ),
-    null,
-    2,
-  ),
+      return root!
+    }),
+  'id'
 )
+// const properties = extractProperties(Object.values(values))
+
+console.log(JSON.stringify(mostFrequentValues.sort((a, b) => b.sentences.length - a.sentences.length), null, 2))

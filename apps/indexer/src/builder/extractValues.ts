@@ -15,7 +15,7 @@ type Span = {
   words: string[]
 }
 
-function matchTitle(title: string, values: Values): Span[] {
+export function matchTitle(title: string, values: Values): Span[] {
   type WordSpan = {
     nodeId: UUID | undefined
     nodeIndex: number | undefined
