@@ -12,4 +12,12 @@ const normalizeString = (str: string) =>
 const values = extractValues(titles.map((title) => normalizeString(title)))
 const properties = extractProperties(Object.values(values))
 
-console.log(JSON.stringify(properties, null, 2))
+console.log(
+  JSON.stringify(
+    properties.map((p) =>
+      p.map((v) => ({ name: v.name, tally: v.sentences.length })),
+    ),
+    null,
+    2,
+  ),
+)
