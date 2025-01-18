@@ -4,8 +4,9 @@ type Schema = {
   category: string,
   attributes: string[],
 }
+export type Schemas = Record<string, Record<string, number>>
 
-export function addSchema({ category, attributes }: Schema, schemas: Record<string, Record<string, number>>) {
+export function addSchema({ category, attributes }: Schema, schemas: Schemas) {
   const oldAttributes = schemas[category] ?? {}
 
   return {
