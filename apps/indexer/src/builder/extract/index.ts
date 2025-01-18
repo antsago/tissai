@@ -1,7 +1,7 @@
 import _ from "lodash"
 import { extractValues, matchTitle } from "./extractValues.js"
 import { extractProperties } from "./extractProperties.js"
-import titles from "./titles.js"
+import titles from "../titles.js"
 
 const normalizeString = (str: string) =>
   str
