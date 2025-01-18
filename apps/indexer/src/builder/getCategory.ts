@@ -1,9 +1,7 @@
-import { LLM } from "../trainer/label/LLM/index.js"
+import { type LLM } from "../trainer/label/LLM/index.js"
 import { getFirstWord } from "../trainer/label/getFirstWord.js"
 
-export async function getCategory(title: string) {
-  const llm = LLM()
-
+export async function getCategory(title: string, llm: LLM) {
   const output = await llm.send({
     prompt: `El producto con el título "PANTALÓN TÉRMICO INTERIOR DE ESQUI Y NIEVE MUJER SWIX RACE" es un pantalón.
 El producto con el título "CHÁNDAL CON SUDADERA CON CAPUCHA Y JOGGERS DE CORTE SLIM CON LAZO DE ASOS DESIGN" es un chándal.
@@ -22,5 +20,5 @@ El producto con el título "${title}" es un`,
     },
   })
 
-  return getFirstWord(output[0])
+  return getFirstWord(output[0] ?? "") ?? ""
 }

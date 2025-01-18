@@ -1,7 +1,6 @@
-import { Tokenizer } from "@tissai/tokenizer"
+import { type Tokenizer } from "@tissai/tokenizer"
 
-export async function getAttributes(title: string) {
-  const tokenizer = Tokenizer()
+export async function getAttributes(title: string, tokenizer: Tokenizer) {
   const words = await tokenizer.fromText(title)
   return words.filter(w => !!w.isMeaningful).map(w => w.text)
 }
