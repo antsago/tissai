@@ -1,4 +1,3 @@
-import { group } from "console"
 import { type UUID } from "crypto"
 
 export type Value = {
