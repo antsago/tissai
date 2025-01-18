@@ -1,17 +1,12 @@
-import { expect, describe, test } from "vitest"
-import { mockPythonFixture } from "@tissai/python-pool/mocks"
+import { expect, describe, it } from "vitest"
 import { getCategory } from "./getCategory"
-
-const it = test.extend<{ python: mockPythonFixture }>({
-  python: [mockPythonFixture],
-})
 
 describe("getCategory", () => {
   it("returns llm-generated category", { timeout: 60000 }, async () => {
-    const title = "adidas logo joggers junior"
+    const title = "adidas Logo Joggers Junior"
 
     const result = await getCategory(title)
 
-    expect(result).toStrictEqual("jogger")
+    expect(result).toStrictEqual("pantalón")
   })
 })
