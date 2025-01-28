@@ -4,19 +4,17 @@ import { addSchema, type Schemas } from "./addSchema.js"
 import titles from "./titles.js"
 import { LLM } from "../trainer/label/index.js"
 import { Tokenizer } from "@tissai/tokenizer"
+import { getSchema as getSchemaRaw } from "./getSchema.js"
 
 const llm = LLM()
 const tokenizer = Tokenizer()
 
-const finalSchemas = (
-  await Promise.all(
-    titles.map(async (title) => {
-      const category = await getCategory(title, llm)
-      const attributes = await getAttributes(title, tokenizer)
-      return { category, attributes }
-    }),
-  )
-).reduce((schemas, schema) => addSchema(schema, schemas), {} as Schemas)
+const getSchema = getSchemaRaw(tokenizer, llm)
+
+const finalSchemas = (await Promise.all(titles.map(getSchema))).reduce(
+  (schemas, schema) => addSchema(schema, schemas),
+  {} as Schemas,
+)
 
 console.log(JSON.stringify(finalSchemas, null, 2))
 

@@ -6,17 +6,22 @@ describe("addSchema", () => {
     const schemas = {}
     const schema = {
       category: "pantalón",
-      attributes: ["adidas", "logo", "joggers", "junior"],
+      categoryWord: "pantalon",
+      attributes: ["adidas", "logo", "junior"],
     }
 
     const result = addSchema(schema, schemas)
 
     expect(result).toStrictEqual({
       pantalón: {
-        adidas: 1,
-        logo: 1,
-        joggers: 1,
-        junior: 1,
+        attributes: {
+          adidas: 1,
+          logo: 1,
+          junior: 1,
+        },
+        labels: {
+          pantalon: 1,
+        },
       },
     })
   })
@@ -24,13 +29,19 @@ describe("addSchema", () => {
   it("adds new categories as-is", () => {
     const schemas = {
       foobar: {
-        bar: 1,
-        foo: 1,
+        attributes: {
+          bar: 1,
+          foo: 1,
+        },
+        labels: {
+          foobar: 1,
+        },
       },
     }
     const schema = {
       category: "pantalón",
-      attributes: ["adidas", "logo", "joggers", "junior"],
+      categoryWord: "pantalon",
+      attributes: ["adidas", "logo", "junior"],
     }
 
     const result = addSchema(schema, schemas)
@@ -38,10 +49,14 @@ describe("addSchema", () => {
     expect(result).toStrictEqual({
       ...schemas,
       pantalón: {
-        adidas: 1,
-        logo: 1,
-        joggers: 1,
-        junior: 1,
+        attributes: {
+          adidas: 1,
+          logo: 1,
+          junior: 1,
+        },
+        labels: {
+          pantalon: 1,
+        },
       },
     })
   })
@@ -49,19 +64,35 @@ describe("addSchema", () => {
   it("increases count for existing categories", () => {
     const schemas = {
       pantalón: {
-        adidas: 2,
-        foo: 1,
+        attributes: {
+          adidas: 2,
+          foo: 1,
+        },
+        labels: {
+          pantalon: 1,
+          bar: 1,
+        },
       },
     }
-    const schema = { category: "pantalón", attributes: ["adidas", "logo"] }
+    const schema = {
+      category: "pantalón",
+      categoryWord: "pantalon",
+      attributes: ["adidas", "logo"],
+    }
 
     const result = addSchema(schema, schemas)
 
     expect(result).toStrictEqual({
       pantalón: {
-        adidas: 3,
-        logo: 1,
-        foo: 1,
+        attributes: {
+          adidas: 3,
+          logo: 1,
+          foo: 1,
+        },
+        labels: {
+          pantalon: 2,
+          bar: 1,
+        },
       },
     })
   })
