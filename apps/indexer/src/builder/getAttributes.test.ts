@@ -8,14 +8,9 @@ describe("getAttributes", () => {
 
     const result = await getAttributes(title, Tokenizer())
 
-    expect(result).toStrictEqual([
-      "adidas",
-      "logo",
-      "joggers",
-      "junior",
-    ])
+    expect(result).toStrictEqual(["adidas", "logo", "joggers", "junior"])
   })
-  
+
   it("removes meaningless words", async () => {
     const title = "air jordan titan pantalon - mujer"
 

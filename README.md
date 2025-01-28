@@ -5,6 +5,7 @@
 Tissai is an attempt at creating a more interactive product search engine (like google products). You can see it in action at [www.tissai.com](https://www.tissai.com/)
 
 The project is made up of two services:
+
 - **The site**: which is what the end user interacts with to search through the database of indexed products. It's made in SvelteKit and PostgreSQL. The search algorithm matches the user's query with the indexed titles and filters the results based on a set of filters that are infered from the query using a bayesian network of product categories and properties.
 - **The indexer**: which is the core differentiator of Tissai as a product search engine. It's also the least mature and that is reflected in the low cohesion of its responsabilities and file structure. It's main job is to provide the site with a network of product categories and a database of products indexed according to it.
   - The bayesian network is created by processing the product titles using an LLM

@@ -22,8 +22,14 @@ const mostFrequentValues = _.uniqBy(
 
       return root!
     }),
-  'id'
+  "id",
 )
 // const properties = extractProperties(Object.values(values))
 
-console.log(JSON.stringify(mostFrequentValues.sort((a, b) => b.sentences.length - a.sentences.length), null, 2))
+console.log(
+  JSON.stringify(
+    mostFrequentValues.sort((a, b) => b.sentences.length - a.sentences.length),
+    null,
+    2,
+  ),
+)

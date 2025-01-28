@@ -8,11 +8,15 @@ import { Tokenizer } from "@tissai/tokenizer"
 const llm = LLM()
 const tokenizer = Tokenizer()
 
-const finalSchemas = (await Promise.all(titles.map(async (title) => {
-  const category = await getCategory(title, llm)
-  const attributes = await getAttributes(title, tokenizer)
-  return { category, attributes}
-}))).reduce((schemas, schema) => addSchema(schema, schemas), {} as Schemas)
+const finalSchemas = (
+  await Promise.all(
+    titles.map(async (title) => {
+      const category = await getCategory(title, llm)
+      const attributes = await getAttributes(title, tokenizer)
+      return { category, attributes }
+    }),
+  )
+).reduce((schemas, schema) => addSchema(schema, schemas), {} as Schemas)
 
 console.log(JSON.stringify(finalSchemas, null, 2))
 

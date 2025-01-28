@@ -7,8 +7,12 @@ export function identifyCategoryWord(category: string, words: string[]) {
   }
 
   const { word: categoryWord, distance } = _.minBy(
-    words.map(word => ({ word, distance: levenshtein.get(category, word, { useCollator: true })})), "distance") ?? { distance: 0 }
-    
+    words.map((word) => ({
+      word,
+      distance: levenshtein.get(category, word, { useCollator: true }),
+    })),
+    "distance",
+  ) ?? { distance: 0 }
 
   if (!categoryWord || distance === undefined || distance > 2) {
     throw new Error("No category word")
