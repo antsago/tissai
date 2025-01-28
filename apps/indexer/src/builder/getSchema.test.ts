@@ -34,4 +34,26 @@ describe("getSchema", () => {
       attributes: ["adidas", "logo", "junior"],
     })
   })
+
+  it("returns null if no category", async ({ python }) => {
+    const title = "adidas Logo Joggers Junior"
+    let mockLLM = true
+    python.mockImplementation(() => {
+      if (mockLLM) {
+        mockLLM = false
+        return [""]
+      }
+
+      return [
+        { text: "adidas", isMeaningful: true },
+        { text: "logo", isMeaningful: true },
+        { text: "joggers", isMeaningful: true },
+        { text: "junior", isMeaningful: true },
+      ]
+    })
+
+    const result = await getSchema(Tokenizer(), LLM())(title)
+
+    expect(result).toStrictEqual(null)
+  })
 })

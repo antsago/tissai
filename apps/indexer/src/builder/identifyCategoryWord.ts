@@ -3,7 +3,7 @@ import levenshtein from "fast-levenshtein"
 
 export function identifyCategoryWord(category: string, words: string[]) {
   if (!category) {
-    throw new Error("No category")
+    return ""
   }
 
   const { word: categoryWord, distance } = _.minBy(
@@ -15,7 +15,7 @@ export function identifyCategoryWord(category: string, words: string[]) {
   ) ?? { distance: 0 }
 
   if (!categoryWord || distance === undefined || distance > 2) {
-    throw new Error("No category word")
+    return ""
   }
 
   return categoryWord

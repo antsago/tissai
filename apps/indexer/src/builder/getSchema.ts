@@ -7,11 +7,15 @@ import { Schema } from "./addSchema.js"
 
 export const getSchema =
   (tokenizer: Tokenizer, llm: LLM) =>
-  async (title: string): Promise<Schema> => {
+  async (title: string): Promise<Schema | null> => {
     const category = await getCategory(title, llm)
     const words = await getAttributes(title, tokenizer)
 
     const categoryWord = identifyCategoryWord(category, words)
+
+    if (!categoryWord) {
+      return null
+    }
 
     return {
       category,

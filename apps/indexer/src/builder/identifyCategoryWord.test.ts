@@ -2,16 +2,16 @@ import { expect, describe, it } from "vitest"
 import { identifyCategoryWord } from "./identifyCategoryWord"
 
 describe("identifyCategoryWord", () => {
-  it("throws if no category", async () => {
-    const act = () => identifyCategoryWord("", ["word"])
+  it("returns empty if no category", async () => {
+    const result = identifyCategoryWord("", ["word"])
 
-    expect(act).toThrow()
+    expect(result).toStrictEqual("")
   })
 
-  it("throws if no words", async () => {
-    const act = () => identifyCategoryWord("category", [])
+  it("returns empty if no words", async () => {
+    const result = identifyCategoryWord("category", [])
 
-    expect(act).toThrow()
+    expect(result).toStrictEqual("")
   })
 
   it("returns the category word", async () => {
@@ -28,9 +28,9 @@ describe("identifyCategoryWord", () => {
     expect(result).toStrictEqual(words[1])
   })
 
-  it("throws if all words are too disimilar from category", async () => {
-    const act = () => identifyCategoryWord("category", ["word"])
+  it("returns empty if all words are too disimilar from category", async () => {
+    const result = identifyCategoryWord("category", ["word"])
 
-    expect(act).toThrow()
+    expect(result).toStrictEqual("")
   })
 })
