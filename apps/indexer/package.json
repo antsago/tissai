@@ -29,6 +29,7 @@
     "@tissai/db": "workspace:*",
     "@tissai/python-pool": "workspace:*",
     "@tissai/tokenizer": "workspace:*",
+    "fast-levenshtein": "3.0.0",
     "he": "1.2.0",
     "lodash": "4.17.21",
     "node-html-parser": "6.1.13",

@@ -1693,6 +1693,7 @@ __metadata:
     "@types/node": "npm:20.14.8"
     "@types/pg": "npm:8"
     "@types/pg-cursor": "npm:2"
+    fast-levenshtein: "npm:3.0.0"
     he: "npm:1.2.0"
     lodash: "npm:4.17.21"
     node-html-parser: "npm:6.1.13"
@@ -1757,6 +1758,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tissai/tissai@workspace:."
   dependencies:
+    "@types/fast-levenshtein": "npm:0.0.4"
     prettier: "npm:3.3.3"
     prettier-plugin-svelte: "npm:3.2.6"
     svelte: "npm:4.2.19"
@@ -1850,6 +1852,13 @@ __metadata:
     "@types/qs": "npm:*"
     "@types/serve-static": "npm:*"
   checksum: 10c0/12e562c4571da50c7d239e117e688dc434db1bac8be55613294762f84fd77fbd0658ccd553c7d3ab02408f385bc93980992369dd30e2ecd2c68c358e6af8fabf
+  languageName: node
+  linkType: hard
+
+"@types/fast-levenshtein@npm:0.0.4":
+  version: 0.0.4
+  resolution: "@types/fast-levenshtein@npm:0.0.4"
+  checksum: 10c0/d9a3c6b9e8181315ccd97c321ad11e6c791116488145c549db6f2e5463570476f735c5f8f07a89d727f6142ccdea53c62d8c5ec8b9fa7e8186358441ed985490
   languageName: node
   linkType: hard
 
@@ -4014,10 +4023,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-levenshtein@npm:3.0.0":
+  version: 3.0.0
+  resolution: "fast-levenshtein@npm:3.0.0"
+  dependencies:
+    fastest-levenshtein: "npm:^1.0.7"
+  checksum: 10c0/9e147c682bd0ca54474f1cbf906f6c45262fd2e7c051d2caf2cc92729dcf66949dc809f2392de6adbe1c8716fdf012f91ce38c9422aef63b5732fc688eee4046
+  languageName: node
+  linkType: hard
+
 "fast-levenshtein@npm:^2.0.6":
   version: 2.0.6
   resolution: "fast-levenshtein@npm:2.0.6"
   checksum: 10c0/111972b37338bcb88f7d9e2c5907862c280ebf4234433b95bc611e518d192ccb2d38119c4ac86e26b668d75f7f3894f4ff5c4982899afced7ca78633b08287c4
+  languageName: node
+  linkType: hard
+
+"fastest-levenshtein@npm:^1.0.7":
+  version: 1.0.16
+  resolution: "fastest-levenshtein@npm:1.0.16"
+  checksum: 10c0/7e3d8ae812a7f4fdf8cad18e9cde436a39addf266a5986f653ea0d81e0de0900f50c0f27c6d5aff3f686bcb48acbd45be115ae2216f36a6a13a7dbbf5cad878b
   languageName: node
   linkType: hard
 

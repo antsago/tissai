@@ -19,6 +19,7 @@
     "pkg": "bash -c 'yarn workspace @tissai/$0 ${@:1}'"
   },
   "devDependencies": {
+    "@types/fast-levenshtein": "0.0.4",
     "prettier": "3.3.3",
     "prettier-plugin-svelte": "3.2.6",
     "svelte": "4.2.19",
